@@ -96,6 +96,28 @@
   .proj .chips span{font-size:11.5px;font-weight:700;color:var(--ink-2);background:var(--bg);border:1px solid var(--line);padding:3px 9px;border-radius:999px}
   .proj .launch{display:inline-flex;align-items:center;gap:8px;font-weight:800;font-size:14px;color:var(--v1)}
   .proj:hover .launch{gap:11px}
+  .c1{background:linear-gradient(135deg,#7c3aed,#06b6d4)} .c2{background:linear-gradient(135deg,#4f46e5,#7c3aed)}
+  .c3{background:linear-gradient(135deg,#0ea5e9,#6366f1)} .c4{background:linear-gradient(135deg,#db2777,#7c3aed)}
+  .c5{background:linear-gradient(135deg,#0d9488,#0ea5e9)} .c6{background:linear-gradient(135deg,#6366f1,#0ea5e9)}
+  .group-label .tag{font-size:11px;font-weight:800;letter-spacing:.04em;color:#fff;background:var(--grad);padding:3px 10px;border-radius:999px;text-transform:none}
+  .group-note{margin:-6px 0 18px;color:var(--muted);font-size:15px;max-width:74ch}
+  .group-note b{color:var(--ink)}
+  /* vision film cards */
+  .vcard{display:flex;flex-direction:column}
+  .vcard .vtop{display:flex;align-items:center;gap:11px;margin-bottom:12px}
+  .vcard .vg{font-size:24px;margin:0}
+  .vcard .vfilm{margin-left:auto;font-size:10.5px;font-weight:800;letter-spacing:.04em;color:var(--v1);background:var(--vi-soft);padding:4px 9px;border-radius:999px}
+  .vcard p{flex:1}
+  .vwatch{margin-top:16px;align-self:flex-start;display:inline-flex;align-items:center;gap:9px;font:inherit;font-size:13.5px;font-weight:800;color:#fff;background:var(--grad);border:none;border-radius:11px;padding:10px 16px;cursor:pointer;box-shadow:0 6px 18px rgba(124,58,237,.28);transition:transform .15s,filter .15s}
+  .vwatch:hover{transform:translateY(-1px);filter:brightness(1.08)}
+  .vwatch .pl{display:grid;place-items:center;width:18px;height:18px;border-radius:50%;background:rgba(255,255,255,.25);font-size:8px}
+  /* roadmap-shipped callout */
+  .builtcallout{margin-top:48px;display:flex;gap:22px;align-items:center;flex-wrap:wrap;background:linear-gradient(120deg,#0b0e1c,#1c1442);color:#fff;border:1px solid rgba(255,255,255,.12);border-radius:20px;padding:26px 30px;box-shadow:var(--shadow)}
+  .builtcallout .bc-badge{flex:0 0 auto;display:inline-flex;align-items:center;gap:8px;font-size:12.5px;font-weight:800;letter-spacing:.04em;color:#fff;background:var(--grad);padding:9px 15px;border-radius:999px;box-shadow:0 6px 18px rgba(124,58,237,.4)}
+  .builtcallout .bc-body{flex:1;min-width:260px}
+  .builtcallout h3{font-size:clamp(18px,2.4vw,22px);font-weight:850;margin:0 0 5px}
+  .builtcallout p{margin:0;color:#c3c9e0;font-size:15px}
+  .builtcallout p a{color:#fff;border-bottom:1px solid rgba(255,255,255,.4)}
 
   /* thesis band */
   .band{background:#0b0e1c;color:#fff;border-radius:0}
@@ -186,15 +208,15 @@
       <a href="#work" class="btn btn-primary">Explore the work ↓</a>
       <a href="#contact" class="btn btn-ghost">Work with me →</a>
     </div>
-    <div class="meta"><span>7 live products</span><span>Built solo, AI-assisted</span><span>Days, not quarters</span></div>
+    <div class="meta"><span>19 built with AI</span><span>Built solo, AI-assisted</span><span>Days, not quarters</span></div>
   </div>
 </header>
 
 <div class="stats wrap reveal">
   <div class="grid">
-    <div class="stat"><div class="n" data-count="7">7</div><div class="l">Interactive products</div></div>
-    <div class="stat"><div class="n" data-count="4">4</div><div class="l">Training courses</div></div>
-    <div class="stat"><div class="n" data-count="3">3</div><div class="l">Internal tools &amp; apps</div></div>
+    <div class="stat"><div class="n" data-count="19">19</div><div class="l">Built with AI</div></div>
+    <div class="stat"><div class="n" data-count="13">13</div><div class="l">Interactive products</div></div>
+    <div class="stat"><div class="n" data-count="6">6</div><div class="l">New AI copilots</div></div>
     <div class="stat"><div class="n">0</div><div class="l">Engineers required</div></div>
   </div>
 </div>
@@ -264,6 +286,52 @@
           <span class="launch">▶ Launch interactive preview →</span></div>
       </button>
     </div>
+    <div class="group-label reveal">AI copilots &amp; automation <span class="tag">just shipped</span></div>
+    <p class="group-note reveal"><b>The six tools I'd listed as "what I'd build next" — so I built them.</b> Every one is live and fully interactive. Click to explore.</p>
+    <div class="projects three reveal">
+      <button class="proj" onclick="openDemo('tool-policy-copilot.html','Policy &amp; Handbook Copilot','Grounded AI Q&amp;A')">
+        <div class="top c1"><span class="live"><i></i>LIVE</span><span class="glyph">📖</span></div>
+        <div class="body"><h3>Policy &amp; Handbook Copilot</h3>
+          <p class="desc">Answers any employee policy question instantly — grounded only in your handbook, with a citation on every claim.</p>
+          <div class="chips"><span>Grounded</span><span>Citations</span><span>No hallucinations</span></div>
+          <span class="launch">▶ Launch interactive preview →</span></div>
+      </button>
+      <button class="proj" onclick="openDemo('tool-auto-triage.html','Auto-Triage + Suggested Replies','AI ticket triage console')">
+        <div class="top c2"><span class="live"><i></i>LIVE</span><span class="glyph">🤖</span></div>
+        <div class="body"><h3>Auto-Triage + Suggested Replies</h3>
+          <p class="desc">AI classifies every HR ticket, drafts a reply, and routes it — humans just approve. Sensitive cases are held for review.</p>
+          <div class="chips"><span>Auto-classify</span><span>Suggested replies</span><span>Guardrails</span></div>
+          <span class="launch">▶ Launch interactive preview →</span></div>
+      </button>
+      <button class="proj" onclick="openDemo('tool-onboarding-orchestrator.html','Onboarding Orchestrator','Day 0–90 automation')">
+        <div class="top c3"><span class="live"><i></i>LIVE</span><span class="glyph">🧭</span></div>
+        <div class="body"><h3>Onboarding Orchestrator</h3>
+          <p class="desc">Auto-coordinates IT, payroll, manager and facilities tasks for every new hire, from Day 0 to Day 90.</p>
+          <div class="chips"><span>Swimlanes</span><span>Auto-nudges</span><span>Readiness score</span></div>
+          <span class="launch">▶ Launch interactive preview →</span></div>
+      </button>
+      <button class="proj" onclick="openDemo('tool-attrition-planner.html','Attrition Early-Warning + Scenario Planner','Predict &amp; plan headcount')">
+        <div class="top c4"><span class="live"><i></i>LIVE</span><span class="glyph">🔮</span></div>
+        <div class="body"><h3>Attrition Early-Warning + Planner</h3>
+          <p class="desc">Predicts which teams are at risk — with drivers and interventions — plus a live headcount &amp; cost scenario planner.</p>
+          <div class="chips"><span>Risk scoring</span><span>Interventions</span><span>Scenario planner</span></div>
+          <span class="launch">▶ Launch interactive preview →</span></div>
+      </button>
+      <button class="proj" onclick="openDemo('tool-manager-copilot.html','Manager Copilots','Draft people docs with guardrails')">
+        <div class="top c5"><span class="live"><i></i>LIVE</span><span class="glyph">✍️</span></div>
+        <div class="body"><h3>Manager Copilots</h3>
+          <p class="desc">Drafts JDs, reviews, PIPs and comp messages in seconds — with inclusivity and compliance guardrails built in.</p>
+          <div class="chips"><span>5 templates</span><span>Guardrails</span><span>One-click fixes</span></div>
+          <span class="launch">▶ Launch interactive preview →</span></div>
+      </button>
+      <button class="proj" onclick="openDemo('tool-compliance-calendar.html','Compliance Calendar','Deadline tracking + auto-reminders')">
+        <div class="top c6"><span class="live"><i></i>LIVE</span><span class="glyph">🗓️</span></div>
+        <div class="body"><h3>Compliance Calendar</h3>
+          <p class="desc">Tracks every compliance deadline, owner and status — and auto-reminds the right person before anything slips.</p>
+          <div class="chips"><span>I-9 · EEO-1 · OSHA</span><span>Owners</span><span>Auto-reminders</span></div>
+          <span class="launch">▶ Launch interactive preview →</span></div>
+      </button>
+    </div>
     <p class="demo-note">All demos run entirely on synthetic / mock data — no real employee information, no backend, no sign-in.</p>
   </div>
 </section>
@@ -288,29 +356,37 @@
 <section id="future">
   <div class="wrap">
     <div class="sec-head reveal">
-      <div class="kicker">What's next</div>
+      <div class="kicker">What's next · watch the films</div>
       <h2>Where AI takes People Operations</h2>
-      <p>The demos above are a starting point. Here's the bigger picture — and the concrete things I'd build next.</p>
+      <p>Six near-future visions for AI in People Ops — each one brought to life as a 30-second film. Press play on any card.</p>
     </div>
     <div class="vision">
-      <div class="vcard reveal"><div class="vg">💡</div><h3>The self-service People team</h3><p>Every policy and benefits question answered instantly and accurately — in any language, 24/7, grounded in your own documents.</p></div>
-      <div class="vcard reveal"><div class="vg">🤖</div><h3>Agentic operations</h3><p>AI agents triage tickets, draft replies, assemble cases, and move approvals along — so the team spends time on people, not busywork.</p></div>
-      <div class="vcard reveal"><div class="vg">🛡️</div><h3>Compliance on autopilot</h3><p>I-9s, filings, trainings, and policy gaps monitored continuously and flagged to an owner <em>before</em> anything slips.</p></div>
-      <div class="vcard reveal"><div class="vg">🔮</div><h3>Predictive, not reactive</h3><p>Attrition risk, capacity gaps, and cost surprises surfaced early — so leaders act on a forecast, not a fire.</p></div>
-      <div class="vcard reveal"><div class="vg">🚀</div><h3>Onboarding that runs itself</h3><p>Orchestrated, personalized journeys from offer to day 90 — coordinating IT, payroll, managers, and the new hire automatically.</p></div>
-      <div class="vcard reveal"><div class="vg">📈</div><h3>From data to decisions</h3><p>Every headcount, engagement, and cost metric one plain-English question away — no dashboards to hunt through.</p></div>
+      <div class="vcard reveal"><div class="vtop"><span class="vg">💡</span><span class="vfilm">▶ 0:30 FILM</span></div><h3>The self-service People team</h3><p>Every policy and benefits question answered instantly and accurately — in any language, 24/7, grounded in your own documents.</p><button class="vwatch" onclick="openDemo('reel-self-service.html','The Self-Service People Team','30-second vision film')"><span class="pl">▶</span> Watch the reel</button></div>
+      <div class="vcard reveal"><div class="vtop"><span class="vg">🤖</span><span class="vfilm">▶ 0:30 FILM</span></div><h3>Agentic operations</h3><p>AI agents triage tickets, draft replies, assemble cases, and move approvals along — so the team spends time on people, not busywork.</p><button class="vwatch" onclick="openDemo('reel-agentic-ops.html','Agentic Operations','30-second vision film')"><span class="pl">▶</span> Watch the reel</button></div>
+      <div class="vcard reveal"><div class="vtop"><span class="vg">🛡️</span><span class="vfilm">▶ 0:30 FILM</span></div><h3>Compliance on autopilot</h3><p>I-9s, filings, trainings, and policy gaps monitored continuously and flagged to an owner <em>before</em> anything slips.</p><button class="vwatch" onclick="openDemo('reel-compliance-autopilot.html','Compliance on Autopilot','30-second vision film')"><span class="pl">▶</span> Watch the reel</button></div>
+      <div class="vcard reveal"><div class="vtop"><span class="vg">🔮</span><span class="vfilm">▶ 0:30 FILM</span></div><h3>Predictive, not reactive</h3><p>Attrition risk, capacity gaps, and cost surprises surfaced early — so leaders act on a forecast, not a fire.</p><button class="vwatch" onclick="openDemo('reel-predictive.html','Predictive, Not Reactive','30-second vision film')"><span class="pl">▶</span> Watch the reel</button></div>
+      <div class="vcard reveal"><div class="vtop"><span class="vg">🚀</span><span class="vfilm">▶ 0:30 FILM</span></div><h3>Onboarding that runs itself</h3><p>Orchestrated, personalized journeys from offer to day 90 — coordinating IT, payroll, managers, and the new hire automatically.</p><button class="vwatch" onclick="openDemo('reel-onboarding.html','Onboarding That Runs Itself','30-second vision film')"><span class="pl">▶</span> Watch the reel</button></div>
+      <div class="vcard reveal"><div class="vtop"><span class="vg">📈</span><span class="vfilm">▶ 0:30 FILM</span></div><h3>From data to decisions</h3><p>Every headcount, engagement, and cost metric one plain-English question away — no dashboards to hunt through.</p><button class="vwatch" onclick="openDemo('reel-data-decisions.html','From Data to Decisions','30-second vision film')"><span class="pl">▶</span> Watch the reel</button></div>
+    </div>
+
+    <div class="builtcallout reveal">
+      <span class="bc-badge">✓ Roadmap → shipped</span>
+      <div class="bc-body">
+        <h3>I published a roadmap here — then I built every item on it.</h3>
+        <p>The six "what I'd build next" tools are now live and fully interactive. Explore them in <a href="#work">the work</a> above. Naturally, here's the next roadmap.</p>
+      </div>
     </div>
 
     <div class="roadmap reveal">
       <h3>🗺️ What I'd build next</h3>
-      <p class="rsub">Concrete, near-term builds — each a natural extension of what you've just explored.</p>
+      <p class="rsub">The next wave — once these are in your hands too.</p>
       <div class="rlist">
-        <div class="ritem"><div class="rn">1</div><div class="rt"><b>Policy &amp; handbook copilot</b><span>Grounded in your own documents, with citations and zero made-up answers.</span></div></div>
-        <div class="ritem"><div class="rn">2</div><div class="rt"><b>Auto-triage + suggested replies</b><span>Layered onto the Ask People ticketing system to cut response time.</span></div></div>
-        <div class="ritem"><div class="rn">3</div><div class="rt"><b>Onboarding orchestrator</b><span>Coordinates IT, payroll, and managers across the first 90 days.</span></div></div>
-        <div class="ritem"><div class="rn">4</div><div class="rt"><b>Attrition early-warning + scenario planner</b><span>Forecast risk and model headcount changes before they bite.</span></div></div>
-        <div class="ritem"><div class="rn">5</div><div class="rt"><b>Manager copilots</b><span>Draft the JD, the review, the PIP — with built-in guardrails and tone.</span></div></div>
-        <div class="ritem"><div class="rn">6</div><div class="rt"><b>Compliance calendar</b><span>Watches every deadline and nudges the right owner automatically.</span></div></div>
+        <div class="ritem"><div class="rn">1</div><div class="rt"><b>Voice &amp; Slack People Assistant</b><span>Answer questions by voice or right inside Slack — not just chat.</span></div></div>
+        <div class="ritem"><div class="rn">2</div><div class="rt"><b>Total Rewards personalizer</b><span>Per-employee comp &amp; benefits explainers and decision support at open enrollment.</span></div></div>
+        <div class="ritem"><div class="rn">3</div><div class="rt"><b>Org design simulator</b><span>Model reorgs, spans, layers and cost in real time — before you commit.</span></div></div>
+        <div class="ritem"><div class="rn">4</div><div class="rt"><b>Skills graph &amp; internal mobility</b><span>Map skills, surface gaps, and match people to gigs and open roles.</span></div></div>
+        <div class="ritem"><div class="rn">5</div><div class="rt"><b>Always-on engagement pulse</b><span>Continuous listening that clusters themes and recommends actions.</span></div></div>
+        <div class="ritem"><div class="rn">6</div><div class="rt"><b>ER &amp; investigations copilot</b><span>Consistent, documented, bias-checked guidance for employee-relations cases.</span></div></div>
       </div>
     </div>
   </div>

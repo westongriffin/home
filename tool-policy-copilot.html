@@ -1,0 +1,1072 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Policy &amp; Handbook Copilot · NewWesVentures</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; }
+  :root{
+    --ink:#0c1020; --ink2:#3a4560; --muted:#6b7794; --line:#e7e9f2;
+    --bg:#f7f8fc; --card:#ffffff; --v1:#7c3aed; --v2:#5b4ef0; --v3:#06b6d4; --pink:#db2777;
+    --grad: linear-gradient(110deg,#7c3aed,#5b4ef0 45%,#06b6d4);
+    --shadow: 0 18px 48px rgba(12,16,32,.10);
+    --shadow-sm: 0 6px 18px rgba(12,16,32,.07);
+  }
+  html, body { height:100%; }
+  body{
+    margin:0; background:var(--bg); color:var(--ink);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Inter,Helvetica,Arial,sans-serif;
+    font-size:14px; line-height:1.5; -webkit-font-smoothing:antialiased;
+    overflow:hidden;
+  }
+  .app{
+    display:flex; flex-direction:column; height:100vh; min-height:0;
+  }
+
+  /* ===== Top app bar ===== */
+  .topbar{
+    flex:0 0 auto; display:flex; align-items:center; gap:14px;
+    padding:12px 20px; background:var(--card); border-bottom:1px solid var(--line);
+    box-shadow:0 1px 0 rgba(12,16,32,.02);
+  }
+  .brand{ display:flex; align-items:center; gap:11px; min-width:0; }
+  .logo{
+    width:34px; height:34px; border-radius:10px; background:var(--grad);
+    display:grid; place-items:center; color:#fff; flex:0 0 auto;
+    box-shadow:0 6px 16px rgba(91,78,240,.35);
+  }
+  .logo svg{ width:19px; height:19px; display:block; }
+  .brand-text{ display:flex; flex-direction:column; line-height:1.15; min-width:0; }
+  .brand-name{ font-weight:700; font-size:15px; letter-spacing:-.01em; white-space:nowrap; }
+  .brand-sub{ font-size:11px; color:var(--muted); white-space:nowrap; }
+  .demo-badge{
+    font-size:11px; font-weight:700; letter-spacing:.02em; color:var(--v2);
+    background:rgba(91,78,240,.10); border:1px solid rgba(91,78,240,.22);
+    padding:4px 10px; border-radius:999px; white-space:nowrap;
+  }
+  .spacer{ flex:1 1 auto; }
+  .user-chip{
+    display:flex; align-items:center; gap:9px; padding:5px 12px 5px 6px;
+    border:1px solid var(--line); border-radius:999px; background:#fff; box-shadow:var(--shadow-sm);
+    white-space:nowrap;
+  }
+  .avatar{
+    width:28px; height:28px; border-radius:50%; flex:0 0 auto; color:#fff;
+    display:grid; place-items:center; font-weight:700; font-size:12px;
+    background:linear-gradient(135deg,#7c3aed,#06b6d4);
+  }
+  .user-meta{ display:flex; flex-direction:column; line-height:1.15; }
+  .user-name{ font-weight:650; font-size:13px; }
+  .user-org{ font-size:11px; color:var(--muted); }
+
+  /* ===== Body: three panes ===== */
+  .body{ flex:1 1 auto; display:flex; min-height:0; position:relative; }
+
+  /* LEFT rail — Sources */
+  .rail{
+    flex:0 0 268px; width:268px; background:var(--card); border-right:1px solid var(--line);
+    display:flex; flex-direction:column; min-height:0;
+  }
+  .rail-head{ padding:18px 18px 12px; }
+  .rail-title{ font-size:12px; font-weight:700; letter-spacing:.06em; text-transform:uppercase; color:var(--muted); margin:0 0 10px; }
+  .grounded-badge{
+    display:flex; gap:10px; align-items:flex-start; padding:12px;
+    border-radius:12px; background:linear-gradient(180deg,#faf9ff,#f3f1ff);
+    border:1px solid rgba(124,58,237,.16);
+  }
+  .gb-icon{
+    width:30px; height:30px; border-radius:9px; flex:0 0 auto; color:#fff;
+    background:var(--grad); display:grid; place-items:center;
+  }
+  .gb-icon svg{ width:17px; height:17px; }
+  .gb-text strong{ display:block; font-size:12.5px; color:var(--ink); line-height:1.3; }
+  .gb-text span{ font-size:11px; color:var(--muted); }
+  .rail-list{ flex:1 1 auto; overflow:auto; padding:6px 12px 16px; }
+  .rail-list .lbl{ font-size:11px; font-weight:700; letter-spacing:.05em; text-transform:uppercase; color:var(--muted); padding:8px 6px 6px; }
+  .src{
+    display:flex; align-items:center; gap:10px; padding:9px 10px; border-radius:10px;
+    cursor:pointer; color:var(--ink2); font-size:13px; font-weight:500;
+    border:1px solid transparent; transition:background .15s ease, border-color .15s ease, color .15s ease;
+  }
+  .src:hover{ background:#f6f5fe; color:var(--ink); }
+  .src.active{ background:#f1efff; border-color:rgba(124,58,237,.2); color:var(--v2); font-weight:650; }
+  .src .dot{ width:9px; height:9px; border-radius:3px; flex:0 0 auto; background:var(--grad); opacity:.85; }
+  .src .pg{ margin-left:auto; font-size:11px; color:var(--muted); font-weight:500; }
+
+  /* CENTER — chat */
+  .center{ flex:1 1 auto; display:flex; flex-direction:column; min-height:0; min-width:0; background:var(--bg); }
+  .chat-head{
+    flex:0 0 auto; padding:14px 22px; border-bottom:1px solid var(--line);
+    background:rgba(247,248,252,.85); backdrop-filter:saturate(1.4) blur(4px);
+    display:flex; align-items:center; gap:12px;
+  }
+  .ch-title{ font-weight:700; font-size:15px; letter-spacing:-.01em; }
+  .ch-sub{ font-size:12px; color:var(--muted); }
+  .ch-pill{
+    margin-left:auto; font-size:11px; font-weight:650; color:#0a7d52;
+    background:rgba(16,185,129,.12); border:1px solid rgba(16,185,129,.28);
+    padding:4px 10px; border-radius:999px; display:flex; align-items:center; gap:6px;
+  }
+  .ch-pill .live{ width:7px; height:7px; border-radius:50%; background:#10b981; box-shadow:0 0 0 0 rgba(16,185,129,.6); animation:pulse 2s infinite; }
+  @keyframes pulse{ 0%{box-shadow:0 0 0 0 rgba(16,185,129,.5)} 70%{box-shadow:0 0 0 7px rgba(16,185,129,0)} 100%{box-shadow:0 0 0 0 rgba(16,185,129,0)} }
+
+  .thread{ flex:1 1 auto; overflow:auto; padding:22px 22px 8px; scroll-behavior:smooth; }
+  .thread-inner{ max-width:760px; margin:0 auto; }
+
+  .msg{ display:flex; gap:12px; margin-bottom:20px; align-items:flex-start; }
+  .msg .who{
+    width:32px; height:32px; border-radius:9px; flex:0 0 auto; display:grid; place-items:center;
+    font-weight:700; font-size:12px; color:#fff;
+  }
+  .msg.user{ flex-direction:row-reverse; }
+  .msg.user .who{ background:linear-gradient(135deg,#1f2747,#3a4560); }
+  .msg.bot .who{ background:var(--grad); }
+  .bubble{
+    max-width:80%; padding:13px 16px; border-radius:14px; font-size:14px; line-height:1.55;
+    box-shadow:var(--shadow-sm);
+  }
+  .msg.user .bubble{ background:#1f2747; color:#fff; border-bottom-right-radius:5px; }
+  .msg.bot .bubble{ background:var(--card); color:var(--ink); border:1px solid var(--line); border-bottom-left-radius:5px; }
+  .bubble p{ margin:0 0 9px; }
+  .bubble p:last-child{ margin-bottom:0; }
+  .bubble ul{ margin:6px 0 9px; padding-left:20px; }
+  .bubble li{ margin:3px 0; }
+  .bubble strong{ font-weight:680; }
+
+  /* citation chip */
+  .cite{
+    display:inline-flex; align-items:center; gap:5px; vertical-align:baseline;
+    font-size:11.5px; font-weight:650; color:var(--v2);
+    background:rgba(91,78,240,.09); border:1px solid rgba(91,78,240,.26);
+    padding:1px 8px; border-radius:999px; cursor:pointer; margin:0 1px;
+    transition:background .14s ease, transform .14s ease, box-shadow .14s ease; line-height:1.7;
+  }
+  .cite:hover{ background:rgba(91,78,240,.18); box-shadow:0 3px 9px rgba(91,78,240,.22); }
+  .cite:active{ transform:translateY(1px); }
+  .cite svg{ width:11px; height:11px; flex:0 0 auto; }
+
+  /* grounded footer line under answers */
+  .grounded-foot{
+    margin-top:11px; padding-top:10px; border-top:1px dashed var(--line);
+    font-size:11.5px; color:var(--muted); display:flex; align-items:center; gap:7px;
+  }
+  .grounded-foot .chk{ color:#10b981; display:inline-flex; }
+  .grounded-foot svg{ width:13px; height:13px; }
+
+  /* no-match callout */
+  .nomatch{ border:1px solid rgba(219,39,119,.28); background:linear-gradient(180deg,#fff,#fff5fa); }
+  .nomatch-head{ display:flex; align-items:center; gap:8px; font-weight:700; color:var(--pink); margin-bottom:6px; font-size:13.5px; }
+  .nomatch-head svg{ width:16px; height:16px; }
+  .route-btn{
+    margin-top:11px; display:inline-flex; align-items:center; gap:8px;
+    font-size:13px; font-weight:650; color:#fff; background:var(--grad);
+    border:none; padding:9px 15px; border-radius:10px; cursor:pointer;
+    box-shadow:0 8px 20px rgba(124,58,237,.30); transition:transform .14s ease, box-shadow .14s ease;
+  }
+  .route-btn:hover{ transform:translateY(-1px); box-shadow:0 12px 26px rgba(124,58,237,.38); }
+  .route-btn:active{ transform:translateY(0); }
+  .route-btn:disabled{ opacity:.65; cursor:default; transform:none; box-shadow:none; }
+  .route-btn svg{ width:15px; height:15px; }
+  .routed-note{ margin-top:10px; font-size:12.5px; color:#0a7d52; display:flex; align-items:center; gap:7px; font-weight:600; }
+  .routed-note svg{ width:15px; height:15px; }
+
+  /* searching indicator */
+  .searching{ display:flex; align-items:center; gap:9px; color:var(--muted); font-size:13px; }
+  .dots{ display:inline-flex; gap:4px; }
+  .dots i{ width:6px; height:6px; border-radius:50%; background:var(--v2); display:inline-block; animation:bob 1.1s infinite ease-in-out; }
+  .dots i:nth-child(2){ animation-delay:.18s; }
+  .dots i:nth-child(3){ animation-delay:.36s; }
+  @keyframes bob{ 0%,80%,100%{ transform:translateY(0); opacity:.4 } 40%{ transform:translateY(-5px); opacity:1 } }
+  .caret{ display:inline-block; width:2px; height:1.05em; background:var(--v2); vertical-align:text-bottom; margin-left:1px; animation:blink 1s steps(2) infinite; border-radius:2px; }
+  @keyframes blink{ 50%{ opacity:0 } }
+
+  /* composer */
+  .composer{ flex:0 0 auto; padding:12px 22px 16px; background:var(--bg); border-top:1px solid var(--line); }
+  .composer-inner{ max-width:760px; margin:0 auto; }
+  .chips{ display:flex; flex-wrap:wrap; gap:8px; margin-bottom:10px; }
+  .chip{
+    font-size:12.5px; font-weight:600; color:var(--ink2); background:var(--card);
+    border:1px solid var(--line); padding:7px 12px; border-radius:999px; cursor:pointer;
+    box-shadow:var(--shadow-sm); transition:transform .14s ease, border-color .14s ease, color .14s ease, box-shadow .14s ease;
+    display:inline-flex; align-items:center; gap:6px;
+  }
+  .chip:hover{ border-color:rgba(124,58,237,.4); color:var(--v2); transform:translateY(-1px); box-shadow:0 8px 18px rgba(124,58,237,.16); }
+  .chip:disabled{ opacity:.5; cursor:default; transform:none; box-shadow:none; }
+  .chip .q{ color:var(--v2); font-weight:800; }
+  .input-row{
+    display:flex; align-items:flex-end; gap:10px; background:var(--card);
+    border:1px solid var(--line); border-radius:14px; padding:7px 7px 7px 16px; box-shadow:var(--shadow-sm);
+    transition:border-color .15s ease, box-shadow .15s ease;
+  }
+  .input-row:focus-within{ border-color:rgba(124,58,237,.45); box-shadow:0 0 0 3px rgba(124,58,237,.12); }
+  .input-row textarea{
+    flex:1 1 auto; border:none; outline:none; resize:none; background:transparent;
+    font-family:inherit; font-size:14px; color:var(--ink); line-height:1.5;
+    max-height:96px; padding:6px 0;
+  }
+  .input-row textarea::placeholder{ color:var(--muted); }
+  .send{
+    flex:0 0 auto; width:38px; height:38px; border-radius:10px; border:none; cursor:pointer;
+    background:var(--grad); color:#fff; display:grid; place-items:center;
+    box-shadow:0 8px 18px rgba(124,58,237,.30); transition:transform .14s ease, opacity .14s ease;
+  }
+  .send:hover{ transform:translateY(-1px); }
+  .send:disabled{ opacity:.45; cursor:default; transform:none; }
+  .send svg{ width:18px; height:18px; }
+  .composer-foot{ text-align:center; margin-top:9px; font-size:11px; color:var(--muted); }
+  .composer-foot strong{ color:var(--ink2); font-weight:600; }
+
+  /* RIGHT — source viewer (slides in) */
+  .viewer{
+    position:absolute; top:0; right:0; height:100%; width:380px; max-width:88vw;
+    background:var(--card); border-left:1px solid var(--line); box-shadow:-24px 0 48px rgba(12,16,32,.10);
+    transform:translateX(102%); transition:transform .34s cubic-bezier(.4,.0,.2,1);
+    display:flex; flex-direction:column; z-index:20;
+  }
+  .viewer.open{ transform:translateX(0); }
+  .viewer-head{
+    flex:0 0 auto; padding:16px 18px; border-bottom:1px solid var(--line);
+    display:flex; align-items:flex-start; gap:12px;
+  }
+  .vh-icon{ width:32px; height:32px; border-radius:9px; background:var(--grad); color:#fff; display:grid; place-items:center; flex:0 0 auto; }
+  .vh-icon svg{ width:17px; height:17px; }
+  .vh-text{ flex:1 1 auto; min-width:0; }
+  .vh-kicker{ font-size:11px; font-weight:700; letter-spacing:.05em; text-transform:uppercase; color:var(--muted); }
+  .vh-title{ font-weight:700; font-size:14.5px; letter-spacing:-.01em; line-height:1.25; margin-top:2px; }
+  .vh-meta{ font-size:11.5px; color:var(--muted); margin-top:3px; }
+  .vclose{
+    flex:0 0 auto; width:30px; height:30px; border-radius:8px; border:1px solid var(--line);
+    background:#fff; cursor:pointer; color:var(--muted); display:grid; place-items:center; transition:background .14s ease, color .14s ease;
+  }
+  .vclose:hover{ background:#f4f3fb; color:var(--ink); }
+  .vclose svg{ width:15px; height:15px; }
+  .viewer-body{ flex:1 1 auto; overflow:auto; padding:16px 18px 22px; }
+  .page-tag{
+    display:inline-flex; align-items:center; gap:6px; font-size:11px; font-weight:650; color:var(--v2);
+    background:rgba(91,78,240,.09); border:1px solid rgba(91,78,240,.22); padding:3px 9px; border-radius:7px; margin-bottom:14px;
+  }
+  .passage{
+    font-size:13px; line-height:1.7; color:var(--ink2);
+    font-family:ui-serif, Georgia, "Times New Roman", serif;
+  }
+  .passage h4{
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+    font-size:14px; color:var(--ink); margin:0 0 4px; letter-spacing:-.01em;
+  }
+  .passage .secno{
+    font-family:-apple-system,BlinkMacSystemFont,sans-serif;
+    font-size:11px; font-weight:700; color:var(--muted); letter-spacing:.04em; margin-bottom:12px;
+  }
+  .passage p{ margin:0 0 11px; }
+  .passage .hl{
+    background:linear-gradient(180deg, rgba(124,58,237,.0) 55%, rgba(124,58,237,.20) 55%);
+    border-radius:2px; padding:1px 2px; box-shadow:inset 0 0 0 1px rgba(124,58,237,.0);
+    color:var(--ink); font-weight:550;
+  }
+  .viewer-foot{
+    flex:0 0 auto; padding:12px 18px; border-top:1px solid var(--line); background:#fbfbfe;
+    font-size:11px; color:var(--muted); display:flex; align-items:center; gap:7px;
+  }
+  .viewer-foot svg{ width:13px; height:13px; color:#10b981; flex:0 0 auto; }
+
+  .scrim{
+    position:absolute; inset:0; background:rgba(12,16,32,.18); opacity:0; pointer-events:none;
+    transition:opacity .3s ease; z-index:15;
+  }
+  .scrim.show{ opacity:1; pointer-events:auto; }
+
+  /* byline */
+  .byline{
+    position:absolute; left:50%; bottom:6px; transform:translateX(-50%);
+    font-size:10.5px; color:#aab2c8; white-space:nowrap; pointer-events:none; z-index:5;
+  }
+
+  /* scrollbars */
+  .rail-list::-webkit-scrollbar, .thread::-webkit-scrollbar, .viewer-body::-webkit-scrollbar{ width:9px; }
+  .rail-list::-webkit-scrollbar-thumb, .thread::-webkit-scrollbar-thumb, .viewer-body::-webkit-scrollbar-thumb{
+    background:#dcdfeb; border-radius:9px; border:2px solid transparent; background-clip:content-box;
+  }
+  .rail-list::-webkit-scrollbar-thumb:hover, .thread::-webkit-scrollbar-thumb:hover, .viewer-body::-webkit-scrollbar-thumb:hover{ background:#c7cbdc; background-clip:content-box; }
+
+  /* fade-in for new messages */
+  .reveal{ animation:rise .34s cubic-bezier(.2,.7,.2,1) both; }
+  @keyframes rise{ from{ opacity:0; transform:translateY(8px) } to{ opacity:1; transform:none } }
+
+  /* responsive */
+  @media (max-width:980px){
+    .rail{ flex-basis:230px; width:230px; }
+    .viewer{ width:340px; }
+  }
+  @media (max-width:820px){
+    .rail{ display:none; }
+    .brand-sub{ display:none; }
+  }
+  @media (max-width:760px){
+    .user-org{ display:none; }
+    .ch-sub{ display:none; }
+    .viewer{ width:100%; max-width:100vw; }
+  }
+</style>
+</head>
+<body>
+<div class="app" id="app">
+  <!-- ===== Top bar ===== -->
+  <header class="topbar">
+    <div class="brand">
+      <div class="logo" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none"><path d="M6 3h8l4 4v14a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1z" stroke="#fff" stroke-width="1.7" stroke-linejoin="round"/><path d="M13 3v5h5" stroke="#fff" stroke-width="1.7" stroke-linejoin="round"/><path d="M8.5 13h7M8.5 16.5h4.5" stroke="#fff" stroke-width="1.7" stroke-linecap="round"/></svg>
+      </div>
+      <div class="brand-text">
+        <span class="brand-name">Policy &amp; Handbook Copilot</span>
+        <span class="brand-sub">NewWesVentures · People Services</span>
+      </div>
+    </div>
+    <span class="demo-badge">DEMO · mock data</span>
+    <div class="spacer"></div>
+    <div class="user-chip">
+      <div class="avatar">WG</div>
+      <div class="user-meta">
+        <span class="user-name">Wes Griffin</span>
+        <span class="user-org">NewWesVentures</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- ===== Body ===== -->
+  <div class="body">
+    <!-- LEFT rail -->
+    <aside class="rail">
+      <div class="rail-head">
+        <h2 class="rail-title">Sources</h2>
+        <div class="grounded-badge">
+          <div class="gb-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none"><path d="M12 3l7 3v5c0 4.4-3 8.3-7 9.5C8 19.3 5 15.4 5 11V6l7-3z" stroke="#fff" stroke-width="1.7" stroke-linejoin="round"/><path d="M9 11.5l2 2 4-4.5" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </div>
+          <div class="gb-text">
+            <strong>Grounded in:</strong>
+            <span>Employee Handbook v2026.1 · 142 pages</span>
+          </div>
+        </div>
+      </div>
+      <div class="rail-list" id="railList">
+        <div class="lbl">Handbook sections</div>
+        <!-- sources injected -->
+      </div>
+    </aside>
+
+    <!-- CENTER chat -->
+    <main class="center">
+      <div class="chat-head">
+        <div>
+          <div class="ch-title">Ask the Handbook</div>
+          <div class="ch-sub">Answers come only from the Employee Handbook — every claim is cited.</div>
+        </div>
+        <div class="ch-pill"><span class="live"></span> Grounded mode</div>
+      </div>
+
+      <div class="thread" id="thread">
+        <div class="thread-inner" id="threadInner">
+          <!-- messages injected -->
+        </div>
+      </div>
+
+      <div class="composer">
+        <div class="composer-inner">
+          <div class="chips" id="chips"><!-- chips injected --></div>
+          <div class="input-row">
+            <textarea id="input" rows="1" placeholder="Ask a policy question — e.g. “How much PTO can I roll over?”"></textarea>
+            <button class="send" id="send" title="Send" aria-label="Send">
+              <svg viewBox="0 0 24 24" fill="none"><path d="M4 12l16-8-6 16-3-7-7-1z" stroke="#fff" stroke-width="1.8" stroke-linejoin="round" stroke-linecap="round"/></svg>
+            </button>
+          </div>
+          <div class="composer-foot">Copilot only answers from <strong>Employee Handbook v2026.1</strong>. It won’t guess outside the handbook.</div>
+        </div>
+      </div>
+    </main>
+
+    <!-- scrim + RIGHT source viewer -->
+    <div class="scrim" id="scrim"></div>
+    <aside class="viewer" id="viewer" aria-hidden="true">
+      <div class="viewer-head">
+        <div class="vh-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none"><path d="M5 4.5A1.5 1.5 0 0 1 6.5 3H17a1 1 0 0 1 1 1v15.5a1.5 1.5 0 0 1-1.5 1.5H6.5A1.5 1.5 0 0 1 5 19.5v-15z" stroke="#fff" stroke-width="1.6" stroke-linejoin="round"/><path d="M8.5 8h6M8.5 11h6M8.5 14h4" stroke="#fff" stroke-width="1.6" stroke-linecap="round"/></svg>
+        </div>
+        <div class="vh-text">
+          <div class="vh-kicker">Source viewer</div>
+          <div class="vh-title" id="vTitle">Select a citation</div>
+          <div class="vh-meta" id="vMeta">Employee Handbook v2026.1</div>
+        </div>
+        <button class="vclose" id="vClose" title="Close" aria-label="Close source viewer">
+          <svg viewBox="0 0 24 24" fill="none"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+        </button>
+      </div>
+      <div class="viewer-body" id="vBody"></div>
+      <div class="viewer-foot">
+        <svg viewBox="0 0 24 24" fill="none"><path d="M5 12l4 4 10-11" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        Verbatim passage from the handbook — highlighted lines are the cited source.
+      </div>
+    </aside>
+  </div>
+
+  <div class="byline">Created by Wes Griffin · Designed &amp; built with AI</div>
+</div>
+
+<script>
+(function(){
+  "use strict";
+
+  /* ---------- tiny helpers ---------- */
+  function el(tag, cls, html){
+    var n = document.createElement(tag);
+    if(cls) n.className = cls;
+    if(html != null) n.innerHTML = html;
+    return n;
+  }
+  function $(id){ return document.getElementById(id); }
+  function esc(s){ return String(s).replace(/[&<>"]/g, function(c){
+    return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]; }); }
+
+  /* ---------- data: handbook passages (mock, verbatim) ---------- */
+  // Each passage: title, secNo (label), page, html paragraphs with <span class="hl"> on cited lines.
+  var PASSAGES = {
+    "pto-rollover": {
+      title:"Paid Time Off — Carryover & Accrual", secNo:"PTO Policy §4.2", page:"p. 28",
+      section:"pto",
+      body:
+        "<p>Full-time employees accrue Paid Time Off (PTO) on a monthly basis according to tenure, beginning on the first day of employment.</p>"+
+        "<p class=\"hl\">Employees may carry over a maximum of 40 hours (5 days) of unused PTO into the following calendar year. Any balance above 40 hours as of December 31 is forfeited and does not pay out.</p>"+
+        "<p>Carried-over hours must be used by March 31 of the new year. The Company encourages managers to help employees schedule time off well before these deadlines.</p>"
+    },
+    "pto-accrual": {
+      title:"Paid Time Off — Accrual Rates", secNo:"PTO Policy §4.1", page:"p. 27",
+      section:"pto",
+      body:
+        "<p>PTO accrues each month and is available for use as it is earned.</p>"+
+        "<p class=\"hl\">Employees with 0–2 years of service accrue 15 days of PTO per year; 3–5 years accrue 20 days; and 6+ years accrue 25 days per year.</p>"+
+        "<p>Accrual is prorated for part-time employees based on scheduled hours.</p>"
+    },
+    "parental": {
+      title:"Parental Leave", secNo:"Parental Leave §6.1", page:"p. 41",
+      section:"parental",
+      body:
+        "<p>NewWesVentures provides paid parental leave to support employees welcoming a new child through birth, adoption, or foster placement.</p>"+
+        "<p class=\"hl\">Eligible employees receive 16 weeks of fully paid parental leave. Eligibility begins after 6 months of continuous employment, and leave applies equally to all new parents regardless of gender or caregiver role.</p>"+
+        "<p>Leave may be taken continuously or, with manager approval, intermittently within the first 12 months following the qualifying event.</p>"
+    },
+    "remote-stipend": {
+      title:"Remote & Hybrid Work — Home Office Stipend", secNo:"Remote Work §5.3", page:"p. 35",
+      section:"remote",
+      body:
+        "<p>Employees in remote or hybrid roles are eligible for support toward home-office and connectivity costs.</p>"+
+        "<p class=\"hl\">The Company provides a remote work stipend of $75 per month to cover internet and home-office expenses. The stipend is applied automatically to each eligible employee’s paycheck and requires no receipts.</p>"+
+        "<p>New remote employees are also eligible for a one-time $500 equipment allowance during their first 30 days.</p>"
+    },
+    "remote-eligibility": {
+      title:"Remote & Hybrid Work — Eligibility", secNo:"Remote Work §5.1", page:"p. 33",
+      section:"remote",
+      body:
+        "<p>Remote and hybrid arrangements are available where role responsibilities allow and with manager approval.</p>"+
+        "<p class=\"hl\">Hybrid employees are expected to work on-site at least 2 days per week, typically Tuesday and Thursday, to support collaboration.</p>"+
+        "<p>Fully remote arrangements are reviewed annually and documented in the employee’s remote work agreement.</p>"
+    },
+    "expense-approval": {
+      title:"Expenses & Travel — Approval Thresholds", secNo:"Expense Policy §8.4", page:"p. 58",
+      section:"expenses",
+      body:
+        "<p>All business expenses must be reasonable, necessary, and submitted with itemized receipts through the expense system within 30 days.</p>"+
+        "<p class=\"hl\">Any single expense of $500 or more requires advance manager approval before it is incurred. Expenses under $500 may be submitted for reimbursement without pre-approval.</p>"+
+        "<p>Expenses of $5,000 or more additionally require Finance Director sign-off. Reimbursements are processed within two pay cycles of approval.</p>"
+    },
+    "travel-perdiem": {
+      title:"Expenses & Travel — Meal Per Diem", secNo:"Expense Policy §8.6", page:"p. 60",
+      section:"expenses",
+      body:
+        "<p>When traveling on business overnight, employees may claim meals under the standard per-diem schedule in lieu of itemized meal receipts.</p>"+
+        "<p class=\"hl\">The domestic meal per diem is $65 per full travel day, allocated as $15 breakfast, $20 lunch, and $30 dinner.</p>"+
+        "<p>International per diems follow the published city-specific rates in the travel portal.</p>"
+    },
+    "holidays": {
+      title:"Company Holidays", secNo:"Holidays §9.1", page:"p. 64",
+      section:"holidays",
+      body:
+        "<p>The Company observes a set of paid holidays each calendar year. When a holiday falls on a weekend, it is observed on the nearest weekday.</p>"+
+        "<p class=\"hl\">NewWesVentures observes 11 paid company holidays per year. In addition, every employee receives 2 floating holidays to use for personal or cultural observances.</p>"+
+        "<p>The current-year holiday calendar is published each January on the People Services portal.</p>"
+    },
+    "bereavement": {
+      title:"Bereavement Leave", secNo:"Bereavement §7.2", page:"p. 49",
+      section:"bereavement",
+      body:
+        "<p>The Company provides paid bereavement leave to employees following the death of a family member.</p>"+
+        "<p class=\"hl\">Employees may take up to 5 days of paid bereavement leave for an immediate family member, and up to 2 days for an extended family member.</p>"+
+        "<p>“Immediate family” includes a spouse or domestic partner, child, parent, sibling, grandparent, or grandchild. Additional unpaid time may be arranged with your manager.</p>"
+    },
+    "benefits-401k": {
+      title:"Benefits — 401(k) Match", secNo:"Benefits §10.3", page:"p. 71",
+      section:"benefits",
+      body:
+        "<p>Eligible employees may contribute to the Company 401(k) plan beginning on their first day of employment.</p>"+
+        "<p class=\"hl\">The Company matches 100% of employee 401(k) contributions up to 4% of eligible pay. Company matching contributions vest immediately.</p>"+
+        "<p>Annual contribution limits follow IRS guidelines. Plan details are available in the benefits portal.</p>"
+    },
+    "benefits-medical": {
+      title:"Benefits — Medical Coverage", secNo:"Benefits §10.1", page:"p. 69",
+      section:"benefits",
+      body:
+        "<p>NewWesVentures offers medical, dental, and vision coverage to full-time employees and their eligible dependents.</p>"+
+        "<p class=\"hl\">Medical coverage begins on the first of the month following your start date. The Company pays 80% of the premium for employee-only coverage and 70% for dependent coverage.</p>"+
+        "<p>Open enrollment is held each November, with changes effective January 1.</p>"
+    }
+  };
+
+  /* ---------- handbook sections (left rail) ---------- */
+  var SECTIONS = [
+    { id:"pto",        name:"PTO & Time Off",      pg:"§4",  q:"How much PTO can I roll over?",                  key:"pto-rollover" },
+    { id:"parental",   name:"Parental Leave",      pg:"§6",  q:"How many weeks of parental leave?",              key:"parental" },
+    { id:"remote",     name:"Remote & Hybrid Work",pg:"§5",  q:"What’s the remote work stipend?",                key:"remote-stipend" },
+    { id:"expenses",   name:"Expenses & Travel",   pg:"§8",  q:"What’s the expense approval limit?",             key:"expense-approval" },
+    { id:"benefits",   name:"Benefits",            pg:"§10", q:"Does the company match my 401(k)?",              key:"benefits-401k" },
+    { id:"conduct",    name:"Code of Conduct",     pg:"§11", q:"Where do I report a code of conduct concern?",   key:"conduct" },
+    { id:"bereavement",name:"Bereavement",         pg:"§7",  q:"Bereavement leave policy?",                      key:"bereavement" },
+    { id:"holidays",   name:"Holidays",            pg:"§9",  q:"How many paid holidays?",                        key:"holidays" }
+  ];
+
+  /* ---------- answers (pre-authored, grounded) ---------- */
+  // tokens: array of strings; {cite:key,label} objects become citation chips during streaming.
+  function A(parts){ return parts; }
+  var ANSWERS = [
+    {
+      key:"pto-rollover",
+      kw:["roll over","rollover","carry over","carryover","carry-over","pto roll","unused pto","pto carry","lose my pto","forfeit"],
+      section:"pto",
+      tokens:[
+        "You can carry over up to ",
+        {b:"40 hours (5 days)"},
+        " of unused PTO into the next calendar year — anything above that as of December 31 is forfeited and isn’t paid out ",
+        {cite:"pto-rollover", label:"PTO Policy §4.2"},
+        ". Carried-over hours must be used by ",
+        {b:"March 31"},
+        " of the new year ",
+        {cite:"pto-rollover", label:"PTO Policy §4.2"},
+        "."
+      ]
+    },
+    {
+      key:"pto-accrual",
+      kw:["how much pto","pto do i get","accrue pto","pto accrual","days of pto","earn pto","pto per year","vacation days"],
+      section:"pto",
+      tokens:[
+        "PTO accrues monthly based on tenure: ",
+        {b:"15 days/yr"}, " at 0–2 years, ",
+        {b:"20 days/yr"}, " at 3–5 years, and ",
+        {b:"25 days/yr"}, " at 6+ years ",
+        {cite:"pto-accrual", label:"PTO Policy §4.1"},
+        ". It’s available to use as you earn it."
+      ]
+    },
+    {
+      key:"parental",
+      kw:["parental leave","paternity","maternity","weeks of leave","new child","baby","adoption leave","parental"],
+      section:"parental",
+      tokens:[
+        "NewWesVentures offers ",
+        {b:"16 weeks of fully paid parental leave"},
+        " to all new parents — birth, adoption, or foster — regardless of gender or caregiver role ",
+        {cite:"parental", label:"Parental Leave §6.1"},
+        ". You’re eligible after ",
+        {b:"6 months"},
+        " of continuous employment, and it can be taken continuously or intermittently within the first 12 months ",
+        {cite:"parental", label:"Parental Leave §6.1"},
+        "."
+      ]
+    },
+    {
+      key:"remote-stipend",
+      kw:["remote stipend","work stipend","home office stipend","internet stipend","wfh stipend","stipend","remote work stipend"],
+      section:"remote",
+      tokens:[
+        "The remote work stipend is ",
+        {b:"$75 per month"},
+        " for internet and home-office costs — applied automatically to your paycheck with no receipts needed ",
+        {cite:"remote-stipend", label:"Remote Work §5.3"},
+        ". New remote hires also get a one-time ",
+        {b:"$500 equipment allowance"},
+        " in their first 30 days ",
+        {cite:"remote-stipend", label:"Remote Work §5.3"},
+        "."
+      ]
+    },
+    {
+      key:"remote-eligibility",
+      kw:["days in office","in office","on-site","onsite","hybrid days","work from home days","how many days","come in","in the office"],
+      section:"remote",
+      tokens:[
+        "Hybrid employees are expected on-site ",
+        {b:"at least 2 days per week"},
+        " — typically Tuesday and Thursday — to support collaboration ",
+        {cite:"remote-eligibility", label:"Remote Work §5.1"},
+        ". Fully remote arrangements are reviewed annually and documented in your remote work agreement ",
+        {cite:"remote-eligibility", label:"Remote Work §5.1"},
+        "."
+      ]
+    },
+    {
+      key:"expense-approval",
+      kw:["expense approval","approval limit","expense limit","manager approval","approval threshold","expense over","need approval","pre-approval","preapproval"],
+      section:"expenses",
+      tokens:[
+        "Any single expense of ",
+        {b:"$500 or more"},
+        " needs advance manager approval before you incur it; anything under $500 can be submitted without pre-approval ",
+        {cite:"expense-approval", label:"Expense Policy §8.4"},
+        ". Expenses of ",
+        {b:"$5,000+"},
+        " also require Finance Director sign-off ",
+        {cite:"expense-approval", label:"Expense Policy §8.4"},
+        "."
+      ]
+    },
+    {
+      key:"travel-perdiem",
+      kw:["per diem","perdiem","meal allowance","travel meals","meals while traveling","daily meal","food on travel"],
+      section:"expenses",
+      tokens:[
+        "The domestic meal per diem is ",
+        {b:"$65 per full travel day"},
+        " — split as $15 breakfast, $20 lunch, and $30 dinner ",
+        {cite:"travel-perdiem", label:"Expense Policy §8.6"},
+        ". International travel follows the city-specific rates in the travel portal ",
+        {cite:"travel-perdiem", label:"Expense Policy §8.6"},
+        "."
+      ]
+    },
+    {
+      key:"holidays",
+      kw:["paid holidays","how many holidays","company holidays","holidays per year","floating holiday","holiday","holidays"],
+      section:"holidays",
+      tokens:[
+        "There are ",
+        {b:"11 paid company holidays"},
+        " per year, plus ",
+        {b:"2 floating holidays"},
+        " for personal or cultural observances ",
+        {cite:"holidays", label:"Holidays §9.1"},
+        ". When a holiday lands on a weekend, it’s observed on the nearest weekday ",
+        {cite:"holidays", label:"Holidays §9.1"},
+        "."
+      ]
+    },
+    {
+      key:"bereavement",
+      kw:["bereavement","grief leave","death in family","funeral leave","passed away","loss of a family","bereavement leave"],
+      section:"bereavement",
+      tokens:[
+        "You may take up to ",
+        {b:"5 days of paid bereavement leave"},
+        " for an immediate family member, and up to ",
+        {b:"2 days"},
+        " for an extended family member ",
+        {cite:"bereavement", label:"Bereavement §7.2"},
+        ". Immediate family covers a spouse or domestic partner, child, parent, sibling, grandparent, or grandchild ",
+        {cite:"bereavement", label:"Bereavement §7.2"},
+        "."
+      ]
+    },
+    {
+      key:"benefits-401k",
+      kw:["401k","401(k)","retirement match","company match","matching","401 k","retirement plan"],
+      section:"benefits",
+      tokens:[
+        "The Company matches ",
+        {b:"100% of your 401(k) contributions up to 4% of eligible pay"},
+        ", and the match ",
+        {b:"vests immediately"},
+        " ",
+        {cite:"benefits-401k", label:"Benefits §10.3"},
+        ". You can start contributing on your first day ",
+        {cite:"benefits-401k", label:"Benefits §10.3"},
+        "."
+      ]
+    },
+    {
+      key:"benefits-medical",
+      kw:["medical coverage","health insurance","when does coverage","benefits start","medical start","health coverage","insurance start","dental","vision"],
+      section:"benefits",
+      tokens:[
+        "Medical coverage starts on the ",
+        {b:"first of the month after your start date"},
+        ". The Company pays ",
+        {b:"80% of the premium for employee-only"},
+        " coverage and 70% for dependents ",
+        {cite:"benefits-medical", label:"Benefits §10.1"},
+        ". Open enrollment is each November, effective January 1 ",
+        {cite:"benefits-medical", label:"Benefits §10.1"},
+        "."
+      ]
+    },
+    {
+      key:"conduct",
+      kw:["code of conduct","report a concern","report concern","ethics","whistleblow","misconduct","report misconduct","conduct concern","hotline"],
+      section:"conduct",
+      // no passage object intentionally? -> we DO provide a passage below via inline def
+      tokens:[
+        "You can report a Code of Conduct concern to your manager, to People Services, or anonymously through the ",
+        {b:"Ethics Hotline"},
+        ", which is available 24/7 ",
+        {cite:"conduct", label:"Code of Conduct §11.5"},
+        ". The Company prohibits retaliation against anyone who raises a concern in good faith ",
+        {cite:"conduct", label:"Code of Conduct §11.5"},
+        "."
+      ]
+    }
+  ];
+
+  // passage for conduct (added here to keep PASSAGES block tidy)
+  PASSAGES["conduct"] = {
+    title:"Code of Conduct — Reporting & Non-Retaliation", secNo:"Code of Conduct §11.5", page:"p. 81",
+    section:"conduct",
+    body:
+      "<p>Every employee shares responsibility for upholding the Company’s standards of ethical conduct.</p>"+
+      "<p class=\"hl\">Concerns may be reported to your manager, to People Services, or anonymously through the Ethics Hotline, which is available 24 hours a day, 7 days a week.</p>"+
+      "<p class=\"hl\">The Company strictly prohibits retaliation against any employee who reports a concern in good faith.</p>"+
+      "<p>All reports are reviewed promptly and handled with discretion.</p>"
+  };
+
+  /* ---------- suggested chips (each maps directly to an answer key) ---------- */
+  var CHIPS = [
+    { q:"How much PTO can I roll over?",       key:"pto-rollover" },
+    { q:"How many weeks of parental leave?",   key:"parental" },
+    { q:"What’s the remote work stipend?",     key:"remote-stipend" },
+    { q:"What’s the expense approval limit?",  key:"expense-approval" },
+    { q:"How many paid holidays?",             key:"holidays" },
+    { q:"Bereavement leave policy?",           key:"bereavement" }
+  ];
+
+  /* quick lookup of answers by key */
+  var ANSWER_BY_KEY = {};
+  ANSWERS.forEach(function(a){ ANSWER_BY_KEY[a.key] = a; });
+
+  /* ---------- state ---------- */
+  var busy = false;
+  var thread = $("thread");
+  var threadInner = $("threadInner");
+
+  /* ---------- matching ---------- */
+  function normalize(s){ return " " + String(s).toLowerCase().replace(/[’']/g,"'").replace(/[^a-z0-9$().\- ]/g," ").replace(/\s+/g," ") + " "; }
+  function findAnswer(text){
+    var t = normalize(text);
+    var best = null, bestScore = 0;
+    for(var i=0;i<ANSWERS.length;i++){
+      var a = ANSWERS[i], score = 0, longest = 0;
+      for(var k=0;k<a.kw.length;k++){
+        var kwTrim = a.kw[k].toLowerCase().replace(/[’']/g,"'");
+        if(t.indexOf(kwTrim) !== -1){
+          var words = kwTrim.split(" ").length;
+          // specificity wins: weight by squared word-count + length
+          score += words*words + kwTrim.length*0.15;
+          if(kwTrim.length > longest) longest = kwTrim.length;
+        }
+      }
+      // strong tie-breaker toward the single most-specific phrase matched
+      score += longest * 0.5;
+      if(score > bestScore){ bestScore = score; best = a; }
+    }
+    return bestScore > 0 ? best : null;
+  }
+
+  /* ---------- left rail ---------- */
+  function buildRail(){
+    var list = $("railList");
+    SECTIONS.forEach(function(s){
+      var row = el("div","src");
+      row.setAttribute("data-section", s.id);
+      row.innerHTML = '<span class="dot"></span><span>'+esc(s.name)+'</span><span class="pg">'+esc(s.pg)+'</span>';
+      row.addEventListener("click", function(){
+        if(busy) return;
+        setActiveSection(s.id);
+        // asking the canonical question for the section (routed directly by key)
+        submitQuestion(s.q, s.key);
+      });
+      list.appendChild(row);
+    });
+  }
+  function setActiveSection(id){
+    var rows = document.querySelectorAll(".src");
+    for(var i=0;i<rows.length;i++){
+      rows[i].classList.toggle("active", rows[i].getAttribute("data-section") === id);
+    }
+  }
+
+  /* ---------- chips ---------- */
+  function buildChips(){
+    var box = $("chips");
+    CHIPS.forEach(function(item){
+      var c = el("button","chip");
+      c.type = "button";
+      c.innerHTML = '<span class="q">?</span>'+esc(item.q);
+      c.addEventListener("click", function(){ if(!busy) submitQuestion(item.q, item.key); });
+      box.appendChild(c);
+    });
+  }
+  function setChipsDisabled(d){
+    var cs = document.querySelectorAll(".chip");
+    for(var i=0;i<cs.length;i++) cs[i].disabled = d;
+  }
+
+  /* ---------- messages ---------- */
+  function scrollDown(){ thread.scrollTop = thread.scrollHeight; }
+
+  function addUserMsg(text){
+    var m = el("div","msg user reveal");
+    m.innerHTML = '<div class="who">WG</div><div class="bubble"></div>';
+    m.querySelector(".bubble").textContent = text;
+    threadInner.appendChild(m);
+    scrollDown();
+  }
+
+  function addBotShell(){
+    var m = el("div","msg bot reveal");
+    m.innerHTML = '<div class="who" aria-hidden="true">'+
+      '<svg viewBox="0 0 24 24" fill="none" width="16" height="16"><path d="M12 3l1.6 4.2L18 8.5l-3.4 2.8L15.4 16 12 13.6 8.6 16l.8-4.7L6 8.5l4.4-1.3L12 3z" fill="#fff"/></svg>'+
+      '</div><div class="bubble"></div>';
+    threadInner.appendChild(m);
+    scrollDown();
+    return m.querySelector(".bubble");
+  }
+
+  /* searching indicator -> returns bubble for replacement */
+  function showSearching(bubble){
+    bubble.innerHTML = '<div class="searching"><span>Searching the handbook</span>'+
+      '<span class="dots"><i></i><i></i><i></i></span></div>';
+    scrollDown();
+  }
+
+  /* ---------- citation chip element ---------- */
+  function citeChipHTML(key, label){
+    return '<span class="cite" data-cite="'+esc(key)+'" tabindex="0" role="button" title="Open source passage">'+
+      '<svg viewBox="0 0 24 24" fill="none"><path d="M5 4.5A1.5 1.5 0 0 1 6.5 3H15l4 4v12.5A1.5 1.5 0 0 1 17.5 21h-11A1.5 1.5 0 0 1 5 19.5v-15z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="M14 3v4h4" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>'+
+      esc(label)+'</span>';
+  }
+
+  /* ---------- streaming a grounded answer (typewriter) ---------- */
+  function streamAnswer(bubble, answer, done){
+    var tokens = answer.tokens;
+    var ti = 0;       // token index
+    var ci = 0;       // char index within text token
+    var html = "";    // accumulated finished html (without caret)
+    var CARET = '<span class="caret"></span>';
+
+    function render(extra){
+      bubble.innerHTML = '<p>'+ html + (extra||"") + CARET + '</p>';
+      scrollDown();
+    }
+
+    // advance ci by ~a chunk of chars, snapping to the next word boundary
+    // (fewer timer hops => resilient even if the tab throttles setTimeout)
+    function nextChunkEnd(str, from){
+      var i = Math.min(str.length, from + 13);
+      while(i < str.length && str.charAt(i) !== " ") i++;  // finish the current word
+      while(i < str.length && str.charAt(i) === " ") i++;  // include trailing spaces
+      return i;
+    }
+
+    function step(){
+      if(ti >= tokens.length){
+        // finalize: strip caret, add grounded footer
+        bubble.innerHTML = '<p>'+ html +'</p>';
+        var n = citeCount(answer);
+        var foot = el("div","grounded-foot");
+        foot.innerHTML = '<span class="chk"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12l4 4 10-11" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>'+
+          'Answer grounded in Employee Handbook v2026.1 · '+ n +' citation'+(n===1?'':'s')+'. Tap a citation to view the source.';
+        bubble.appendChild(foot);
+        scrollDown();
+        if(done) done();
+        return;
+      }
+      var tok = tokens[ti];
+      if(typeof tok === "string"){
+        // type in small word-aligned chunks for a natural-but-snappy feel
+        ci = nextChunkEnd(tok, ci);
+        if(ci >= tok.length){
+          html += esc(tok);
+          ti++; ci = 0; render(); setTimeout(step, 18);
+        } else {
+          render(esc(tok.slice(0, ci)));
+          setTimeout(step, 42);
+        }
+      } else if(tok.b){
+        // bold phrase — reveal whole (it's a single emphasized value)
+        html += '<strong>'+esc(tok.b)+'</strong>';
+        ti++; ci=0; render(); setTimeout(step, 60);
+      } else if(tok.cite){
+        // citation chip drops in whole, with a small beat
+        html += citeChipHTML(tok.cite, tok.label);
+        ti++; ci=0; render(); setTimeout(step, 80);
+      } else {
+        ti++; ci=0; setTimeout(step, 5);
+      }
+    }
+    render();
+    setTimeout(step, 80);
+  }
+  function citeCount(a){ return a.tokens.filter(function(t){return t&&t.cite;}).length; }
+
+  /* ---------- no-match answer ---------- */
+  function streamNoMatch(bubble, text, done){
+    var line = "I couldn’t find that in the Employee Handbook, so I won’t guess — I can route this to People Services instead.";
+    var i = 0;
+    bubble.classList.add("nomatch");
+    var head = '<div class="nomatch-head"><svg viewBox="0 0 24 24" fill="none"><path d="M12 8.5v4.5M12 16h.01" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M12 3.5l8.5 15a1 1 0 0 1-.87 1.5H4.37a1 1 0 0 1-.87-1.5l8.5-15a1 1 0 0 1 1.74 0z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>No handbook match</div>';
+    function step(){
+      if(i <= line.length){
+        bubble.innerHTML = head + '<p>'+ esc(line.slice(0,i)) + '<span class="caret"></span></p>';
+        i += 2; scrollDown();
+        setTimeout(step, 16);
+      } else {
+        bubble.innerHTML = head + '<p>'+ esc(line) +'</p>';
+        var btn = el("button","route-btn");
+        btn.type = "button";
+        btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none"><path d="M4 12h13M12 5l7 7-7 7" stroke="#fff" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/></svg>Route to People Services';
+        btn.addEventListener("click", function(){
+          if(btn.disabled) return;
+          btn.disabled = true;
+          btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none"><path d="M5 12l4 4 10-11" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>Routed to People Services';
+          var note = el("div","routed-note");
+          note.innerHTML = '<svg viewBox="0 0 24 24" fill="none"><path d="M5 12l4 4 10-11" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>Ticket <strong>&nbsp;#PS-4821&nbsp;</strong> created — a People Services specialist will follow up by email.';
+          bubble.appendChild(note);
+          scrollDown();
+        });
+        bubble.appendChild(btn);
+        scrollDown();
+        if(done) done();
+      }
+    }
+    step();
+  }
+
+  /* ---------- source viewer ---------- */
+  function openViewer(key){
+    var p = PASSAGES[key];
+    if(!p) return;
+    $("vTitle").textContent = p.title;
+    $("vMeta").textContent = "Employee Handbook v2026.1 · " + p.page;
+    var body = $("vBody");
+    body.innerHTML =
+      '<span class="page-tag"><svg viewBox="0 0 24 24" fill="none" width="12" height="12"><path d="M6 3h7l5 5v13H6z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>'+esc(p.secNo)+' · '+esc(p.page)+'</span>'+
+      '<div class="passage"><h4>'+esc(p.title)+'</h4><div class="secno">'+esc(p.secNo)+'</div>'+ p.body +'</div>';
+    if(p.section) setActiveSection(p.section);
+    $("viewer").classList.add("open");
+    $("viewer").setAttribute("aria-hidden","false");
+    $("scrim").classList.add("show");
+    body.scrollTop = 0;
+  }
+  function closeViewer(){
+    $("viewer").classList.remove("open");
+    $("viewer").setAttribute("aria-hidden","true");
+    $("scrim").classList.remove("show");
+  }
+
+  /* delegate clicks on citation chips (works for all current + future) */
+  threadInner.addEventListener("click", function(e){
+    var c = e.target.closest ? e.target.closest(".cite") : null;
+    if(c){ openViewer(c.getAttribute("data-cite")); }
+  });
+  threadInner.addEventListener("keydown", function(e){
+    if((e.key === "Enter" || e.key === " ")){
+      var c = e.target.closest ? e.target.closest(".cite") : null;
+      if(c){ e.preventDefault(); openViewer(c.getAttribute("data-cite")); }
+    }
+  });
+  $("vClose").addEventListener("click", closeViewer);
+  $("scrim").addEventListener("click", closeViewer);
+  document.addEventListener("keydown", function(e){ if(e.key === "Escape") closeViewer(); });
+
+  /* ---------- submit flow ---------- */
+  function submitQuestion(text, forceKey){
+    text = (text||"").trim();
+    if(!text || busy) return;
+    busy = true;
+    setComposerDisabled(true);
+    addUserMsg(text);
+
+    // Suggested chips / sections route directly by key; free-typed text uses keyword matching.
+    var match = (forceKey && ANSWER_BY_KEY[forceKey]) ? ANSWER_BY_KEY[forceKey] : findAnswer(text);
+    if(match) setActiveSection(match.section);
+
+    var bubble = addBotShell();
+    showSearching(bubble);
+
+    // brief "searching" delay, then stream
+    setTimeout(function(){
+      if(match){
+        streamAnswer(bubble, match, finish);
+      } else {
+        streamNoMatch(bubble, text, finish);
+      }
+    }, 760 + Math.random()*420);
+
+    function finish(){
+      busy = false;
+      setComposerDisabled(false);
+      $("input").focus();
+    }
+  }
+
+  function setComposerDisabled(d){
+    $("send").disabled = d;
+    $("input").disabled = d;
+    setChipsDisabled(d);
+  }
+
+  /* ---------- input wiring ---------- */
+  var input = $("input");
+  function autoGrow(){
+    input.style.height = "auto";
+    input.style.height = Math.min(96, input.scrollHeight) + "px";
+  }
+  input.addEventListener("input", autoGrow);
+  input.addEventListener("keydown", function(e){
+    if(e.key === "Enter" && !e.shiftKey){
+      e.preventDefault();
+      var v = input.value;
+      input.value = ""; autoGrow();
+      submitQuestion(v);
+    }
+  });
+  $("send").addEventListener("click", function(){
+    var v = input.value;
+    input.value = ""; autoGrow();
+    submitQuestion(v);
+  });
+
+  /* ---------- seed: welcome message ---------- */
+  function seed(){
+    var m = el("div","msg bot");
+    m.innerHTML = '<div class="who" aria-hidden="true">'+
+      '<svg viewBox="0 0 24 24" fill="none" width="16" height="16"><path d="M12 3l1.6 4.2L18 8.5l-3.4 2.8L15.4 16 12 13.6 8.6 16l.8-4.7L6 8.5l4.4-1.3L12 3z" fill="#fff"/></svg>'+
+      '</div><div class="bubble">'+
+        '<p><strong>Hi Wes 👋 — I’m your Policy &amp; Handbook Copilot.</strong></p>'+
+        '<p>Ask me anything about company policy and I’ll answer <strong>only from the Employee Handbook</strong>, with a citation you can open and verify. If it’s not in the handbook, I’ll tell you — I won’t guess.</p>'+
+        '<p style="margin-bottom:0;color:var(--muted);font-size:13px;">Try a suggested question below, click a section on the left, or type your own.</p>'+
+      '</div>';
+    threadInner.appendChild(m);
+  }
+
+  /* ---------- init ---------- */
+  try{
+    buildRail();
+    buildChips();
+    seed();
+    autoGrow();
+    setTimeout(function(){ try{ input.focus(); }catch(e){} }, 200);
+  }catch(err){
+    // defensive: never throw to console in demo
+    try{
+      threadInner.innerHTML = '<div class="msg bot"><div class="who"></div><div class="bubble">The copilot is ready. Type a policy question to begin.</div></div>';
+    }catch(e2){}
+  }
+})();
+</script>
+</body>
+</html>

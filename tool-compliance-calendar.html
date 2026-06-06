@@ -1,0 +1,1380 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Compliance Calendar — NewWesVentures</title>
+<style>
+  :root{
+    --ink:#0c1020; --ink2:#3a4560; --muted:#6b7794; --line:#e7e9f2; --bg:#f7f8fc; --card:#ffffff;
+    --v1:#7c3aed; --v2:#5b4ef0; --v3:#06b6d4; --pink:#db2777;
+    --green:#10b981; --amber:#f59e0b; --red:#ef4444;
+    --grad:linear-gradient(110deg,#7c3aed,#5b4ef0 45%,#06b6d4);
+    --shadow-sm:0 1px 2px rgba(12,16,32,.06), 0 1px 3px rgba(12,16,32,.04);
+    --shadow-md:0 6px 16px rgba(12,16,32,.08), 0 2px 6px rgba(12,16,32,.05);
+    --shadow-lg:0 18px 50px rgba(12,16,32,.18), 0 6px 18px rgba(12,16,32,.10);
+  }
+  *{box-sizing:border-box; margin:0; padding:0; -webkit-font-smoothing:antialiased;}
+  html,body{height:100%;}
+  body{
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Inter,Helvetica,Arial,sans-serif;
+    background:var(--bg); color:var(--ink); overflow:hidden;
+    font-size:14px; line-height:1.45;
+  }
+  button{font-family:inherit; cursor:pointer; border:none; background:none; color:inherit;}
+  ::-webkit-scrollbar{width:10px; height:10px;}
+  ::-webkit-scrollbar-thumb{background:#d6dae8; border-radius:8px; border:2px solid var(--bg);}
+  ::-webkit-scrollbar-thumb:hover{background:#c2c8dc;}
+
+  /* ===== App shell ===== */
+  #app{display:flex; flex-direction:column; height:100vh; min-height:0;}
+
+  /* ===== Top app bar ===== */
+  .appbar{
+    display:flex; align-items:center; gap:14px; padding:11px 20px;
+    background:var(--card); border-bottom:1px solid var(--line);
+    box-shadow:var(--shadow-sm); z-index:40; flex:0 0 auto;
+  }
+  .logo{
+    width:34px; height:34px; border-radius:10px; background:var(--grad);
+    display:grid; place-items:center; color:#fff; flex:0 0 auto;
+    box-shadow:0 4px 12px rgba(91,78,240,.35);
+  }
+  .logo svg{width:19px; height:19px;}
+  .brandwrap{display:flex; flex-direction:column; line-height:1.15; min-width:0;}
+  .brandwrap .tool{font-weight:700; font-size:15px; letter-spacing:-.2px; white-space:nowrap;}
+  .brandwrap .org{font-size:11px; color:var(--muted); white-space:nowrap;}
+  .demo-badge{
+    font-size:10.5px; font-weight:700; letter-spacing:.4px; text-transform:uppercase;
+    color:var(--v2); background:rgba(91,78,240,.10); border:1px solid rgba(91,78,240,.22);
+    padding:4px 9px; border-radius:999px; white-space:nowrap;
+  }
+  .spacer{flex:1 1 auto;}
+  .userchip{
+    display:flex; align-items:center; gap:9px; padding:5px 12px 5px 6px;
+    background:var(--bg); border:1px solid var(--line); border-radius:999px; white-space:nowrap;
+  }
+  .avatar{
+    width:28px; height:28px; border-radius:50%; background:var(--grad); color:#fff;
+    display:grid; place-items:center; font-weight:700; font-size:12px; flex:0 0 auto;
+  }
+  .userchip .nm{font-weight:600; font-size:12.5px; line-height:1.1;}
+  .userchip .em{font-size:10.5px; color:var(--muted); line-height:1.1;}
+
+  /* ===== Header summary band ===== */
+  .summary{
+    display:flex; align-items:stretch; gap:16px; padding:16px 20px;
+    background:var(--card); border-bottom:1px solid var(--line); flex:0 0 auto;
+    z-index:30; flex-wrap:wrap;
+  }
+  .ring-card{
+    display:flex; align-items:center; gap:16px; padding:4px 20px 4px 4px;
+    flex:0 0 auto;
+  }
+  .ring-wrap{position:relative; width:96px; height:96px; flex:0 0 auto;}
+  .ring-wrap svg{transform:rotate(-90deg);}
+  .ring-bg{stroke:var(--line);}
+  .ring-fg{stroke:url(#ringgrad); stroke-linecap:round; transition:stroke-dashoffset .9s cubic-bezier(.2,.8,.2,1);}
+  .ring-label{
+    position:absolute; inset:0; display:flex; flex-direction:column;
+    align-items:center; justify-content:center; line-height:1;
+  }
+  .ring-label .pct{font-size:23px; font-weight:800; letter-spacing:-.5px;}
+  .ring-label .cap{font-size:9.5px; color:var(--muted); font-weight:600; text-transform:uppercase; letter-spacing:.4px; margin-top:3px;}
+  .ring-meta{display:flex; flex-direction:column; gap:2px;}
+  .ring-meta .t{font-size:12px; color:var(--muted); font-weight:600;}
+  .ring-meta .b{font-size:18px; font-weight:800; letter-spacing:-.3px;}
+  .ring-meta .s{font-size:11.5px; color:var(--muted);}
+
+  .stat-row{display:flex; gap:12px; flex:1 1 auto; min-width:300px; align-items:stretch;}
+  .stat{
+    flex:1 1 0; min-width:0; background:var(--bg); border:1px solid var(--line);
+    border-radius:14px; padding:13px 15px; position:relative; overflow:hidden;
+    transition:transform .15s ease, box-shadow .15s ease, border-color .15s ease;
+    cursor:pointer; text-align:left;
+  }
+  .stat:hover{transform:translateY(-2px); box-shadow:var(--shadow-md); border-color:#d8dcec;}
+  .stat.active{border-color:var(--v2); box-shadow:0 0 0 2px rgba(91,78,240,.16);}
+  .stat .k{display:flex; align-items:center; gap:7px; font-size:11.5px; color:var(--muted); font-weight:600;}
+  .stat .dot{width:9px; height:9px; border-radius:50%; flex:0 0 auto;}
+  .stat .v{font-size:27px; font-weight:800; letter-spacing:-.6px; margin-top:5px; line-height:1; transition:color .3s;}
+  .stat .sub{font-size:11px; color:var(--muted); margin-top:3px;}
+  .stat .bar{position:absolute; left:0; top:0; bottom:0; width:4px;}
+  .stat.s-green .bar{background:var(--green);} .stat.s-green .dot{background:var(--green);}
+  .stat.s-amber .bar{background:var(--amber);} .stat.s-amber .dot{background:var(--amber);}
+  .stat.s-red .bar{background:var(--red);} .stat.s-red .dot{background:var(--red);}
+  .stat.s-done .bar{background:var(--v2);} .stat.s-done .dot{background:var(--v2);}
+
+  /* Auto-watch control */
+  .watch-card{
+    flex:0 0 auto; display:flex; flex-direction:column; gap:9px; justify-content:center;
+    padding:12px 16px; border-radius:14px; min-width:210px;
+    border:1px solid var(--line); background:
+      linear-gradient(180deg, rgba(124,58,237,.05), rgba(6,182,212,.04));
+    transition:border-color .2s, box-shadow .2s;
+  }
+  .watch-card.on{border-color:rgba(91,78,240,.35); box-shadow:0 0 0 2px rgba(91,78,240,.10);}
+  .watch-top{display:flex; align-items:center; gap:10px; justify-content:space-between;}
+  .watch-lbl{display:flex; align-items:center; gap:8px; font-weight:700; font-size:12.5px;}
+  .watch-lbl .ic{font-size:14px;}
+  .switch{
+    position:relative; width:42px; height:24px; border-radius:999px; background:#cfd4e6;
+    transition:background .25s; flex:0 0 auto; border:none; cursor:pointer; padding:0;
+  }
+  .switch::after{
+    content:""; position:absolute; top:2px; left:2px; width:20px; height:20px;
+    background:#fff; border-radius:50%; box-shadow:0 1px 3px rgba(0,0,0,.25);
+    transition:transform .25s cubic-bezier(.2,.8,.2,1);
+  }
+  .switch.on{background:var(--v2);}
+  .switch.on::after{transform:translateX(18px);}
+  .watch-sub{font-size:11px; color:var(--muted);}
+  .watch-sub b{color:var(--ink2);}
+
+  /* ===== Auto-watch reveal panel ===== */
+  .nudges{
+    flex:0 0 auto; overflow:hidden; max-height:0; opacity:0;
+    transition:max-height .4s ease, opacity .3s ease, padding .3s ease;
+    background:linear-gradient(110deg, rgba(124,58,237,.06), rgba(6,182,212,.05));
+    border-bottom:1px solid var(--line); padding:0 20px;
+  }
+  .nudges.open{max-height:160px; opacity:1; padding:14px 20px;}
+  .nudges-head{display:flex; align-items:center; gap:9px; margin-bottom:10px;}
+  .nudges-head .pulse{
+    width:9px; height:9px; border-radius:50%; background:var(--v2);
+    box-shadow:0 0 0 0 rgba(91,78,240,.5); animation:pulsedot 2s infinite;
+  }
+  @keyframes pulsedot{0%{box-shadow:0 0 0 0 rgba(91,78,240,.45);}70%{box-shadow:0 0 0 7px rgba(91,78,240,0);}100%{box-shadow:0 0 0 0 rgba(91,78,240,0);}}
+  .nudges-head .t{font-weight:700; font-size:13px;}
+  .nudges-head .t b{color:var(--v2);}
+  .nudge-list{display:flex; gap:10px; flex-wrap:wrap;}
+  .nudge-pill{
+    display:flex; align-items:center; gap:9px; background:var(--card);
+    border:1px solid var(--line); border-radius:11px; padding:8px 12px; box-shadow:var(--shadow-sm);
+  }
+  .nudge-pill .when{
+    font-size:10px; font-weight:800; text-transform:uppercase; letter-spacing:.4px;
+    color:#fff; background:var(--grad); padding:3px 7px; border-radius:6px; white-space:nowrap;
+  }
+  .nudge-pill .who{font-size:12.5px; font-weight:600;}
+  .nudge-pill .what{font-size:11px; color:var(--muted);}
+
+  /* ===== Toolbar (view toggle + filter chips) ===== */
+  .toolbar{
+    display:flex; align-items:center; gap:12px; padding:12px 20px;
+    border-bottom:1px solid var(--line); background:var(--bg); flex:0 0 auto; flex-wrap:wrap;
+  }
+  .seg{display:inline-flex; background:#eef0f8; border:1px solid var(--line); border-radius:10px; padding:3px;}
+  .seg button{
+    padding:6px 14px; border-radius:7px; font-size:12.5px; font-weight:600; color:var(--muted);
+    display:flex; align-items:center; gap:6px; transition:all .18s;
+  }
+  .seg button.on{background:var(--card); color:var(--ink); box-shadow:var(--shadow-sm);}
+  .seg button svg{width:14px; height:14px;}
+  .tb-title{font-weight:700; font-size:13px; color:var(--ink2);}
+  .filter-note{font-size:11.5px; color:var(--muted); display:flex; align-items:center; gap:8px;}
+  .clear-filter{
+    font-size:11px; font-weight:700; color:var(--v2); background:rgba(91,78,240,.08);
+    border:1px solid rgba(91,78,240,.2); padding:3px 9px; border-radius:999px;
+  }
+  .clear-filter:hover{background:rgba(91,78,240,.14);}
+
+  /* ===== Body / scroll area ===== */
+  .body{flex:1 1 auto; min-height:0; overflow:auto; position:relative;}
+  .view{padding:18px 20px 28px; max-width:1180px; margin:0 auto;}
+
+  /* ===== Agenda view ===== */
+  .month-group{margin-bottom:22px;}
+  .month-label{
+    display:flex; align-items:center; gap:10px; margin:0 2px 11px; position:sticky; top:0;
+    padding:6px 0; background:linear-gradient(180deg,var(--bg) 70%, rgba(247,248,252,0)); z-index:5;
+  }
+  .month-label .mn{font-weight:800; font-size:13px; letter-spacing:.2px; text-transform:uppercase; color:var(--ink2);}
+  .month-label .ln{flex:1; height:1px; background:var(--line);}
+  .month-label .ct{font-size:11px; color:var(--muted); font-weight:600;}
+
+  .item{
+    display:flex; align-items:center; gap:14px; background:var(--card);
+    border:1px solid var(--line); border-radius:14px; padding:13px 16px; margin-bottom:9px;
+    box-shadow:var(--shadow-sm); cursor:pointer; position:relative; overflow:hidden;
+    transition:transform .14s ease, box-shadow .16s ease, border-color .16s ease, opacity .3s;
+  }
+  .item:hover{transform:translateY(-1px); box-shadow:var(--shadow-md); border-color:#dadeee;}
+  .item:active{transform:translateY(0);}
+  .item .accent{position:absolute; left:0; top:0; bottom:0; width:4px; border-radius:4px 0 0 4px;}
+  .item.st-upcoming .accent{background:#c9cfe6;}
+  .item.st-soon .accent{background:var(--amber);}
+  .item.st-overdue .accent{background:var(--red);}
+  .item.st-done .accent{background:var(--v2);}
+  .item.st-done{opacity:.62;}
+  .item.st-done .it-title{text-decoration:line-through; text-decoration-color:rgba(12,16,32,.3);}
+  .item.st-overdue{animation:overpulse 2.4s ease-in-out infinite;}
+  @keyframes overpulse{
+    0%,100%{box-shadow:var(--shadow-sm); border-color:rgba(239,68,68,.35);}
+    50%{box-shadow:0 0 0 3px rgba(239,68,68,.12), var(--shadow-sm); border-color:rgba(239,68,68,.6);}
+  }
+
+  .it-date{
+    flex:0 0 auto; width:54px; text-align:center; border-right:1px solid var(--line); padding-right:13px;
+  }
+  .it-date .mo{font-size:10px; font-weight:800; text-transform:uppercase; letter-spacing:.5px; color:var(--muted);}
+  .it-date .dy{font-size:21px; font-weight:800; letter-spacing:-.5px; line-height:1; margin-top:1px;}
+  .it-date.over .dy, .it-date.over .mo{color:var(--red);}
+
+  .it-icon{
+    width:38px; height:38px; border-radius:10px; flex:0 0 auto; display:grid; place-items:center;
+    font-size:18px; background:var(--bg); border:1px solid var(--line);
+  }
+  .it-main{flex:1 1 auto; min-width:0;}
+  .it-title{font-weight:700; font-size:14px; letter-spacing:-.2px; line-height:1.25;}
+  .it-meta{display:flex; align-items:center; gap:13px; margin-top:4px; flex-wrap:wrap;}
+  .it-meta .m{display:flex; align-items:center; gap:5px; font-size:11.5px; color:var(--muted);}
+  .it-meta .m svg{width:12px; height:12px; opacity:.7;}
+  .it-meta .cat{
+    font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:.3px;
+    color:var(--v2); background:rgba(91,78,240,.08); padding:2px 7px; border-radius:5px;
+  }
+  .owner-mini{
+    width:18px; height:18px; border-radius:50%; display:inline-grid; place-items:center;
+    font-size:8.5px; font-weight:800; color:#fff; flex:0 0 auto;
+  }
+  .it-right{flex:0 0 auto; display:flex; align-items:center; gap:12px;}
+  .chip{
+    font-size:11px; font-weight:700; padding:5px 11px; border-radius:999px; white-space:nowrap;
+    display:inline-flex; align-items:center; gap:5px;
+  }
+  .chip .cdot{width:7px; height:7px; border-radius:50%;}
+  .chip.c-upcoming{color:#4a5478; background:#eef0f8;}
+  .chip.c-upcoming .cdot{background:#9aa3c2;}
+  .chip.c-soon{color:#92600a; background:rgba(245,158,11,.14);}
+  .chip.c-soon .cdot{background:var(--amber);}
+  .chip.c-overdue{color:#b91c1c; background:rgba(239,68,68,.13);}
+  .chip.c-overdue .cdot{background:var(--red);}
+  .chip.c-done{color:#5b4ef0; background:rgba(91,78,240,.12);}
+  .chip.c-done .cdot{background:var(--v2);}
+  .it-chev{color:#c2c8dc; font-size:17px; transition:transform .15s, color .15s;}
+  .item:hover .it-chev{color:var(--v2); transform:translateX(2px);}
+
+  .empty{
+    text-align:center; padding:50px 20px; color:var(--muted);
+  }
+  .empty .em{font-size:34px; margin-bottom:10px;}
+  .empty .t{font-weight:700; color:var(--ink2); font-size:15px;}
+  .empty .s{font-size:12.5px; margin-top:4px;}
+
+  /* ===== Month grid view ===== */
+  .cal{display:none;}
+  .cal.show{display:block;}
+  .agenda.hide{display:none;}
+  .cal-head{
+    display:grid; grid-template-columns:repeat(7,1fr); gap:8px; margin-bottom:8px;
+  }
+  .cal-head div{text-align:center; font-size:11px; font-weight:700; color:var(--muted); text-transform:uppercase; letter-spacing:.4px;}
+  .cal-grid{display:grid; grid-template-columns:repeat(7,1fr); gap:8px;}
+  .cell{
+    background:var(--card); border:1px solid var(--line); border-radius:11px; min-height:96px;
+    padding:8px; display:flex; flex-direction:column; gap:5px; position:relative;
+  }
+  .cell.muted{background:#fbfbfe; opacity:.55;}
+  .cell.today{border-color:var(--v2); box-shadow:0 0 0 2px rgba(91,78,240,.13);}
+  .cell .dn{font-size:12px; font-weight:700; color:var(--ink2); align-self:flex-start;}
+  .cell.today .dn{
+    background:var(--grad); color:#fff; width:22px; height:22px; border-radius:50%;
+    display:grid; place-items:center; font-size:11px;
+  }
+  .ev{
+    font-size:10.5px; font-weight:600; padding:3px 7px; border-radius:6px; cursor:pointer;
+    white-space:nowrap; overflow:hidden; text-overflow:ellipsis; line-height:1.3;
+    border-left:3px solid; transition:transform .12s, filter .12s; display:flex; align-items:center; gap:4px;
+  }
+  .ev:hover{transform:translateX(2px); filter:brightness(.97);}
+  .ev.e-upcoming{background:#eef0f8; color:#4a5478; border-color:#9aa3c2;}
+  .ev.e-soon{background:rgba(245,158,11,.14); color:#92600a; border-color:var(--amber);}
+  .ev.e-overdue{background:rgba(239,68,68,.13); color:#b91c1c; border-color:var(--red);}
+  .ev.e-done{background:rgba(91,78,240,.1); color:#5b4ef0; border-color:var(--v2); text-decoration:line-through; opacity:.75;}
+  .ev .evdot{width:6px;height:6px;border-radius:50%;flex:0 0 auto;}
+  .cal-title{display:flex; align-items:center; gap:12px; margin-bottom:14px;}
+  .cal-title .mt{font-weight:800; font-size:17px; letter-spacing:-.3px;}
+  .cal-title .legend{display:flex; gap:13px; margin-left:auto; flex-wrap:wrap;}
+  .cal-title .lg{display:flex; align-items:center; gap:5px; font-size:11px; color:var(--muted); font-weight:600;}
+  .cal-title .lg i{width:9px; height:9px; border-radius:50%; display:inline-block;}
+
+  /* ===== Drawer ===== */
+  .scrim{
+    position:fixed; inset:0; background:rgba(12,16,32,.34); backdrop-filter:blur(2px);
+    opacity:0; pointer-events:none; transition:opacity .3s; z-index:90;
+  }
+  .scrim.show{opacity:1; pointer-events:auto;}
+  .drawer{
+    position:fixed; top:0; right:0; bottom:0; width:420px; max-width:92vw; background:var(--card);
+    box-shadow:var(--shadow-lg); transform:translateX(100%); transition:transform .34s cubic-bezier(.2,.8,.2,1);
+    z-index:100; display:flex; flex-direction:column;
+  }
+  .drawer.show{transform:translateX(0);}
+  .dr-accent{height:5px; flex:0 0 auto;}
+  .dr-accent.st-upcoming{background:#c9cfe6;}
+  .dr-accent.st-soon{background:var(--amber);}
+  .dr-accent.st-overdue{background:var(--red);}
+  .dr-accent.st-done{background:var(--v2);}
+  .dr-head{padding:18px 22px 16px; border-bottom:1px solid var(--line); flex:0 0 auto;}
+  .dr-top{display:flex; align-items:flex-start; gap:12px;}
+  .dr-icon{
+    width:44px; height:44px; border-radius:12px; flex:0 0 auto; display:grid; place-items:center;
+    font-size:22px; background:var(--bg); border:1px solid var(--line);
+  }
+  .dr-htext{flex:1 1 auto; min-width:0;}
+  .dr-cat{font-size:10.5px; font-weight:700; text-transform:uppercase; letter-spacing:.4px; color:var(--v2);}
+  .dr-title{font-size:18px; font-weight:800; letter-spacing:-.4px; line-height:1.2; margin-top:2px;}
+  .dr-close{
+    width:32px; height:32px; border-radius:9px; display:grid; place-items:center; color:var(--muted);
+    font-size:20px; flex:0 0 auto; transition:background .15s, color .15s;
+  }
+  .dr-close:hover{background:var(--bg); color:var(--ink);}
+  .dr-status-row{display:flex; align-items:center; gap:10px; margin-top:14px; flex-wrap:wrap;}
+
+  .dr-body{flex:1 1 auto; overflow:auto; padding:18px 22px;}
+  .dr-grid{display:grid; grid-template-columns:1fr 1fr; gap:11px; margin-bottom:18px;}
+  .field{background:var(--bg); border:1px solid var(--line); border-radius:11px; padding:11px 13px;}
+  .field.full{grid-column:1 / -1;}
+  .field .fl{font-size:10.5px; font-weight:700; text-transform:uppercase; letter-spacing:.3px; color:var(--muted);}
+  .field .fv{font-size:13.5px; font-weight:600; margin-top:3px; display:flex; align-items:center; gap:7px;}
+  .field .fv.over{color:var(--red);}
+  .field .fv .owner-mini{width:21px; height:21px; font-size:9px;}
+  .field .desc{font-size:12.5px; color:var(--ink2); font-weight:400; line-height:1.5; margin-top:3px;}
+  .countdown{font-size:11px; color:var(--muted); margin-top:2px;}
+  .countdown b{font-weight:700;}
+  .countdown.over b{color:var(--red);}
+
+  .sec-title{font-size:12px; font-weight:800; text-transform:uppercase; letter-spacing:.4px; color:var(--ink2); margin:4px 0 11px; display:flex; align-items:center; gap:8px;}
+  .sec-title .ct{font-size:11px; color:var(--muted); font-weight:600; background:var(--bg); padding:1px 8px; border-radius:999px;}
+
+  .checklist{display:flex; flex-direction:column; gap:7px; margin-bottom:20px;}
+  .ck{
+    display:flex; align-items:flex-start; gap:11px; padding:10px 12px; border:1px solid var(--line);
+    border-radius:10px; background:var(--card); cursor:pointer; transition:background .15s, border-color .15s;
+    text-align:left; width:100%;
+  }
+  .ck:hover{background:var(--bg); border-color:#dadeee;}
+  .ck .box{
+    width:20px; height:20px; border-radius:6px; border:2px solid #cdd3e6; flex:0 0 auto; margin-top:1px;
+    display:grid; place-items:center; transition:background .18s, border-color .18s; color:#fff;
+  }
+  .ck.done .box{background:var(--green); border-color:var(--green);}
+  .ck .box svg{width:12px; height:12px; opacity:0; transform:scale(.5); transition:opacity .18s, transform .18s;}
+  .ck.done .box svg{opacity:1; transform:scale(1);}
+  .ck .txt{font-size:13px; font-weight:500; line-height:1.4; flex:1 1 auto;}
+  .ck.done .txt{color:var(--muted); text-decoration:line-through;}
+  .ck-progress{height:6px; background:var(--line); border-radius:999px; overflow:hidden; margin-bottom:18px;}
+  .ck-progress .fill{height:100%; background:var(--grad); border-radius:999px; transition:width .4s cubic-bezier(.2,.8,.2,1); width:0;}
+
+  .reassign-box{display:none; margin:-8px 0 18px; padding:12px; background:var(--bg); border:1px solid var(--line); border-radius:11px;}
+  .reassign-box.show{display:block;}
+  .reassign-box .rl{font-size:11px; font-weight:700; color:var(--muted); margin-bottom:9px; text-transform:uppercase; letter-spacing:.3px;}
+  .owner-opts{display:flex; flex-direction:column; gap:6px;}
+  .owner-opt{
+    display:flex; align-items:center; gap:10px; padding:8px 10px; border-radius:9px; border:1px solid transparent;
+    transition:background .14s, border-color .14s; text-align:left; width:100%;
+  }
+  .owner-opt:hover{background:var(--card); border-color:var(--line);}
+  .owner-opt.cur{background:rgba(91,78,240,.07); border-color:rgba(91,78,240,.25);}
+  .owner-opt .onm{font-size:13px; font-weight:600; flex:1 1 auto;}
+  .owner-opt .orole{font-size:11px; color:var(--muted);}
+  .owner-opt .ctag{font-size:10px; font-weight:700; color:var(--v2);}
+
+  .dr-foot{
+    flex:0 0 auto; padding:14px 22px; border-top:1px solid var(--line); background:var(--card);
+    display:flex; flex-direction:column; gap:9px;
+  }
+  .btn{
+    display:flex; align-items:center; justify-content:center; gap:8px; padding:11px 16px; border-radius:11px;
+    font-weight:700; font-size:13.5px; transition:transform .12s, box-shadow .16s, filter .16s, background .16s;
+  }
+  .btn:active{transform:translateY(1px);}
+  .btn svg{width:16px; height:16px;}
+  .btn-primary{background:var(--grad); color:#fff; box-shadow:0 6px 16px rgba(91,78,240,.32);}
+  .btn-primary:hover{filter:brightness(1.06); box-shadow:0 8px 22px rgba(91,78,240,.4);}
+  .btn-primary:disabled{background:#e4e7f2; color:#a7afca; box-shadow:none; cursor:default; filter:none;}
+  .btn-row{display:flex; gap:9px;}
+  .btn-row .btn{flex:1;}
+  .btn-ghost{background:var(--bg); color:var(--ink2); border:1px solid var(--line);}
+  .btn-ghost:hover{background:#eef0f8; border-color:#d8dcec;}
+  .btn-done-state{background:rgba(16,185,129,.12); color:#0a7a5a; border:1px solid rgba(16,185,129,.3); cursor:default;}
+
+  /* ===== Toast ===== */
+  .toast-wrap{position:fixed; bottom:22px; left:50%; transform:translateX(-50%); z-index:200; display:flex; flex-direction:column; gap:9px; align-items:center; pointer-events:none;}
+  .toast{
+    display:flex; align-items:center; gap:11px; background:#11162b; color:#fff; padding:12px 18px;
+    border-radius:13px; box-shadow:0 14px 40px rgba(12,16,32,.4); font-size:13px; font-weight:600;
+    transform:translateY(20px); opacity:0; transition:transform .32s cubic-bezier(.2,.8,.2,1), opacity .3s;
+    max-width:440px; border:1px solid rgba(255,255,255,.08);
+  }
+  .toast.show{transform:translateY(0); opacity:1;}
+  .toast .tic{
+    width:26px; height:26px; border-radius:8px; display:grid; place-items:center; flex:0 0 auto; font-size:14px;
+  }
+  .toast.t-ok .tic{background:rgba(16,185,129,.22); color:#5ee6bb;}
+  .toast.t-info .tic{background:rgba(91,78,240,.28); color:#b4abff;}
+  .toast.t-bell .tic{background:rgba(6,182,212,.25); color:#67e3f7;}
+  .toast b{color:#fff;}
+  .toast .ts{color:#aeb6d4; font-weight:500; font-size:12px;}
+
+  /* ===== Snooze popover ===== */
+  .snooze-pop{
+    display:none; position:absolute; bottom:100%; left:0; right:0; margin-bottom:8px;
+    background:var(--card); border:1px solid var(--line); border-radius:13px; box-shadow:var(--shadow-lg);
+    padding:8px; z-index:5;
+  }
+  .snooze-pop.show{display:block; animation:popin .2s ease;}
+  @keyframes popin{from{opacity:0; transform:translateY(6px);}to{opacity:1; transform:translateY(0);}}
+  .snooze-pop .sh{font-size:11px; font-weight:700; color:var(--muted); padding:4px 8px 7px; text-transform:uppercase; letter-spacing:.3px;}
+  .snooze-opt{
+    display:flex; align-items:center; justify-content:space-between; gap:10px; padding:9px 11px; border-radius:9px;
+    transition:background .14s; text-align:left; width:100%; font-size:13px; font-weight:600;
+  }
+  .snooze-opt:hover{background:var(--bg);}
+  .snooze-opt .sd{font-size:11px; color:var(--muted); font-weight:500;}
+
+  /* gentle entrance */
+  .item, .stat{animation:fadeup .4s ease backwards;}
+  @keyframes fadeup{from{opacity:0; transform:translateY(8px);}to{opacity:1; transform:translateY(0);}}
+
+  /* byline */
+  .byline{
+    position:fixed; bottom:9px; right:16px; font-size:10.5px; color:var(--muted);
+    background:rgba(247,248,252,.82); backdrop-filter:blur(4px); padding:3px 10px; border-radius:999px;
+    border:1px solid var(--line); z-index:60; pointer-events:none;
+  }
+
+  @media (max-width:880px){
+    .summary{gap:12px; padding:13px 16px;}
+    .ring-card{padding-right:8px;}
+    .watch-card{min-width:100%; order:5;}
+    .stat-row{min-width:100%;}
+    .appbar{padding:10px 14px;}
+    .userchip .em{display:none;}
+    .view{padding:14px 14px 24px;}
+    .toolbar{padding:10px 14px;}
+    .nudges.open{padding:12px 14px;}
+  }
+  @media (max-width:620px){
+    .stat .v{font-size:23px;}
+    .it-date{width:46px; padding-right:10px;}
+    .it-icon{display:none;}
+    .cal-head div:nth-child(n){font-size:10px;}
+    .cell{min-height:72px; padding:5px;}
+    .brandwrap .org{display:none;}
+  }
+</style>
+</head>
+<body>
+<div id="app">
+
+  <!-- ===== Top app bar ===== -->
+  <div class="appbar">
+    <div class="logo" aria-hidden="true">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="3" y="4.5" width="18" height="16" rx="2.5"/><path d="M3 9h18M8 2.5v4M16 2.5v4"/><path d="M8.5 14.5l2.2 2.2 4.3-4.3"/>
+      </svg>
+    </div>
+    <div class="brandwrap">
+      <span class="tool">Compliance Calendar</span>
+      <span class="org">People Operations · NewWesVentures</span>
+    </div>
+    <span class="demo-badge">DEMO · mock data</span>
+    <div class="spacer"></div>
+    <div class="userchip">
+      <div class="avatar">WG</div>
+      <div>
+        <div class="nm">Wes Griffin</div>
+        <div class="em">wes.griffin@newwesventures.com</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== Header summary ===== -->
+  <div class="summary">
+    <div class="ring-card">
+      <div class="ring-wrap">
+        <svg width="96" height="96" viewBox="0 0 96 96">
+          <defs>
+            <linearGradient id="ringgrad" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0" stop-color="#7c3aed"/><stop offset=".5" stop-color="#5b4ef0"/><stop offset="1" stop-color="#06b6d4"/>
+            </linearGradient>
+          </defs>
+          <circle class="ring-bg" cx="48" cy="48" r="40" fill="none" stroke-width="10"/>
+          <circle class="ring-fg" id="ringFg" cx="48" cy="48" r="40" fill="none" stroke-width="10" stroke-dasharray="251.3" stroke-dashoffset="251.3"/>
+        </svg>
+        <div class="ring-label">
+          <span class="pct" id="ringPct">0%</span>
+          <span class="cap">On-track</span>
+        </div>
+      </div>
+      <div class="ring-meta">
+        <span class="t">Compliance health</span>
+        <span class="b" id="ringHealth">Healthy</span>
+        <span class="s" id="ringSub">— of — obligations clear</span>
+      </div>
+    </div>
+
+    <div class="stat-row">
+      <button class="stat s-green" data-filter="ok">
+        <span class="bar"></span>
+        <span class="k"><span class="dot"></span>On-track</span>
+        <span class="v" id="cOk">0</span>
+        <span class="sub">scheduled &amp; assigned</span>
+      </button>
+      <button class="stat s-amber" data-filter="soon">
+        <span class="bar"></span>
+        <span class="k"><span class="dot"></span>Due soon</span>
+        <span class="v" id="cSoon">0</span>
+        <span class="sub">within 14 days</span>
+      </button>
+      <button class="stat s-red" data-filter="overdue">
+        <span class="bar"></span>
+        <span class="k"><span class="dot"></span>Overdue</span>
+        <span class="v" id="cOver">0</span>
+        <span class="sub">action needed now</span>
+      </button>
+      <button class="stat s-done" data-filter="done">
+        <span class="bar"></span>
+        <span class="k"><span class="dot"></span>Completed</span>
+        <span class="v" id="cDone">0</span>
+        <span class="sub">closed this cycle</span>
+      </button>
+    </div>
+
+    <div class="watch-card" id="watchCard">
+      <div class="watch-top">
+        <span class="watch-lbl"><span class="ic">📡</span> Auto-watch</span>
+        <button class="switch" id="watchSwitch" role="switch" aria-checked="false" aria-label="Toggle auto-watch reminders"></button>
+      </div>
+      <span class="watch-sub" id="watchSub">Auto-remind owners before anything slips.</span>
+    </div>
+  </div>
+
+  <!-- ===== Auto-watch reveal ===== -->
+  <div class="nudges" id="nudges">
+    <div class="nudges-head">
+      <span class="pulse"></span>
+      <span class="t"><b id="nudgeCount">3</b> reminders will auto-send this week</span>
+    </div>
+    <div class="nudge-list" id="nudgeList"></div>
+  </div>
+
+  <!-- ===== Toolbar ===== -->
+  <div class="toolbar">
+    <div class="seg">
+      <button id="vAgenda" class="on">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/></svg>
+        Agenda
+      </button>
+      <button id="vMonth">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M3 9h18M8 2v4M16 2v4"/></svg>
+        Month
+      </button>
+    </div>
+    <div class="tb-title" id="tbTitle">All obligations · 2026</div>
+    <div class="spacer"></div>
+    <div class="filter-note" id="filterNote" style="display:none;">
+      <span id="filterText"></span>
+      <button class="clear-filter" id="clearFilter">Clear filter ✕</button>
+    </div>
+  </div>
+
+  <!-- ===== Body ===== -->
+  <div class="body">
+    <div class="view">
+      <div class="agenda" id="agenda"></div>
+      <div class="cal" id="cal"></div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ===== Drawer ===== -->
+<div class="scrim" id="scrim"></div>
+<aside class="drawer" id="drawer" aria-hidden="true">
+  <div class="dr-accent" id="drAccent"></div>
+  <div class="dr-head">
+    <div class="dr-top">
+      <div class="dr-icon" id="drIcon">📋</div>
+      <div class="dr-htext">
+        <div class="dr-cat" id="drCat">CATEGORY</div>
+        <div class="dr-title" id="drTitle">Title</div>
+      </div>
+      <button class="dr-close" id="drClose" aria-label="Close">✕</button>
+    </div>
+    <div class="dr-status-row" id="drStatusRow"></div>
+  </div>
+  <div class="dr-body">
+    <div class="dr-grid">
+      <div class="field">
+        <div class="fl">Owner</div>
+        <div class="fv" id="drOwner"></div>
+      </div>
+      <div class="field">
+        <div class="fl">Due date</div>
+        <div class="fv" id="drDue"></div>
+        <div class="countdown" id="drCountdown"></div>
+      </div>
+      <div class="field full">
+        <div class="fl">Obligation</div>
+        <div class="desc" id="drDesc"></div>
+      </div>
+      <div class="field">
+        <div class="fl">Jurisdiction</div>
+        <div class="fv" id="drJuris"></div>
+      </div>
+      <div class="field">
+        <div class="fl">Authority</div>
+        <div class="fv" id="drAuthority" style="font-size:12.5px;"></div>
+      </div>
+    </div>
+
+    <div class="sec-title">Completion checklist <span class="ct" id="ckCount">0 / 0</span></div>
+    <div class="ck-progress"><div class="fill" id="ckFill"></div></div>
+    <div class="checklist" id="checklist"></div>
+
+    <div class="reassign-box" id="reassignBox">
+      <div class="rl">Reassign owner to</div>
+      <div class="owner-opts" id="ownerOpts"></div>
+    </div>
+  </div>
+  <div class="dr-foot" style="position:relative;">
+    <div class="snooze-pop" id="snoozePop">
+      <div class="sh">Snooze &amp; set reminder</div>
+      <div id="snoozeOpts"></div>
+    </div>
+    <button class="btn btn-primary" id="btnComplete">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>
+      Mark complete
+    </button>
+    <div class="btn-row">
+      <button class="btn btn-ghost" id="btnReassign">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 3l4 4-4 4M20 7H8M8 21l-4-4 4-4M4 17h12"/></svg>
+        Reassign
+      </button>
+      <button class="btn btn-ghost" id="btnSnooze">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 8v4l3 2"/><circle cx="12" cy="13" r="8"/><path d="M5 3L2 6M19 3l3 3"/></svg>
+        Snooze
+      </button>
+    </div>
+  </div>
+</aside>
+
+<div class="toast-wrap" id="toastWrap"></div>
+<div class="byline">Created by Wes Griffin · Designed &amp; built with AI</div>
+
+<script>
+(function(){
+  "use strict";
+
+  // ---------- "today" anchor ----------
+  var TODAY = new Date(2026, 5, 5); // June 5, 2026 (month is 0-indexed)
+  var MS_DAY = 86400000;
+  var MONTHS = ["January","February","March","April","May","June","July","August","September","October","November","December"];
+  var MON_SHORT = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+  var WD_SHORT = ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];
+
+  function dateOnly(d){ return new Date(d.getFullYear(), d.getMonth(), d.getDate()); }
+  function daysBetween(a,b){ return Math.round((dateOnly(b) - dateOnly(a)) / MS_DAY); }
+  function fmtLong(d){ return MONTHS[d.getMonth()] + " " + d.getDate() + ", " + d.getFullYear(); }
+  function fmtShort(d){ return MON_SHORT[d.getMonth()] + " " + d.getDate(); }
+
+  // ---------- Owners ----------
+  var OWNERS = [
+    {id:"wg", name:"Wes Griffin",     role:"People Ops Lead",        color:"#5b4ef0"},
+    {id:"pn", name:"Priya Nair",      role:"HR Compliance Analyst",  color:"#7c3aed"},
+    {id:"mt", name:"Marcus Thompson", role:"Benefits Manager",       color:"#06b6d4"},
+    {id:"el", name:"Elena Vasquez",   role:"People Ops Specialist",  color:"#db2777"},
+    {id:"jr", name:"Jordan Reyes",    role:"Payroll & Tax Lead",     color:"#f59e0b"},
+    {id:"sk", name:"Sofia Kim",       role:"L&D Program Manager",    color:"#10b981"}
+  ];
+  function owner(id){ for(var i=0;i<OWNERS.length;i++){ if(OWNERS[i].id===id) return OWNERS[i]; } return OWNERS[0]; }
+  function initials(name){
+    var p = name.trim().split(/\s+/);
+    return (p[0][0] + (p.length>1 ? p[p.length-1][0] : "")).toUpperCase();
+  }
+
+  // ---------- Obligations (relative day offsets from TODAY) ----------
+  // status derived: done flag, else overdue if past, soon if <=14d, else upcoming
+  function dOff(days){ return new Date(TODAY.getFullYear(), TODAY.getMonth(), TODAY.getDate() + days); }
+
+  var DATA = [
+    {
+      id:"i9-okafor", icon:"🪪", cat:"I-9 / Work Auth", title:"I-9 reverification — Daniel Okafor",
+      owner:"pn", due:dOff(-4), juris:"Federal", authority:"USCIS · Form I-9 §2",
+      desc:"Daniel Okafor's employment authorization document (EAD) expired June 1. Section 3 reverification must be completed by the expiration date to maintain a valid I-9 on file.",
+      checklist:["Confirm EAD expiration in personnel file","Request unexpired List A or List C document","Examine document in employee's presence (or via authorized rep)","Complete Form I-9 Supplement B (reverification)","Update E-Verify if case re-run is required"]
+    },
+    {
+      id:"i9-mehta", icon:"🪪", cat:"I-9 / Work Auth", title:"I-9 reverification — Aanya Mehta",
+      owner:"el", due:dOff(9), juris:"Federal", authority:"USCIS · Form I-9 §2",
+      desc:"Aanya Mehta's H-1B-based work authorization requires reverification ahead of the June 14 expiration. Begin outreach now to avoid a lapse in authorized employment.",
+      checklist:["Notify employee 90/60/30 days out","Collect updated I-797 / EAD","Complete Supplement B before expiration","Log new expiration tickler"]
+    },
+    {
+      id:"eeo1", icon:"📊", cat:"Federal Filing", title:"EEO-1 Component 1 data filing",
+      owner:"pn", due:dOff(20), juris:"Federal", authority:"EEOC",
+      desc:"Annual EEO-1 Component 1 report (workforce demographics by job category, sex, and race/ethnicity) for the prior year. The EEOC collection portal closes after the published deadline.",
+      checklist:["Pull EEO job-category mapping from HRIS","Validate headcount snapshot (pay period)","Reconcile self-ID race/ethnicity data","Upload to EEOC online filing system","Download & archive certification receipt"]
+    },
+    {
+      id:"aca", icon:"🧾", cat:"Benefits / ACA", title:"ACA 1095-C employee distribution check",
+      owner:"mt", due:dOff(-9), juris:"Federal", authority:"IRS · ACA §6056",
+      desc:"Forms 1095-C furnishing to full-time employees. The furnishing deadline has passed — confirm all forms were delivered and document any corrections needed before IRS transmittal.",
+      checklist:["Confirm 1095-C generated for all FT employees","Verify electronic-consent vs. mailed copies","Resolve any TIN/coverage mismatches","Archive furnishing date evidence"]
+    },
+    {
+      id:"osha300a", icon:"🦺", cat:"Safety / OSHA", title:"OSHA Form 300A posting taken down",
+      owner:"wg", due:dOff(15), juris:"Federal", authority:"OSHA · 29 CFR 1904",
+      desc:"The OSHA Form 300A (Summary of Work-Related Injuries) must remain posted in a visible workplace location February 1 – April 30, then archived. Confirm takedown and 5-year retention.",
+      checklist:["Confirm 300A was posted Feb 1–Apr 30","Take down summary from posting location","File signed 300A in safety records (retain 5 yrs)","Note: electronic 300A submission completed"]
+    },
+    {
+      id:"policy-ack", icon:"📜", cat:"Policy / Handbook", title:"Annual policy acknowledgment campaign",
+      owner:"wg", due:dOff(26), juris:"Company-wide", authority:"Internal Policy",
+      desc:"Company-wide re-acknowledgment of the Employee Handbook, Code of Conduct, and Acceptable Use Policy. Target 100% completion; chase non-responders before the cycle closes.",
+      checklist:["Publish updated handbook v2026.2","Launch acknowledgment campaign in HRIS","Send reminder to non-completers (weekly)","Pull completion report → escalate gaps to managers"]
+    },
+    {
+      id:"hp-ca", icon:"🎓", cat:"Training (State)", title:"Harassment-prevention training — California",
+      owner:"sk", due:dOff(6), juris:"California", authority:"CA SB 1343 / DFEH",
+      desc:"California requires sexual-harassment prevention training every two years (1 hr non-supervisory, 2 hrs supervisory). A cohort of CA employees is due for renewal this cycle.",
+      checklist:["Identify CA employees due for renewal","Assign 1-hr / 2-hr modules by role","Track completion in LMS","Retain completion certificates (2 yrs)"]
+    },
+    {
+      id:"hp-ny", icon:"🎓", cat:"Training (State)", title:"Harassment-prevention training — New York",
+      owner:"sk", due:dOff(34), juris:"New York", authority:"NY Labor Law §201-g",
+      desc:"New York requires annual interactive sexual-harassment prevention training for all employees, meeting or exceeding the State model. Roll out the 2026 annual cohort.",
+      checklist:["Confirm content meets NYS model standards","Assign annual module to all NY employees","Monitor completion dashboard","Document training date per employee"]
+    },
+    {
+      id:"wc-poster", icon:"📌", cat:"Posting / Notice", title:"Workers'-comp poster update",
+      owner:"el", due:dOff(2), juris:"Multi-state", authority:"State WC Boards",
+      desc:"Several state workers'-compensation notices were revised for 2026 (updated carrier and claims-contact info). Replace posters at all worksites and the remote-employee notice portal.",
+      checklist:["Download current-year WC notices per state","Print & replace at each worksite","Update digital posting for remote staff","Photo-log posted notices for audit file"]
+    },
+    {
+      id:"minwage", icon:"💵", cat:"Posting / Notice", title:"State minimum-wage poster refresh",
+      owner:"jr", due:dOff(40), juris:"Multi-state", authority:"State DOL",
+      desc:"Mid-year minimum-wage increases take effect July 1 in several jurisdictions. Refresh required labor-law posters and verify payroll rates align with the new floors.",
+      checklist:["List jurisdictions with July 1 increases","Order updated all-in-one labor posters","Confirm payroll rate tables updated","Replace worksite + digital postings"]
+    },
+    {
+      id:"401k-ndt", icon:"🏦", cat:"Benefits / Retirement", title:"401(k) nondiscrimination testing",
+      owner:"mt", due:dOff(52), juris:"Federal", authority:"IRS · ADP/ACP",
+      desc:"Mid-year 401(k) compliance check: run ADP/ACP and top-heavy nondiscrimination tests with the recordkeeper to flag any corrective action well ahead of the plan-year deadline.",
+      checklist:["Send census file to recordkeeper","Review ADP/ACP preliminary results","Assess top-heavy status","Plan corrective distributions if needed"]
+    },
+    {
+      id:"flu-vax", icon:"📝", cat:"Policy / Handbook", title:"Remote-work policy annual review",
+      owner:"wg", due:dOff(61), juris:"Company-wide", authority:"Internal Policy",
+      desc:"Annual review of the remote and hybrid work policy, including multi-state tax-nexus implications and expense-reimbursement rules, with Legal and Payroll sign-off.",
+      checklist:["Gather feedback from People & Legal","Review multi-state nexus list with Payroll","Update reimbursement guidance","Publish & route for acknowledgment"]
+    }
+  ];
+
+  // ---------- State ----------
+  var state = {}; // id -> {done, checks:[bool], owner, snoozed, reminderDate}
+  DATA.forEach(function(o){
+    state[o.id] = { done:false, checks:o.checklist.map(function(){return false;}), owner:o.owner, snoozed:false, reminderDate:null };
+  });
+  // Pre-complete a couple to make "Completed" non-zero & realistic
+  function preComplete(id){ var s=state[id]; if(s){ s.done=true; s.checks=s.checks.map(function(){return true;}); } }
+  preComplete("aca");
+
+  var view = "agenda";     // agenda | month
+  var filter = null;       // ok | soon | overdue | done | null
+  var watchOn = false;
+  var openId = null;
+
+  // ---------- Status logic ----------
+  function statusOf(o){
+    var s = state[o.id];
+    if(s.done) return "done";
+    var d = daysBetween(TODAY, o.due);
+    if(d < 0) return "overdue";
+    if(d <= 14) return "soon";
+    return "upcoming";
+  }
+  var STATUS_LABEL = {upcoming:"Upcoming", soon:"Due soon", overdue:"Overdue", done:"Done"};
+  var STATUS_CHIPCLASS = {upcoming:"c-upcoming", soon:"c-soon", overdue:"c-overdue", done:"c-done"};
+
+  // ---------- Counts + ring ----------
+  function recompute(){
+    var c = {ok:0, soon:0, overdue:0, done:0};
+    DATA.forEach(function(o){
+      var st = statusOf(o);
+      if(st==="done") c.done++;
+      else if(st==="overdue") c.overdue++;
+      else if(st==="soon") c.soon++;
+      else c.ok++;
+    });
+    return c;
+  }
+
+  function $(id){ return document.getElementById(id); }
+
+  function updateHeader(){
+    var c = recompute();
+    var openTotal = c.ok + c.soon + c.overdue; // not done
+    $("cOk").textContent = c.ok;
+    $("cSoon").textContent = c.soon;
+    $("cOver").textContent = c.overdue;
+    $("cDone").textContent = c.done;
+
+    // overdue number turns red emphatically
+    $("cOver").style.color = c.overdue > 0 ? "var(--red)" : "var(--ink)";
+    $("cSoon").style.color = c.soon > 0 ? "var(--amber)" : "var(--ink)";
+
+    // Ring = % on-track among NOT-overdue obligations -> here use (done + ok + soon-but-not-overdue)/total ...
+    // Define "on-track %" = share of all obligations that are NOT overdue.
+    var total = DATA.length;
+    var onTrack = total - c.overdue;
+    var pct = total ? Math.round((onTrack/total)*100) : 100;
+
+    var R = 40, CIRC = 2*Math.PI*R;
+    var fg = $("ringFg");
+    fg.setAttribute("stroke-dasharray", CIRC.toFixed(1));
+    fg.setAttribute("stroke-dashoffset", (CIRC*(1 - pct/100)).toFixed(1));
+    $("ringPct").textContent = pct + "%";
+
+    var health, hcolor;
+    if(c.overdue===0){ health="Healthy"; hcolor="var(--green)"; }
+    else if(c.overdue<=1){ health="Watch"; hcolor="var(--amber)"; }
+    else { health="At risk"; hcolor="var(--red)"; }
+    var hEl = $("ringHealth"); hEl.textContent = health; hEl.style.color = hcolor;
+    $("ringSub").textContent = c.done + " of " + total + " obligations closed";
+
+    // tweak ring gradient stop toward red feel when at risk (subtle)
+    var stops = document.querySelectorAll("#ringgrad stop");
+    if(c.overdue>=2 && stops.length){
+      stops[0].setAttribute("stop-color","#ef4444");
+      stops[1].setAttribute("stop-color","#f59e0b");
+    } else if(stops.length){
+      stops[0].setAttribute("stop-color","#7c3aed");
+      stops[1].setAttribute("stop-color","#5b4ef0");
+    }
+  }
+
+  // ---------- Filtering ----------
+  function passesFilter(o){
+    if(!filter) return true;
+    var st = statusOf(o);
+    if(filter==="ok") return st==="upcoming";
+    if(filter==="soon") return st==="soon";
+    if(filter==="overdue") return st==="overdue";
+    if(filter==="done") return st==="done";
+    return true;
+  }
+  var FILTER_TEXT = {ok:"Showing on-track (upcoming)", soon:"Showing due-soon items", overdue:"Showing overdue items", done:"Showing completed items"};
+
+  function applyFilterChrome(){
+    document.querySelectorAll(".stat").forEach(function(b){
+      b.classList.toggle("active", b.getAttribute("data-filter")===filter);
+    });
+    var note = $("filterNote");
+    if(filter){
+      note.style.display = "flex";
+      $("filterText").textContent = FILTER_TEXT[filter] || "";
+    } else {
+      note.style.display = "none";
+    }
+  }
+
+  // ---------- Render: Agenda ----------
+  function ownerMini(o){
+    var ow = owner(state[o.id].owner);
+    return '<span class="owner-mini" style="background:'+ow.color+'">'+initials(ow.name)+'</span>';
+  }
+
+  function renderAgenda(){
+    var host = $("agenda");
+    var visible = DATA.filter(passesFilter).slice();
+    // sort by due date
+    visible.sort(function(a,b){ return a.due - b.due; });
+
+    if(!visible.length){
+      host.innerHTML = '<div class="empty"><div class="em">🎉</div><div class="t">Nothing here</div><div class="s">No obligations match this filter.</div></div>';
+      return;
+    }
+
+    // group by month-year
+    var groups = [], gmap = {};
+    visible.forEach(function(o){
+      var key = o.due.getFullYear()+"-"+o.due.getMonth();
+      if(!gmap[key]){ gmap[key]={key:key, label:MONTHS[o.due.getMonth()]+" "+o.due.getFullYear(), items:[]}; groups.push(gmap[key]); }
+      gmap[key].items.push(o);
+    });
+
+    var html = "";
+    groups.forEach(function(g){
+      html += '<div class="month-group"><div class="month-label"><span class="mn">'+g.label+'</span><span class="ln"></span><span class="ct">'+g.items.length+' item'+(g.items.length>1?'s':'')+'</span></div>';
+      g.items.forEach(function(o, idx){
+        var st = statusOf(o);
+        var ow = owner(state[o.id].owner);
+        var dd = daysBetween(TODAY, o.due);
+        var rel;
+        if(st==="done") rel="Completed";
+        else if(dd===0) rel="Due today";
+        else if(dd<0) rel=Math.abs(dd)+"d overdue";
+        else if(dd===1) rel="Due tomorrow";
+        else rel="in "+dd+" days";
+        var isOver = (st==="overdue");
+        html +=
+          '<div class="item st-'+st+'" data-id="'+o.id+'" style="animation-delay:'+(idx*0.03)+'s">'+
+            '<span class="accent"></span>'+
+            '<div class="it-date'+(isOver?' over':'')+'"><div class="mo">'+MON_SHORT[o.due.getMonth()]+'</div><div class="dy">'+o.due.getDate()+'</div></div>'+
+            '<div class="it-icon">'+o.icon+'</div>'+
+            '<div class="it-main">'+
+              '<div class="it-title">'+o.title+'</div>'+
+              '<div class="it-meta">'+
+                '<span class="cat">'+o.cat+'</span>'+
+                '<span class="m">'+ownerMini(o)+' '+ow.name+'</span>'+
+                '<span class="m"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>'+rel+'</span>'+
+              '</div>'+
+            '</div>'+
+            '<div class="it-right">'+
+              '<span class="chip '+STATUS_CHIPCLASS[st]+'"><span class="cdot"></span>'+STATUS_LABEL[st]+'</span>'+
+              '<span class="it-chev">›</span>'+
+            '</div>'+
+          '</div>';
+      });
+      html += '</div>';
+    });
+    host.innerHTML = html;
+
+    host.querySelectorAll(".item").forEach(function(el){
+      el.addEventListener("click", function(){ openDrawer(el.getAttribute("data-id")); });
+    });
+  }
+
+  // ---------- Render: Month grid ----------
+  var calMonth = TODAY.getMonth(), calYear = TODAY.getFullYear();
+  function renderCal(){
+    var host = $("cal");
+    var first = new Date(calYear, calMonth, 1);
+    var startWd = first.getDay();
+    var daysInMonth = new Date(calYear, calMonth+1, 0).getDate();
+    var prevDays = new Date(calYear, calMonth, 0).getDate();
+
+    // map events by day
+    var byDay = {};
+    DATA.filter(passesFilter).forEach(function(o){
+      if(o.due.getFullYear()===calYear && o.due.getMonth()===calMonth){
+        var d = o.due.getDate();
+        (byDay[d] = byDay[d] || []).push(o);
+      }
+    });
+
+    var html = '<div class="cal-title">'+
+        '<span class="mt">'+MONTHS[calMonth]+' '+calYear+'</span>'+
+        '<div class="legend">'+
+          '<span class="lg"><i style="background:#9aa3c2"></i>Upcoming</span>'+
+          '<span class="lg"><i style="background:var(--amber)"></i>Due soon</span>'+
+          '<span class="lg"><i style="background:var(--red)"></i>Overdue</span>'+
+          '<span class="lg"><i style="background:var(--v2)"></i>Done</span>'+
+        '</div>'+
+      '</div>';
+    html += '<div class="cal-head">'+WD_SHORT.map(function(w){return '<div>'+w+'</div>';}).join('')+'</div>';
+    html += '<div class="cal-grid">';
+
+    var cellCount = Math.ceil((startWd + daysInMonth)/7)*7;
+    for(var i=0;i<cellCount;i++){
+      var dayNum, muted=false, isToday=false, realDay=null;
+      if(i < startWd){ dayNum = prevDays - startWd + 1 + i; muted=true; }
+      else if(i >= startWd + daysInMonth){ dayNum = i - (startWd + daysInMonth) + 1; muted=true; }
+      else {
+        realDay = i - startWd + 1;
+        dayNum = realDay;
+        if(realDay===TODAY.getDate() && calMonth===TODAY.getMonth() && calYear===TODAY.getFullYear()) isToday=true;
+      }
+      html += '<div class="cell'+(muted?' muted':'')+(isToday?' today':'')+'">';
+      html += '<span class="dn">'+dayNum+'</span>';
+      if(realDay && byDay[realDay]){
+        byDay[realDay].forEach(function(o){
+          var st = statusOf(o);
+          var ecls = {upcoming:'e-upcoming', soon:'e-soon', overdue:'e-overdue', done:'e-done'}[st];
+          html += '<button class="ev '+ecls+'" data-id="'+o.id+'" title="'+o.title.replace(/"/g,'&quot;')+'">'+o.icon+' '+o.title.replace(/ —.*/,'').replace(/—.*/,'')+'</button>';
+        });
+      }
+      html += '</div>';
+    }
+    html += '</div>';
+    host.innerHTML = html;
+
+    host.querySelectorAll(".ev").forEach(function(el){
+      el.addEventListener("click", function(e){ e.stopPropagation(); openDrawer(el.getAttribute("data-id")); });
+    });
+  }
+
+  function render(){
+    if(view==="agenda"){
+      $("agenda").classList.remove("hide");
+      $("cal").classList.remove("show");
+      renderAgenda();
+    } else {
+      $("agenda").classList.add("hide");
+      $("cal").classList.add("show");
+      renderCal();
+    }
+    updateHeader();
+    applyFilterChrome();
+    updateNudges();
+  }
+
+  // ---------- Drawer ----------
+  function statusPill(st){
+    return '<span class="chip '+STATUS_CHIPCLASS[st]+'"><span class="cdot"></span>'+STATUS_LABEL[st]+'</span>';
+  }
+
+  function openDrawer(id){
+    var o = null;
+    for(var i=0;i<DATA.length;i++){ if(DATA[i].id===id){ o=DATA[i]; break; } }
+    if(!o) return;
+    openId = id;
+    var s = state[id];
+    var st = statusOf(o);
+    var ow = owner(s.owner);
+
+    $("drAccent").className = "dr-accent st-"+st;
+    $("drIcon").textContent = o.icon;
+    $("drCat").textContent = o.cat;
+    $("drTitle").textContent = o.title;
+
+    // status row (status pill + reminder badge if any)
+    var srow = statusPill(st);
+    if(s.reminderDate){
+      srow += '<span class="chip" style="background:rgba(6,182,212,.12);color:#0e7490;"><span class="cdot" style="background:var(--v3)"></span>Reminder '+fmtShort(s.reminderDate)+'</span>';
+    }
+    $("drStatusRow").innerHTML = srow;
+
+    $("drOwner").innerHTML = '<span class="owner-mini" style="background:'+ow.color+'">'+initials(ow.name)+'</span> '+ow.name+' <span style="color:var(--muted);font-weight:500;font-size:11.5px;">· '+ow.role+'</span>';
+
+    var dd = daysBetween(TODAY, o.due);
+    var isOver = (st==="overdue");
+    $("drDue").className = "fv" + (isOver?" over":"");
+    $("drDue").textContent = fmtLong(o.due);
+    var cd = $("drCountdown");
+    if(st==="done"){ cd.className="countdown"; cd.innerHTML="<b>Completed</b> — closed for this cycle."; }
+    else if(dd<0){ cd.className="countdown over"; cd.innerHTML="<b>"+Math.abs(dd)+" days overdue</b> — escalate now."; }
+    else if(dd===0){ cd.className="countdown"; cd.innerHTML="<b>Due today.</b>"; }
+    else { cd.className="countdown"; cd.innerHTML="<b>"+dd+" days</b> remaining."; }
+
+    $("drDesc").textContent = o.desc;
+    $("drJuris").textContent = o.juris;
+    $("drAuthority").textContent = o.authority;
+
+    renderChecklist(o);
+
+    // reset reassign / snooze
+    $("reassignBox").classList.remove("show");
+    $("snoozePop").classList.remove("show");
+    renderOwnerOpts(o);
+    renderSnoozeOpts(o);
+
+    // complete button state
+    var btn = $("btnComplete");
+    if(s.done){
+      btn.className = "btn btn-done-state";
+      btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg> Completed — reopen';
+      btn.disabled = false;
+    } else {
+      btn.className = "btn btn-primary";
+      btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg> Mark complete';
+      btn.disabled = false;
+    }
+
+    $("scrim").classList.add("show");
+    $("drawer").classList.add("show");
+    $("drawer").setAttribute("aria-hidden","false");
+    $("drawer").querySelector(".dr-body").scrollTop = 0;
+  }
+
+  function closeDrawer(){
+    $("scrim").classList.remove("show");
+    $("drawer").classList.remove("show");
+    $("drawer").setAttribute("aria-hidden","true");
+    $("snoozePop").classList.remove("show");
+    openId = null;
+  }
+
+  function renderChecklist(o){
+    var s = state[o.id];
+    var host = $("checklist");
+    var html = "";
+    o.checklist.forEach(function(txt, i){
+      var done = s.checks[i];
+      html += '<button class="ck'+(done?' done':'')+'" data-i="'+i+'">'+
+        '<span class="box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></span>'+
+        '<span class="txt">'+txt+'</span>'+
+      '</button>';
+    });
+    host.innerHTML = html;
+    host.querySelectorAll(".ck").forEach(function(el){
+      el.addEventListener("click", function(){
+        var i = parseInt(el.getAttribute("data-i"),10);
+        s.checks[i] = !s.checks[i];
+        el.classList.toggle("done", s.checks[i]);
+        updateCkProgress(o);
+        // auto-complete when all checks done (and not already done)
+        var all = s.checks.every(function(b){return b;});
+        if(all && !s.done){
+          // gentle suggestion via primary button glow — actual completion stays user-driven
+          var btn = $("btnComplete");
+          btn.style.boxShadow = "0 0 0 3px rgba(16,185,129,.3), 0 6px 16px rgba(91,78,240,.32)";
+          setTimeout(function(){ btn.style.boxShadow=""; }, 1400);
+        }
+      });
+    });
+    updateCkProgress(o);
+  }
+
+  function updateCkProgress(o){
+    var s = state[o.id];
+    var total = o.checklist.length;
+    var done = s.checks.filter(function(b){return b;}).length;
+    $("ckCount").textContent = done + " / " + total;
+    $("ckFill").style.width = (total ? (done/total*100) : 0) + "%";
+  }
+
+  function renderOwnerOpts(o){
+    var s = state[o.id];
+    var host = $("ownerOpts");
+    var html = "";
+    OWNERS.forEach(function(ow){
+      var cur = (ow.id === s.owner);
+      html += '<button class="owner-opt'+(cur?' cur':'')+'" data-oid="'+ow.id+'">'+
+        '<span class="owner-mini" style="width:24px;height:24px;font-size:10px;background:'+ow.color+'">'+initials(ow.name)+'</span>'+
+        '<span class="onm">'+ow.name+' <span class="orole">· '+ow.role+'</span></span>'+
+        (cur?'<span class="ctag">CURRENT</span>':'')+
+      '</button>';
+    });
+    host.innerHTML = html;
+    host.querySelectorAll(".owner-opt").forEach(function(el){
+      el.addEventListener("click", function(){
+        var oid = el.getAttribute("data-oid");
+        if(oid === s.owner){ $("reassignBox").classList.remove("show"); return; }
+        s.owner = oid;
+        var nw = owner(oid);
+        $("reassignBox").classList.remove("show");
+        openDrawer(o.id); // refresh drawer owner display
+        render();
+        toast("bell", "Reassigned to "+nw.name, nw.role+" now owns this obligation. They've been notified.");
+      });
+    });
+  }
+
+  function renderSnoozeOpts(o){
+    var host = $("snoozeOpts");
+    var opts = [
+      {label:"Tomorrow", days:1},
+      {label:"In 3 days", days:3},
+      {label:"In 1 week", days:7},
+      {label:"3 days before due", abs:true}
+    ];
+    var html = "";
+    opts.forEach(function(op, idx){
+      var when;
+      if(op.abs){
+        when = new Date(o.due.getFullYear(), o.due.getMonth(), o.due.getDate()-3);
+      } else {
+        when = dOff(op.days);
+      }
+      html += '<button class="snooze-opt" data-idx="'+idx+'"><span>'+op.label+'</span><span class="sd">'+fmtShort(when)+'</span></button>';
+    });
+    host.innerHTML = html;
+    host.querySelectorAll(".snooze-opt").forEach(function(el){
+      el.addEventListener("click", function(){
+        var idx = parseInt(el.getAttribute("data-idx"),10);
+        var op = opts[idx];
+        var when = op.abs ? new Date(o.due.getFullYear(), o.due.getMonth(), o.due.getDate()-3) : dOff(op.days);
+        var s = state[o.id];
+        s.reminderDate = when;
+        s.snoozed = true;
+        $("snoozePop").classList.remove("show");
+        openDrawer(o.id);
+        render();
+        toast("bell", "Reminder scheduled for "+fmtLong(when), "We'll auto-nudge "+owner(s.owner).name+" so this doesn't slip.");
+      });
+    });
+  }
+
+  // ---------- Toast ----------
+  function toast(kind, title, sub){
+    var cls = kind==="ok" ? "t-ok" : kind==="bell" ? "t-bell" : "t-info";
+    var ic = kind==="ok" ? "✓" : kind==="bell" ? "🔔" : "ⓘ";
+    var el = document.createElement("div");
+    el.className = "toast " + cls;
+    el.innerHTML = '<span class="tic">'+ic+'</span><span><b>'+title+'</b>'+(sub?'<br><span class="ts">'+sub+'</span>':'')+'</span>';
+    $("toastWrap").appendChild(el);
+    // force reflow then show
+    void el.offsetWidth;
+    el.classList.add("show");
+    setTimeout(function(){
+      el.classList.remove("show");
+      setTimeout(function(){ if(el.parentNode) el.parentNode.removeChild(el); }, 350);
+    }, 3600);
+  }
+
+  // ---------- Auto-watch nudges ----------
+  function upcomingNudges(){
+    // obligations not done, due within next 7 days OR overdue, sorted by urgency
+    var list = DATA.filter(function(o){
+      var s = state[o.id];
+      if(s.done) return false;
+      var dd = daysBetween(TODAY, o.due);
+      return dd <= 7; // overdue + due within a week
+    });
+    list.sort(function(a,b){ return a.due - b.due; });
+    return list;
+  }
+
+  function updateNudges(){
+    var list = upcomingNudges();
+    $("nudgeCount").textContent = list.length;
+    var host = $("nudgeList");
+    if(!list.length){
+      host.innerHTML = '<div style="font-size:12px;color:var(--muted);">All caught up — no nudges needed this week. 🎉</div>';
+    } else {
+      host.innerHTML = list.map(function(o){
+        var s = state[o.id];
+        var ow = owner(s.owner);
+        var dd = daysBetween(TODAY, o.due);
+        var when = dd<0 ? "NOW" : dd===0 ? "TODAY" : dd<=2 ? "TODAY" : "IN "+dd+"D";
+        var short = o.title.replace(/ —.*/,"").replace(/—.*/,"");
+        return '<div class="nudge-pill" data-id="'+o.id+'">'+
+          '<span class="when">'+when+'</span>'+
+          '<div><div class="who">'+ow.name+'</div><div class="what">'+short+(dd<0?' · overdue':'')+'</div></div>'+
+        '</div>';
+      }).join('');
+      host.querySelectorAll(".nudge-pill").forEach(function(el){
+        el.style.cursor="pointer";
+        el.addEventListener("click", function(){ openDrawer(el.getAttribute("data-id")); });
+      });
+    }
+    // also reflect count in watch sub when on
+    if(watchOn){
+      $("watchSub").innerHTML = '<b>'+list.length+'</b> reminder'+(list.length===1?'':'s')+' queued to auto-send this week.';
+    }
+  }
+
+  // ---------- Wire up ----------
+  function init(){
+    // initial paint
+    render();
+    // animate ring from 0 on load
+    setTimeout(updateHeader, 60);
+
+    // stat filters
+    document.querySelectorAll(".stat").forEach(function(b){
+      b.addEventListener("click", function(){
+        var f = b.getAttribute("data-filter");
+        filter = (filter===f) ? null : f;
+        render();
+      });
+    });
+    $("clearFilter").addEventListener("click", function(){ filter=null; render(); });
+
+    // view toggle
+    $("vAgenda").addEventListener("click", function(){
+      if(view==="agenda") return;
+      view="agenda";
+      $("vAgenda").classList.add("on"); $("vMonth").classList.remove("on");
+      $("tbTitle").textContent = filter ? "Filtered view" : "All obligations · 2026";
+      $("tbTitle").textContent = "All obligations · 2026";
+      render();
+    });
+    $("vMonth").addEventListener("click", function(){
+      if(view==="month") return;
+      view="month";
+      $("vMonth").classList.add("on"); $("vAgenda").classList.remove("on");
+      $("tbTitle").textContent = MONTHS[calMonth]+" "+calYear+" · grid";
+      render();
+    });
+
+    // auto-watch toggle
+    function setWatch(on){
+      watchOn = on;
+      $("watchSwitch").classList.toggle("on", on);
+      $("watchSwitch").setAttribute("aria-checked", on?"true":"false");
+      $("watchCard").classList.toggle("on", on);
+      $("nudges").classList.toggle("open", on);
+      if(on){
+        updateNudges();
+        var n = upcomingNudges().length;
+        toast("info", "Auto-watch is on", "Owners will be auto-reminded before "+n+" deadline"+(n===1?'':'s')+" this week.");
+      } else {
+        $("watchSub").innerHTML = "Auto-remind owners before anything slips.";
+      }
+    }
+    $("watchSwitch").addEventListener("click", function(){ setWatch(!watchOn); });
+
+    // drawer close
+    $("drClose").addEventListener("click", closeDrawer);
+    $("scrim").addEventListener("click", closeDrawer);
+    document.addEventListener("keydown", function(e){ if(e.key==="Escape"){ closeDrawer(); $("snoozePop").classList.remove("show"); } });
+
+    // mark complete / reopen
+    $("btnComplete").addEventListener("click", function(){
+      if(!openId) return;
+      var o=null; for(var i=0;i<DATA.length;i++){ if(DATA[i].id===openId){o=DATA[i];break;} }
+      if(!o) return;
+      var s = state[openId];
+      if(s.done){
+        s.done = false;
+        openDrawer(openId);
+        render();
+        toast("info", "Reopened: "+o.title.replace(/ —.*/,""), "Back on the calendar. Owner: "+owner(s.owner).name+".");
+      } else {
+        s.done = true;
+        s.checks = s.checks.map(function(){return true;});
+        // celebratory toast with live new on-track count
+        openDrawer(openId);
+        render();
+        var c = recompute();
+        toast("ok", "Marked complete ✓", o.title.replace(/ —.*/,"")+" closed. "+c.done+" of "+DATA.length+" obligations done.");
+      }
+    });
+
+    // reassign toggle
+    $("btnReassign").addEventListener("click", function(){
+      var box = $("reassignBox");
+      var willShow = !box.classList.contains("show");
+      box.classList.toggle("show");
+      $("snoozePop").classList.remove("show");
+      if(willShow){
+        box.scrollIntoView({behavior:"smooth", block:"nearest"});
+      }
+    });
+
+    // snooze popover
+    $("btnSnooze").addEventListener("click", function(e){
+      e.stopPropagation();
+      $("snoozePop").classList.toggle("show");
+      $("reassignBox").classList.remove("show");
+    });
+    document.addEventListener("click", function(e){
+      var pop = $("snoozePop");
+      if(pop.classList.contains("show") && !pop.contains(e.target) && e.target.id!=="btnSnooze" && !$("btnSnooze").contains(e.target)){
+        pop.classList.remove("show");
+      }
+    });
+  }
+
+  // Defensive boot
+  try{
+    if(document.readyState==="loading"){
+      document.addEventListener("DOMContentLoaded", function(){ try{ init(); }catch(err){ console.warn("init error", err); } });
+    } else {
+      init();
+    }
+  }catch(err){
+    console.warn("boot error", err);
+  }
+
+})();
+</script>
+</body>
+</html>

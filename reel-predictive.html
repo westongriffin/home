@@ -1,0 +1,1042 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NewWesVentures — Predictive, Not Reactive</title>
+<style>
+  /* ===================== DESIGN TOKENS ===================== */
+  :root{
+    --ink:#0c1020; --muted:#6b7794; --line:#e7e9f2; --bg:#f7f8fc; --card:#ffffff;
+    --v1:#7c3aed; --v2:#5b4ef0; --v3:#06b6d4; --pink:#db2777;
+    --green:#10b981; --amber:#f59e0b; --red:#ef4444;
+    --grad:linear-gradient(110deg,#7c3aed,#5b4ef0 45%,#06b6d4);
+    --font:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Inter,Helvetica,Arial,sans-serif;
+    --shadow-sm:0 2px 8px rgba(8,10,22,.06);
+    --shadow-md:0 10px 30px rgba(8,10,22,.10);
+    --shadow-lg:0 24px 60px rgba(8,10,22,.16);
+  }
+
+  *{box-sizing:border-box; margin:0; padding:0; -webkit-font-smoothing:antialiased;}
+  html,body{height:100%;}
+  body{
+    font-family:var(--font);
+    background:#080a16;
+    color:var(--ink);
+    overflow:hidden;
+    user-select:none;
+    -webkit-user-select:none;
+  }
+
+  /* ===================== CINEMATIC BACKDROP ===================== */
+  .backdrop{
+    position:fixed; inset:0;
+    background:#080a16;
+    overflow:hidden;
+  }
+  .backdrop::before{
+    content:""; position:absolute; inset:0;
+    background:
+      radial-gradient(60% 80% at 12% 8%, rgba(124,58,237,.5), transparent 60%),
+      radial-gradient(55% 75% at 92% 18%, rgba(6,182,212,.42), transparent 60%);
+  }
+  .backdrop::after{
+    content:""; position:absolute; inset:0;
+    background-image:
+      linear-gradient(rgba(255,255,255,.045) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,.045) 1px, transparent 1px);
+    background-size:42px 42px;
+    -webkit-mask-image:radial-gradient(70% 70% at 50% 45%, #000 30%, transparent 78%);
+            mask-image:radial-gradient(70% 70% at 50% 45%, #000 30%, transparent 78%);
+  }
+  /* slow drifting glow for life */
+  .drift{
+    position:absolute; inset:-20%;
+    background:
+      radial-gradient(40% 50% at 30% 70%, rgba(91,78,240,.22), transparent 60%),
+      radial-gradient(35% 45% at 75% 80%, rgba(219,39,119,.16), transparent 60%);
+    animation:drift 22s ease-in-out infinite alternate;
+  }
+  @keyframes drift{
+    0%{transform:translate3d(-2%, 1%, 0) scale(1);}
+    100%{transform:translate3d(3%, -2%, 0) scale(1.08);}
+  }
+
+  /* ===================== PROGRESS BAR ===================== */
+  .progress{
+    position:fixed; top:0; left:0; right:0; height:4px;
+    background:rgba(255,255,255,.08);
+    z-index:50;
+  }
+  .progress__fill{
+    height:100%; width:0%;
+    background:var(--grad);
+    box-shadow:0 0 12px rgba(124,58,237,.6);
+    transform-origin:left center;
+  }
+
+  /* ===================== STAGE (16:9) ===================== */
+  .frame{
+    position:fixed; inset:0;
+    display:flex; align-items:center; justify-content:center;
+    padding:clamp(14px,3.2vmin,40px);
+    z-index:10;
+  }
+  .stage{
+    position:relative;
+    width:min(100%, calc((100vh - 2*clamp(14px,3.2vmin,40px)) * 16 / 9));
+    aspect-ratio:16/9;
+    max-width:1280px;
+    border-radius:20px;
+    background:linear-gradient(180deg,#fbfcff,#f4f6fc);
+    box-shadow:var(--shadow-lg), 0 0 0 1px rgba(255,255,255,.06);
+    overflow:hidden;
+    /* container query units for internal scaling */
+    container-type:inline-size;
+  }
+  /* fallback for browsers w/o aspect-ratio */
+  @supports not (aspect-ratio:16/9){
+    .stage{height:min(720px, calc(100vw*9/16));}
+  }
+
+  /* A "scene" fills the stage; only the active one is shown */
+  .scene{
+    position:absolute; inset:0;
+    opacity:0;
+    pointer-events:none;
+    display:flex; flex-direction:column;
+    padding:4.6cqw 5cqw;
+  }
+  .scene.is-active{opacity:1;}
+
+  /* ===================== LOWER THIRD CAPTION ===================== */
+  .ribbon{
+    position:absolute; left:5cqw; bottom:4.4cqw;
+    display:flex; align-items:center; gap:.7cqw;
+    padding:1.05cqw 1.7cqw;
+    background:rgba(12,16,32,.82);
+    color:#fff;
+    border-radius:12px;
+    font-size:1.95cqw;
+    font-weight:600;
+    letter-spacing:.2px;
+    box-shadow:var(--shadow-md);
+    backdrop-filter:blur(6px);
+    -webkit-backdrop-filter:blur(6px);
+    max-width:74cqw;
+    opacity:0; transform:translateY(14px);
+  }
+  .ribbon .tag{
+    display:inline-block;
+    padding:.35cqw .85cqw;
+    border-radius:7px;
+    background:var(--grad);
+    font-size:1.45cqw;
+    font-weight:800;
+    letter-spacing:.6px;
+    text-transform:uppercase;
+    white-space:nowrap;
+  }
+  .scene.is-active .ribbon{
+    animation:ribbonIn .7s cubic-bezier(.16,.84,.32,1) .25s forwards;
+  }
+  @keyframes ribbonIn{to{opacity:1; transform:translateY(0);}}
+
+  /* ===================== TITLE CARD ===================== */
+  #s-title{align-items:center; justify-content:center; text-align:center;}
+  .kicker{
+    display:inline-flex; align-items:center; gap:.7cqw;
+    padding:.7cqw 1.4cqw;
+    border:1px solid rgba(124,58,237,.28);
+    border-radius:999px;
+    color:#3a2d6b;
+    background:rgba(124,58,237,.07);
+    font-size:1.55cqw; font-weight:700; letter-spacing:1.4px; text-transform:uppercase;
+    margin-bottom:2.6cqw;
+    opacity:0;
+  }
+  .kicker .dot{width:.8cqw; height:.8cqw; border-radius:50%; background:var(--grad); box-shadow:0 0 10px rgba(124,58,237,.7);}
+  .title-main{
+    font-size:8.2cqw; line-height:1.02; font-weight:800; letter-spacing:-1.4px;
+    background:var(--grad);
+    -webkit-background-clip:text; background-clip:text;
+    color:transparent;
+    margin-bottom:2cqw;
+  }
+  .title-sub{
+    font-size:2.9cqw; font-weight:500; color:#2a3350; letter-spacing:-.2px;
+    opacity:0;
+  }
+  .title-brand{
+    margin-top:3.4cqw;
+    font-size:1.7cqw; font-weight:700; color:var(--muted); letter-spacing:.6px;
+    display:flex; align-items:center; gap:1cqw; justify-content:center;
+    opacity:0;
+  }
+  .title-brand .chip{
+    width:2.6cqw; height:2.6cqw; border-radius:8px; background:var(--grad);
+    display:inline-flex; align-items:center; justify-content:center;
+    color:#fff; font-weight:900; font-size:1.5cqw;
+    box-shadow:0 6px 16px rgba(91,78,240,.4);
+  }
+  .anim-word{display:inline-block;}
+  #s-title.is-active .kicker{animation:popUp .7s cubic-bezier(.16,.84,.32,1) .1s forwards;}
+  #s-title.is-active .anim-word{animation:wordUp .85s cubic-bezier(.16,.84,.32,1) forwards;}
+  #s-title.is-active .anim-word:nth-child(1){animation-delay:.28s;}
+  #s-title.is-active .anim-word:nth-child(2){animation-delay:.40s;}
+  #s-title.is-active .anim-word:nth-child(3){animation-delay:.52s;}
+  #s-title.is-active .title-sub{animation:popUp .8s cubic-bezier(.16,.84,.32,1) .82s forwards;}
+  #s-title.is-active .title-brand{animation:popUp .8s cubic-bezier(.16,.84,.32,1) 1.05s forwards;}
+  @keyframes popUp{from{opacity:0; transform:translateY(16px);} to{opacity:1; transform:translateY(0);}}
+  @keyframes wordUp{
+    0%{opacity:0; transform:translateY(40%) rotate(2deg); clip-path:inset(0 0 100% 0);}
+    100%{opacity:1; transform:translateY(0) rotate(0); clip-path:inset(0 0 0% 0);}
+  }
+
+  /* ===================== GENERIC PANEL HEADER ===================== */
+  .panel-head{
+    display:flex; align-items:baseline; justify-content:space-between; gap:2cqw;
+    margin-bottom:3cqw;
+  }
+  .panel-head h2{
+    font-size:3.3cqw; font-weight:800; letter-spacing:-.6px; color:var(--ink);
+    display:flex; align-items:center; gap:1.1cqw;
+  }
+  .panel-head h2 .ico{
+    width:4.4cqw; height:4.4cqw; border-radius:11px;
+    background:linear-gradient(180deg,#fff,#f1f3fb);
+    border:1px solid var(--line);
+    box-shadow:var(--shadow-sm);
+    display:inline-flex; align-items:center; justify-content:center;
+    font-size:2.4cqw;
+  }
+  .panel-head .meta{
+    font-size:1.7cqw; color:var(--muted); font-weight:600;
+    display:flex; align-items:center; gap:.7cqw;
+  }
+  .live-dot{width:1cqw; height:1cqw; border-radius:50%; background:var(--green); box-shadow:0 0 0 0 rgba(16,185,129,.5);}
+  .scene.is-active .live-dot{animation:pulse 1.8s ease-out infinite;}
+  @keyframes pulse{0%{box-shadow:0 0 0 0 rgba(16,185,129,.5);}70%{box-shadow:0 0 0 .9cqw rgba(16,185,129,0);}100%{box-shadow:0 0 0 0 rgba(16,185,129,0);}}
+
+  .reveal{opacity:0; transform:translateY(18px);}
+  .scene.is-active .reveal{animation:popUp .7s cubic-bezier(.16,.84,.32,1) forwards;}
+
+  /* ===================== SCENE 1 — RISK BOARD ===================== */
+  .riskboard{display:flex; flex-direction:column; gap:1.9cqw; flex:1; justify-content:center;}
+  .riskrow{
+    display:grid; grid-template-columns:18cqw 1fr 9cqw;
+    align-items:center; gap:2cqw;
+    background:var(--card);
+    border:1px solid var(--line);
+    border-radius:14px;
+    padding:1.7cqw 2cqw;
+    box-shadow:var(--shadow-sm);
+    position:relative;
+  }
+  .riskrow.is-hot{
+    box-shadow:0 0 0 2px rgba(239,68,68,.55), 0 18px 40px rgba(239,68,68,.18);
+    background:linear-gradient(180deg,#fff, #fff6f6);
+  }
+  .riskrow .team{font-weight:700; font-size:2.05cqw; color:var(--ink); line-height:1.15;}
+  .riskrow .team small{display:block; font-size:1.4cqw; color:var(--muted); font-weight:600; margin-top:.25cqw;}
+  .track{
+    position:relative; height:2.5cqw; border-radius:999px;
+    background:#eef0f8; overflow:hidden;
+  }
+  .track .bar{
+    position:absolute; inset:0 100% 0 0; /* width via right */
+    border-radius:999px;
+    background:linear-gradient(90deg,#34d399,#10b981);
+    transition:right 1.6s cubic-bezier(.5,0,.2,1), background 1s ease;
+  }
+  .track .bar.amber{background:linear-gradient(90deg,#fbbf24,#f59e0b);}
+  .track .bar.red{background:linear-gradient(90deg,#fb7185,#ef4444);}
+  .riskrow .score{
+    text-align:right; font-weight:800; font-size:2.4cqw; color:var(--muted);
+    font-variant-numeric:tabular-nums;
+  }
+  .riskrow.lvl-high .score{color:var(--red);}
+  .riskrow.lvl-mid .score{color:var(--amber);}
+  .riskrow.lvl-low .score{color:var(--green);}
+  .pill{
+    position:absolute; top:-1.1cqw; right:1.6cqw;
+    font-size:1.25cqw; font-weight:800; letter-spacing:.8px; text-transform:uppercase;
+    padding:.45cqw 1cqw; border-radius:999px; color:#fff;
+    opacity:0; transform:scale(.6);
+  }
+  .pill.show{animation:popIn .5s cubic-bezier(.2,1.3,.5,1) forwards;}
+  @keyframes popIn{to{opacity:1; transform:scale(1);}}
+  .pill.high{background:var(--red); box-shadow:0 6px 14px rgba(239,68,68,.4);}
+  /* driver chips that reveal under the hot row */
+  .drivers{
+    grid-column:1 / -1;
+    display:flex; flex-wrap:wrap; gap:1cqw;
+    max-height:0; overflow:hidden; opacity:0;
+    transition:max-height .7s ease, opacity .6s ease, margin-top .6s ease;
+    margin-top:0;
+  }
+  .drivers.open{max-height:10cqw; opacity:1; margin-top:1.4cqw;}
+  .drivers .chip{
+    display:inline-flex; align-items:center; gap:.6cqw;
+    font-size:1.55cqw; font-weight:600; color:#7a1d2b;
+    background:rgba(239,68,68,.1);
+    border:1px solid rgba(239,68,68,.25);
+    padding:.7cqw 1.2cqw; border-radius:9px;
+  }
+  .drivers .chip b{font-weight:800;}
+
+  /* ===================== SCENE 2 — ALERT + INTERVENTIONS ===================== */
+  #s-alert{padding:4.6cqw 5cqw;}
+  .alert-card{
+    display:flex; align-items:flex-start; gap:1.8cqw;
+    background:linear-gradient(180deg,#fff,#fff5f5);
+    border:1px solid rgba(239,68,68,.3);
+    border-left:6px solid var(--red);
+    border-radius:14px;
+    padding:2cqw 2.3cqw;
+    box-shadow:0 18px 44px rgba(239,68,68,.16);
+    margin-bottom:2.6cqw;
+    opacity:0; transform:translateX(-46px);
+  }
+  #s-alert.is-active .alert-card{animation:slideInL .8s cubic-bezier(.16,.84,.32,1) .15s forwards;}
+  @keyframes slideInL{to{opacity:1; transform:translateX(0);}}
+  .alert-card .bell{
+    width:5cqw; height:5cqw; flex:none; border-radius:12px;
+    background:rgba(239,68,68,.12);
+    display:flex; align-items:center; justify-content:center; font-size:2.7cqw;
+  }
+  .scene.is-active .alert-card .bell{animation:ring 1.3s ease-in-out .9s 2;}
+  @keyframes ring{0%,100%{transform:rotate(0);}20%{transform:rotate(16deg);}40%{transform:rotate(-13deg);}60%{transform:rotate(8deg);}80%{transform:rotate(-5deg);}}
+  .alert-card .body{flex:1;}
+  .alert-card .body .ttl{font-size:2.5cqw; font-weight:800; color:#9b1c1c; letter-spacing:-.4px;}
+  .alert-card .body .sub{font-size:1.85cqw; color:#7a3b3b; font-weight:500; margin-top:.5cqw; line-height:1.4;}
+  .alert-card .sev{
+    align-self:center; font-size:1.4cqw; font-weight:800; letter-spacing:.8px; text-transform:uppercase;
+    background:var(--red); color:#fff; padding:.7cqw 1.2cqw; border-radius:999px; white-space:nowrap;
+  }
+
+  .interv-wrap{display:grid; grid-template-columns:1.55fr 1fr; gap:2.4cqw; flex:1; align-items:stretch;}
+  .interv{display:flex; flex-direction:column; gap:1.5cqw;}
+  .icard{
+    display:flex; align-items:center; gap:1.5cqw;
+    background:var(--card); border:1px solid var(--line); border-radius:13px;
+    padding:1.6cqw 1.8cqw; box-shadow:var(--shadow-sm);
+    cursor:default; opacity:0; transform:translateY(20px);
+    transition:box-shadow .4s ease, border-color .4s ease, background .4s ease, transform .4s ease;
+  }
+  #s-alert.is-active .icard{animation:popUp .65s cubic-bezier(.16,.84,.32,1) forwards;}
+  #s-alert.is-active .icard:nth-child(1){animation-delay:1.0s;}
+  #s-alert.is-active .icard:nth-child(2){animation-delay:1.18s;}
+  #s-alert.is-active .icard:nth-child(3){animation-delay:1.36s;}
+  .icard.on{
+    border-color:rgba(124,58,237,.5);
+    background:linear-gradient(180deg,#fff,#faf8ff);
+    box-shadow:0 12px 30px rgba(124,58,237,.16);
+  }
+  .icard .emoji{
+    width:4.4cqw; height:4.4cqw; flex:none; border-radius:11px; font-size:2.3cqw;
+    display:flex; align-items:center; justify-content:center;
+    background:linear-gradient(180deg,#f4f1ff,#ece8ff);
+  }
+  .icard .txt{flex:1;}
+  .icard .txt .h{font-size:2cqw; font-weight:700; color:var(--ink); letter-spacing:-.3px;}
+  .icard .txt .p{font-size:1.5cqw; color:var(--muted); font-weight:500; margin-top:.25cqw;}
+  .toggle{
+    width:4.6cqw; height:2.6cqw; flex:none; border-radius:999px; position:relative;
+    background:#d6dae8; transition:background .35s ease;
+  }
+  .toggle::after{
+    content:""; position:absolute; top:.35cqw; left:.35cqw;
+    width:1.9cqw; height:1.9cqw; border-radius:50%; background:#fff;
+    box-shadow:0 2px 5px rgba(0,0,0,.25);
+    transition:transform .35s cubic-bezier(.3,1.4,.5,1);
+  }
+  .icard.on .toggle{background:var(--v1);}
+  .icard.on .toggle::after{transform:translateX(2cqw);}
+
+  /* projected risk dial */
+  .projbox{
+    background:linear-gradient(180deg,#0e1124,#161a32);
+    border-radius:16px; padding:2.2cqw 2cqw;
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+    color:#fff; text-align:center; box-shadow:var(--shadow-md);
+    opacity:0; transform:translateY(20px);
+  }
+  #s-alert.is-active .projbox{animation:popUp .7s cubic-bezier(.16,.84,.32,1) 1.1s forwards;}
+  .projbox .lbl{font-size:1.55cqw; font-weight:700; letter-spacing:.6px; text-transform:uppercase; color:#9aa3c4;}
+  .ring-wrap{position:relative; width:18cqw; height:18cqw; margin:1.6cqw 0 1cqw;}
+  .ring-wrap svg{width:100%; height:100%; transform:rotate(-90deg);}
+  .ring-val{
+    position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center;
+  }
+  .ring-val .num{font-size:5cqw; font-weight:800; line-height:1; font-variant-numeric:tabular-nums;}
+  .ring-val .num .pct{font-size:2.6cqw; font-weight:700;}
+  .ring-val .cap{font-size:1.35cqw; color:#9aa3c4; font-weight:600; margin-top:.4cqw;}
+  .proj-delta{
+    font-size:1.75cqw; font-weight:700; color:#34d399;
+    display:flex; align-items:center; gap:.6cqw;
+  }
+  .proj-delta .old{color:#8b93b4; text-decoration:line-through; font-weight:600;}
+
+  /* ===================== SCENE 3 — FORECAST CHART ===================== */
+  #s-forecast{padding:4.6cqw 5cqw;}
+  .fc-grid{display:grid; grid-template-columns:1.75fr 1fr; gap:2.6cqw; flex:1; align-items:stretch;}
+  .chart-card{
+    background:var(--card); border:1px solid var(--line); border-radius:16px;
+    padding:2cqw 2.2cqw 1.4cqw; box-shadow:var(--shadow-sm);
+    display:flex; flex-direction:column; position:relative;
+    opacity:0; transform:translateY(18px);
+  }
+  #s-forecast.is-active .chart-card{animation:popUp .7s cubic-bezier(.16,.84,.32,1) .2s forwards;}
+  .chart-card .ctitle{font-size:1.9cqw; font-weight:700; color:var(--ink); display:flex; gap:1.2cqw; align-items:center;}
+  .legend{display:flex; gap:1.6cqw; margin-left:auto; font-size:1.4cqw; font-weight:600; color:var(--muted);}
+  .legend span{display:inline-flex; align-items:center; gap:.5cqw;}
+  .legend i{width:1.5cqw; height:.45cqw; border-radius:3px; display:inline-block;}
+  .legend i.actual{background:var(--v2);}
+  .legend i.plan{background:#9aa3c4;}
+  .legend i.gap{background:rgba(239,68,68,.35); height:1.2cqw;}
+  .chartarea{flex:1; margin-top:1cqw; min-height:0;}
+  .chartarea svg{width:100%; height:100%; display:block;}
+
+  .path-actual{
+    fill:none; stroke:var(--v2); stroke-width:3.5; stroke-linecap:round; stroke-linejoin:round;
+  }
+  .path-plan{
+    fill:none; stroke:#9aa3c4; stroke-width:3; stroke-dasharray:7 7; stroke-linecap:round;
+  }
+  .area-actual{fill:url(#fcFill); opacity:0;}
+  #s-forecast.is-active .area-actual{animation:fadeIn 1.2s ease 1.1s forwards;}
+  @keyframes fadeIn{to{opacity:1;}}
+  .gap-band{fill:url(#gapFill); opacity:0;}
+  #s-forecast.is-active .gap-band{animation:fadeIn 1s ease 1.9s forwards;}
+  .gap-flag{opacity:0;}
+  #s-forecast.is-active .gap-flag{animation:popUp .6s cubic-bezier(.16,.84,.32,1) 2.2s forwards;}
+  .dotmark{opacity:0;}
+  #s-forecast.is-active .dotmark{animation:fadeIn .5s ease 2.0s forwards;}
+
+  .fc-stats{display:flex; flex-direction:column; gap:2cqw; justify-content:center;}
+  .statcard{
+    background:linear-gradient(180deg,#fff,#f7f8ff);
+    border:1px solid var(--line); border-radius:15px;
+    padding:2.1cqw 2.1cqw; box-shadow:var(--shadow-sm);
+    opacity:0; transform:translateY(20px);
+  }
+  #s-forecast.is-active .statcard:nth-of-type(1){animation:popUp .7s cubic-bezier(.16,.84,.32,1) 2.4s forwards;}
+  #s-forecast.is-active .statcard:nth-of-type(2){animation:popUp .7s cubic-bezier(.16,.84,.32,1) 2.65s forwards;}
+  .statcard .lab{font-size:1.6cqw; color:var(--muted); font-weight:700; letter-spacing:.3px; display:flex; align-items:center; gap:.8cqw;}
+  .statcard .big{font-size:5.2cqw; font-weight:800; letter-spacing:-1.4px; line-height:1; margin-top:.9cqw; font-variant-numeric:tabular-nums;}
+  .statcard .big.good{
+    background:linear-gradient(110deg,#10b981,#06b6d4);
+    -webkit-background-clip:text; background-clip:text; color:transparent;
+  }
+  .statcard .big.money{
+    background:var(--grad);
+    -webkit-background-clip:text; background-clip:text; color:transparent;
+  }
+  .statcard .arrow{color:var(--green); font-size:2cqw;}
+
+  /* ===================== END CARD ===================== */
+  #s-end{align-items:center; justify-content:center; text-align:center; gap:0;}
+  .end-stat{
+    font-size:7.4cqw; font-weight:800; letter-spacing:-1.6px; line-height:1.05;
+    color:var(--ink); max-width:84cqw; margin-bottom:2.4cqw;
+    opacity:0;
+  }
+  .end-stat .hl{
+    background:var(--grad); -webkit-background-clip:text; background-clip:text; color:transparent;
+  }
+  .end-brand{
+    display:flex; align-items:center; gap:1.3cqw; justify-content:center;
+    font-size:2.2cqw; font-weight:700; color:#2a3350;
+    padding-top:2.6cqw; opacity:0;
+  }
+  .end-brand .logo{
+    width:3.4cqw; height:3.4cqw; border-radius:9px; background:var(--grad);
+    display:inline-flex; align-items:center; justify-content:center; color:#fff; font-weight:900; font-size:2cqw;
+    box-shadow:0 8px 20px rgba(91,78,240,.4);
+  }
+  .end-brand .sep{color:var(--line);}
+  .end-brand .light{color:var(--muted); font-weight:600;}
+  .byline{
+    margin-top:2.4cqw; font-size:1.55cqw; color:var(--muted); font-weight:600; letter-spacing:.4px;
+    opacity:0;
+  }
+  #s-end.is-active .end-stat{animation:popUp .85s cubic-bezier(.16,.84,.32,1) .2s forwards;}
+  #s-end.is-active .end-brand{animation:popUp .85s cubic-bezier(.16,.84,.32,1) .6s forwards;}
+  #s-end.is-active .byline{animation:popUp .85s cubic-bezier(.16,.84,.32,1) .85s forwards;}
+
+  /* ===================== CONTROLS ===================== */
+  .controls{
+    position:fixed; right:clamp(16px,2.6vmin,34px); bottom:clamp(16px,2.6vmin,34px);
+    display:flex; gap:10px; z-index:60;
+  }
+  .ctrl{
+    width:46px; height:46px; border-radius:50%;
+    border:1px solid rgba(255,255,255,.16);
+    background:rgba(18,22,40,.66);
+    color:#fff;
+    display:flex; align-items:center; justify-content:center;
+    cursor:pointer;
+    backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(8px);
+    box-shadow:0 8px 24px rgba(0,0,0,.35);
+    transition:transform .18s ease, background .2s ease, border-color .2s ease;
+    -webkit-tap-highlight-color:transparent;
+  }
+  .ctrl:hover{transform:translateY(-2px); background:rgba(28,33,58,.8); border-color:rgba(124,58,237,.55);}
+  .ctrl:active{transform:translateY(0) scale(.94);}
+  .ctrl svg{width:20px; height:20px; fill:#fff;}
+  .ctrl .ic-pause{display:block;}
+  .ctrl .ic-play{display:none;}
+  body.is-paused .ctrl .ic-pause{display:none;}
+  body.is-paused .ctrl .ic-play{display:block;}
+
+  /* subtle stage-edge brand bar */
+  .stage-watermark{
+    position:absolute; top:3cqw; right:4cqw; z-index:5;
+    display:flex; align-items:center; gap:.8cqw;
+    font-size:1.5cqw; font-weight:800; letter-spacing:.4px; color:#9aa3c4;
+    opacity:.9;
+  }
+  .stage-watermark .wm{
+    width:2.4cqw; height:2.4cqw; border-radius:6px; background:var(--grad);
+    display:inline-flex; align-items:center; justify-content:center; color:#fff; font-size:1.4cqw; font-weight:900;
+  }
+
+  /* ===================== REDUCED MOTION — STATIC FINAL FRAME ===================== */
+  @media (prefers-reduced-motion: reduce){
+    .drift{animation:none;}
+    .progress{display:none;}
+    .controls{display:none;}
+    .scene{transition:none !important;}
+    /* hide everything, show only end card composed statically */
+    .scene{opacity:0 !important;}
+    #s-end{opacity:1 !important;}
+    #s-end .end-stat, #s-end .end-brand, #s-end .byline{opacity:1 !important; transform:none !important; animation:none !important;}
+    .stage-watermark{animation:none;}
+  }
+</style>
+</head>
+<body>
+  <div class="backdrop"><div class="drift"></div></div>
+
+  <div class="progress"><div class="progress__fill" id="progressFill"></div></div>
+
+  <div class="frame">
+    <div class="stage" id="stage">
+
+      <div class="stage-watermark"><span class="wm">N</span>NewWesVentures</div>
+
+      <!-- ============ TITLE CARD ============ -->
+      <section class="scene" id="s-title">
+        <span class="kicker"><span class="dot"></span>NewWesVentures · People Operations</span>
+        <h1 class="title-main">
+          <span class="anim-word">Predictive,</span>
+          <span class="anim-word">Not</span>
+          <span class="anim-word">Reactive</span>
+        </h1>
+        <p class="title-sub">See the risk before it walks out the door.</p>
+        <div class="title-brand"><span class="chip">N</span> Workforce Intelligence, powered by AI</div>
+      </section>
+
+      <!-- ============ SCENE 1 — RISK BOARD ============ -->
+      <section class="scene" id="s-risk">
+        <div class="panel-head reveal">
+          <h2><span class="ico">📊</span> Attrition Risk Board</h2>
+          <span class="meta"><span class="live-dot"></span> Live model · updated 4m ago</span>
+        </div>
+        <div class="riskboard">
+          <!-- rows injected pattern, but kept static markup for control -->
+          <div class="riskrow reveal" data-team="design">
+            <div class="team">Product Design<small>9 people · stable</small></div>
+            <div class="track"><div class="bar" data-target="28"></div></div>
+            <div class="score" data-score="0">0</div>
+          </div>
+          <div class="riskrow reveal" data-team="sales">
+            <div class="team">Enterprise Sales<small>14 people · watch</small></div>
+            <div class="track"><div class="bar" data-target="52"></div></div>
+            <div class="score" data-score="0">0</div>
+          </div>
+          <div class="riskrow reveal" data-team="cs">
+            <div class="team">Customer Success<small>11 people · stable</small></div>
+            <div class="track"><div class="bar" data-target="41"></div></div>
+            <div class="score" data-score="0">0</div>
+          </div>
+          <div class="riskrow reveal" id="hotRow" data-team="de">
+            <span class="pill high" id="hotPill">High Risk</span>
+            <div class="team">Data Engineering<small>8 people · escalating</small></div>
+            <div class="track"><div class="bar" data-target="84"></div></div>
+            <div class="score" data-score="0">0</div>
+            <div class="drivers" id="drivers">
+              <span class="chip">💸 comp <b>11% below band</b></span>
+              <span class="chip">⏳ <b>no promotion</b> in 24 mo</span>
+              <span class="chip">👥 manager span <b>12</b></span>
+            </div>
+          </div>
+        </div>
+        <div class="ribbon"><span class="tag">Detect</span> Data Engineering is climbing into high-risk territory.</div>
+      </section>
+
+      <!-- ============ SCENE 2 — ALERT + INTERVENTIONS ============ -->
+      <section class="scene" id="s-alert">
+        <div class="alert-card">
+          <div class="bell">🔔</div>
+          <div class="body">
+            <div class="ttl">Early-warning: Data Engineering</div>
+            <div class="sub">Predicted regrettable attrition in the next 90 days has crossed your alert threshold. Recommended interventions below.</div>
+          </div>
+          <div class="sev">Action needed</div>
+        </div>
+        <div class="interv-wrap">
+          <div class="interv">
+            <div class="icard" data-drop="19">
+              <div class="emoji">💰</div>
+              <div class="txt"><div class="h">Compensation review</div><div class="p">Close the 11% gap to band midpoint</div></div>
+              <div class="toggle"></div>
+            </div>
+            <div class="icard" data-drop="11">
+              <div class="emoji">🤝</div>
+              <div class="txt"><div class="h">Stay conversation</div><div class="p">Manager-led, within 7 days</div></div>
+              <div class="toggle"></div>
+            </div>
+            <div class="icard" data-drop="7">
+              <div class="emoji">🚀</div>
+              <div class="txt"><div class="h">Promotion case</div><div class="p">Build Sr. Engineer packet for Q3</div></div>
+              <div class="toggle"></div>
+            </div>
+          </div>
+          <div class="projbox">
+            <div class="lbl">Projected flight risk</div>
+            <div class="ring-wrap">
+              <svg viewBox="0 0 120 120">
+                <circle cx="60" cy="60" r="52" fill="none" stroke="rgba(255,255,255,.12)" stroke-width="12"/>
+                <circle id="riskRing" cx="60" cy="60" r="52" fill="none" stroke="#ef4444" stroke-width="12"
+                        stroke-linecap="round" stroke-dasharray="326.7" stroke-dashoffset="104.5"/>
+              </svg>
+              <div class="ring-val">
+                <div class="num"><span id="riskNum">68</span><span class="pct">%</span></div>
+                <div class="cap">90-day horizon</div>
+              </div>
+            </div>
+            <div class="proj-delta"><span class="old">68%</span> → <span id="riskAfter">31%</span> with plan</div>
+          </div>
+        </div>
+        <div class="ribbon"><span class="tag">Intervene</span> Stack the right moves — watch flight risk fall 68% → 31%.</div>
+      </section>
+
+      <!-- ============ SCENE 3 — FORECAST ============ -->
+      <section class="scene" id="s-forecast">
+        <div class="fc-grid">
+          <div class="chart-card">
+            <div class="ctitle">📈 Workforce Forecast · Engineering
+              <span class="legend">
+                <span><i class="actual"></i>Actual</span>
+                <span><i class="plan"></i>Plan</span>
+                <span><i class="gap"></i>Projected gap</span>
+              </span>
+            </div>
+            <div class="chartarea">
+              <svg id="fcSvg" viewBox="0 0 600 300" preserveAspectRatio="none">
+                <defs>
+                  <linearGradient id="fcFill" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stop-color="#5b4ef0" stop-opacity=".34"/>
+                    <stop offset="100%" stop-color="#5b4ef0" stop-opacity="0"/>
+                  </linearGradient>
+                  <linearGradient id="gapFill" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stop-color="#ef4444" stop-opacity=".30"/>
+                    <stop offset="100%" stop-color="#ef4444" stop-opacity=".04"/>
+                  </linearGradient>
+                </defs>
+                <!-- gridlines -->
+                <g stroke="#eef0f8" stroke-width="1">
+                  <line x1="0" y1="60" x2="600" y2="60"/>
+                  <line x1="0" y1="120" x2="600" y2="120"/>
+                  <line x1="0" y1="180" x2="600" y2="180"/>
+                  <line x1="0" y1="240" x2="600" y2="240"/>
+                </g>
+                <!-- projected gap band (between plan and actual in Q3) -->
+                <path class="gap-band" id="gapBand" d=""/>
+                <!-- actual area + line -->
+                <path class="area-actual" id="areaActual" d=""/>
+                <path class="path-plan" id="pathPlan" d=""/>
+                <path class="path-actual" id="pathActual" d=""/>
+                <!-- end dot -->
+                <circle class="dotmark" id="endDot" r="5.5" fill="#5b4ef0" stroke="#fff" stroke-width="2.5"/>
+                <!-- gap flag -->
+                <g class="gap-flag" id="gapFlag">
+                  <rect x="0" y="0" width="148" height="34" rx="8" fill="#0c1020"/>
+                  <text x="12" y="22" fill="#fff" font-size="15" font-weight="700" font-family="-apple-system,Segoe UI,Roboto,sans-serif">⚠ Q3 gap · 6 roles</text>
+                </g>
+                <!-- x labels -->
+                <g fill="#9aa3c4" font-size="13" font-weight="600" font-family="-apple-system,Segoe UI,Roboto,sans-serif" text-anchor="middle">
+                  <text x="40" y="292">Q1</text>
+                  <text x="170" y="292">Q2</text>
+                  <text x="300" y="292">Q3</text>
+                  <text x="430" y="292">Q4</text>
+                  <text x="560" y="292">Q1 ’27</text>
+                </g>
+              </svg>
+            </div>
+          </div>
+          <div class="fc-stats">
+            <div class="statcard">
+              <div class="lab">Predicted regrettable attrition <span class="arrow">↓</span></div>
+              <div class="big good"><span id="statAttr">0</span>%</div>
+            </div>
+            <div class="statcard">
+              <div class="lab">Cost of inaction avoided</div>
+              <div class="big money">$<span id="statCost">0.0</span>M</div>
+            </div>
+          </div>
+        </div>
+        <div class="ribbon"><span class="tag">Forecast</span> Plan the gap in Q3 — before it becomes a backfill scramble.</div>
+      </section>
+
+      <!-- ============ END CARD ============ -->
+      <section class="scene" id="s-end">
+        <h2 class="end-stat">Act on a <span class="hl">forecast</span> —<br>not a resignation letter.</h2>
+        <div class="end-brand">
+          <span class="logo">N</span> NewWesVentures
+          <span class="sep">·</span>
+          <span class="light">People Operations, powered by AI</span>
+        </div>
+        <div class="byline">Created by Wes Griffin · Designed &amp; built with AI</div>
+      </section>
+
+    </div>
+  </div>
+
+  <div class="controls">
+    <div class="ctrl" id="btnToggle" role="button" tabindex="0" aria-label="Pause or play">
+      <svg class="ic-pause" viewBox="0 0 24 24"><rect x="6" y="5" width="4" height="14" rx="1.2"/><rect x="14" y="5" width="4" height="14" rx="1.2"/></svg>
+      <svg class="ic-play" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+    </div>
+    <div class="ctrl" id="btnReplay" role="button" tabindex="0" aria-label="Replay">
+      <svg viewBox="0 0 24 24"><path d="M12 5V2L8 6l4 4V7a5 5 0 1 1-5 5H5a7 7 0 1 0 7-7z"/></svg>
+    </div>
+  </div>
+
+<script>
+(function(){
+  "use strict";
+
+  /* ---------- safe helpers ---------- */
+  var $  = function(s, r){ try{ return (r||document).querySelector(s); }catch(e){ return null; } };
+  var $$ = function(s, r){ try{ return Array.prototype.slice.call((r||document).querySelectorAll(s)); }catch(e){ return []; } };
+  function on(el, ev, fn){ if(el && el.addEventListener) el.addEventListener(ev, fn); }
+  function clamp(v,a,b){ return v<a?a:(v>b?b:v); }
+  function ease(t){ /* easeOutCubic */ return 1 - Math.pow(1-t, 3); }
+
+  /* reduced motion: render static end frame & stop */
+  var reduce = false;
+  try{ reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches; }catch(e){}
+
+  /* ---------- element refs ---------- */
+  var fill      = $('#progressFill');
+  var scenes    = $$('.scene');
+  var body      = document.body;
+
+  /* timeline definition (ms) */
+  var T = [
+    { id:'s-title',    dur:3000 },
+    { id:'s-risk',     dur:7400 },
+    { id:'s-alert',    dur:7700 },
+    { id:'s-forecast', dur:7900 },
+    { id:'s-end',      dur:3400 }
+  ];
+  var TOTAL = 0; T.forEach(function(s){ s.start = TOTAL; TOTAL += s.dur; });
+
+  function sceneEl(id){ return $('#'+id); }
+
+  /* ---------- per-scene reset & trigger ---------- */
+  var rafCounters = []; // active count-up animations, cancelled on reset
+
+  function cancelCounters(){
+    rafCounters.forEach(function(id){ try{ cancelAnimationFrame(id); }catch(e){} });
+    rafCounters = [];
+  }
+
+  function countUp(el, from, to, dur, fmt){
+    if(!el) return;
+    var startT = null;
+    function step(ts){
+      if(startT===null) startT = ts;
+      var t = clamp((ts - startT)/dur, 0, 1);
+      var v = from + (to-from)*ease(t);
+      el.textContent = fmt ? fmt(v) : Math.round(v);
+      if(t<1){ rafCounters.push(requestAnimationFrame(step)); }
+    }
+    rafCounters.push(requestAnimationFrame(step));
+  }
+
+  /* ===== SCENE 1 reset/play ===== */
+  function resetRisk(){
+    $$('#s-risk .bar').forEach(function(b){ b.style.right='100%'; b.className='bar'; });
+    $$('#s-risk .score').forEach(function(s){ s.textContent='0'; });
+    $$('#s-risk .riskrow').forEach(function(r){ r.classList.remove('is-hot','lvl-high','lvl-mid','lvl-low'); });
+    var pill = $('#hotPill'); if(pill) pill.classList.remove('show');
+    var dr = $('#drivers'); if(dr) dr.classList.remove('open');
+  }
+  function playRisk(){
+    var rows = $$('#s-risk .riskrow');
+    rows.forEach(function(row, i){
+      var bar = $('.bar', row), scoreEl = $('.score', row);
+      var target = bar ? +bar.getAttribute('data-target') : 0;
+      // stagger the bars filling
+      setTimeout(function(){
+        if(!bar) return;
+        bar.style.right = (100 - target) + '%';
+        var cls = target>=70 ? 'red' : (target>=50 ? 'amber' : '');
+        if(cls) bar.classList.add(cls);
+        row.classList.add(target>=70?'lvl-high':(target>=50?'lvl-mid':'lvl-low'));
+        countUp(scoreEl, 0, target, 1500);
+      }, 500 + i*230);
+    });
+    // hot row escalation + drivers
+    var hot = $('#hotRow');
+    setTimeout(function(){ if(hot) hot.classList.add('is-hot'); var p=$('#hotPill'); if(p) p.classList.add('show'); }, 2500);
+    setTimeout(function(){ var d=$('#drivers'); if(d) d.classList.add('open'); }, 3200);
+  }
+
+  /* ===== SCENE 2 reset/play ===== */
+  var RING_CIRC = 326.7;
+  function setRing(pct){
+    var ring = $('#riskRing');
+    if(ring) ring.style.strokeDashoffset = String(RING_CIRC * (1 - pct/100));
+  }
+  function resetAlert(){
+    $$('#s-alert .icard').forEach(function(c){ c.classList.remove('on'); });
+    var n=$('#riskNum'); if(n) n.textContent='68';
+    setRing(68);
+    var ring=$('#riskRing'); if(ring) ring.setAttribute('stroke','#ef4444');
+  }
+  function playAlert(){
+    var base = 68;
+    var cards = $$('#s-alert .icard');
+    // turn each card on in sequence, dropping the projected risk
+    var schedule = [2400, 3400, 4300];
+    var cumulative = base;
+    cards.forEach(function(card, i){
+      var drop = +card.getAttribute('data-drop') || 0;
+      setTimeout(function(){
+        card.classList.add('on');
+        var before = cumulative;
+        cumulative = Math.max(0, cumulative - drop);
+        countUp($('#riskNum'), before, cumulative, 700);
+        // animate ring + colour shift
+        var startT=null;
+        (function animateRing(){
+          function step(ts){
+            if(startT===null) startT=ts;
+            var t=clamp((ts-startT)/700,0,1);
+            var v=before+(cumulative-before)*ease(t);
+            setRing(v);
+            var ring=$('#riskRing');
+            if(ring){ ring.setAttribute('stroke', v>=60?'#ef4444':(v>=40?'#f59e0b':'#10b981')); }
+            if(t<1) rafCounters.push(requestAnimationFrame(step));
+          }
+          rafCounters.push(requestAnimationFrame(step));
+        })();
+      }, schedule[i] || (2400+i*1000));
+    });
+  }
+
+  /* ===== SCENE 3 reset/play ===== */
+  // build chart geometry once
+  var fcBuilt = false;
+  function buildForecast(){
+    if(fcBuilt) return; fcBuilt = true;
+    // data points across 5 x-positions
+    var xs = [40,170,300,430,560];
+    // actual headcount path (rising, dips in Q3 region)
+    var actual = [42, 50, 47, 44, 49];           // mapped to value
+    var plan   = [42, 52, 60, 66, 72];
+    // value -> y (value range ~ 40..78 -> y 250..40)
+    function vy(v){ var min=38, max=78; return 250 - ( (v-min)/(max-min) )*210; }
+    function pts(arr){ return arr.map(function(v,i){ return [xs[i], vy(v)]; }); }
+    function lineD(p){ return p.map(function(c,i){ return (i?'L':'M')+c[0].toFixed(1)+' '+c[1].toFixed(1); }).join(' '); }
+
+    var aP = pts(actual), pP = pts(plan);
+    var pathActual = $('#pathActual'), pathPlan = $('#pathPlan'), areaActual = $('#areaActual');
+    if(pathActual) pathActual.setAttribute('d', lineD(aP));
+    if(pathPlan)   pathPlan.setAttribute('d', lineD(pP));
+    if(areaActual) areaActual.setAttribute('d', lineD(aP) + ' L'+aP[aP.length-1][0]+' 260 L'+aP[0][0]+' 260 Z');
+
+    // gap band: between plan & actual over Q2->Q4 (indices 1..3)
+    if($('#gapBand')){
+      var top = [pP[1],pP[2],pP[3]];
+      var bot = [aP[3],aP[2],aP[1]];
+      var d = 'M'+top.map(function(c){return c[0].toFixed(1)+' '+c[1].toFixed(1);}).join(' L')
+            + ' L'+bot.map(function(c){return c[0].toFixed(1)+' '+c[1].toFixed(1);}).join(' L') + ' Z';
+      $('#gapBand').setAttribute('d', d);
+    }
+    // end dot at last actual point
+    var dot = $('#endDot');
+    if(dot){ dot.setAttribute('cx', aP[4][0]); dot.setAttribute('cy', aP[4][1]); }
+    // gap flag near Q3 plan point
+    var flag = $('#gapFlag');
+    if(flag){ flag.setAttribute('transform','translate('+(pP[2][0]-6)+','+(pP[2][1]-46)+')'); }
+
+    // store actual path length for draw animation
+    if(pathActual){
+      var len = 0; try{ len = pathActual.getTotalLength(); }catch(e){ len = 900; }
+      pathActual.style.strokeDasharray = len;
+      pathActual.dataset.len = len;
+    }
+    if(pathPlan){
+      var lp = 0; try{ lp = pathPlan.getTotalLength(); }catch(e){ lp = 900; }
+      pathPlan.dataset.len = lp;
+    }
+  }
+
+  function resetForecast(){
+    buildForecast();
+    var pa = $('#pathActual');
+    if(pa){ var L = pa.dataset.len||900; pa.style.strokeDasharray=L; pa.style.strokeDashoffset=L; pa.style.transition='none'; }
+    var pp = $('#pathPlan');
+    if(pp){ pp.style.opacity='0'; pp.style.transition='none'; }
+    var a=$('#statAttr'); if(a) a.textContent='0';
+    var c=$('#statCost'); if(c) c.textContent='0.0';
+  }
+  function playForecast(){
+    // draw plan (dashed) first, then actual line
+    var pp = $('#pathPlan');
+    if(pp){
+      // fade plan in
+      requestAnimationFrame(function(){
+        pp.style.transition='opacity .8s ease .5s'; pp.style.opacity='1';
+      });
+    }
+    var pa = $('#pathActual');
+    if(pa){
+      var L = pa.dataset.len||900;
+      requestAnimationFrame(function(){
+        pa.style.transition='stroke-dashoffset 1.9s cubic-bezier(.45,0,.2,1) .6s';
+        pa.style.strokeDashoffset='0';
+      });
+    }
+    // count-ups timed with stat cards
+    setTimeout(function(){ countUp($('#statAttr'), 0, 24, 1200); }, 2500);
+    setTimeout(function(){ countUp($('#statCost'), 0, 1.2, 1300, function(v){ return v.toFixed(1); }); }, 2700);
+  }
+
+  /* ---------- master scene switch ---------- */
+  var current = -1;
+  function activate(idx){
+    if(idx === current) return;
+    current = idx;
+    cancelCounters();
+    scenes.forEach(function(s){ s.classList.remove('is-active'); });
+
+    // reset ALL scenes' dynamic state for clean loop
+    resetRisk(); resetAlert(); resetForecast();
+
+    var def = T[idx]; if(!def) return;
+    var el = sceneEl(def.id);
+    if(el) el.classList.add('is-active');
+
+    // kick scene-specific JS-driven anims
+    if(def.id==='s-risk')     playRisk();
+    else if(def.id==='s-alert')    playAlert();
+    else if(def.id==='s-forecast') playForecast();
+  }
+
+  /* ---------- clock ---------- */
+  var startTime = null;     // performance.now() of loop start
+  var pausedAt  = null;     // elapsed when paused
+  var paused    = false;
+
+  function frame(now){
+    if(paused){ return; } // loop will be re-kicked on resume
+    if(startTime===null) startTime = now;
+    var elapsed = now - startTime;
+    if(elapsed >= TOTAL){ // loop
+      startTime = now; elapsed = 0;
+      current = -1; // force re-activate scene 0 fresh
+    }
+    // progress bar
+    if(fill) fill.style.width = (clamp(elapsed/TOTAL,0,1)*100).toFixed(3) + '%';
+    // which scene
+    var idx = 0;
+    for(var i=0;i<T.length;i++){ if(elapsed >= T[i].start) idx = i; }
+    activate(idx);
+    rafId = requestAnimationFrame(frame);
+  }
+
+  var rafId = null;
+  function startClock(){
+    if(rafId) cancelAnimationFrame(rafId);
+    rafId = requestAnimationFrame(frame);
+  }
+
+  /* ---------- controls ---------- */
+  function setPaused(p){
+    paused = p;
+    body.classList.toggle('is-paused', p);
+    // freeze/unfreeze CSS animations within stage
+    var stage = $('#stage');
+    if(stage) stage.style.animationPlayState = p ? 'paused' : 'running';
+    $$('#stage *').forEach(function(n){ n.style.animationPlayState = p ? 'paused' : 'running'; });
+    var drift = $('.drift'); if(drift) drift.style.animationPlayState = p ? 'paused':'running';
+
+    if(p){
+      // record elapsed, cancel rAF
+      if(rafId) cancelAnimationFrame(rafId), rafId=null;
+      pausedAt = (startTime!==null) ? (performance.now() - startTime) : 0;
+    }else{
+      // resume: shift startTime so elapsed continues
+      startTime = performance.now() - (pausedAt||0);
+      startClock();
+    }
+  }
+  function togglePause(){ setPaused(!paused); }
+
+  function replay(){
+    cancelCounters();
+    current = -1;
+    startTime = performance.now();
+    pausedAt = null;
+    if(paused){ setPaused(false); }
+    else { startClock(); }
+    // re-trigger scene 0 anim cleanly by toggling class
+    scenes.forEach(function(s){ s.classList.remove('is-active'); });
+  }
+
+  on($('#btnToggle'), 'click', togglePause);
+  on($('#btnReplay'), 'click', replay);
+  // keyboard a11y for controls
+  on($('#btnToggle'),'keydown',function(e){ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); togglePause(); }});
+  on($('#btnReplay'),'keydown',function(e){ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); replay(); }});
+  // space toggles globally (when not focused on a control already handled)
+  on(document,'keydown',function(e){
+    if(e.target && (e.target.id==='btnToggle'||e.target.id==='btnReplay')) return;
+    if(e.key===' '){ e.preventDefault(); togglePause(); }
+    else if(e.key && e.key.toLowerCase()==='r'){ replay(); }
+  });
+
+  // pause when tab hidden, resume when visible (avoid runaway / desync)
+  on(document,'visibilitychange',function(){
+    if(document.hidden){ if(!paused) setPaused(true); }
+  });
+
+  /* ---------- boot ---------- */
+  function boot(){
+    buildForecast();
+    if(reduce){
+      // static composed final frame — no motion, show end card
+      scenes.forEach(function(s){ s.classList.remove('is-active'); });
+      var end = $('#s-end'); if(end){ end.style.opacity='1'; end.classList.add('is-active'); }
+      // also compose final stat values statically
+      var a=$('#statAttr'); if(a) a.textContent='24';
+      var c=$('#statCost'); if(c) c.textContent='1.2';
+      return;
+    }
+    startClock();
+  }
+
+  if(document.readyState==='loading'){ on(document,'DOMContentLoaded', boot); }
+  else { boot(); }
+
+})();
+</script>
+</body>
+</html>

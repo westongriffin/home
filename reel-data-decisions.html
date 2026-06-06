@@ -1,0 +1,1170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>From Data to Decisions — NewWesVentures</title>
+<style>
+  :root{
+    --ink:#0c1020; --muted:#6b7794; --line:#e7e9f2; --bg:#f7f8fc; --card:#ffffff;
+    --v1:#7c3aed; --v2:#5b4ef0; --v3:#06b6d4; --pink:#db2777;
+    --grad:linear-gradient(110deg,#7c3aed,#5b4ef0 45%,#06b6d4);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%}
+  body{
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Inter,Helvetica,Arial,sans-serif;
+    background:#080a16; color:var(--ink); overflow:hidden;
+    -webkit-font-smoothing:antialiased; text-rendering:optimizeLegibility;
+  }
+
+  /* ---------- Cinematic backdrop ---------- */
+  .backdrop{
+    position:fixed; inset:0;
+    background:
+      radial-gradient(60% 80% at 12% 8%, rgba(124,58,237,.5), transparent 60%),
+      radial-gradient(55% 75% at 92% 18%, rgba(6,182,212,.42), transparent 60%),
+      #080a16;
+    display:flex; align-items:center; justify-content:center;
+  }
+  .grid{
+    position:fixed; inset:0; pointer-events:none;
+    background-image:
+      linear-gradient(rgba(255,255,255,.05) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,.05) 1px, transparent 1px);
+    background-size:42px 42px;
+    -webkit-mask-image:radial-gradient(70% 70% at 50% 45%, #000 0%, transparent 75%);
+    mask-image:radial-gradient(70% 70% at 50% 45%, #000 0%, transparent 75%);
+  }
+  .vignette{
+    position:fixed; inset:0; pointer-events:none;
+    background:radial-gradient(120% 120% at 50% 50%, transparent 55%, rgba(0,0,0,.45) 100%);
+  }
+
+  /* ---------- Progress bar ---------- */
+  .progress{
+    position:fixed; top:0; left:0; height:3px; width:100%;
+    background:rgba(255,255,255,.07); z-index:50;
+  }
+  .progress > i{
+    display:block; height:100%; width:0%;
+    background:var(--grad);
+    box-shadow:0 0 12px rgba(91,78,240,.8);
+  }
+
+  /* ---------- Stage (16:9) ---------- */
+  .stage-wrap{
+    position:relative; width:100%; height:100%;
+    display:flex; align-items:center; justify-content:center;
+    padding:38px;
+  }
+  .stage{
+    position:relative;
+    width:min(1280px, calc(100vw - 76px));
+    aspect-ratio:16/9;
+    max-height:calc(100vh - 76px);
+    border-radius:20px;
+    overflow:hidden;
+    background:var(--bg);
+    box-shadow:0 40px 120px -30px rgba(0,0,0,.8), 0 0 0 1px rgba(255,255,255,.06);
+  }
+
+  /* base font scaling relative to stage width */
+  .stage{ container-type:inline-size; }
+
+  /* ---------- Scenes ---------- */
+  .scene{
+    position:absolute; inset:0;
+    opacity:0; pointer-events:none;
+    will-change:opacity;
+  }
+  .scene.show{ opacity:1; }
+  .scene.fade{ transition:opacity .55s cubic-bezier(.4,0,.2,1); }
+
+  /* ===== TITLE CARD ===== */
+  #title{
+    background:
+      radial-gradient(80% 90% at 18% 12%, rgba(124,58,237,.16), transparent 60%),
+      radial-gradient(70% 90% at 88% 88%, rgba(6,182,212,.14), transparent 60%),
+      #fbfbfe;
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+    text-align:center; padding:6%;
+  }
+  .kicker{
+    display:inline-flex; align-items:center; gap:.5em;
+    font-size:2.4cqw; font-weight:700; letter-spacing:.16em; text-transform:uppercase;
+    color:var(--v2);
+    padding:.55em 1.1em; border-radius:999px;
+    background:rgba(124,58,237,.08); border:1px solid rgba(124,58,237,.18);
+  }
+  .kicker .dot{ width:.6em; height:.6em; border-radius:50%; background:var(--grad); }
+  .title-main{
+    font-size:8.6cqw; line-height:1.02; font-weight:800; letter-spacing:-.02em;
+    background:var(--grad); -webkit-background-clip:text; background-clip:text; color:transparent;
+    margin:.34em 0 .12em;
+  }
+  .title-sub{
+    font-size:3.1cqw; color:var(--muted); font-weight:500; max-width:30ch;
+  }
+  .title-rule{
+    width:0; height:3px; border-radius:2px; margin-top:1.1em;
+    background:var(--grad);
+  }
+
+  /* ===== Shared app chrome (scenes 1-3) ===== */
+  .app{
+    position:absolute; inset:0; background:var(--bg);
+    display:flex; flex-direction:column;
+    padding:3.6cqw 4.4cqw 8.6cqw;  /* extra bottom padding reserves the lower-third band so content never collides */
+  }
+  .topbar{ display:flex; align-items:center; gap:1cqw; }
+  .logo{
+    display:flex; align-items:center; gap:.7cqw;
+    font-weight:800; font-size:2.5cqw; color:var(--ink); letter-spacing:-.01em;
+  }
+  .logo .mark{
+    width:2.9cqw; height:2.9cqw; border-radius:.7cqw; background:var(--grad);
+    display:flex; align-items:center; justify-content:center; color:#fff; font-size:1.7cqw;
+    box-shadow:0 4px 14px -2px rgba(91,78,240,.55);
+  }
+  .logo b{ background:var(--grad); -webkit-background-clip:text; background-clip:text; color:transparent; }
+  .topbar .spacer{ flex:1; }
+  .pill{
+    font-size:1.7cqw; color:var(--muted); font-weight:600;
+    padding:.5em 1em; border-radius:999px; background:#fff; border:1px solid var(--line);
+  }
+  .avatar{
+    width:3cqw; height:3cqw; border-radius:50%; color:#fff; font-weight:700; font-size:1.4cqw;
+    display:flex; align-items:center; justify-content:center;
+    background:linear-gradient(135deg,#db2777,#7c3aed);
+  }
+
+  /* Search bar */
+  .searchwrap{ margin-top:3cqw; }
+  .searchbar{
+    display:flex; align-items:center; gap:1.4cqw;
+    background:var(--card); border:1.5px solid var(--line);
+    border-radius:1.1cqw; padding:1.9cqw 2.2cqw;
+    box-shadow:0 18px 50px -24px rgba(20,24,60,.45);
+    transition:border-color .4s ease, box-shadow .4s ease;
+  }
+  .searchbar.active{
+    border-color:rgba(124,58,237,.55);
+    box-shadow:0 18px 50px -16px rgba(91,78,240,.45), 0 0 0 4px rgba(124,58,237,.08);
+  }
+  .searchbar .ico{
+    width:3.4cqw; height:3.4cqw; flex:0 0 auto; border-radius:.8cqw;
+    background:var(--grad); display:flex; align-items:center; justify-content:center;
+    color:#fff; font-size:2cqw;
+    box-shadow:0 6px 16px -4px rgba(91,78,240,.6);
+  }
+  .searchbar .q{
+    flex:1; font-size:2.5cqw; color:var(--ink); font-weight:500; line-height:1.25;
+    white-space:nowrap; overflow:hidden; min-height:1.25em;
+  }
+  .searchbar .q .ph{ color:#9aa4bf; }
+  .caret{
+    display:inline-block; width:.09em; height:1.05em; vertical-align:-.16em;
+    background:var(--v2); margin-left:.04em; border-radius:1px;
+    animation:blink 1s steps(1) infinite;
+  }
+  @keyframes blink{ 50%{opacity:0} }
+  .askbtn{
+    flex:0 0 auto; font-size:1.9cqw; font-weight:700; color:#fff;
+    padding:1em 1.6em; border-radius:.8cqw; background:var(--grad); border:none;
+    box-shadow:0 8px 20px -6px rgba(91,78,240,.6); white-space:nowrap;
+  }
+
+  .hint{
+    margin-top:1.6cqw; display:flex; gap:1cqw; flex-wrap:wrap;
+    opacity:0; transition:opacity .5s ease;
+  }
+  .hint.show{ opacity:1; }
+  .chip{
+    font-size:1.55cqw; color:var(--muted); font-weight:600;
+    padding:.55em 1em; border-radius:999px; background:#eef0f8; border:1px solid var(--line);
+  }
+  .chip .k{ color:var(--v2); }
+
+  /* Analyzing shimmer */
+  .analyzing{
+    margin-top:3cqw; display:flex; align-items:center; gap:1.4cqw;
+    opacity:0; transform:translateY(8px); transition:opacity .45s ease, transform .45s ease;
+  }
+  .analyzing.show{ opacity:1; transform:none; }
+  .spinner{
+    width:2.6cqw; height:2.6cqw; border-radius:50%;
+    border:.35cqw solid rgba(124,58,237,.18); border-top-color:var(--v1);
+    animation:spin .8s linear infinite;
+  }
+  @keyframes spin{ to{ transform:rotate(360deg) } }
+  .analyzing .txt{ font-size:2cqw; font-weight:600; color:var(--muted); }
+  .shimmer-rows{ margin-top:2.4cqw; display:flex; flex-direction:column; gap:1.3cqw; }
+  .srow{
+    height:2.2cqw; border-radius:.6cqw;
+    background:linear-gradient(90deg,#e9ebf5 25%,#f3f4fb 37%,#e9ebf5 63%);
+    background-size:400% 100%; animation:shimmer 1.4s ease infinite;
+  }
+  .srow.w1{width:78%} .srow.w2{width:92%} .srow.w3{width:64%}
+  @keyframes shimmer{ 0%{background-position:100% 0} 100%{background-position:-100% 0} }
+
+  /* ===== Scene 2/3 answer layout ===== */
+  .answer{
+    margin-top:2.6cqw; flex:1; display:grid;
+    grid-template-columns:1.18fr .82fr; gap:2.4cqw; min-height:0;
+  }
+  .card{
+    background:var(--card); border:1px solid var(--line); border-radius:1.2cqw;
+    padding:2.4cqw; box-shadow:0 14px 40px -26px rgba(20,24,60,.4);
+    display:flex; flex-direction:column; min-height:0;
+  }
+  .card-h{
+    display:flex; align-items:center; justify-content:space-between; gap:1cqw;
+    margin-bottom:1.6cqw;
+  }
+  .card-title{ font-size:2.15cqw; font-weight:800; color:var(--ink); letter-spacing:-.01em; }
+  .card-tag{
+    font-size:1.4cqw; font-weight:700; color:var(--v2);
+    padding:.35em .8em; border-radius:999px; background:rgba(124,58,237,.08);
+  }
+
+  /* Chart */
+  .chart{ flex:1; min-height:0; }
+  .chart svg{ width:100%; height:100%; display:block; overflow:visible; }
+  .bar{ transition:none; }
+  .axis-line{ stroke:var(--line); stroke-width:1; }
+  .gridline{ stroke:#eef0f8; stroke-width:1; }
+  .bar-label{ font-size:11px; fill:var(--muted); font-weight:700; }
+  .bar-val{ font-size:11px; fill:var(--ink); font-weight:800; }
+  .y-label{ font-size:9.5px; fill:#aab2c8; font-weight:600; }
+
+  /* Right column */
+  .rcol{ display:flex; flex-direction:column; gap:2cqw; min-height:0; }
+  .summary{
+    font-size:1.95cqw; line-height:1.5; color:#33405e; font-weight:500;
+  }
+  .summary b{ color:var(--ink); font-weight:800; }
+  .summary .up{ color:var(--pink); font-weight:800; }
+  .summary > span{
+    display:inline; opacity:0; filter:blur(4px);
+    transition:opacity .5s ease, filter .5s ease;
+  }
+  .summary > span.in{ opacity:1; filter:none; }
+
+  .callout{
+    margin-top:auto;
+    border-radius:1cqw; padding:1.9cqw 2cqw;
+    background:linear-gradient(180deg,#fff5f7,#fee9ef);
+    border:1px solid #fbcfe0; border-left:.6cqw solid var(--pink);
+    display:flex; gap:1.3cqw; align-items:flex-start;
+    opacity:0; transform:translateY(12px) scale(.98);
+    transition:opacity .55s cubic-bezier(.34,1.4,.5,1), transform .55s cubic-bezier(.34,1.4,.5,1);
+    box-shadow:0 16px 36px -22px rgba(219,39,119,.55);
+  }
+  .callout.show{ opacity:1; transform:none; }
+  .callout .warn{ font-size:3cqw; line-height:1; }
+  .callout .ctext{ font-size:1.95cqw; font-weight:700; color:#9d174d; line-height:1.35; }
+  .callout .ctext .big{ display:block; font-size:2.3cqw; font-weight:800; color:#be185d; margin-top:.15em; }
+
+  .sources{
+    margin-top:1.8cqw; display:flex; align-items:center; gap:1cqw; flex-wrap:wrap;
+    font-size:1.45cqw; color:#9aa4bf; font-weight:600;
+    opacity:0; transition:opacity .5s ease;
+  }
+  .sources.show{ opacity:1; }
+  .sources .lbl{ color:#aeb6cc; }
+  .src{
+    display:inline-flex; align-items:center; gap:.45em;
+    padding:.4em .85em; border-radius:999px; background:#fff; border:1px solid var(--line);
+    color:#56617e;
+  }
+  .src .sd{ width:.55em; height:.55em; border-radius:50%; }
+
+  /* Scene 3 follow-up bar (compact, at top of answer) */
+  .followup{
+    display:flex; align-items:center; gap:1.2cqw;
+    background:var(--card); border:1.5px solid var(--line); border-radius:1cqw;
+    padding:1.4cqw 1.8cqw; margin-bottom:0;
+    box-shadow:0 12px 34px -24px rgba(20,24,60,.4);
+    transition:border-color .4s ease, box-shadow .4s ease;
+  }
+  .followup.active{
+    border-color:rgba(6,182,212,.55);
+    box-shadow:0 12px 34px -18px rgba(6,182,212,.4), 0 0 0 4px rgba(6,182,212,.08);
+  }
+  .followup .ico{
+    width:2.7cqw; height:2.7cqw; border-radius:.7cqw; flex:0 0 auto;
+    background:linear-gradient(135deg,#06b6d4,#5b4ef0);
+    display:flex; align-items:center; justify-content:center; color:#fff; font-size:1.6cqw;
+  }
+  .followup .q{
+    flex:1; font-size:2.1cqw; color:var(--ink); font-weight:600;
+    white-space:nowrap; overflow:hidden; min-height:1.2em;
+  }
+  .followup .q .ph{ color:#9aa4bf; }
+
+  /* Forecast counter card */
+  .forecast-card{
+    background:linear-gradient(160deg,#0c1020,#1a1640 60%,#0b2a3a);
+    border:1px solid rgba(124,58,237,.4); color:#fff;
+    position:relative; overflow:hidden;
+  }
+  .forecast-card::before{
+    content:""; position:absolute; inset:0;
+    background:radial-gradient(70% 90% at 85% 10%, rgba(6,182,212,.4), transparent 55%),
+               radial-gradient(60% 80% at 5% 95%, rgba(124,58,237,.5), transparent 55%);
+  }
+  .forecast-card > *{ position:relative; z-index:1; }
+  .forecast-card .card-title{ color:#fff; }
+  .fc-label{ font-size:1.6cqw; font-weight:700; color:#a9b4d8; letter-spacing:.02em; }
+  .fc-num{
+    font-size:6.4cqw; font-weight:850; line-height:1; letter-spacing:-.02em; margin:.2em 0 .1em;
+    background:linear-gradient(110deg,#a78bfa,#7dd3fc); -webkit-background-clip:text; background-clip:text; color:transparent;
+    font-variant-numeric:tabular-nums;
+  }
+  .fc-sub{ font-size:1.7cqw; color:#9fb0d6; font-weight:600; }
+  .fc-delta{
+    margin-top:1.4cqw; display:inline-flex; align-items:center; gap:.5em;
+    font-size:1.55cqw; font-weight:800; color:#34d399;
+    padding:.4em .9em; border-radius:999px; background:rgba(52,211,153,.14);
+  }
+
+  /* ===== Lower-third caption ===== */
+  .lower-third{
+    position:absolute; left:4.4cqw; bottom:3.6cqw; z-index:6;
+    display:flex; align-items:center; gap:1.1cqw;
+    opacity:0; transform:translateY(14px);
+  }
+  .lower-third.show{ opacity:1; transform:none; transition:opacity .5s ease, transform .5s cubic-bezier(.4,0,.2,1); }
+  .lt-bar{ width:.55cqw; align-self:stretch; min-height:3.6cqw; border-radius:2px; background:var(--grad); }
+  .lt-txt{ display:flex; flex-direction:column; }
+  .lt-eyebrow{ font-size:1.35cqw; font-weight:800; letter-spacing:.14em; text-transform:uppercase; color:var(--v2); }
+  .lt-main{ font-size:2.2cqw; font-weight:700; color:var(--ink); letter-spacing:-.01em; }
+
+  /* scene number badge */
+  .scene-no{
+    position:absolute; right:4.4cqw; bottom:3.6cqw; z-index:6;
+    font-size:1.45cqw; font-weight:800; color:#aeb6cc; letter-spacing:.1em;
+    opacity:0; transition:opacity .5s ease;
+  }
+  .scene-no.show{ opacity:.9; }
+
+  /* ===== END CARD ===== */
+  #end{
+    background:
+      radial-gradient(75% 90% at 80% 18%, rgba(6,182,212,.16), transparent 60%),
+      radial-gradient(70% 90% at 15% 85%, rgba(124,58,237,.18), transparent 60%),
+      #fbfbfe;
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+    text-align:center; padding:5%;
+  }
+  .end-stat{
+    font-size:8cqw; font-weight:850; line-height:1; letter-spacing:-.025em;
+    background:var(--grad); -webkit-background-clip:text; background-clip:text; color:transparent;
+    max-width:18ch;
+  }
+  .end-tag{
+    margin-top:1.4cqw; font-size:2.5cqw; font-weight:700; color:var(--ink);
+    display:inline-flex; align-items:center; gap:.7cqw;
+  }
+  .end-tag .mark{
+    width:2.6cqw; height:2.6cqw; border-radius:.6cqw; background:var(--grad);
+    display:inline-flex; align-items:center; justify-content:center; color:#fff; font-size:1.5cqw;
+  }
+  .end-tag b{ background:var(--grad); -webkit-background-clip:text; background-clip:text; color:transparent; }
+  .byline{
+    margin-top:2.6cqw; font-size:1.7cqw; color:var(--muted); font-weight:600;
+    padding-top:1.6cqw; border-top:1px solid var(--line);
+  }
+  .byline .sep{ color:#c3c9dd; margin:0 .5em; }
+
+  /* reveal helper */
+  .rev{ opacity:0; transform:translateY(16px); }
+  .rev.in{ opacity:1; transform:none; transition:opacity .7s cubic-bezier(.2,.7,.2,1), transform .7s cubic-bezier(.2,.7,.2,1); }
+
+  /* ---------- Controls ---------- */
+  .controls{
+    position:fixed; right:24px; bottom:20px; z-index:60;
+    display:flex; gap:10px;
+  }
+  .ctrl{
+    width:44px; height:44px; border-radius:50%;
+    background:rgba(18,20,38,.72); border:1px solid rgba(255,255,255,.14);
+    color:#fff; cursor:pointer; font-size:17px;
+    display:flex; align-items:center; justify-content:center;
+    backdrop-filter:blur(10px); -webkit-backdrop-filter:blur(10px);
+    transition:background .2s ease, transform .2s ease, border-color .2s ease;
+  }
+  .ctrl:hover{ background:rgba(40,42,72,.9); border-color:rgba(255,255,255,.28); transform:translateY(-1px); }
+  .ctrl:active{ transform:translateY(0) scale(.96); }
+  .ctrl svg{ width:18px; height:18px; fill:#fff; }
+
+  /* watermark brand bottom-left of backdrop */
+  .wm{
+    position:fixed; left:24px; bottom:24px; z-index:55;
+    font-size:12px; font-weight:700; letter-spacing:.04em; color:rgba(255,255,255,.42);
+    display:flex; align-items:center; gap:8px; pointer-events:none;
+  }
+  .wm .d{ width:7px; height:7px; border-radius:50%; background:var(--grad); }
+
+  @media (max-width:760px){
+    .stage-wrap{ padding:16px; }
+    .stage{ width:calc(100vw - 32px); max-height:calc(100vh - 32px); border-radius:14px; }
+    .controls{ right:14px; bottom:12px; }
+    .wm{ display:none; }
+  }
+
+  /* ===== Reduced motion: static final frame ===== */
+  @media (prefers-reduced-motion: reduce){
+    *{ animation:none !important; transition:none !important; }
+    .caret{ display:none; }
+  }
+</style>
+</head>
+<body>
+  <div class="backdrop">
+    <div class="grid"></div>
+    <div class="stage-wrap">
+      <div class="stage" id="stage">
+
+        <!-- ================= TITLE CARD ================= -->
+        <section class="scene fade" id="title">
+          <div class="kicker rev"><span class="dot"></span> NewWesVentures · People Operations</div>
+          <h1 class="title-main rev">From Data<br>to Decisions</h1>
+          <p class="title-sub rev">Ask in plain English. Get the answer instantly.</p>
+          <div class="title-rule rev"></div>
+        </section>
+
+        <!-- ================= SCENE 1 ================= -->
+        <section class="scene fade" id="s1">
+          <div class="app">
+            <div class="topbar">
+              <div class="logo"><span class="mark">◆</span> New<b>Wes</b>Ventures</div>
+              <div class="spacer"></div>
+              <div class="pill">People Intelligence</div>
+              <div class="avatar">WG</div>
+            </div>
+
+            <div class="searchwrap">
+              <div class="searchbar" id="s1bar">
+                <div class="ico">✦</div>
+                <div class="q" id="s1q"><span class="ph">Ask anything about your workforce…</span></div>
+                <button class="askbtn">Ask</button>
+              </div>
+              <div class="hint" id="s1hint">
+                <span class="chip"><span class="k">↩</span> Try a question</span>
+                <span class="chip">Attrition</span>
+                <span class="chip">Headcount vs. plan</span>
+                <span class="chip">Compensation</span>
+              </div>
+              <div class="analyzing" id="s1analyze">
+                <div class="spinner"></div>
+                <div class="txt">Analyzing your data…</div>
+              </div>
+              <div class="shimmer-rows" id="s1shim" style="display:none">
+                <div class="srow w2"></div>
+                <div class="srow w1"></div>
+                <div class="srow w3"></div>
+              </div>
+            </div>
+          </div>
+          <div class="lower-third" id="s1lt">
+            <div class="lt-bar"></div>
+            <div class="lt-txt">
+              <span class="lt-eyebrow">Scene 01 · Ask</span>
+              <span class="lt-main">One search bar for every People question</span>
+            </div>
+          </div>
+          <div class="scene-no" id="s1no">01 / 03</div>
+        </section>
+
+        <!-- ================= SCENE 2 ================= -->
+        <section class="scene fade" id="s2">
+          <div class="app">
+            <div class="topbar">
+              <div class="logo"><span class="mark">◆</span> New<b>Wes</b>Ventures</div>
+              <div class="spacer"></div>
+              <div class="pill">People Intelligence</div>
+              <div class="avatar">WG</div>
+            </div>
+
+            <div class="answer">
+              <!-- chart card -->
+              <div class="card">
+                <div class="card-h">
+                  <div class="card-title">Attrition by department</div>
+                  <div class="card-tag">YTD 2026</div>
+                </div>
+                <div class="chart">
+                  <svg id="s2svg" viewBox="0 0 520 300" preserveAspectRatio="none"></svg>
+                </div>
+              </div>
+
+              <!-- right column -->
+              <div class="rcol">
+                <div class="summary" id="s2sum">
+                  <span data-d="0"><b>Support</b> has the highest attrition at <b>18.4%</b>, well above the company average of <b>9.1%</b>. </span><span data-d="1">It's also the only team running <span class="up">over its headcount plan</span> this year.</span>
+                </div>
+                <div class="callout" id="s2call">
+                  <div class="warn">⚠️</div>
+                  <div class="ctext">
+                    Support is 3 heads over plan
+                    <span class="big">+$420K over budget</span>
+                  </div>
+                </div>
+                <div class="sources" id="s2src">
+                  <span class="lbl">Sources:</span>
+                  <span class="src"><span class="sd" style="background:#5b4ef0"></span> Workday</span>
+                  <span class="src"><span class="sd" style="background:#06b6d4"></span> Headcount Plan</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="lower-third" id="s2lt">
+            <div class="lt-bar"></div>
+            <div class="lt-txt">
+              <span class="lt-eyebrow">Scene 02 · Answer</span>
+              <span class="lt-main">A chart, a summary, and the dollar impact — instantly</span>
+            </div>
+          </div>
+          <div class="scene-no" id="s2no">02 / 03</div>
+        </section>
+
+        <!-- ================= SCENE 3 ================= -->
+        <section class="scene fade" id="s3">
+          <div class="app">
+            <div class="topbar">
+              <div class="logo"><span class="mark">◆</span> New<b>Wes</b>Ventures</div>
+              <div class="spacer"></div>
+              <div class="pill">People Intelligence</div>
+              <div class="avatar">WG</div>
+            </div>
+
+            <div class="answer" style="grid-template-rows:auto 1fr; grid-template-columns:1.18fr .82fr;">
+              <div class="followup" id="s3bar" style="grid-column:1 / -1;">
+                <div class="ico">✦</div>
+                <div class="q" id="s3q"><span class="ph">Ask a follow-up…</span></div>
+              </div>
+
+              <!-- forecast chart -->
+              <div class="card" style="grid-column:1; grid-row:2;">
+                <div class="card-h">
+                  <div class="card-title">Headcount cost — Support</div>
+                  <div class="card-tag" id="s3tag" style="color:var(--v3);background:rgba(6,182,212,.1)">Forecast</div>
+                </div>
+                <div class="chart">
+                  <svg id="s3svg" viewBox="0 0 520 300" preserveAspectRatio="none"></svg>
+                </div>
+              </div>
+
+              <!-- savings counter -->
+              <div class="card forecast-card" style="grid-column:2; grid-row:2; justify-content:center;">
+                <div class="fc-label">If you freeze backfills</div>
+                <div class="fc-num" id="s3num">$0</div>
+                <div class="fc-sub">projected Q4 savings</div>
+                <div class="fc-delta" id="s3delta">▼ back under plan by Q4</div>
+              </div>
+            </div>
+          </div>
+          <div class="lower-third" id="s3lt">
+            <div class="lt-bar"></div>
+            <div class="lt-txt">
+              <span class="lt-eyebrow">Scene 03 · Decide</span>
+              <span class="lt-main">Re-forecast the scenario in a single follow-up</span>
+            </div>
+          </div>
+          <div class="scene-no" id="s3no">03 / 03</div>
+        </section>
+
+        <!-- ================= END CARD ================= -->
+        <section class="scene fade" id="end">
+          <div class="end-stat rev">Every People metric — one question away.</div>
+          <div class="end-tag rev"><span class="mark">◆</span> New<b>Wes</b>Ventures · People Operations, powered by AI</div>
+          <div class="byline rev">Created by Wes Griffin <span class="sep">·</span> Designed &amp; built with AI</div>
+        </section>
+
+      </div>
+    </div>
+  </div>
+
+  <div class="grid" aria-hidden="true"></div>
+  <div class="vignette" aria-hidden="true"></div>
+
+  <!-- progress -->
+  <div class="progress"><i id="prog"></i></div>
+
+  <!-- watermark -->
+  <div class="wm"><span class="d"></span> NEWWESVENTURES — SIZZLE REEL</div>
+
+  <!-- controls -->
+  <div class="controls">
+    <button class="ctrl" id="btnPlay" title="Pause" aria-label="Pause">
+      <svg id="iconPause" viewBox="0 0 24 24"><rect x="6" y="5" width="4" height="14" rx="1.2"/><rect x="14" y="5" width="4" height="14" rx="1.2"/></svg>
+      <svg id="iconPlay" viewBox="0 0 24 24" style="display:none"><path d="M8 5v14l11-7z"/></svg>
+    </button>
+    <button class="ctrl" id="btnReplay" title="Replay" aria-label="Replay">
+      <svg viewBox="0 0 24 24"><path d="M12 5V2L7 6l5 4V7c3.31 0 6 2.69 6 6s-2.69 6-6 6-6-2.69-6-6H4c0 4.42 3.58 8 8 8s8-3.58 8-8-3.58-8-8-8z"/></svg>
+    </button>
+  </div>
+
+<script>
+(function(){
+  "use strict";
+
+  /* ---------- safe helpers ---------- */
+  var $ = function(id){ return document.getElementById(id); };
+  var reduce = false;
+  try{ reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches; }catch(e){ reduce = false; }
+
+  var SVGNS = "http://www.w3.org/2000/svg";
+  function svgEl(name, attrs){
+    var el = document.createElementNS(SVGNS, name);
+    if(attrs){ for(var k in attrs){ if(attrs.hasOwnProperty(k)) el.setAttribute(k, attrs[k]); } }
+    return el;
+  }
+  function clamp(v,a,b){ return v<a?a:(v>b?b:v); }
+
+  /* ---------- timeline definition (ms) ---------- */
+  var T = {
+    title:  3000,
+    s1:     7200,
+    s2:     7200,
+    s3:     7400,
+    end:    3200
+  };
+  var SCENES = [
+    {id:'title', dur:T.title},
+    {id:'s1',    dur:T.s1},
+    {id:'s2',    dur:T.s2},
+    {id:'s3',    dur:T.s3},
+    {id:'end',   dur:T.end}
+  ];
+  var TOTAL = SCENES.reduce(function(a,s){ return a+s.dur; }, 0);
+  // start times
+  (function(){ var acc=0; for(var i=0;i<SCENES.length;i++){ SCENES[i].start=acc; acc+=SCENES[i].dur; } })();
+
+  /* ---------- DOM refs ---------- */
+  var prog = $('prog');
+  var elTitle = $('title'), elS1=$('s1'), elS2=$('s2'), elS3=$('s3'), elEnd=$('end');
+
+  /* ---------- data ---------- */
+  var DEPTS = [
+    {n:'Support',     v:18.4, c:'#db2777', plan:true},
+    {n:'Sales',       v:12.1, c:'#7c3aed'},
+    {n:'Operations',  v:8.7,  c:'#5b4ef0'},
+    {n:'Engineering', v:6.3,  c:'#06b6d4'},
+    {n:'People',      v:4.5,  c:'#22c1c3'}
+  ];
+  var Q1 = "What's our attrition by department this year, and where are we over budget on headcount?";
+  var Q2 = "Forecast Q4 savings if we freeze backfills.";
+
+  /* ================= scene state management ================= */
+  // Each scene has enter() (idempotent setup) + a list of cue {at, fn}; reset() clears.
+  // We re-run cues based on local scene time so loop restarts cleanly.
+
+  /* ----- chart geometry shared ----- */
+  var CH = { x0:46, x1:506, y0:18, y1:262, };  // plot area in 520x300 viewbox (baseline y1)
+
+  /* ===================== SCENE 1 ===================== */
+  var S1 = {
+    bar:$('s1bar'), q:$('s1q'), hint:$('s1hint'),
+    analyze:$('s1analyze'), shim:$('s1shim'), lt:$('s1lt'), no:$('s1no'),
+    typed:0
+  };
+  function s1Reset(){
+    S1.q.innerHTML = '<span class="ph">Ask anything about your workforce…</span>';
+    S1.bar.classList.remove('active');
+    S1.hint.classList.remove('show');
+    S1.analyze.classList.remove('show');
+    S1.shim.style.display='none';
+    S1.lt.classList.remove('show');
+    S1.no.classList.remove('show');
+  }
+  function s1RenderTyped(n){
+    var txt = Q1.slice(0,n);
+    var caret = (n < Q1.length) ? '<span class="caret"></span>' : '';
+    S1.q.innerHTML = txt.replace(/&/g,'&amp;').replace(/</g,'&lt;') + caret;
+  }
+  function s1Frame(t){ // t = local ms
+    // caption + chrome
+    setClass(S1.lt, 'show', t>250);
+    setClass(S1.no, 'show', t>250);
+    setClass(S1.bar, 'active', t>300 && t<6400);
+    setClass(S1.hint, 'show', t>300 && t<2100);
+
+    // typing window: 700 -> 4300ms
+    var tStart=700, tEnd=4300;
+    if(t < tStart){
+      if(S1.q.firstChild && S1.q.firstChild.className!=='ph'){ S1.q.innerHTML='<span class="ph">Ask anything about your workforce…</span>'; }
+      setClass(S1.analyze,'show',false); S1.shim.style.display='none';
+      return;
+    }
+    var p = clamp((t - tStart)/(tEnd - tStart), 0, 1);
+    var n = Math.round(p * Q1.length);
+    s1RenderTyped(n);
+
+    // analyzing after typed
+    var doneType = t > tEnd + 150;
+    setClass(S1.analyze, 'show', doneType);
+    S1.shim.style.display = (t > tEnd + 900) ? 'flex' : 'none';
+  }
+
+  /* ===================== SCENE 2 ===================== */
+  var S2 = {
+    svg:$('s2svg'), sum:$('s2sum'), call:$('s2call'), src:$('s2src'),
+    lt:$('s2lt'), no:$('s2no'), built:false, sumSpans:null
+  };
+  function s2BuildStatic(){
+    // build axis + gridlines + empty bars once
+    var svg = S2.svg;
+    while(svg.firstChild) svg.removeChild(svg.firstChild);
+    S2.bars=[]; S2.vals=[]; S2.labels=[];
+    var maxV = 20;
+    // gridlines (y)
+    for(var g=0; g<=4; g++){
+      var gv = g*5; // 0,5,10,15,20
+      var gy = CH.y1 - (gv/maxV)*(CH.y1-CH.y0);
+      svg.appendChild(svgEl('line',{class:'gridline', x1:CH.x0, y1:gy, x2:CH.x1, y2:gy}));
+      var yl = svgEl('text',{class:'y-label', x:CH.x0-8, y:gy+3, 'text-anchor':'end'});
+      yl.textContent = gv+'%'; svg.appendChild(yl);
+    }
+    // baseline
+    svg.appendChild(svgEl('line',{class:'axis-line', x1:CH.x0, y1:CH.y1, x2:CH.x1, y2:CH.y1}));
+
+    var n = DEPTS.length;
+    var slot = (CH.x1 - CH.x0)/n;
+    var bw = slot*0.5;
+    for(var i=0;i<n;i++){
+      var cx = CH.x0 + slot*i + slot/2;
+      var bx = cx - bw/2;
+      // grad per bar
+      var gid = 's2grad'+i;
+      var defs = svg.querySelector('defs') || svg.appendChild(svgEl('defs',{}));
+      var lg = svgEl('linearGradient',{id:gid, x1:0,y1:0,x2:0,y2:1});
+      lg.appendChild(svgEl('stop',{offset:'0%', 'stop-color':lighten(DEPTS[i].c)}));
+      lg.appendChild(svgEl('stop',{offset:'100%','stop-color':DEPTS[i].c}));
+      defs.appendChild(lg);
+
+      var rect = svgEl('rect',{x:bx, y:CH.y1, width:bw, height:0, rx:6, fill:'url(#'+gid+')'});
+      svg.appendChild(rect);
+      S2.bars.push({el:rect, x:bx, w:bw, v:DEPTS[i].v, max:maxV});
+
+      var val = svgEl('text',{class:'bar-val', x:cx, y:CH.y1-6, 'text-anchor':'middle', opacity:0});
+      val.textContent = DEPTS[i].v.toFixed(1)+'%';
+      svg.appendChild(val); S2.vals.push(val);
+
+      var lab = svgEl('text',{class:'bar-label', x:cx, y:CH.y1+18, 'text-anchor':'middle'});
+      lab.textContent = DEPTS[i].n;
+      svg.appendChild(lab); S2.labels.push(lab);
+    }
+    S2.sumSpans = S2.sum.querySelectorAll('span[data-d]');
+    S2.built = true;
+  }
+  function s2Reset(){
+    if(!S2.built) s2BuildStatic();
+    for(var i=0;i<S2.bars.length;i++){
+      S2.bars[i].el.setAttribute('height',0);
+      S2.bars[i].el.setAttribute('y',CH.y1);
+      S2.vals[i].setAttribute('opacity',0);
+      S2.vals[i].setAttribute('y',CH.y1-6);
+    }
+    if(S2.sumSpans){ for(var j=0;j<S2.sumSpans.length;j++) S2.sumSpans[j].classList.remove('in'); }
+    S2.call.classList.remove('show');
+    S2.src.classList.remove('show');
+    S2.lt.classList.remove('show');
+    S2.no.classList.remove('show');
+  }
+  function s2BarTo(i, frac){ // frac 0..1 of full height
+    var b = S2.bars[i];
+    var full = (b.v/b.max)*(CH.y1-CH.y0);
+    var h = full*frac;
+    b.el.setAttribute('height', h);
+    b.el.setAttribute('y', CH.y1 - h);
+    S2.vals[i].setAttribute('y', CH.y1 - h - 6);
+    S2.vals[i].setAttribute('opacity', frac>0.85 ? (frac-0.85)/0.15 : 0);
+  }
+  function s2Frame(t){
+    if(!S2.built) s2BuildStatic();
+    setClass(S2.lt,'show', t>250);
+    setClass(S2.no,'show', t>250);
+
+    // bars draw staggered. start 500ms, each bar 650ms grow, stagger 230ms
+    var barStart=500, grow=700, stag=230;
+    for(var i=0;i<S2.bars.length;i++){
+      var bs = barStart + i*stag;
+      var f = clamp((t-bs)/grow, 0, 1);
+      f = easeOut(f);
+      s2BarTo(i, f);
+    }
+    // summary text fades in word-blocks
+    if(S2.sumSpans){
+      setClass2(S2.sumSpans[0], 'in', t>1500);
+      if(S2.sumSpans[1]) setClass2(S2.sumSpans[1], 'in', t>2350);
+    }
+    // callout
+    setClass(S2.call, 'show', t>3300);
+    // sources
+    setClass(S2.src, 'show', t>4100);
+  }
+
+  /* ===================== SCENE 3 ===================== */
+  var S3 = {
+    svg:$('s3svg'), bar:$('s3bar'), q:$('s3q'), num:$('s3num'),
+    delta:$('s3delta'), tag:$('s3tag'), lt:$('s3lt'), no:$('s3no'),
+    built:false
+  };
+  var S3DATA = {
+    // monthly cost ($K) Support team; actual Jan-Sep climbing (over plan), then two futures
+    months:['J','F','M','A','M','J','J','A','S','O','N','D'],
+    actual:[ 980, 995, 1010, 1035, 1060, 1090, 1120, 1150, 1180, null,null,null ], // $K, rising over plan
+    plan:  [ 980, 985, 990, 995, 1000, 1005, 1010, 1015, 1020, 1025, 1030, 1035 ],
+    // forecast if freeze backfills: dips below plan in Q4
+    freeze:[ null,null,null,null,null,null,null,null, 1180, 1090, 1010, 950 ]
+  };
+  var S3SCALE = { min:900, max:1240 };
+  function s3y(v){
+    var t=(v - S3SCALE.min)/(S3SCALE.max - S3SCALE.min);
+    return CH.y1 - clamp(t,0,1)*(CH.y1-CH.y0);
+  }
+  function s3x(i){
+    var n=S3DATA.months.length;
+    return CH.x0 + (i/(n-1))*(CH.x1-CH.x0);
+  }
+  function pathFrom(arr, dashUntil){
+    var d=''; var started=false;
+    for(var i=0;i<arr.length;i++){
+      if(arr[i]==null) continue;
+      d += (started?'L':'M') + s3x(i).toFixed(1) + ' ' + s3y(arr[i]).toFixed(1) + ' ';
+      started=true;
+    }
+    return d.trim();
+  }
+  function s3Build(){
+    var svg=S3.svg;
+    while(svg.firstChild) svg.removeChild(svg.firstChild);
+    var maxV=S3SCALE.max, minV=S3SCALE.min;
+    // gridlines at 1000,1100,1200
+    var levels=[1000,1100,1200];
+    for(var g=0; g<levels.length; g++){
+      var gy=s3y(levels[g]);
+      svg.appendChild(svgEl('line',{class:'gridline', x1:CH.x0,y1:gy,x2:CH.x1,y2:gy}));
+      var yl=svgEl('text',{class:'y-label', x:CH.x0-8,y:gy+3,'text-anchor':'end'});
+      yl.textContent='$'+(levels[g]/1000).toFixed(1)+'M'; svg.appendChild(yl);
+    }
+    svg.appendChild(svgEl('line',{class:'axis-line', x1:CH.x0,y1:CH.y1,x2:CH.x1,y2:CH.y1}));
+    // month labels
+    for(var i=0;i<S3DATA.months.length;i++){
+      var lab=svgEl('text',{class:'bar-label', x:s3x(i), y:CH.y1+18, 'text-anchor':'middle'});
+      lab.textContent=S3DATA.months[i]; svg.appendChild(lab);
+    }
+    // defs gradient for area
+    var defs=svg.appendChild(svgEl('defs',{}));
+    var ag=svgEl('linearGradient',{id:'s3area',x1:0,y1:0,x2:0,y2:1});
+    ag.appendChild(svgEl('stop',{offset:'0%','stop-color':'rgba(6,182,212,.30)'}));
+    ag.appendChild(svgEl('stop',{offset:'100%','stop-color':'rgba(6,182,212,0)'}));
+    defs.appendChild(ag);
+
+    // plan line (dashed grey) — static reference
+    S3.planPath = svgEl('path',{d:pathFrom(S3DATA.plan), fill:'none', stroke:'#c3c9dd', 'stroke-width':2, 'stroke-dasharray':'5 5', 'stroke-linecap':'round'});
+    svg.appendChild(S3.planPath);
+    var planLbl=svgEl('text',{class:'y-label', x:s3x(11)+2, y:s3y(1035)-6, 'text-anchor':'end'});
+    planLbl.textContent='Plan'; planLbl.setAttribute('fill','#aab2c8'); svg.appendChild(planLbl);
+
+    // actual line (violet/pink) — climbing, over plan
+    S3.actualPath=svgEl('path',{d:pathFrom(S3DATA.actual), fill:'none', stroke:'#db2777', 'stroke-width':3.4, 'stroke-linecap':'round', 'stroke-linejoin':'round'});
+    svg.appendChild(S3.actualPath);
+
+    // forecast area + line (cyan) — drawn via dash animation
+    S3.fArea=svgEl('path',{d:'', fill:'url(#s3area)', stroke:'none', opacity:0});
+    svg.appendChild(S3.fArea);
+    S3.fPath=svgEl('path',{d:pathFrom(S3DATA.freeze), fill:'none', stroke:'#06b6d4', 'stroke-width':3.6, 'stroke-linecap':'round','stroke-linejoin':'round', 'stroke-dasharray':'4 5'});
+    svg.appendChild(S3.fPath);
+
+    // endpoint marker
+    S3.dot=svgEl('circle',{cx:s3x(11), cy:s3y(S3DATA.freeze[11]), r:0, fill:'#06b6d4', stroke:'#fff', 'stroke-width':2.5});
+    svg.appendChild(S3.dot);
+    S3.dotPulse=svgEl('circle',{cx:s3x(11), cy:s3y(S3DATA.freeze[11]), r:0, fill:'none', stroke:'rgba(6,182,212,.5)', 'stroke-width':2});
+    svg.appendChild(S3.dotPulse);
+
+    // measure forecast path length for dash reveal
+    try{ S3.fLen = S3.fPath.getTotalLength(); }catch(e){ S3.fLen = 320; }
+    S3.built=true;
+  }
+  function s3Reset(){
+    s3Build();
+    S3.q.innerHTML='<span class="ph">Ask a follow-up…</span>';
+    S3.bar.classList.remove('active');
+    S3.num.textContent='$0';
+    S3.delta.style.opacity=0;
+    S3.tag.textContent='Actual';
+    S3.tag.style.color='#db2777'; S3.tag.style.background='rgba(219,39,119,.1)';
+    S3.lt.classList.remove('show'); S3.no.classList.remove('show');
+    // hide forecast initially
+    S3.fPath.setAttribute('stroke-dasharray', S3.fLen);
+    S3.fPath.setAttribute('stroke-dashoffset', S3.fLen);
+    S3.fArea.setAttribute('opacity',0);
+    S3.fArea.setAttribute('d','');
+    S3.dot.setAttribute('r',0);
+    S3.dotPulse.setAttribute('r',0);
+  }
+  function s3RenderTyped(n){
+    var txt=Q2.slice(0,n);
+    var caret=(n<Q2.length)?'<span class="caret"></span>':'';
+    S3.q.innerHTML = txt.replace(/&/g,'&amp;').replace(/</g,'&lt;') + caret;
+  }
+  function s3AreaPath(frac){
+    // build area under freeze forecast up to fractional point along months 8..11
+    var pts=[]; var seg=[8,9,10,11];
+    var totalSpan=seg.length-1; var reach=frac*totalSpan;
+    for(var k=0;k<seg.length;k++){
+      if(k<=reach || k===0){
+        var idx=seg[k];
+        var v=S3DATA.freeze[idx];
+        if(k<=Math.floor(reach)+1) pts.push([s3x(idx), s3y(v)]);
+      }
+    }
+    if(pts.length<2) return '';
+    var d='M'+pts[0][0].toFixed(1)+' '+CH.y1+' ';
+    for(var p=0;p<pts.length;p++){ d+='L'+pts[p][0].toFixed(1)+' '+pts[p][1].toFixed(1)+' '; }
+    d+='L'+pts[pts.length-1][0].toFixed(1)+' '+CH.y1+' Z';
+    return d;
+  }
+  function s3Frame(t){
+    if(!S3.built) s3Build();
+    setClass(S3.lt,'show', t>250);
+    setClass(S3.no,'show', t>250);
+
+    // follow-up typing 500 -> 3000
+    var tStart=500, tEnd=3000;
+    if(t<tStart){ S3.q.innerHTML='<span class="ph">Ask a follow-up…</span>'; }
+    setClass(S3.bar,'active', t>tStart && t<5800);
+    if(t>=tStart){
+      var p=clamp((t-tStart)/(tEnd-tStart),0,1);
+      s3RenderTyped(Math.round(p*Q2.length));
+    }
+
+    // after question typed -> forecast reveals (3200 -> 5200)
+    var fStart=3250, fDur=1900;
+    var fp=clamp((t-fStart)/fDur,0,1);
+    var fe=easeInOut(fp);
+    // tag flip to Forecast
+    if(t>fStart+120){ S3.tag.textContent='Forecast'; S3.tag.style.color='var(--v3)'; S3.tag.style.background='rgba(6,182,212,.1)'; }
+    else { S3.tag.textContent='Actual'; S3.tag.style.color='#db2777'; S3.tag.style.background='rgba(219,39,119,.1)'; }
+    // dash reveal of forecast line
+    var off = S3.fLen*(1-fe);
+    S3.fPath.setAttribute('stroke-dashoffset', off);
+    // area
+    if(fe>0.02){
+      S3.fArea.setAttribute('opacity',1);
+      S3.fArea.setAttribute('d', s3AreaPath(fe));
+    } else {
+      S3.fArea.setAttribute('opacity',0);
+    }
+    // endpoint marker after line near complete
+    var dr = clamp((fe-0.8)/0.2,0,1);
+    S3.dot.setAttribute('r', 5*easeOut(dr));
+    // gentle pulse
+    if(dr>=1){
+      var pulse=( (t-(fStart+fDur))%1400 )/1400;
+      S3.dotPulse.setAttribute('r', 5+pulse*14);
+      S3.dotPulse.setAttribute('opacity', (1-pulse)*0.6);
+    } else { S3.dotPulse.setAttribute('r',0); }
+
+    // savings counter count-up (3500 -> 5600)
+    var cStart=3500, cDur=2100, target=1.05; // $1.05M
+    var cp=clamp((t-cStart)/cDur,0,1);
+    cp=easeOut(cp);
+    var val=target*cp;
+    S3.num.textContent = '$'+val.toFixed(2)+'M';
+    S3.delta.style.opacity = (t>cStart+cDur*0.7)? clamp((t-(cStart+cDur*0.7))/350,0,1) : 0;
+  }
+
+  /* ===================== TITLE & END reveal ===================== */
+  function titleFrame(t){
+    var revs = elTitle.querySelectorAll('.rev');
+    var base=200, step=240;
+    for(var i=0;i<revs.length;i++){ setClass2(revs[i],'in', t > base + i*step); }
+    // rule width animates
+    var rule = elTitle.querySelector('.title-rule');
+    if(rule){
+      var rp = clamp((t-1100)/700,0,1);
+      rule.style.width = (easeOut(rp)*120)+'px';
+    }
+  }
+  function titleReset(){
+    var revs=elTitle.querySelectorAll('.rev');
+    for(var i=0;i<revs.length;i++) revs[i].classList.remove('in');
+    var rule=elTitle.querySelector('.title-rule'); if(rule) rule.style.width='0px';
+  }
+  function endFrame(t){
+    var revs=elEnd.querySelectorAll('.rev');
+    var base=200, step=420;
+    for(var i=0;i<revs.length;i++){ setClass2(revs[i],'in', t > base + i*step); }
+  }
+  function endReset(){
+    var revs=elEnd.querySelectorAll('.rev');
+    for(var i=0;i<revs.length;i++) revs[i].classList.remove('in');
+  }
+
+  /* ---------- class helpers ---------- */
+  function setClass(el, cls, on){ if(!el) return; if(on) el.classList.add(cls); else el.classList.remove(cls); }
+  function setClass2(el, cls, on){ if(!el) return; if(on){ if(!el.classList.contains(cls)) el.classList.add(cls); } else { el.classList.remove(cls); } }
+
+  /* ---------- easing ---------- */
+  function easeOut(t){ return 1 - Math.pow(1-t, 3); }
+  function easeInOut(t){ return t<.5 ? 4*t*t*t : 1 - Math.pow(-2*t+2,3)/2; }
+
+  /* ---------- color helper ---------- */
+  function lighten(hex){
+    try{
+      var c = hex.replace('#','');
+      var r=parseInt(c.substr(0,2),16), g=parseInt(c.substr(2,2),16), b=parseInt(c.substr(4,2),16);
+      r=Math.round(r+(255-r)*0.32); g=Math.round(g+(255-g)*0.32); b=Math.round(b+(255-b)*0.32);
+      return 'rgb('+r+','+g+','+b+')';
+    }catch(e){ return hex; }
+  }
+
+  /* ===================== MASTER CONTROLLER ===================== */
+  var els = {title:elTitle, s1:elS1, s2:elS2, s3:elS3, end:elEnd};
+  var frames = {title:titleFrame, s1:s1Frame, s2:s2Frame, s3:s3Frame, end:endFrame};
+  var resets = {title:titleReset, s1:s1Reset, s2:s2Reset, s3:s3Reset, end:endReset};
+
+  var curScene = -1;
+  var startWall = 0;      // performance.now baseline for loop
+  var pausedAt = 0;       // ms into timeline when paused
+  var playing = true;
+
+  function showScene(idx){
+    if(idx===curScene) return;
+    // reset incoming scene state BEFORE showing to avoid flash of stale frame
+    var s = SCENES[idx];
+    if(resets[s.id]) { try{ resets[s.id](); }catch(e){} }
+    for(var i=0;i<SCENES.length;i++){
+      var e = els[SCENES[i].id];
+      if(!e) continue;
+      if(i===idx) e.classList.add('show'); else e.classList.remove('show');
+    }
+    curScene = idx;
+  }
+
+  function resetAll(){
+    for(var i=0;i<SCENES.length;i++){ if(resets[SCENES[i].id]){ try{ resets[SCENES[i].id](); }catch(e){} } }
+  }
+
+  function now(){ return (window.performance && performance.now)? performance.now() : Date.now(); }
+
+  function tick(){
+    if(!playing){ return; }
+    var elapsed = now() - startWall;
+    if(elapsed >= TOTAL){
+      // seamless loop
+      startWall = now();
+      elapsed = 0;
+      resetAll();
+      curScene = -1;
+    }
+    // progress bar
+    if(prog) prog.style.width = (clamp(elapsed/TOTAL,0,1)*100).toFixed(3)+'%';
+
+    // find scene
+    var idx=0;
+    for(var i=0;i<SCENES.length;i++){ if(elapsed >= SCENES[i].start) idx=i; }
+    showScene(idx);
+    var local = elapsed - SCENES[idx].start;
+    var fn = frames[SCENES[idx].id];
+    if(fn){ try{ fn(local); }catch(e){} }
+
+    rafId = requestAnimationFrame(tick);
+  }
+
+  var rafId = null;
+  function startLoop(){
+    if(rafId) cancelAnimationFrame(rafId);
+    playing = true;
+    startWall = now() - pausedAt;
+    rafId = requestAnimationFrame(tick);
+  }
+  function pause(){
+    if(!playing) return;
+    playing=false;
+    pausedAt = (now() - startWall);
+    if(rafId){ cancelAnimationFrame(rafId); rafId=null; }
+  }
+  function resume(){
+    if(playing) return;
+    startLoop();
+  }
+  function replay(){
+    pausedAt=0;
+    resetAll();
+    curScene=-1;
+    if(prog) prog.style.width='0%';
+    playing=true;
+    startLoop();
+  }
+
+  /* ---------- controls ---------- */
+  var btnPlay=$('btnPlay'), btnReplay=$('btnReplay');
+  var iconPlay=$('iconPlay'), iconPause=$('iconPause');
+  function updatePlayIcon(){
+    if(playing){ if(iconPause)iconPause.style.display=''; if(iconPlay)iconPlay.style.display='none'; btnPlay.title='Pause'; }
+    else { if(iconPause)iconPause.style.display='none'; if(iconPlay)iconPlay.style.display=''; btnPlay.title='Play'; }
+  }
+  if(btnPlay) btnPlay.addEventListener('click', function(){
+    if(playing){ pause(); } else { resume(); }
+    updatePlayIcon();
+  });
+  if(btnReplay) btnReplay.addEventListener('click', function(){ replay(); updatePlayIcon(); });
+
+  // pause when tab hidden (defensive; keeps timing sane on return)
+  document.addEventListener('visibilitychange', function(){
+    if(document.hidden){ if(playing){ pause(); S1._wasPlaying=true; } }
+    else { if(S1._wasPlaying){ resume(); updatePlayIcon(); S1._wasPlaying=false; } }
+  });
+
+  /* ===================== REDUCED MOTION: static final frame ===================== */
+  function staticFrame(){
+    // Compose a tasteful static end frame (the payoff). Build charts fully drawn for richness on S2-like view?
+    // Per spec: skip straight to a static composed final frame. We show the END card fully revealed.
+    // But to be richer & on-brand, present the END card.
+    if(prog) prog.style.width='100%';
+    // hide all, show end
+    for(var i=0;i<SCENES.length;i++){ var e=els[SCENES[i].id]; if(e) e.classList.remove('show'); }
+    // build S2 + S3 fully so if needed visuals exist; but we display END.
+    if(elEnd){
+      elEnd.classList.add('show');
+      var revs=elEnd.querySelectorAll('.rev');
+      for(var r=0;r<revs.length;r++){ revs[r].classList.add('in'); revs[r].style.transition='none'; }
+    }
+    // hide controls' pause (static)
+    if(iconPause) iconPause.style.display='none';
+    if(iconPlay) iconPlay.style.display='';
+  }
+
+  /* ===================== BOOT ===================== */
+  function boot(){
+    try{
+      // build charts up front so first paint of scenes is instant
+      s2BuildStatic();
+      s3Build();
+      s2Reset(); s3Reset();
+    }catch(e){}
+
+    if(reduce){
+      staticFrame();
+      // disable play button (no motion)
+      if(btnPlay){ btnPlay.addEventListener('click', function(){ /* re-assert static */ staticFrame(); }); }
+      return;
+    }
+    updatePlayIcon();
+    startLoop();
+  }
+
+  if(document.readyState==='loading'){
+    document.addEventListener('DOMContentLoaded', boot);
+  } else { boot(); }
+
+})();
+</script>
+</body>
+</html>

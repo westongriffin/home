@@ -1,0 +1,899 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Auto-Triage + Suggested Replies | NewWesVentures</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --ink:#0c1020; --ink2:#3a4560; --muted:#6b7794; --line:#e7e9f2; --bg:#f7f8fc; --card:#ffffff;
+  --v1:#7c3aed; --v2:#5b4ef0; --v3:#06b6d4; --pink:#db2777;
+  --red:#ef4444; --amber:#f59e0b; --green:#10b981;
+  --grad:linear-gradient(110deg,#7c3aed,#5b4ef0 45%,#06b6d4);
+  --shadow:0 1px 2px rgba(12,16,32,.04),0 6px 20px rgba(12,16,32,.06);
+  --shadow-lg:0 10px 40px rgba(12,16,32,.12);
+}
+html,body{height:100%}
+body{
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Inter,Helvetica,Arial,sans-serif;
+  background:var(--bg); color:var(--ink); line-height:1.45;
+  -webkit-font-smoothing:antialiased; overflow:hidden;
+}
+.app{display:flex;flex-direction:column;height:100vh;min-height:520px}
+
+/* ===== TOP BAR ===== */
+.topbar{
+  display:flex;align-items:center;gap:14px;padding:10px 18px;background:var(--card);
+  border-bottom:1px solid var(--line);flex-shrink:0;z-index:30;
+}
+.brand{display:flex;align-items:center;gap:11px;min-width:0}
+.logo{
+  width:34px;height:34px;border-radius:10px;background:var(--grad);flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:17px;
+  box-shadow:0 4px 12px rgba(91,78,240,.35);position:relative;overflow:hidden;
+}
+.logo::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(255,255,255,.28),transparent 55%)}
+.brand-txt{display:flex;flex-direction:column;line-height:1.15;min-width:0}
+.brand-name{font-weight:700;font-size:14px;letter-spacing:-.2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.brand-sub{font-size:11px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.demo-badge{
+  font-size:10px;font-weight:700;letter-spacing:.4px;text-transform:uppercase;
+  color:var(--v2);background:rgba(91,78,240,.10);border:1px solid rgba(91,78,240,.22);
+  padding:4px 9px;border-radius:20px;white-space:nowrap;flex-shrink:0;
+}
+.spacer{flex:1}
+.autopilot-wrap{display:flex;align-items:center;gap:10px;padding:5px 6px 5px 13px;border:1px solid var(--line);border-radius:24px;background:var(--bg)}
+.ap-label{display:flex;flex-direction:column;line-height:1.05}
+.ap-label b{font-size:12px;font-weight:700}
+.ap-label span{font-size:10px;color:var(--muted)}
+.switch{position:relative;width:42px;height:24px;flex-shrink:0;cursor:pointer}
+.switch input{opacity:0;width:0;height:0;position:absolute}
+.slider{position:absolute;inset:0;background:#cdd2e4;border-radius:24px;transition:background .25s}
+.slider::before{content:"";position:absolute;height:18px;width:18px;left:3px;top:3px;background:#fff;border-radius:50%;transition:transform .25s;box-shadow:0 1px 3px rgba(0,0,0,.25)}
+.switch input:checked+.slider{background:var(--grad)}
+.switch input:checked+.slider::before{transform:translateX(18px)}
+.btn{
+  font-family:inherit;font-size:12.5px;font-weight:600;border:1px solid var(--line);
+  background:var(--card);color:var(--ink);padding:8px 14px;border-radius:9px;cursor:pointer;
+  transition:transform .12s,box-shadow .2s,background .2s,border-color .2s,opacity .2s;white-space:nowrap;
+  display:inline-flex;align-items:center;gap:7px;
+}
+.btn:hover{border-color:#cfd4e8;box-shadow:var(--shadow)}
+.btn:active{transform:translateY(1px)}
+.btn:disabled{opacity:.5;cursor:not-allowed;box-shadow:none;transform:none}
+.btn-primary{background:var(--grad);color:#fff;border:none;box-shadow:0 4px 14px rgba(91,78,240,.30)}
+.btn-primary:hover{box-shadow:0 6px 20px rgba(91,78,240,.42)}
+.btn-ghost{background:transparent}
+.user-chip{display:flex;align-items:center;gap:9px;padding:5px 11px 5px 6px;border:1px solid var(--line);border-radius:30px;background:var(--card)}
+.avatar{width:28px;height:28px;border-radius:50%;background:var(--grad);color:#fff;font-weight:700;font-size:11px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.user-meta{display:flex;flex-direction:column;line-height:1.15}
+.user-meta b{font-size:12px;font-weight:700}
+.user-meta span{font-size:10px;color:var(--muted)}
+
+/* ===== KPI STRIP ===== */
+.kpis{display:flex;gap:12px;padding:13px 18px;background:var(--card);border-bottom:1px solid var(--line);flex-shrink:0;overflow-x:auto}
+.kpi{
+  flex:1;min-width:148px;border:1px solid var(--line);border-radius:13px;padding:11px 14px;
+  background:linear-gradient(180deg,#fff,#fcfcff);position:relative;overflow:hidden;
+}
+.kpi::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--grad);opacity:.85}
+.kpi-top{display:flex;align-items:center;gap:7px;color:var(--muted);font-size:11px;font-weight:600;letter-spacing:.2px;text-transform:uppercase}
+.kpi-ico{width:18px;height:18px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:11px;background:rgba(124,58,237,.10)}
+.kpi-val{font-size:25px;font-weight:800;letter-spacing:-.6px;margin-top:5px;display:flex;align-items:baseline;gap:6px}
+.kpi-val .unit{font-size:13px;font-weight:600;color:var(--muted)}
+.kpi-delta{font-size:11px;font-weight:600;color:var(--green);margin-top:1px}
+.kpi-val.pulse{animation:kpiPulse .6s ease}
+@keyframes kpiPulse{0%{color:var(--v2);transform:scale(1)}40%{transform:scale(1.08)}100%{transform:scale(1)}}
+
+/* ===== MAIN LAYOUT ===== */
+.main{display:flex;flex:1;min-height:0;overflow:hidden}
+
+/* LEFT QUEUE */
+.queue{width:354px;flex-shrink:0;border-right:1px solid var(--line);background:var(--card);display:flex;flex-direction:column;min-height:0}
+.queue-head{padding:13px 16px 10px;border-bottom:1px solid var(--line);flex-shrink:0}
+.queue-head .row{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.queue-title{font-size:13px;font-weight:700;display:flex;align-items:center;gap:8px}
+.count-pill{font-size:11px;font-weight:700;background:var(--bg);border:1px solid var(--line);color:var(--ink2);padding:2px 9px;border-radius:20px}
+.filters{display:flex;gap:6px;margin-top:10px}
+.chip-f{font-size:11px;font-weight:600;color:var(--muted);background:var(--bg);border:1px solid var(--line);padding:4px 11px;border-radius:18px;cursor:pointer;transition:all .15s}
+.chip-f:hover{border-color:#cfd4e8;color:var(--ink2)}
+.chip-f.active{background:var(--ink);color:#fff;border-color:var(--ink)}
+.queue-list{overflow-y:auto;flex:1;padding:8px}
+.queue-list::-webkit-scrollbar{width:8px}
+.queue-list::-webkit-scrollbar-thumb{background:#dfe3f0;border-radius:8px}
+.queue-list::-webkit-scrollbar-thumb:hover{background:#cdd2e4}
+
+.ticket{
+  border:1px solid var(--line);border-radius:12px;padding:11px 12px;margin-bottom:8px;cursor:pointer;
+  background:var(--card);transition:transform .14s,box-shadow .2s,border-color .2s;position:relative;
+}
+.ticket:hover{box-shadow:var(--shadow);border-color:#d7dcec;transform:translateY(-1px)}
+.ticket.active{border-color:var(--v2);box-shadow:0 0 0 3px rgba(91,78,240,.13),var(--shadow)}
+.ticket.held{border-color:rgba(239,68,68,.45);background:linear-gradient(180deg,#fff,#fff8f8)}
+.ticket.held::after{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--red);border-radius:12px 0 0 12px}
+.t-row1{display:flex;align-items:center;gap:8px;margin-bottom:5px}
+.t-emp{font-size:12.5px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;flex:1}
+.t-id{font-size:10px;color:var(--muted);font-weight:600;flex-shrink:0}
+.t-subj{font-size:12px;color:var(--ink2);line-height:1.35;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;margin-bottom:9px;min-height:32px}
+.t-meta{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.t-cat{font-size:10.5px;font-weight:600;color:var(--ink2);background:var(--bg);border:1px solid var(--line);padding:2px 8px;border-radius:14px;white-space:nowrap}
+.pri{font-size:10px;font-weight:700;padding:2px 8px;border-radius:14px;text-transform:uppercase;letter-spacing:.3px;white-space:nowrap}
+.pri.urgent{background:rgba(239,68,68,.12);color:#c2342f;border:1px solid rgba(239,68,68,.25)}
+.pri.high{background:rgba(245,158,11,.14);color:#b97400;border:1px solid rgba(245,158,11,.28)}
+.pri.normal{background:rgba(16,185,129,.12);color:#0a8f63;border:1px solid rgba(16,185,129,.25)}
+.pri.low{background:rgba(107,119,148,.12);color:var(--muted);border:1px solid var(--line)}
+.conf{margin-left:auto;font-size:10.5px;font-weight:700;color:var(--ink2);display:flex;align-items:center;gap:5px;white-space:nowrap}
+.conf .bar{width:34px;height:5px;border-radius:4px;background:var(--line);overflow:hidden}
+.conf .bar i{display:block;height:100%;border-radius:4px;background:var(--grad)}
+.t-status{position:absolute;top:9px;right:10px;font-size:9.5px;font-weight:800;letter-spacing:.4px;text-transform:uppercase;padding:2px 7px;border-radius:12px;display:none}
+.ticket[data-state="resolved"] .t-status{display:inline-block;background:rgba(16,185,129,.13);color:#0a8f63;border:1px solid rgba(16,185,129,.3)}
+.ticket[data-state="awaiting"] .t-status{display:inline-block;background:rgba(124,58,237,.12);color:var(--v1);border:1px solid rgba(124,58,237,.28)}
+.ticket[data-state="held"] .t-status{display:inline-block;background:rgba(239,68,68,.13);color:#c2342f;border:1px solid rgba(239,68,68,.3)}
+.ticket[data-state="resolved"] .t-emp,.ticket[data-state="resolved"] .t-subj{opacity:.62}
+/* when a status pill shows, hide the inline id and reserve room so nothing overlaps */
+.ticket[data-state="resolved"] .t-id,.ticket[data-state="awaiting"] .t-id,.ticket[data-state="held"] .t-id{display:none}
+.ticket[data-state="resolved"] .t-row1,.ticket[data-state="awaiting"] .t-row1,.ticket[data-state="held"] .t-row1{padding-right:104px}
+.t-status{max-width:96px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ticket.flash{animation:rowFlash .9s ease}
+@keyframes rowFlash{0%{box-shadow:0 0 0 0 rgba(124,58,237,.0)}25%{box-shadow:0 0 0 4px rgba(124,58,237,.22)}100%{box-shadow:0 0 0 0 rgba(124,58,237,0)}}
+.ticket.settle{animation:settleIn .5s cubic-bezier(.2,.7,.3,1)}
+@keyframes settleIn{0%{transform:translateY(-6px) scale(.98);opacity:.4}100%{transform:none;opacity:1}}
+
+/* CENTER DETAIL */
+.detail{flex:1;min-width:0;overflow-y:auto;padding:18px 20px;background:var(--bg)}
+.detail::-webkit-scrollbar{width:9px}
+.detail::-webkit-scrollbar-thumb{background:#dfe3f0;border-radius:8px}
+.d-head{display:flex;align-items:flex-start;gap:14px;margin-bottom:16px}
+.d-emp-av{width:46px;height:46px;border-radius:13px;background:var(--grad);color:#fff;font-weight:800;font-size:17px;display:flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:0 4px 14px rgba(91,78,240,.28)}
+.d-emp-info{flex:1;min-width:0}
+.d-emp-name{font-size:18px;font-weight:800;letter-spacing:-.3px}
+.d-emp-sub{font-size:12px;color:var(--muted);margin-top:1px}
+.d-emp-sub b{color:var(--ink2);font-weight:600}
+.d-head-status{display:flex;flex-direction:column;align-items:flex-end;gap:6px}
+.statebadge{font-size:11px;font-weight:700;padding:5px 12px;border-radius:20px;letter-spacing:.2px;white-space:nowrap}
+.statebadge.open{background:rgba(91,78,240,.10);color:var(--v2);border:1px solid rgba(91,78,240,.22)}
+.statebadge.resolved{background:rgba(16,185,129,.12);color:#0a8f63;border:1px solid rgba(16,185,129,.28)}
+.statebadge.awaiting{background:rgba(124,58,237,.12);color:var(--v1);border:1px solid rgba(124,58,237,.28)}
+.statebadge.held{background:rgba(239,68,68,.12);color:#c2342f;border:1px solid rgba(239,68,68,.3)}
+.sla{font-size:11px;color:var(--muted)}
+
+.card{background:var(--card);border:1px solid var(--line);border-radius:15px;padding:15px 16px;margin-bottom:14px;box-shadow:var(--shadow)}
+.card-title{display:flex;align-items:center;gap:9px;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--ink2);margin-bottom:12px}
+.card-title .ico{width:22px;height:22px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:12px;color:#fff;background:var(--grad);flex-shrink:0}
+.card-title .ai-tag{margin-left:auto;font-size:9.5px;font-weight:800;letter-spacing:.5px;color:var(--v1);background:rgba(124,58,237,.10);border:1px solid rgba(124,58,237,.2);padding:2px 8px;border-radius:12px;text-transform:none}
+
+/* original message */
+.msg{font-size:13.5px;color:var(--ink);line-height:1.6;white-space:pre-line}
+.msg-foot{margin-top:11px;padding-top:10px;border-top:1px dashed var(--line);font-size:11px;color:var(--muted);display:flex;gap:14px;flex-wrap:wrap}
+.msg-foot b{color:var(--ink2);font-weight:600}
+
+/* AI analysis grid */
+.ana-grid{display:grid;grid-template-columns:1fr 1fr;gap:11px}
+.ana-cell{background:var(--bg);border:1px solid var(--line);border-radius:11px;padding:10px 12px}
+.ana-cell .lbl{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;color:var(--muted);margin-bottom:4px}
+.ana-cell .val{font-size:13.5px;font-weight:700;color:var(--ink);display:flex;align-items:center;gap:7px}
+.sent-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.entities{display:flex;flex-wrap:wrap;gap:6px;margin-top:4px}
+.ent{font-size:11px;font-weight:600;color:var(--v2);background:rgba(91,78,240,.08);border:1px solid rgba(91,78,240,.18);padding:3px 9px;border-radius:14px}
+.ent .k{color:var(--muted);font-weight:600;margin-right:4px}
+.conf-line{display:flex;align-items:center;gap:10px;margin-top:13px;padding-top:12px;border-top:1px solid var(--line)}
+.conf-line .lbl{font-size:11px;font-weight:600;color:var(--muted)}
+.conf-track{flex:1;height:7px;background:var(--line);border-radius:5px;overflow:hidden}
+.conf-track i{display:block;height:100%;background:var(--grad);border-radius:5px;width:0;transition:width .8s cubic-bezier(.2,.7,.3,1)}
+.conf-num{font-size:13px;font-weight:800;color:var(--ink);min-width:38px;text-align:right}
+
+/* suggested reply */
+.reply-box{background:var(--bg);border:1px solid var(--line);border-radius:12px;padding:13px 14px;font-size:13.5px;line-height:1.6;color:var(--ink);position:relative}
+.reply-box[contenteditable="true"]{outline:2px solid var(--v2);background:#fff;cursor:text}
+.reply-tools{display:flex;align-items:center;gap:8px;margin-top:11px;flex-wrap:wrap}
+.reply-tools .hint{font-size:11px;color:var(--muted);margin-left:auto;display:flex;align-items:center;gap:5px}
+
+/* actions checklist */
+.acts{display:flex;flex-direction:column;gap:8px}
+.act{display:flex;align-items:center;gap:11px;padding:10px 12px;border:1px solid var(--line);border-radius:11px;background:var(--bg);cursor:pointer;transition:all .15s}
+.act:hover{border-color:#d2d7e8;background:#fff}
+.act-check{width:20px;height:20px;border-radius:6px;border:2px solid #c4cadd;flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:all .18s;background:#fff;color:#fff;font-size:12px;font-weight:800}
+.act.done .act-check{background:var(--green);border-color:var(--green)}
+.act.done{background:rgba(16,185,129,.05);border-color:rgba(16,185,129,.25)}
+.act-txt{flex:1;font-size:13px;font-weight:600;color:var(--ink)}
+.act.done .act-txt{color:var(--ink2)}
+.act-sys{font-size:10.5px;font-weight:700;color:var(--muted);background:var(--card);border:1px solid var(--line);padding:2px 8px;border-radius:12px;white-space:nowrap}
+
+/* action bar */
+.actionbar{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-top:2px}
+.actionbar .btn{padding:10px 18px;font-size:13px}
+
+/* sent confirmation */
+.sent-card{background:linear-gradient(180deg,#f0fdf8,#ecfdf5);border:1px solid rgba(16,185,129,.3);border-radius:15px;padding:16px;display:none;align-items:center;gap:14px;margin-bottom:14px}
+.sent-card.show{display:flex;animation:settleIn .45s ease}
+.sent-ico{width:42px;height:42px;border-radius:50%;background:var(--green);color:#fff;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;box-shadow:0 4px 14px rgba(16,185,129,.4)}
+.sent-card .txt b{font-size:14px;font-weight:800;color:#0a7553;display:block}
+.sent-card .txt span{font-size:12px;color:#0a8f63}
+
+/* HELD / guardrail banner */
+.guard{background:linear-gradient(180deg,#fff6f6,#fff0f0);border:1.5px solid rgba(239,68,68,.4);border-radius:15px;padding:16px;margin-bottom:14px;display:none}
+.guard.show{display:block;animation:settleIn .45s ease}
+.guard-top{display:flex;align-items:center;gap:12px}
+.guard-ico{width:42px;height:42px;border-radius:12px;background:var(--red);color:#fff;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;box-shadow:0 4px 14px rgba(239,68,68,.35)}
+.guard-top b{font-size:14.5px;font-weight:800;color:#b3261e;display:block}
+.guard-top span{font-size:12px;color:#c2342f}
+.guard-body{font-size:12.5px;color:var(--ink2);line-height:1.55;margin-top:11px;padding-top:11px;border-top:1px solid rgba(239,68,68,.18)}
+.guard-body b{color:#b3261e}
+.guard-route{display:flex;align-items:center;gap:8px;margin-top:11px;flex-wrap:wrap}
+.route-pill{font-size:11px;font-weight:700;color:#b3261e;background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.25);padding:5px 11px;border-radius:20px}
+
+/* toast */
+.toast-wrap{position:fixed;bottom:18px;left:50%;transform:translateX(-50%);z-index:60;display:flex;flex-direction:column;gap:8px;align-items:center;pointer-events:none}
+.toast{background:var(--ink);color:#fff;font-size:12.5px;font-weight:600;padding:11px 18px;border-radius:11px;box-shadow:var(--shadow-lg);display:flex;align-items:center;gap:9px;opacity:0;transform:translateY(14px);transition:opacity .3s,transform .3s;max-width:520px}
+.toast.show{opacity:1;transform:none}
+.toast .dot{width:8px;height:8px;border-radius:50%;background:var(--green);flex-shrink:0}
+.toast.warn .dot{background:var(--red)}
+.toast.ap .dot{background:var(--v3)}
+
+/* autopilot scrim */
+.ap-banner{display:none;align-items:center;gap:11px;padding:10px 16px;background:linear-gradient(110deg,rgba(124,58,237,.08),rgba(6,182,212,.08));border-bottom:1px solid var(--line);font-size:12.5px;font-weight:600;color:var(--v2);flex-shrink:0}
+.ap-banner.show{display:flex}
+.ap-spin{width:15px;height:15px;border-radius:50%;border:2.5px solid rgba(91,78,240,.25);border-top-color:var(--v2);animation:spin .7s linear infinite;flex-shrink:0}
+@keyframes spin{to{transform:rotate(360deg)}}
+.ap-banner .mini-prog{flex:1;max-width:220px;height:5px;background:rgba(91,78,240,.18);border-radius:4px;overflow:hidden}
+.ap-banner .mini-prog i{display:block;height:100%;background:var(--grad);width:0;transition:width .4s ease}
+
+/* empty state */
+.empty{display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;color:var(--muted);text-align:center;padding:40px}
+.empty .e-ico{font-size:40px;margin-bottom:14px;opacity:.5}
+
+/* byline */
+.byline{text-align:center;font-size:10.5px;color:var(--muted);padding:6px;flex-shrink:0;background:var(--bg);border-top:1px solid var(--line)}
+.byline b{font-weight:600;color:var(--ink2)}
+
+/* responsive */
+@media(max-width:980px){
+  .queue{width:300px}
+  .brand-sub{display:none}
+  .ap-label span{display:none}
+}
+@media(max-width:760px){
+  body{overflow:auto}
+  .app{height:auto;min-height:100vh}
+  .main{flex-direction:column;overflow:visible}
+  .queue{width:100%;max-height:340px;border-right:none;border-bottom:1px solid var(--line)}
+  .detail{overflow:visible}
+  .ana-grid{grid-template-columns:1fr}
+  .user-chip .user-meta{display:none}
+  .autopilot-wrap{padding:5px 8px}
+}
+</style>
+</head>
+<body>
+<div class="app">
+
+  <!-- TOP BAR -->
+  <header class="topbar">
+    <div class="brand">
+      <div class="logo">N</div>
+      <div class="brand-txt">
+        <span class="brand-name">Auto-Triage&nbsp;<span style="color:var(--muted);font-weight:600">+ Suggested Replies</span></span>
+        <span class="brand-sub">People Services · HR Service Desk</span>
+      </div>
+    </div>
+    <span class="demo-badge">● Demo · mock data</span>
+    <div class="spacer"></div>
+    <div class="autopilot-wrap" title="When ON, low-risk tickets are auto-classified and queued for approval.">
+      <div class="ap-label"><b>AI Autopilot</b><span>low-risk only</span></div>
+      <label class="switch"><input type="checkbox" id="apToggle"><span class="slider"></span></label>
+    </div>
+    <button class="btn btn-primary" id="runAp">⚡ Run autopilot</button>
+    <div class="user-chip">
+      <div class="avatar">WG</div>
+      <div class="user-meta"><b>Wes Griffin</b><span>NewWesVentures</span></div>
+    </div>
+  </header>
+
+  <!-- AUTOPILOT BANNER -->
+  <div class="ap-banner" id="apBanner">
+    <div class="ap-spin"></div>
+    <span id="apBannerTxt">Autopilot running — classifying low-risk tickets…</span>
+    <div class="mini-prog"><i id="apProg"></i></div>
+  </div>
+
+  <!-- KPI STRIP -->
+  <div class="kpis">
+    <div class="kpi">
+      <div class="kpi-top"><span class="kpi-ico">🤖</span> Auto-handled today</div>
+      <div class="kpi-val" id="kpiHandled">128 <span class="unit">tickets</span></div>
+      <div class="kpi-delta" id="kpiHandledD">▲ on track vs. 7-day avg</div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-top"><span class="kpi-ico">📉</span> Deflection rate</div>
+      <div class="kpi-val" id="kpiDefl">73<span class="unit">%</span></div>
+      <div class="kpi-delta">▲ 6 pts this week</div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-top"><span class="kpi-ico">⚡</span> Avg first response</div>
+      <div class="kpi-val" id="kpiResp">4<span class="unit">s</span></div>
+      <div class="kpi-delta">vs. 6h manual baseline</div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-top"><span class="kpi-ico">🛡️</span> Held for human review</div>
+      <div class="kpi-val" id="kpiHeld" style="color:var(--ink)">1 <span class="unit">case</span></div>
+      <div class="kpi-delta" style="color:var(--muted)">guardrail enforced</div>
+    </div>
+  </div>
+
+  <!-- MAIN -->
+  <div class="main">
+
+    <!-- LEFT QUEUE -->
+    <aside class="queue">
+      <div class="queue-head">
+        <div class="row">
+          <div class="queue-title">📥 Ticket Queue <span class="count-pill" id="openCount">— open</span></div>
+        </div>
+        <div class="filters" id="filters">
+          <div class="chip-f active" data-f="all">All</div>
+          <div class="chip-f" data-f="open">Open</div>
+          <div class="chip-f" data-f="awaiting">Awaiting</div>
+          <div class="chip-f" data-f="resolved">Resolved</div>
+        </div>
+      </div>
+      <div class="queue-list" id="queueList"></div>
+    </aside>
+
+    <!-- CENTER DETAIL -->
+    <main class="detail" id="detail">
+      <div class="empty"><div class="e-ico">📨</div><div><b>Select a ticket</b><br>Choose a conversation from the queue to view the AI triage and suggested reply.</div></div>
+    </main>
+
+  </div>
+
+  <div class="byline">Created by <b>Wes Griffin</b> · Designed &amp; built with AI</div>
+</div>
+
+<div class="toast-wrap" id="toastWrap"></div>
+
+<script>
+(function(){
+  "use strict";
+
+  /* ---------- DATA ---------- */
+  var SENTIMENT = {
+    neg:{c:"#ef4444",t:"Negative"}, concern:{c:"#f59e0b",t:"Concerned"},
+    neu:{c:"#6b7794",t:"Neutral"}, pos:{c:"#10b981",t:"Positive"}, distress:{c:"#ef4444",t:"Distressed"}
+  };
+
+  var TICKETS = [
+    {
+      id:"HR-4821", emp:"Priya Natarajan", title:"Software Engineer II · Austin, TX", tenure:"2y 4m",
+      subject:"Adding my newborn to my health insurance — what's the deadline?",
+      msg:"Hi People Team,\n\nMy wife and I just welcomed our daughter last Thursday! 🎉 I want to add her to my medical and dental plans. What documents do you need, and is there a deadline I should worry about? I don't want to miss the window.\n\nThanks,\nPriya",
+      cat:"Benefits Enrollment", pri:"high", conf:96, sentiment:"pos", risk:"low",
+      entities:[["Event","Birth / new dependent"],["Plan","Medical + Dental"],["Window","Qualifying life event"]],
+      analysis:"Qualifying Life Event (QLE) — birth of a dependent. Member has a 30-day special enrollment window from the date of birth. Routine, high-confidence benefits request.",
+      reply:"Hi Priya — congratulations on your new arrival! 🎉\n\nGreat news, this qualifies as a Qualifying Life Event, so you can add your daughter to your medical and dental plans. You have 30 days from her date of birth to make the change. To complete it, please upload her birth certificate (or the hospital's official birth confirmation) in the Benefits portal under \"Life Events → Add Dependent.\"\n\nOnce submitted, coverage is backdated to her date of birth. I've attached the step-by-step guide — reach out anytime if you'd like a hand.\n\nWarmly,\nPeople Services",
+      actions:[["Open QLE special-enrollment case","Benefits"],["Send dependent-add checklist + portal link","Email"],["Set 30-day deadline reminder","Workflow"]]
+    },
+    {
+      id:"HR-4822", emp:"Marcus Bell", title:"Account Executive · Remote (FL)", tenure:"1y 1m",
+      subject:"My last paycheck was short — missing commission?",
+      msg:"Hey,\n\nMy 5/31 paycheck looks about $1,180 lower than I expected. I closed three deals in May that should have paid out commission. Can someone look into this? It's a pretty big gap and rent is due.\n\nMarcus",
+      cat:"Payroll Discrepancy", pri:"urgent", conf:88, sentiment:"concern", risk:"low",
+      entities:[["Pay date","2025-05-31"],["Delta","≈ -$1,180"],["Type","Commission"]],
+      analysis:"Reported underpayment on the 5/31 run, likely a missing/late-synced commission component. Time-sensitive (employee cites rent). Recommend opening a payroll case and looping the commissions team.",
+      reply:"Hi Marcus,\n\nThanks for flagging this, and I'm sorry for the stress. I've opened a payroll case (priority: high) to investigate the ~$1,180 gap on your 5/31 paycheck. It looks like May commissions may not have synced into that run.\n\nOur payroll team will reconcile your three closed deals against the commission feed and confirm within 1 business day. If a correction is owed, we'll process an off-cycle payment so you're not waiting until the next regular run.\n\nI'll keep you posted personally.\n\nBest,\nPeople Services",
+      actions:[["Open payroll investigation case (P1)","Payroll"],["Pull May commission statement","Comp"],["Flag for off-cycle correction if owed","Payroll"]]
+    },
+    {
+      id:"HR-4823", emp:"Dana Whitfield", title:"UX Designer · Denver, CO", tenure:"3y 8m",
+      subject:"Need to update my home address after moving",
+      msg:"Hi! I just moved across town. Can you update my address on file? New address is 1442 Larimer St, Unit 7B, Denver, CO 80202. Want to make sure my tax forms go to the right place. Thanks!",
+      cat:"Address Change", pri:"normal", conf:99, sentiment:"neu", risk:"low",
+      entities:[["New address","1442 Larimer St #7B"],["City","Denver, CO 80202"],["Impacts","Payroll · W-2"]],
+      analysis:"Standard self-service address update. Clean, unambiguous, fully extractable. Highest-confidence category — ideal for full automation.",
+      reply:"Hi Dana,\n\nHappy to help! I've updated your home address in our HR system to:\n\n1442 Larimer St, Unit 7B\nDenver, CO 80202\n\nThis automatically flows to payroll and your year-end W-2, so your tax forms will go to the new place. The change is effective today — no further action needed on your end.\n\nThanks for keeping us current!\n\nPeople Services",
+      actions:[["Update home address in HRIS","Workday"],["Sync to payroll + tax profile","Payroll"],["Send confirmation of change","Email"]]
+    },
+    {
+      id:"HR-4824", emp:"Aisha Mohammed", title:"Operations Manager · Chicago, IL", tenure:"5y 2m",
+      subject:"Question about FMLA leave for an upcoming surgery",
+      msg:"Hello,\n\nI have a scheduled surgery in about six weeks and will need roughly 8 weeks to recover. I'd like to understand how FMLA works here — is my job protected, do I get paid, and what paperwork do I need to start? I'd rather get ahead of this.\n\nThank you,\nAisha",
+      cat:"LOA / FMLA", pri:"high", conf:84, sentiment:"neu", risk:"low",
+      entities:[["Leave type","Medical (FMLA)"],["Duration","≈ 8 weeks"],["Start","≈ 6 weeks out"]],
+      analysis:"Proactive FMLA inquiry for a planned medical leave. Employee appears FMLA-eligible (tenure 5y, >1,250 hrs likely). Provide overview + initiate certification paperwork; coordinate with disability for pay continuation.",
+      reply:"Hi Aisha,\n\nThank you for planning ahead — that makes this much smoother. Based on your tenure, you appear eligible for FMLA, which provides up to 12 weeks of job-protected leave, so your role is protected during your ~8-week recovery.\n\nFor pay, FMLA itself is unpaid, but it runs alongside our short-term disability benefit, which typically replaces a portion of your salary during medical recovery — I'll have our leave specialist confirm your specific coverage.\n\nTo start, please complete the FMLA request in the Leave portal; we'll then send a Certification of Health Care Provider form for your surgeon. I've opened a leave case so a specialist can walk you through it.\n\nWishing you a smooth procedure,\nPeople Services",
+      actions:[["Open FMLA leave case","Leave Admin"],["Send WH-380 certification form","Email"],["Loop short-term disability for pay continuation","Benefits"]]
+    },
+    {
+      id:"HR-4825", emp:"Tomás Herrera", title:"Senior Recruiter · San Diego, CA", tenure:"4y 0m",
+      subject:"Relocation support for transfer to the NYC office",
+      msg:"Hi team — I've accepted the internal transfer to the New York office starting next quarter. Can you tell me what relocation benefits I'm eligible for? Movers, temporary housing, lease-break assistance? Trying to budget.",
+      cat:"Relocation", pri:"normal", conf:90, sentiment:"pos", risk:"low",
+      entities:[["From → To","San Diego → NYC"],["Trigger","Internal transfer"],["Start","Next quarter"]],
+      analysis:"Internal relocation eligibility question tied to an approved transfer. Standard policy lookup by tier/role. Recommend sending the relocation package summary and opening a relo case with our mobility vendor.",
+      reply:"Hi Tomás,\n\nCongratulations on the New York move! As an internal transfer at your level, you're eligible for our Tier 2 relocation package, which includes:\n\n• Full-service household goods move (packing + transport)\n• Up to 30 days of temporary housing in NYC\n• A lump-sum miscellaneous allowance for incidentals\n• Lease-break reimbursement up to one month's rent (with documentation)\n\nI've attached the full policy summary and opened a relocation case with our mobility partner, who'll reach out to schedule your move. That should give you what you need to budget.\n\nExcited for you!\nPeople Services",
+      actions:[["Open relocation case with mobility vendor","Mobility"],["Send Tier 2 relocation summary","Email"],["Confirm transfer effective date with HRBP","Workday"]]
+    },
+    {
+      id:"HR-4826", emp:"Greenfield Mortgage (3rd party)", title:"Verification request · re: J. Okafor", tenure:"—",
+      subject:"Verification of employment & income for mortgage application",
+      msg:"To Whom It May Concern:\n\nWe are processing a mortgage application for Joseph Okafor and require written verification of employment, job title, start date, and current annual base salary. Please complete the attached VOE form at your earliest convenience.\n\nGreenfield Mortgage — Lending Operations",
+      cat:"Verification of Employment", pri:"normal", conf:93, sentiment:"neu", risk:"low",
+      entities:[["Subject","Joseph Okafor"],["Requester","Greenfield Mortgage"],["Scope","Title · Start · Salary"]],
+      analysis:"Third-party VOE for a mortgage. Requires verifying employee consent on file before releasing income. With signed authorization present, this can be fully automated through the verification service.",
+      reply:"Hello Greenfield Mortgage,\n\nThank you for your request regarding Joseph Okafor. We have a signed authorization on file, so we're able to assist.\n\nFor security and consistency, all employment and income verifications are issued through our automated verification service. I've generated a secure access code for this request and sent it to your lending operations email; you'll be able to instantly retrieve employment status, title, start date, and income.\n\nPlease let us know if you need anything further.\n\nPeople Services — NewWesVentures",
+      actions:[["Confirm signed consent on file","Compliance"],["Issue verification access code","Verify Svc"],["Log VOE disclosure for audit","Records"]]
+    },
+    {
+      id:"HR-4827", emp:"Rachel Kim", title:"Data Analyst · Seattle, WA", tenure:"1y 9m",
+      subject:"Rolling over an old 401(k) from a previous employer",
+      msg:"Hi, I have a 401(k) from my last job that I'd like to roll into the NewWesVentures plan. How do I get started, and is there anyone I should talk to? Want to consolidate everything in one place.",
+      cat:"401(k) Rollover", pri:"low", conf:91, sentiment:"neu", risk:"low",
+      entities:[["Action","Inbound rollover"],["Source","Former employer plan"],["Provider","Plan recordkeeper"]],
+      analysis:"Inbound 401(k) rollover request. Process is owned by the plan recordkeeper. Provide the rollover steps and the provider contact; no sensitive HR action required.",
+      reply:"Hi Rachel,\n\nGreat idea to consolidate! Rolling an old 401(k) into the NewWesVentures plan is straightforward and is handled directly with our plan provider, Meridian Retirement.\n\nHere's how to start:\n1. Log in to the Meridian portal (link below) → \"Roll money in.\"\n2. Request a direct rollover from your former employer's plan to avoid any tax withholding.\n3. Meridian will provide the receiving account details for your old provider.\n\nA Meridian rollover specialist can also do this with you over the phone — I've included their direct line. You've got this!\n\nPeople Services",
+      actions:[["Send Meridian rollover guide + portal link","Email"],["Share rollover specialist contact","401k"],["No HRIS change required","—"]]
+    },
+    {
+      id:"HR-4828", emp:"Leon Carter", title:"Warehouse Lead · Columbus, OH", tenure:"6y 7m",
+      subject:"How much PTO do I have left for the year?",
+      msg:"Quick one — how many PTO days do I have left? Thinking about a trip in August and want to make sure I have enough before I book anything.",
+      cat:"PTO Balance", pri:"low", conf:98, sentiment:"neu", risk:"low",
+      entities:[["Request","Current PTO balance"],["Context","Planning August trip"],["Source","Time-off system"]],
+      analysis:"Simple balance lookup from the time-off system. Deterministic, no judgment required — prime candidate for instant automated self-service.",
+      reply:"Hi Leon,\n\nHappy to help you plan! As of today, your PTO balance is:\n\n• Available now: 14.5 days\n• Accruing by end of August: +2.0 days (≈ 16.5 days by your trip)\n\nThat should give you comfortable room for an August getaway. You can request the dates anytime in the Time Off portal, and your manager will get the approval notification automatically.\n\nHave a great trip!\nPeople Services",
+      actions:[["Pull live PTO balance","Time Off"],["Send balance + accrual projection","Email"],["Share time-off request link","Self-Service"]]
+    },
+    {
+      id:"HR-4829", emp:"Bianca Rossi", title:"Marketing Specialist · Remote (NY)", tenure:"0y 8m",
+      subject:"Concerned about how my manager handled my performance review",
+      msg:"Hi,\n\nI'm not sure who to talk to. My manager gave me a really harsh review and made some comments in our 1:1 that felt unfair and a little personal. I don't think it was about my actual work. I'd like to talk to someone in HR about it — I'm pretty upset.\n\nBianca",
+      cat:"Manager / Performance Concern", pri:"high", conf:80, sentiment:"neg", risk:"low",
+      entities:[["Theme","Performance review dispute"],["Tone","Upset / interpersonal"],["Needs","HR conversation"]],
+      analysis:"Employee relations concern about a performance review and 1:1 comments. Negative sentiment but not a protected-class allegation. Route to an HRBP for a live conversation rather than an auto-reply — handle with care, but does not require the harassment guardrail.",
+      reply:"Hi Bianca,\n\nThank you for reaching out, and I'm sorry you're feeling this way — it takes courage to raise something like this. You absolutely have the right people to talk to.\n\nI'd like to connect you directly with an HR Business Partner who can listen, understand what happened in your review and 1:1, and talk through your options confidentially. This won't be an automated process — a real person will reach out to you within one business day to schedule a private conversation at a time that works for you.\n\nIn the meantime, please know your concern is taken seriously. You're not alone in this.\n\nWarmly,\nPeople Services",
+      actions:[["Assign to HR Business Partner (live follow-up)","ER"],["Schedule confidential 1:1 within 1 business day","Workflow"],["Log as employee-relations concern","ER Case"]]
+    },
+    {
+      id:"HR-4830", emp:"Confidential reporter", title:"Sensitive concern · details withheld in queue", tenure:"—",
+      subject:"Reporting harassment by a coworker — need this handled discreetly",
+      msg:"I need to report that a coworker has been making repeated unwanted comments and advances toward me, and it's gotten worse over the past few weeks. It's affecting my ability to work and I feel unsafe. I want to report this but I'm scared about retaliation. Please tell me what happens next and keep this confidential.",
+      cat:"Harassment Concern", pri:"urgent", conf:97, sentiment:"distress", risk:"sensitive",
+      entities:[["Category","Harassment / unwanted conduct"],["Risk","Retaliation fear · safety"],["Handling","Confidential investigation"]],
+      analysis:"SENSITIVE — allegation of harassment with safety and retaliation concerns. This class of case is excluded from any automated reply. The AI's only action is to detect, flag, and route to a human investigator under the company's anti-retaliation policy. No suggested reply is generated.",
+      reply:null,
+      actions:[["HOLD — escalate to ER investigations lead","Required"],["Notify on-call HRBP (human) immediately","Required"],["Open confidential, anti-retaliation case file","Required"]]
+    }
+  ];
+
+  /* ---------- STATE ---------- */
+  // state: open | awaiting | resolved | held
+  TICKETS.forEach(function(t){ t.state = t.risk==="sensitive" ? "held" : "open"; });
+  var selectedId = null;
+  var filter = "all";
+  var kpi = { handled:128, defl:73, resp:4, held:1 };
+  var apRunning = false;
+
+  /* ---------- HELPERS ---------- */
+  function $(id){ return document.getElementById(id); }
+  function el(tag, cls, html){ var e=document.createElement(tag); if(cls)e.className=cls; if(html!=null)e.innerHTML=html; return e; }
+  function esc(s){ return String(s).replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];}); }
+  function byId(id){ for(var i=0;i<TICKETS.length;i++) if(TICKETS[i].id===id) return TICKETS[i]; return null; }
+  function priClass(p){ return p; }
+
+  /* ---------- TOASTS ---------- */
+  function toast(msg, kind){
+    var t = el("div","toast"+(kind?" "+kind:""), '<span class="dot"></span><span>'+esc(msg)+'</span>');
+    $("toastWrap").appendChild(t);
+    requestAnimationFrame ? requestAnimationFrame(function(){t.classList.add("show");}) : t.classList.add("show");
+    setTimeout(function(){ t.classList.add("show"); }, 20);
+    setTimeout(function(){ t.classList.remove("show"); setTimeout(function(){ if(t.parentNode)t.parentNode.removeChild(t); }, 350); }, kind==="warn"?4200:3000);
+  }
+
+  /* ---------- KPI ---------- */
+  function pulseKpi(node){ node.classList.remove("pulse"); void node.offsetWidth; node.classList.add("pulse"); }
+  function renderKpis(animate){
+    $("kpiHandled").innerHTML = kpi.handled + ' <span class="unit">tickets</span>';
+    $("kpiDefl").innerHTML = kpi.defl + '<span class="unit">%</span>';
+    $("kpiResp").innerHTML = kpi.resp + '<span class="unit">s</span>';
+    $("kpiHeld").innerHTML = kpi.held + ' <span class="unit">case'+(kpi.held===1?'':'s')+'</span>';
+    if(animate){ pulseKpi($("kpiHandled")); pulseKpi($("kpiDefl")); }
+  }
+  function bumpHandled(){
+    kpi.handled += 1;
+    if(kpi.defl < 79) kpi.defl += 1;
+    $("kpiHandledD").textContent = "▲ +1 just now";
+    renderKpis(true);
+  }
+
+  /* ---------- QUEUE ---------- */
+  function counts(){
+    var c={open:0,awaiting:0,resolved:0,held:0};
+    TICKETS.forEach(function(t){ c[t.state]=(c[t.state]||0)+1; });
+    return c;
+  }
+  function visible(t){
+    if(filter==="all") return true;
+    if(filter==="open") return t.state==="open"||t.state==="held";
+    return t.state===filter;
+  }
+  function renderQueue(){
+    var list = $("queueList"); list.innerHTML="";
+    var c = counts();
+    $("openCount").textContent = (c.open+c.held) + " open";
+    var any=false;
+    TICKETS.forEach(function(t){
+      if(!visible(t)) return;
+      any=true;
+      var node = el("div","ticket"+(t.id===selectedId?" active":"")+(t.state==="held"?" held":""));
+      node.setAttribute("data-id", t.id);
+      node.setAttribute("data-state", t.state);
+      var stTxt = t.state==="resolved"?"Resolved":t.state==="awaiting"?"Awaiting":t.state==="held"?"Held · human":"";
+      node.innerHTML =
+        '<div class="t-status">'+stTxt+'</div>'+
+        '<div class="t-row1"><span class="t-emp">'+esc(t.emp)+'</span><span class="t-id">'+esc(t.id)+'</span></div>'+
+        '<div class="t-subj">'+esc(t.subject)+'</div>'+
+        '<div class="t-meta">'+
+          '<span class="t-cat">'+esc(t.cat)+'</span>'+
+          '<span class="pri '+priClass(t.pri)+'">'+esc(t.pri)+'</span>'+
+          '<span class="conf" title="AI classification confidence">'+t.conf+'%<span class="bar"><i style="width:'+t.conf+'%"></i></span></span>'+
+        '</div>';
+      node.addEventListener("click", function(){ select(t.id); });
+      list.appendChild(node);
+    });
+    if(!any){ list.appendChild(el("div","empty",'<div class="e-ico">🗂️</div><div>No tickets in this view.</div>')); }
+  }
+
+  /* ---------- DETAIL ---------- */
+  function select(id, opts){
+    selectedId = id;
+    renderQueue();
+    var node = document.querySelector('.ticket[data-id="'+id+'"]');
+    if(node && opts!==false){ node.scrollIntoView({block:"nearest"}); }
+    renderDetail(byId(id));
+  }
+
+  function renderDetail(t){
+    var d = $("detail");
+    if(!t){ d.innerHTML='<div class="empty"><div class="e-ico">📨</div><div><b>Select a ticket</b></div></div>'; return; }
+    var initials = t.emp.split(/\s+/).slice(0,2).map(function(w){return w[0];}).join("").toUpperCase().slice(0,2);
+    var s = SENTIMENT[t.sentiment] || SENTIMENT.neu;
+    var stateLabel = {open:"Open · awaiting triage",awaiting:"Awaiting your approval",resolved:"Resolved · reply sent",held:"Held — human required"}[t.state];
+
+    var html = '';
+    /* header */
+    html += '<div class="d-head">'+
+      '<div class="d-emp-av">'+esc(initials)+'</div>'+
+      '<div class="d-emp-info">'+
+        '<div class="d-emp-name">'+esc(t.emp)+'</div>'+
+        '<div class="d-emp-sub"><b>'+esc(t.title)+'</b>'+(t.tenure!=="—"?' · Tenure '+esc(t.tenure):'')+' · '+esc(t.id)+'</div>'+
+      '</div>'+
+      '<div class="d-head-status">'+
+        '<span class="statebadge '+t.state+'">'+esc(stateLabel)+'</span>'+
+        '<span class="sla">AI response drafted in '+(t.state==='held'?'—':t.conf>95?'2s':'4s')+'</span>'+
+      '</div>'+
+    '</div>';
+
+    /* sent confirmation */
+    html += '<div class="sent-card'+(t.state==="resolved"?" show":"")+'" id="sentCard">'+
+      '<div class="sent-ico">✓</div>'+
+      '<div class="txt"><b>Reply sent to '+esc(t.emp)+'</b><span>Ticket '+esc(t.id)+' marked Resolved · logged to audit trail · KPIs updated.</span></div>'+
+    '</div>';
+
+    /* GUARDRAIL banner for sensitive */
+    if(t.risk==="sensitive"){
+      html += '<div class="guard show">'+
+        '<div class="guard-top">'+
+          '<div class="guard-ico">🛡️</div>'+
+          '<div><b>Human required — not auto-handled</b><span>Sensitive case · automated replies disabled by policy guardrail</span></div>'+
+        '</div>'+
+        '<div class="guard-body">The AI detected a <b>harassment / safety concern</b>. This category is <b>hard-excluded from autopilot and suggested replies</b>. No draft is generated and no message is sent automatically. The system\'s only action is to <b>flag and route to a trained human investigator</b> under the anti-retaliation policy.'+
+        '<div class="guard-route">'+
+          '<span class="route-pill">→ ER Investigations Lead</span>'+
+          '<span class="route-pill">→ On-call HRBP (human)</span>'+
+          '<span class="route-pill">🔒 Confidential case file</span>'+
+        '</div></div>'+
+      '</div>';
+    }
+
+    /* original message */
+    html += '<div class="card">'+
+      '<div class="card-title"><span class="ico">✉️</span> Original message<span class="ai-tag">inbound · '+(t.tenure==="—"?'external':'employee')+'</span></div>'+
+      '<div class="msg">'+esc(t.msg)+'</div>'+
+      '<div class="msg-foot"><span>📂 Subject: <b>'+esc(t.subject)+'</b></span><span>🕑 Received: <b>today, 9:1'+(t.id.slice(-1))+' AM</b></span></div>'+
+    '</div>';
+
+    /* AI analysis */
+    var ent = t.entities.map(function(e){ return '<span class="ent"><span class="k">'+esc(e[0])+'</span>'+esc(e[1])+'</span>'; }).join("");
+    html += '<div class="card">'+
+      '<div class="card-title"><span class="ico">✨</span> AI Analysis<span class="ai-tag">model · triage-v3</span></div>'+
+      '<div class="ana-grid">'+
+        '<div class="ana-cell"><div class="lbl">Category</div><div class="val">'+esc(t.cat)+'</div></div>'+
+        '<div class="ana-cell"><div class="lbl">Suggested priority</div><div class="val"><span class="pri '+priClass(t.pri)+'" style="font-size:11px">'+esc(t.pri)+'</span></div></div>'+
+        '<div class="ana-cell"><div class="lbl">Sentiment</div><div class="val"><span class="sent-dot" style="background:'+s.c+'"></span>'+esc(s.t)+'</div></div>'+
+        '<div class="ana-cell"><div class="lbl">Risk gate</div><div class="val">'+(t.risk==="sensitive"?'<span style="color:var(--red)">⛔ Sensitive — hold</span>':'<span style="color:var(--green)">✓ Low risk</span>')+'</div></div>'+
+      '</div>'+
+      '<div class="ana-cell" style="margin-top:11px;background:#fafbff">'+
+        '<div class="lbl">Extracted entities</div><div class="entities">'+ent+'</div>'+
+      '</div>'+
+      '<div class="ana-cell" style="margin-top:11px;background:#fafbff">'+
+        '<div class="lbl">Reasoning</div><div style="font-size:12.5px;color:var(--ink2);line-height:1.55;margin-top:3px">'+esc(t.analysis)+'</div>'+
+      '</div>'+
+      '<div class="conf-line"><span class="lbl">Classification confidence</span><div class="conf-track"><i id="confFill"></i></div><span class="conf-num">'+t.conf+'%</span></div>'+
+    '</div>';
+
+    /* suggested reply OR held notice */
+    if(t.risk!=="sensitive"){
+      html += '<div class="card">'+
+        '<div class="card-title"><span class="ico">💬</span> Suggested reply<span class="ai-tag" id="draftTag">'+(t.state==="resolved"?"sent ✓":"draft · editable")+'</span></div>'+
+        '<div class="reply-box" id="replyBox">'+esc(t.reply).replace(/\n/g,"<br>")+'</div>'+
+        '<div class="reply-tools" id="replyTools">'+
+          (t.state==="resolved" ? '<span class="hint">✓ This reply was approved and sent.</span>' :
+          '<span class="hint">✨ Personalized from message + employee record</span>')+
+        '</div>'+
+      '</div>';
+    } else {
+      html += '<div class="card" style="border-color:rgba(239,68,68,.3)">'+
+        '<div class="card-title"><span class="ico" style="background:var(--red)">⛔</span> Suggested reply<span class="ai-tag" style="color:#c2342f;background:rgba(239,68,68,.08);border-color:rgba(239,68,68,.2)">suppressed</span></div>'+
+        '<div class="reply-box" style="color:var(--muted);font-style:italic;text-align:center;padding:22px">No automated reply generated.<br>This case is reserved for a trained human investigator.</div>'+
+      '</div>';
+    }
+
+    /* suggested actions */
+    var acts = t.actions.map(function(a,i){
+      var required = a[1]==="Required";
+      return '<div class="act'+(required?" done":"")+'" data-act="'+i+'"'+(required?' style="cursor:default;border-color:rgba(239,68,68,.25);background:rgba(239,68,68,.04)"':'')+'>'+
+        '<div class="act-check"'+(required?' style="background:var(--red);border-color:var(--red)"':'')+'>'+(required?'!':'✓')+'</div>'+
+        '<div class="act-txt">'+esc(a[0])+'</div>'+
+        '<span class="act-sys"'+(required?' style="color:#c2342f;border-color:rgba(239,68,68,.3)"':'')+'>'+esc(a[1])+'</span>'+
+      '</div>';
+    }).join("");
+    html += '<div class="card">'+
+      '<div class="card-title"><span class="ico">✅</span> Suggested actions<span class="ai-tag">'+(t.risk==="sensitive"?"mandatory":"click to toggle")+'</span></div>'+
+      '<div class="acts" id="acts">'+acts+'</div>'+
+    '</div>';
+
+    /* action bar */
+    if(t.risk==="sensitive"){
+      html += '<div class="actionbar">'+
+        '<button class="btn btn-primary" id="escalateBtn" style="background:linear-gradient(110deg,#ef4444,#db2777)">🛡️ Escalate to human investigator</button>'+
+        '<button class="btn btn-ghost" id="ackBtn">Acknowledge guardrail</button>'+
+      '</div>';
+    } else if(t.state==="resolved"){
+      html += '<div class="actionbar">'+
+        '<button class="btn" disabled>✓ Sent &amp; resolved</button>'+
+        '<button class="btn btn-ghost" id="reopenBtn">Reopen ticket</button>'+
+      '</div>';
+    } else {
+      html += '<div class="actionbar">'+
+        '<button class="btn btn-primary" id="approveBtn">✓ Approve &amp; send</button>'+
+        '<button class="btn" id="editBtn">✏️ Edit</button>'+
+        '<button class="btn" id="regenBtn">↻ Regenerate</button>'+
+        (t.state==="awaiting"?'<span class="hint" style="font-size:11.5px;color:var(--v2);font-weight:600;display:flex;align-items:center;gap:6px;margin-left:4px">⚡ Auto-classified by Autopilot — review &amp; approve</span>':'')+
+      '</div>';
+    }
+
+    d.innerHTML = html;
+    d.scrollTop = 0;
+
+    /* animate confidence fill */
+    setTimeout(function(){ var f=$("confFill"); if(f) f.style.width = t.conf+"%"; }, 60);
+
+    wireDetail(t);
+  }
+
+  /* ---------- DETAIL INTERACTIONS ---------- */
+  function wireDetail(t){
+    /* action checklist toggles */
+    var actsWrap = $("acts");
+    if(actsWrap){
+      Array.prototype.forEach.call(actsWrap.querySelectorAll(".act"), function(a){
+        if(t.risk==="sensitive") return; // mandatory, locked
+        a.addEventListener("click", function(){
+          a.classList.toggle("done");
+        });
+      });
+    }
+
+    if(t.risk==="sensitive"){
+      var esb = $("escalateBtn");
+      if(esb) esb.addEventListener("click", function(){
+        esb.disabled=true; esb.innerHTML="✓ Escalated to ER investigations";
+        toast("Routed to ER Investigations Lead + on-call HRBP. No automated reply was sent.","warn");
+      });
+      var ack=$("ackBtn");
+      if(ack) ack.addEventListener("click", function(){ toast("Guardrail acknowledged — case stays with a human.","ap"); });
+      return;
+    }
+
+    var box = $("replyBox");
+    var editBtn = $("editBtn");
+    if(editBtn){
+      editBtn.addEventListener("click", function(){
+        if(box.getAttribute("contenteditable")==="true"){
+          box.setAttribute("contenteditable","false");
+          editBtn.innerHTML="✏️ Edit";
+          t.reply = box.innerText;
+          $("draftTag").textContent="draft · edited";
+          toast("Edits saved to the draft.","");
+        } else {
+          box.setAttribute("contenteditable","true");
+          box.focus();
+          editBtn.innerHTML="💾 Save edits";
+          // place caret at end
+          try{ var r=document.createRange(); r.selectNodeContents(box); r.collapse(false); var sel=window.getSelection(); sel.removeAllRanges(); sel.addRange(r);}catch(e){}
+        }
+      });
+    }
+
+    var regenBtn = $("regenBtn");
+    if(regenBtn){
+      regenBtn.addEventListener("click", function(){
+        regenBtn.disabled=true;
+        var orig = regenBtn.innerHTML;
+        regenBtn.innerHTML='<span class="ap-spin" style="width:12px;height:12px;border-width:2px"></span> Regenerating…';
+        $("draftTag").textContent="generating…";
+        if(box) box.style.opacity=".4";
+        setTimeout(function(){
+          // produce a lightly varied alternate phrasing
+          t.reply = altReply(t);
+          if(box){ box.innerHTML = esc(t.reply).replace(/\n/g,"<br>"); box.style.opacity="1"; }
+          $("draftTag").textContent="draft · v2 · editable";
+          regenBtn.disabled=false; regenBtn.innerHTML=orig;
+          toast("Fresh draft generated (variant v2).","ap");
+        }, 900);
+      });
+    }
+
+    var approveBtn = $("approveBtn");
+    if(approveBtn){
+      approveBtn.addEventListener("click", function(){
+        approveBtn.disabled=true;
+        if($("editBtn")) $("editBtn").disabled=true;
+        if($("regenBtn")) $("regenBtn").disabled=true;
+        approveBtn.innerHTML='<span class="ap-spin" style="width:12px;height:12px;border-width:2px"></span> Sending…';
+        setTimeout(function(){
+          t.state="resolved";
+          bumpHandled();
+          renderDetail(t);
+          renderQueue();
+          var node=document.querySelector('.ticket[data-id="'+t.id+'"]');
+          if(node){ node.classList.add("flash"); }
+          toast("Reply sent to "+t.emp+" · ticket "+t.id+" resolved.","");
+        }, 700);
+      });
+    }
+
+    var reopenBtn=$("reopenBtn");
+    if(reopenBtn){
+      reopenBtn.addEventListener("click", function(){
+        t.state="open";
+        if(kpi.handled>0) kpi.handled-=1;
+        renderKpis(false);
+        renderDetail(t); renderQueue();
+        toast("Ticket "+t.id+" reopened.","ap");
+      });
+    }
+  }
+
+  function altReply(t){
+    // Simple deterministic "regeneration": tighten the greeting / closing for a v2 feel.
+    var r = t.reply;
+    r = r.replace(/^Hi [^,\n]+,\s*\n\n?/, "Hello "+t.emp.split(/\s+/)[0]+",\n\n");
+    r = r.replace(/(Warmly,|Best,|Thanks,|Warmly|Best)\s*\nPeople Services/, "Thank you,\nPeople Services · NewWesVentures");
+    if(r===t.reply){ r = r + "\n\n(Happy to adjust the tone or detail — just let me know.)"; }
+    return r;
+  }
+
+  /* ---------- FILTERS ---------- */
+  Array.prototype.forEach.call(document.querySelectorAll(".chip-f"), function(c){
+    c.addEventListener("click", function(){
+      Array.prototype.forEach.call(document.querySelectorAll(".chip-f"), function(x){ x.classList.remove("active"); });
+      c.classList.add("active");
+      filter = c.getAttribute("data-f");
+      renderQueue();
+    });
+  });
+
+  /* ---------- AUTOPILOT ---------- */
+  var apToggle = $("apToggle");
+  apToggle.addEventListener("change", function(){
+    if(apToggle.checked){ toast("AI Autopilot ON — low-risk tickets will auto-classify for approval.","ap"); }
+    else { toast("AI Autopilot OFF — all tickets require manual triage.","ap"); }
+  });
+
+  $("runAp").addEventListener("click", function(){
+    if(apRunning) return;
+    if(!apToggle.checked){
+      apToggle.checked = true;
+      toast("Autopilot enabled — starting run.","ap");
+    }
+    runAutopilot();
+  });
+
+  function runAutopilot(){
+    // candidates: open + low risk, take up to 3
+    var candidates = TICKETS.filter(function(t){ return t.state==="open" && t.risk==="low"; }).slice(0,3);
+    var heldSensitive = TICKETS.filter(function(t){ return t.risk==="sensitive" && t.state!=="resolved"; });
+
+    if(candidates.length===0){
+      toast("No low-risk open tickets left to auto-classify.","ap");
+      // still demonstrate the guardrail
+      if(heldSensitive.length){ flashHeld(heldSensitive[0]); }
+      return;
+    }
+
+    apRunning = true;
+    $("runAp").disabled = true;
+    apToggle.disabled = true;
+    var banner = $("apBanner"); banner.classList.add("show");
+    var prog = $("apProg"); prog.style.width="0%";
+    var total = candidates.length;
+
+    candidates.forEach(function(t, i){
+      setTimeout(function(){
+        t.state = "awaiting";
+        renderQueue();
+        var node = document.querySelector('.ticket[data-id="'+t.id+'"]');
+        if(node){ node.classList.add("settle"); node.classList.add("flash"); }
+        prog.style.width = Math.round(((i+1)/(total+1))*100)+"%";
+        $("apBannerTxt").textContent = "Auto-classified "+(i+1)+" of "+total+" · "+t.cat+" → awaiting approval";
+        // bump deflection perception slightly
+        if(kpi.defl<78){ kpi.defl+=1; renderKpis(false); pulseKpi($("kpiDefl")); }
+      }, 650*(i+1));
+    });
+
+    // Then explicitly hold the sensitive ticket — the headline guardrail moment
+    setTimeout(function(){
+      prog.style.width="100%";
+      if(heldSensitive.length){
+        var h = heldSensitive[0];
+        flashHeld(h);
+        $("apBannerTxt").innerHTML = '🛡️ Guardrail enforced — <b style="color:#b3261e">'+esc(h.cat)+'</b> held for human review (never auto-replied).';
+        banner.querySelector(".ap-spin").style.display="none";
+        toast("Guardrail: "+h.cat+" held for a human. Autopilot will not reply to sensitive cases.","warn");
+      }
+      renderQueue();
+    }, 650*(total+1)+200);
+
+    // finish
+    setTimeout(function(){
+      apRunning=false;
+      $("runAp").disabled=false;
+      apToggle.disabled=false;
+      $("runAp").innerHTML="⚡ Run autopilot";
+      setTimeout(function(){ banner.classList.remove("show"); banner.querySelector(".ap-spin").style.display=""; }, 2600);
+      // auto-select first awaiting ticket so the user sees the result
+      var firstAwait = TICKETS.filter(function(t){return t.state==="awaiting";})[0];
+      if(firstAwait){ select(firstAwait.id); }
+      // switch filter to awaiting to surface the batch
+      Array.prototype.forEach.call(document.querySelectorAll(".chip-f"), function(x){ x.classList.toggle("active", x.getAttribute("data-f")==="awaiting"); });
+      filter="awaiting"; renderQueue();
+    }, 650*(total+1)+1400);
+  }
+
+  function flashHeld(h){
+    var node = document.querySelector('.ticket[data-id="'+h.id+'"]');
+    if(node){ node.classList.add("flash"); }
+    // ensure KPI reflects the hold
+    kpi.held = TICKETS.filter(function(t){return t.state==="held";}).length || 1;
+    renderKpis(false);
+    pulseKpi($("kpiHeld"));
+  }
+
+  /* ---------- INIT ---------- */
+  function init(){
+    renderKpis(false);
+    renderQueue();
+    // preselect the payroll (urgent) ticket to showcase a rich case immediately
+    select("HR-4822");
+    setTimeout(function(){ toast("3 interactions: approve a reply, edit/regenerate a draft, then Run autopilot to see the guardrail.","ap"); }, 700);
+  }
+  // defensive boot
+  try{ init(); }catch(e){
+    try{ $("detail").innerHTML='<div class="empty"><div class="e-ico">⚠️</div><div>Demo failed to load: '+esc(e.message)+'</div></div>'; }catch(_){}
+  }
+
+})();
+</script>
+</body>
+</html>

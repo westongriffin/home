@@ -1,0 +1,730 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>The Self-Service People Team — NewWesVentures</title>
+<style>
+  :root{
+    --ink:#0c1020; --muted:#6b7794; --line:#e7e9f2; --bg:#f7f8fc; --card:#ffffff;
+    --v1:#7c3aed; --v2:#5b4ef0; --v3:#06b6d4; --pink:#db2777;
+    --grad:linear-gradient(110deg,#7c3aed,#5b4ef0 45%,#06b6d4);
+    --stageW:1280px; --stageH:720px;
+    --font:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Inter,Helvetica,Arial,sans-serif;
+  }
+  *{box-sizing:border-box; margin:0; padding:0}
+  html,body{height:100%}
+  body{
+    font-family:var(--font); color:var(--ink);
+    background:#080a16; overflow:hidden;
+    -webkit-font-smoothing:antialiased; text-rendering:optimizeLegibility;
+    -webkit-user-select:none; user-select:none;
+  }
+
+  /* ===== Cinematic backdrop ===== */
+  .backdrop{position:fixed; inset:0; background:#080a16; overflow:hidden}
+  .backdrop::before{
+    content:""; position:absolute; inset:0;
+    background:
+      radial-gradient(60% 80% at 12% 8%, rgba(124,58,237,.5), transparent 60%),
+      radial-gradient(55% 75% at 92% 18%, rgba(6,182,212,.42), transparent 60%);
+  }
+  .grid{
+    position:absolute; inset:0;
+    background-image:
+      linear-gradient(rgba(255,255,255,.05) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,.05) 1px, transparent 1px);
+    background-size:42px 42px;
+    -webkit-mask-image:radial-gradient(70% 70% at 50% 45%, #000 30%, transparent 75%);
+            mask-image:radial-gradient(70% 70% at 50% 45%, #000 30%, transparent 75%);
+  }
+  .vignette{position:absolute; inset:0; box-shadow:inset 0 0 240px 60px rgba(0,0,0,.55); pointer-events:none}
+
+  /* ===== Progress bar ===== */
+  .progress{position:fixed; top:0; left:0; right:0; height:4px; background:rgba(255,255,255,.07); z-index:60}
+  .progress > i{display:block; height:100%; width:0%; background:var(--grad); box-shadow:0 0 14px rgba(91,78,240,.7)}
+
+  /* ===== Stage / letterbox ===== */
+  .reel{position:fixed; inset:0; display:flex; align-items:center; justify-content:center}
+  .stage{
+    position:relative; width:var(--stageW); height:var(--stageH);
+    transform-origin:center center;
+    border-radius:20px; overflow:hidden;
+    background:
+      radial-gradient(120% 120% at 50% 0%, #11152a 0%, #0a0d1d 55%, #070912 100%);
+    box-shadow:0 40px 120px rgba(0,0,0,.6), 0 0 0 1px rgba(255,255,255,.05) inset;
+  }
+  /* soft stage glows */
+  .stage::before{
+    content:""; position:absolute; inset:0; pointer-events:none;
+    background:
+      radial-gradient(50% 60% at 15% 12%, rgba(124,58,237,.22), transparent 60%),
+      radial-gradient(50% 60% at 88% 90%, rgba(6,182,212,.18), transparent 60%);
+  }
+
+  .scene{position:absolute; inset:0; opacity:0; pointer-events:none}
+  .scene.show{opacity:1}
+
+  /* lower-third caption */
+  .lower3{
+    position:absolute; left:48px; bottom:42px; z-index:8;
+    display:flex; align-items:center; gap:12px;
+    padding:11px 18px 11px 14px; border-radius:14px;
+    background:rgba(12,16,32,.62); border:1px solid rgba(255,255,255,.10);
+    backdrop-filter:blur(10px); -webkit-backdrop-filter:blur(10px);
+    color:#eef0fb; font-size:16px; font-weight:600; letter-spacing:.1px;
+    opacity:0; transform:translateY(14px);
+  }
+  .lower3 .dot{width:9px; height:9px; border-radius:50%; background:var(--grad); box-shadow:0 0 10px var(--v2); flex:none}
+  .lower3 .sub{color:#aeb6d6; font-weight:500; font-size:13.5px}
+
+  .badge-pill{
+    display:inline-flex; align-items:center; gap:8px;
+    padding:7px 13px; border-radius:999px; font-weight:700; font-size:13.5px;
+    color:#fff; background:rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.16);
+  }
+
+  /* ===== TITLE CARD ===== */
+  .titleCard{position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; padding:40px}
+  .kicker{
+    display:inline-flex; align-items:center; gap:9px;
+    padding:8px 16px; border-radius:999px; margin-bottom:26px;
+    font-size:13px; font-weight:700; letter-spacing:.14em; text-transform:uppercase;
+    color:#d8d4ff; background:rgba(124,58,237,.16); border:1px solid rgba(124,58,237,.4);
+    opacity:0; transform:translateY(16px);
+  }
+  .kicker .spark{width:7px; height:7px; border-radius:50%; background:var(--grad); box-shadow:0 0 12px var(--v3)}
+  .bigTitle{
+    font-size:clamp(40px,5.4vw,76px); line-height:1.02; font-weight:800; letter-spacing:-.022em;
+    background:linear-gradient(110deg,#a98bff,#7c8bff 42%,#46d6ee);
+    -webkit-background-clip:text; background-clip:text; color:transparent;
+    max-width:18ch;
+  }
+  .bigTitle .ln{display:block; opacity:0; transform:translateY(26px)}
+  .premise{
+    margin-top:24px; max-width:30ch; font-size:clamp(17px,1.7vw,23px); line-height:1.4;
+    color:#b9c0de; font-weight:500; opacity:0; transform:translateY(18px);
+  }
+  .brandRow{
+    margin-top:40px; display:flex; align-items:center; gap:12px;
+    opacity:0; transform:translateY(14px);
+  }
+  .logoDot{
+    width:38px; height:38px; border-radius:11px; background:var(--grad);
+    display:grid; place-items:center; color:#fff; font-weight:800; font-size:18px;
+    box-shadow:0 8px 22px rgba(91,78,240,.5);
+  }
+  .brandRow b{color:#eef0fb; font-size:17px; font-weight:700; letter-spacing:-.01em}
+
+  /* ===== PHONE (scenes 1 & 2) ===== */
+  .phoneWrap{position:absolute; inset:0; display:flex; align-items:center; justify-content:center; gap:60px; padding:0 56px}
+  .phone{
+    position:relative; width:372px; height:600px; flex:none;
+    border-radius:46px; padding:13px;
+    background:linear-gradient(160deg,#1c2138,#0d1124);
+    box-shadow:0 30px 70px rgba(0,0,0,.6), 0 0 0 1px rgba(255,255,255,.08) inset, 0 0 0 7px #05070f;
+    opacity:0; transform:translateY(26px) scale(.97);
+  }
+  .phone .notch{position:absolute; top:13px; left:50%; transform:translateX(-50%); width:128px; height:26px; background:#05070f; border-radius:0 0 16px 16px; z-index:5}
+  .screen{
+    position:relative; width:100%; height:100%; border-radius:34px; overflow:hidden;
+    background:linear-gradient(180deg,#f3f5fb 0%,#eef1f9 100%); color:var(--ink);
+    display:flex; flex-direction:column;
+  }
+  .statusbar{display:flex; justify-content:space-between; align-items:center; padding:13px 24px 6px; font-size:13px; font-weight:700; color:#1a2138}
+  .statusbar .icns{display:flex; gap:6px; align-items:center; font-size:12px; opacity:.8}
+  .appbar{
+    display:flex; align-items:center; gap:11px; padding:10px 18px 13px;
+    border-bottom:1px solid var(--line);
+  }
+  .appbar .av{width:38px; height:38px; border-radius:12px; background:var(--grad); display:grid; place-items:center; color:#fff; font-size:18px; box-shadow:0 6px 16px rgba(91,78,240,.4)}
+  .appbar .nm{font-weight:800; font-size:15px; letter-spacing:-.01em}
+  .appbar .st{font-size:11.5px; color:#19b36b; font-weight:700; display:flex; align-items:center; gap:5px}
+  .appbar .st::before{content:""; width:7px; height:7px; border-radius:50%; background:#19b36b; box-shadow:0 0 8px #19b36b}
+
+  .thread{flex:1; padding:18px 16px 14px; display:flex; flex-direction:column; gap:13px; overflow:hidden}
+  .timechip{align-self:center; font-size:11px; color:#9aa3bf; font-weight:600; background:rgba(120,130,160,.12); padding:4px 11px; border-radius:999px}
+
+  .bubble{max-width:80%; padding:11px 14px; border-radius:18px; font-size:14.5px; line-height:1.38; opacity:0; transform:translateY(12px) scale(.96); will-change:transform,opacity}
+  .bubble.user{align-self:flex-end; background:var(--grad); color:#fff; border-bottom-right-radius:6px; box-shadow:0 8px 18px rgba(91,78,240,.32); font-weight:500}
+  .bubble.ai{align-self:flex-start; background:#fff; color:var(--ink); border-bottom-left-radius:6px; box-shadow:0 6px 16px rgba(20,28,60,.10); border:1px solid var(--line); font-weight:500}
+  .bubble .caret{display:inline-block; width:2px; height:1.05em; background:currentColor; vertical-align:-2px; margin-left:1px; animation:blink 1s step-end infinite}
+
+  .typing{align-self:flex-start; display:inline-flex; gap:5px; padding:13px 15px; background:#fff; border:1px solid var(--line); border-radius:18px; border-bottom-left-radius:6px; box-shadow:0 6px 16px rgba(20,28,60,.10); opacity:0; transform:translateY(10px)}
+  .typing i{width:8px; height:8px; border-radius:50%; background:#b6bed8; animation:bounce 1.2s infinite ease-in-out}
+  .typing i:nth-child(2){animation-delay:.15s}
+  .typing i:nth-child(3){animation-delay:.3s}
+
+  .cite{
+    display:inline-flex; align-items:center; gap:8px; align-self:flex-start;
+    margin-top:-3px; padding:8px 13px; border-radius:12px; font-size:12.5px; font-weight:700;
+    color:var(--v2); background:rgba(91,78,240,.08); border:1px solid rgba(91,78,240,.28);
+    cursor:pointer; opacity:0; transform:translateY(8px) scale(.95);
+  }
+  .cite .pg{font-size:13px}
+  .cite .arr{color:#9aa3bf; font-weight:800}
+
+  .answered{
+    align-self:flex-end; display:inline-flex; align-items:center; gap:7px;
+    padding:5px 11px; border-radius:999px; font-size:11.5px; font-weight:700;
+    color:#19a062; background:rgba(25,179,107,.12); border:1px solid rgba(25,179,107,.3);
+    opacity:0; transform:translateY(8px) scale(.9);
+  }
+  .answered .tick{width:15px; height:15px; border-radius:50%; background:#19b36b; color:#fff; display:grid; place-items:center; font-size:10px}
+
+  .composer{display:flex; align-items:center; gap:9px; padding:11px 14px 16px; border-top:1px solid var(--line)}
+  .composer .inp{flex:1; height:38px; border-radius:999px; background:#eef0f7; border:1px solid var(--line); display:flex; align-items:center; padding:0 15px; font-size:13.5px; color:#8a93b2}
+  .composer .snd{width:38px; height:38px; border-radius:50%; background:var(--grad); flex:none; display:grid; place-items:center; color:#fff; font-size:16px; box-shadow:0 6px 14px rgba(91,78,240,.4)}
+
+  /* side panel beside phone */
+  .sidekick{flex:none; max-width:330px; opacity:0; transform:translateX(-22px)}
+  .sidekick h4{font-size:13px; font-weight:700; letter-spacing:.12em; text-transform:uppercase; color:#8f97c4; margin-bottom:18px}
+  .sidekick .feat{display:flex; align-items:flex-start; gap:13px; margin-bottom:18px}
+  .sidekick .fi{width:42px; height:42px; flex:none; border-radius:13px; display:grid; place-items:center; font-size:20px; background:rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.12)}
+  .sidekick .ft b{display:block; color:#eef0fb; font-size:16px; font-weight:700; letter-spacing:-.01em}
+  .sidekick .ft span{color:#9aa3c8; font-size:13.5px; line-height:1.4}
+
+  .globe{
+    margin-top:6px; display:inline-flex; align-items:center; gap:11px;
+    padding:11px 18px; border-radius:15px;
+    background:linear-gradient(110deg, rgba(124,58,237,.18), rgba(6,182,212,.16));
+    border:1px solid rgba(124,58,237,.4); color:#fff;
+    opacity:0; transform:translateY(12px) scale(.95);
+  }
+  .globe .gi{font-size:26px; animation:spin 9s linear infinite}
+  .globe b{display:block; font-size:17px; font-weight:800; letter-spacing:-.01em}
+  .globe span{font-size:13px; color:#c3c9ec; font-weight:600}
+
+  /* ===== SCENE 3 metrics ===== */
+  .metricsScene{position:absolute; inset:0; display:flex; flex-direction:column; padding:64px 70px 96px}
+  .metricsHead{display:flex; align-items:center; gap:14px; margin-bottom:34px; opacity:0; transform:translateY(16px)}
+  .metricsHead .mi{width:48px; height:48px; border-radius:14px; background:var(--grad); display:grid; place-items:center; font-size:24px; box-shadow:0 10px 26px rgba(91,78,240,.45)}
+  .metricsHead h3{color:#f1f3fe; font-size:26px; font-weight:800; letter-spacing:-.02em}
+  .metricsHead p{color:#9aa3c8; font-size:14.5px; margin-top:2px; font-weight:500}
+
+  .kpiGrid{display:grid; grid-template-columns:repeat(4,1fr); gap:20px; flex:1; align-content:start}
+  .kpi{
+    position:relative; border-radius:18px; padding:24px 22px;
+    background:linear-gradient(165deg, rgba(255,255,255,.065), rgba(255,255,255,.02));
+    border:1px solid rgba(255,255,255,.10);
+    box-shadow:0 18px 40px rgba(0,0,0,.32);
+    opacity:0; transform:translateY(24px); overflow:hidden;
+  }
+  .kpi::after{content:""; position:absolute; left:0; top:0; bottom:0; width:4px; background:var(--grad)}
+  .kpi .lab{font-size:13px; font-weight:700; color:#9aa3c8; letter-spacing:.02em}
+  .kpi .num{font-size:clamp(34px,3.4vw,46px); font-weight:800; line-height:1.05; margin:12px 0 4px; letter-spacing:-.02em;
+    background:linear-gradient(110deg,#ffffff,#cfd5f5);
+    -webkit-background-clip:text; background-clip:text; color:transparent;}
+  .kpi .num .suf{font-size:.55em; font-weight:700; color:#a7afd6; -webkit-text-fill-color:#a7afd6}
+  .kpi .meta{font-size:12.5px; color:#7e87ad; font-weight:600}
+  .kpi .bar{margin-top:16px; height:7px; border-radius:99px; background:rgba(255,255,255,.08); overflow:hidden}
+  .kpi .bar > i{display:block; height:100%; width:0%; background:var(--grad); border-radius:99px}
+  .kpi.accentPink::after{background:linear-gradient(180deg,var(--pink),var(--v1))}
+
+  /* ===== END CARD ===== */
+  .endCard{position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; padding:40px}
+  .endStat{
+    font-size:clamp(46px,6.2vw,88px); font-weight:800; letter-spacing:-.025em; line-height:1;
+    background:linear-gradient(110deg,#a98bff,#7c8bff 42%,#46d6ee);
+    -webkit-background-clip:text; background-clip:text; color:transparent;
+    opacity:0; transform:translateY(22px) scale(.96);
+  }
+  .endLine{margin-top:22px; max-width:26ch; font-size:clamp(19px,2vw,26px); line-height:1.34; color:#cdd3ee; font-weight:600; opacity:0; transform:translateY(16px)}
+  .endBrand{
+    margin-top:38px; display:flex; align-items:center; gap:13px; padding:13px 22px; border-radius:16px;
+    background:rgba(255,255,255,.05); border:1px solid rgba(255,255,255,.12);
+    opacity:0; transform:translateY(14px);
+  }
+  .endBrand .logoDot{width:42px; height:42px; font-size:20px; border-radius:12px}
+  .endBrand .et b{display:block; color:#f1f3fe; font-size:18px; font-weight:800; letter-spacing:-.01em}
+  .endBrand .et span{color:#9aa3c8; font-size:13px; font-weight:600}
+  .byline{margin-top:30px; font-size:13.5px; color:#7b84a8; font-weight:600; letter-spacing:.02em; opacity:0}
+
+  /* ===== Controls ===== */
+  .controls{position:fixed; right:18px; bottom:16px; z-index:70; display:flex; gap:10px}
+  .ctrl{
+    width:42px; height:42px; border-radius:12px; border:1px solid rgba(255,255,255,.16);
+    background:rgba(16,20,38,.66); color:#eef0fb; backdrop-filter:blur(10px); -webkit-backdrop-filter:blur(10px);
+    display:grid; place-items:center; cursor:pointer; font-size:16px; line-height:1;
+    transition:transform .15s ease, background .15s ease, border-color .15s ease;
+  }
+  .ctrl:hover{background:rgba(30,36,64,.85); border-color:rgba(255,255,255,.3); transform:translateY(-1px)}
+  .ctrl:active{transform:translateY(0)}
+  .ctrl svg{width:17px; height:17px; fill:currentColor}
+
+  /* ===== keyframes ===== */
+  @keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
+  @keyframes bounce{0%,80%,100%{transform:translateY(0); opacity:.55}40%{transform:translateY(-5px); opacity:1}}
+  @keyframes spin{to{transform:rotate(360deg)}}
+
+  /* transition helper class toggled by JS */
+  .anim{transition:opacity .6s cubic-bezier(.22,.61,.36,1), transform .6s cubic-bezier(.22,.61,.36,1)}
+  .animSlow{transition:opacity .85s cubic-bezier(.22,.61,.36,1), transform .85s cubic-bezier(.22,.61,.36,1)}
+  .on{opacity:1 !important; transform:none !important}
+
+  /* ===== reduced motion: static composed final frame ===== */
+  @media (prefers-reduced-motion: reduce){
+    .controls{display:none}
+    .progress{display:none}
+    .grid{animation:none}
+  }
+</style>
+</head>
+<body>
+  <div class="backdrop"><div class="grid"></div><div class="vignette"></div></div>
+
+  <div class="progress"><i id="bar"></i></div>
+
+  <div class="reel">
+    <div class="stage" id="stage">
+
+      <!-- ===================== TITLE CARD ===================== -->
+      <section class="scene" id="sc-title" aria-label="Title">
+        <div class="titleCard">
+          <span class="kicker anim" id="t-kick"><span class="spark"></span>NewWesVentures · People Operations</span>
+          <h1 class="bigTitle">
+            <span class="ln anim" id="t-l1">The Self-Service</span>
+            <span class="ln anim" id="t-l2">People Team</span>
+          </h1>
+          <p class="premise anim" id="t-prem">Every employee question — answered instantly, accurately, 24/7, in any language.</p>
+          <div class="brandRow anim" id="t-brand">
+            <span class="logoDot">N</span><b>NewWesVentures</b>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===================== SCENE 1 — PTO chat ===================== -->
+      <section class="scene" id="sc1" aria-label="Scene one">
+        <div class="phoneWrap">
+          <div class="sidekick anim" id="s1-side">
+            <h4>People Assistant</h4>
+            <div class="feat"><div class="fi">📚</div><div class="ft"><b>Grounded in policy</b><span>Answers cite your own HR documents — never guesses.</span></div></div>
+            <div class="feat"><div class="fi">⚡</div><div class="ft"><b>Instant resolution</b><span>No tickets, no waiting on the People team.</span></div></div>
+            <div class="feat"><div class="fi">🌙</div><div class="ft"><b>Always on</b><span>9:47 PM on a Tuesday? Still answered.</span></div></div>
+          </div>
+
+          <div class="phone anim" id="s1-phone">
+            <div class="notch"></div>
+            <div class="screen">
+              <div class="statusbar"><span>9:47</span><span class="icns">●●● &nbsp; ⛶ &nbsp; 100%</span></div>
+              <div class="appbar">
+                <div class="av">🤝</div>
+                <div><div class="nm">People Assistant</div><div class="st">Online</div></div>
+              </div>
+              <div class="thread" id="s1-thread">
+                <div class="timechip">Today · 9:47 PM</div>
+                <div class="bubble user" id="s1-user"></div>
+                <div class="typing" id="s1-typing"><i></i><i></i><i></i></div>
+                <div class="bubble ai" id="s1-ai"></div>
+                <div class="cite" id="s1-cite"><span class="pg">📄</span>Source: PTO Policy §4.2<span class="arr">→</span></div>
+                <div class="answered" id="s1-ans"><span class="tick">✓</span>Answered in 3s</div>
+              </div>
+              <div class="composer"><div class="inp">Message People Assistant…</div><div class="snd">➤</div></div>
+            </div>
+          </div>
+        </div>
+        <div class="lower3 anim" id="s1-l3"><span class="dot"></span><span>Self-service answers, grounded in your policies<span class="sub"> &nbsp;·&nbsp; Scene 1 — Time off</span></span></div>
+      </section>
+
+      <!-- ===================== SCENE 2 — Spanish ===================== -->
+      <section class="scene" id="sc2" aria-label="Scene two">
+        <div class="phoneWrap">
+          <div class="phone anim" id="s2-phone">
+            <div class="notch"></div>
+            <div class="screen">
+              <div class="statusbar"><span>9:48</span><span class="icns">●●● &nbsp; ⛶ &nbsp; 100%</span></div>
+              <div class="appbar">
+                <div class="av">🤝</div>
+                <div><div class="nm">Asistente de Personal</div><div class="st">En línea</div></div>
+              </div>
+              <div class="thread" id="s2-thread">
+                <div class="timechip">Hoy · 9:48 PM</div>
+                <div class="bubble user" id="s2-user"></div>
+                <div class="typing" id="s2-typing"><i></i><i></i><i></i></div>
+                <div class="bubble ai" id="s2-ai"></div>
+                <div class="cite" id="s2-cite"><span class="pg">📄</span>Fuente: Guía de Beneficios §2.1<span class="arr">→</span></div>
+                <div class="answered" id="s2-ans"><span class="tick">✓</span>Respondido en 3s</div>
+              </div>
+              <div class="composer"><div class="inp">Escribe un mensaje…</div><div class="snd">➤</div></div>
+            </div>
+          </div>
+
+          <div class="sidekick anim" id="s2-side" style="transform:translateX(22px)">
+            <h4>One assistant · every language</h4>
+            <div class="feat"><div class="fi">🌐</div><div class="ft"><b>Speaks their language</b><span>Detects and replies in the employee's own language — automatically.</span></div></div>
+            <div class="feat"><div class="fi">🎯</div><div class="ft"><b>Same source of truth</b><span>Localized answers, identical underlying policy.</span></div></div>
+            <div class="globe" id="s2-globe"><span class="gi">🌍</span><div><b>12 languages · 24/7</b><span>No translation tickets. No delays.</span></div></div>
+          </div>
+        </div>
+        <div class="lower3 anim" id="s2-l3"><span class="dot"></span><span>Answers in any language, automatically<span class="sub"> &nbsp;·&nbsp; Scene 2 — Open enrollment</span></span></div>
+      </section>
+
+      <!-- ===================== SCENE 3 — metrics ===================== -->
+      <section class="scene" id="sc3" aria-label="Scene three">
+        <div class="metricsScene">
+          <div class="metricsHead anim" id="m-head">
+            <div class="mi">📊</div>
+            <div><h3>Deflection &amp; impact — this month</h3><p>Riverside Health Group · 4,100 employees</p></div>
+          </div>
+          <div class="kpiGrid">
+            <div class="kpi anim" id="k1">
+              <div class="lab">Questions resolved</div>
+              <div class="num"><span class="val" data-to="1284" data-fmt="comma">0</span></div>
+              <div class="meta">across chat, email &amp; portal</div>
+              <div class="bar"><i></i></div>
+            </div>
+            <div class="kpi anim" id="k2">
+              <div class="lab">Auto-deflected</div>
+              <div class="num"><span class="val" data-to="73">0</span><span class="suf">%</span></div>
+              <div class="meta">no human touch required</div>
+              <div class="bar"><i></i></div>
+            </div>
+            <div class="kpi anim" id="k3">
+              <div class="lab">Avg response time</div>
+              <div class="num"><span class="val" data-to="3">0</span><span class="suf">s</span></div>
+              <div class="meta">down from ~6 hours</div>
+              <div class="bar"><i></i></div>
+            </div>
+            <div class="kpi anim accentPink" id="k4">
+              <div class="lab">People-team hours saved</div>
+              <div class="num"><span class="val" data-to="210" data-fmt="comma">0</span><span class="suf">hrs</span></div>
+              <div class="meta">reinvested in strategic work</div>
+              <div class="bar"><i></i></div>
+            </div>
+          </div>
+        </div>
+        <div class="lower3 anim" id="s3-l3"><span class="dot"></span><span>Fewer tickets, faster answers, hours back<span class="sub"> &nbsp;·&nbsp; Scene 3 — The impact</span></span></div>
+      </section>
+
+      <!-- ===================== END CARD ===================== -->
+      <section class="scene" id="sc-end" aria-label="End card">
+        <div class="endCard">
+          <div class="endStat anim" id="e-stat">73% auto-deflected</div>
+          <p class="endLine anim" id="e-line">Your People team — available 24/7, without adding headcount.</p>
+          <div class="endBrand anim" id="e-brand">
+            <span class="logoDot">N</span>
+            <div class="et"><b>NewWesVentures</b><span>People Operations, powered by AI</span></div>
+          </div>
+          <div class="byline anim" id="e-by">Created by Wes Griffin · Designed &amp; built with AI</div>
+        </div>
+      </section>
+
+    </div><!-- /stage -->
+  </div><!-- /reel -->
+
+  <div class="controls">
+    <button class="ctrl" id="btnPlay" type="button" aria-label="Pause">
+      <svg id="icoPlay" viewBox="0 0 24 24" aria-hidden="true"><rect x="6" y="5" width="4" height="14" rx="1.2"/><rect x="14" y="5" width="4" height="14" rx="1.2"/></svg>
+    </button>
+    <button class="ctrl" id="btnReplay" type="button" aria-label="Replay">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5V2L7 6l5 4V7a5 5 0 1 1-5 5H5a7 7 0 1 0 7-7z"/></svg>
+    </button>
+  </div>
+
+<script>
+(function(){
+  "use strict";
+  try{
+
+  /* ---------- helpers ---------- */
+  var $=function(s,r){return (r||document).querySelector(s);};
+  var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* ---------- responsive stage scaling ---------- */
+  var stage=$('#stage'), reel=$('.reel');
+  var BASE_W=1280, BASE_H=720;
+  function fit(){
+    if(!stage) return;
+    var pad = window.innerWidth < 760 ? 16 : 34;
+    var aw = window.innerWidth - pad*2;
+    var ah = window.innerHeight - pad*2;
+    var s = Math.min(aw/BASE_W, ah/BASE_H);
+    s = Math.max(0.18, Math.min(s, 1.18));
+    stage.style.transform = 'scale('+s+')';
+  }
+  window.addEventListener('resize', fit, {passive:true});
+  fit();
+
+  /* ---------- scene registry ---------- */
+  var scenes = {
+    title: $('#sc-title'), s1:$('#sc1'), s2:$('#sc2'), s3:$('#sc3'), end:$('#sc-end')
+  };
+  function showScene(key){
+    for(var k in scenes){ if(scenes[k]) scenes[k].classList.toggle('show', k===key); }
+  }
+
+  /* small util: reveal an element */
+  function reveal(el){ if(el) el.classList.add('on'); }
+  function hideReveal(el){ if(el) el.classList.remove('on'); }
+
+  /* typewriter: fills `el` text, optional caret, returns nothing (timeline-driven) */
+  var twTimers=[];
+  function clearTW(){ twTimers.forEach(clearTimeout); twTimers=[]; }
+  function typewriter(el, text, startAt, perChar, withCaret){
+    if(!el) return;
+    el.classList.add('on');               // make bubble visible (it scales in)
+    el.textContent='';
+    var caret=null;
+    if(withCaret){
+      caret=document.createElement('span'); caret.className='caret';
+      el.appendChild(caret);
+    }
+    for(var i=0;i<text.length;i++){
+      (function(idx){
+        twTimers.push(setTimeout(function(){
+          var slice=text.slice(0,idx+1);
+          el.textContent=slice;
+          if(caret && idx<text.length-1){ var c=document.createElement('span'); c.className='caret'; el.appendChild(c); }
+        }, startAt + idx*perChar));
+      })(i);
+    }
+    // remove caret shortly after finishing
+    if(withCaret){
+      twTimers.push(setTimeout(function(){ el.textContent=text; }, startAt + text.length*perChar + 350));
+    }
+  }
+
+  /* count-up animation for KPIs */
+  var countRAFs=[];
+  function fmtNum(n, fmt){
+    n=Math.round(n);
+    if(fmt==='comma') return n.toLocaleString('en-US');
+    return String(n);
+  }
+  function countUp(el, to, dur, fmt){
+    if(!el) return;
+    var start=performance.now();
+    function step(now){
+      var t=Math.min(1,(now-start)/dur);
+      var e=1-Math.pow(1-t,3); // easeOutCubic
+      el.textContent=fmtNum(to*e, fmt);
+      if(t<1){ countRAFs.push(requestAnimationFrame(step)); }
+      else { el.textContent=fmtNum(to, fmt); }
+    }
+    countRAFs.push(requestAnimationFrame(step));
+  }
+  function cancelCounts(){ countRAFs.forEach(cancelAnimationFrame); countRAFs=[]; }
+
+  /* ---------- the full timeline (ms cues over ~30s) ---------- */
+  /* Each cue: {t: time, do: fn}. Scene durations: title 3s, s1 7s, s2 7s, s3 7s(→ end), end 3s. */
+  var TOTAL = 30000;
+
+  function buildCues(){
+    var C=[];
+    var add=function(t,fn){ C.push({t:t, fn:fn}); };
+
+    /* ===== TITLE 0–3000 ===== */
+    add(0, function(){ showScene('title'); });
+    add(120, function(){ reveal($('#t-kick')); });
+    add(360, function(){ reveal($('#t-l1')); });
+    add(540, function(){ reveal($('#t-l2')); });
+    add(900, function(){ reveal($('#t-prem')); });
+    add(1250, function(){ reveal($('#t-brand')); });
+
+    /* ===== SCENE 1  3000–10000 ===== */
+    add(3000, function(){
+      showScene('s1');
+      // reset hidden bits handled in resetAll
+      reveal($('#s1-side'));
+    });
+    add(3250, function(){ reveal($('#s1-phone')); });
+    add(3650, function(){ reveal($('#s1-l3')); });
+    // employee typing question (typewriter into user bubble)
+    add(4050, function(){
+      typewriter($('#s1-user'), 'How much PTO do I have left, and can I roll it over?', 0, 33, true);
+    });
+    // show "assistant typing" indicator
+    add(5700, function(){ reveal($('#s1-typing')); });
+    // assistant reply appears, typewriter
+    add(6450, function(){
+      hideReveal($('#s1-typing'));
+      typewriter($('#s1-ai'), 'You have 62 hours of PTO remaining. You can roll over up to 40 hours into next year.', 0, 19, false);
+    });
+    add(8150, function(){ reveal($('#s1-cite')); });
+    add(8650, function(){ reveal($('#s1-ans')); });
+
+    /* ===== SCENE 2  10000–17000 ===== */
+    add(10000, function(){
+      showScene('s2');
+      reveal($('#s2-phone'));
+    });
+    add(10200, function(){ reveal($('#s2-side')); });
+    add(10450, function(){ reveal($('#s2-l3')); });
+    add(10850, function(){
+      typewriter($('#s2-user'), '¿Cuándo empieza la inscripción abierta?', 0, 40, true);
+    });
+    add(12300, function(){ reveal($('#s2-typing')); });
+    add(13050, function(){
+      hideReveal($('#s2-typing'));
+      typewriter($('#s2-ai'), 'La inscripción abierta comienza el 1 de noviembre y termina el 15 de noviembre. Los cambios entran en vigor el 1 de enero.', 0, 16, false);
+    });
+    add(15100, function(){ reveal($('#s2-cite')); });
+    add(15450, function(){ reveal($('#s2-globe')); });
+    add(15750, function(){ reveal($('#s2-ans')); });
+
+    /* ===== SCENE 3  17000–24000 ===== */
+    add(17000, function(){
+      showScene('s3');
+      reveal($('#m-head'));
+    });
+    add(17350, function(){ reveal($('#s3-l3')); });
+    // KPI cards stagger in + count up + bars
+    var kpis=[
+      {card:'#k1', val:1284, fmt:'comma', bar:78, dur:1500},
+      {card:'#k2', val:73,   fmt:null,    bar:73, dur:1400},
+      {card:'#k3', val:3,    fmt:null,    bar:96, dur:1100},
+      {card:'#k4', val:210,  fmt:'comma', bar:64, dur:1500}
+    ];
+    kpis.forEach(function(k, i){
+      var base = 17500 + i*420;
+      add(base, function(){
+        var card=$(k.card); reveal(card);
+        var valEl=$('.val', card); var barEl=$('.bar > i', card);
+        countUp(valEl, k.val, k.dur, k.fmt);
+        // draw bar
+        if(barEl){ requestAnimationFrame(function(){ barEl.style.transition='width '+(k.dur)+'ms cubic-bezier(.22,.61,.36,1)'; barEl.style.width=k.bar+'%'; }); }
+      });
+    });
+
+    /* ===== END CARD  24000–30000 ===== */
+    add(24000, function(){
+      showScene('end');
+      reveal($('#e-stat'));
+    });
+    add(24350, function(){ reveal($('#e-line')); });
+    add(24750, function(){ reveal($('#e-brand')); });
+    add(25200, function(){ reveal($('#e-by')); });
+    // hold on end card until 30000, then loop
+
+    return C.sort(function(a,b){return a.t-b.t;});
+  }
+
+  var CUES = buildCues();
+
+  /* ---------- reset all animatable state for a clean loop ---------- */
+  function resetAll(){
+    clearTW(); cancelCounts();
+    // hide all reveal targets
+    var reveals = document.querySelectorAll('.anim, .animSlow');
+    for(var i=0;i<reveals.length;i++){ reveals[i].classList.remove('on'); }
+    // reset bubbles & typewriter targets
+    ['#s1-user','#s1-ai','#s2-user','#s2-ai'].forEach(function(s){ var e=$(s); if(e) e.textContent=''; });
+    ['#s1-typing','#s2-typing'].forEach(function(s){ hideReveal($(s)); });
+    ['#s1-cite','#s1-ans','#s2-cite','#s2-ans','#s2-globe'].forEach(function(s){ hideReveal($(s)); });
+    // reset KPIs
+    document.querySelectorAll('.val').forEach(function(v){ v.textContent='0'; });
+    document.querySelectorAll('.kpi .bar > i').forEach(function(b){ b.style.transition='none'; b.style.width='0%'; });
+    fired = new Array(CUES.length).fill(false);
+  }
+
+  /* ---------- clock / controller ---------- */
+  var bar=$('#bar');
+  var startTime=0, pausedAt=0, paused=false, raf=null;
+  var fired=new Array(CUES.length).fill(false);
+
+  function applyUpTo(elapsed){
+    for(var i=0;i<CUES.length;i++){
+      if(!fired[i] && elapsed >= CUES[i].t){
+        fired[i]=true;
+        try{ CUES[i].fn(); }catch(e){}
+      }
+    }
+  }
+
+  function frame(now){
+    if(paused) return;
+    var elapsed = now - startTime;
+    if(elapsed >= TOTAL){
+      // loop seamlessly
+      startTime = now;
+      elapsed = 0;
+      resetAll();
+    }
+    if(bar) bar.style.width = (Math.min(elapsed/TOTAL,1)*100).toFixed(2)+'%';
+    applyUpTo(elapsed);
+    raf = requestAnimationFrame(frame);
+  }
+
+  function play(){
+    if(reduce) return;
+    paused=false;
+    setPlayIcon(true);
+    startTime = performance.now() - pausedAt;
+    raf = requestAnimationFrame(frame);
+  }
+  function pause(){
+    paused=true;
+    setPlayIcon(false);
+    if(raf) cancelAnimationFrame(raf);
+    pausedAt = performance.now() - startTime;
+  }
+  function restart(){
+    if(raf) cancelAnimationFrame(raf);
+    resetAll();
+    pausedAt=0; paused=false;
+    if(reduce){ composeFinalFrame(); return; }
+    setPlayIcon(true);
+    startTime = performance.now();
+    raf = requestAnimationFrame(frame);
+  }
+
+  /* ---------- controls ---------- */
+  var btnPlay=$('#btnPlay'), icoPlay=$('#icoPlay'), btnReplay=$('#btnReplay');
+  function setPlayIcon(isPlaying){
+    if(!icoPlay) return;
+    if(isPlaying){
+      // pause bars
+      icoPlay.innerHTML='<rect x="6" y="5" width="4" height="14" rx="1.2"/><rect x="14" y="5" width="4" height="14" rx="1.2"/>';
+      if(btnPlay) btnPlay.setAttribute('aria-label','Pause');
+    } else {
+      // play triangle
+      icoPlay.innerHTML='<path d="M8 5l11 7-11 7z"/>';
+      if(btnPlay) btnPlay.setAttribute('aria-label','Play');
+    }
+  }
+  if(btnPlay) btnPlay.addEventListener('click', function(){ paused?play():pause(); });
+  if(btnReplay) btnReplay.addEventListener('click', restart);
+
+  /* pause when tab/iframe hidden, resume when visible (avoids janky catch-up) */
+  document.addEventListener('visibilitychange', function(){
+    if(reduce) return;
+    if(document.hidden){ if(!paused) pause(); }
+  });
+
+  /* ---------- reduced motion: static composed final frame ---------- */
+  function composeFinalFrame(){
+    // Show end card fully assembled, no motion.
+    resetAll();
+    showScene('end');
+    ['#e-stat','#e-line','#e-brand','#e-by'].forEach(function(s){
+      var e=$(s); if(e){ e.classList.remove('anim','animSlow'); e.classList.add('on'); }
+    });
+    if(bar) bar.style.width='100%';
+  }
+
+  /* ---------- boot ---------- */
+  if(reduce){
+    composeFinalFrame();
+  } else {
+    resetAll();
+    // autoplay on load
+    startTime = performance.now();
+    setPlayIcon(true);
+    raf = requestAnimationFrame(frame);
+  }
+
+  }catch(err){
+    /* defensive: never throw to console in an uncontrolled way; fall back to a readable static frame */
+    try{
+      var end=document.getElementById('sc-end');
+      if(end){
+        for(var k of ['sc-title','sc1','sc2','sc3']){ var s=document.getElementById(k); if(s) s.classList.remove('show'); }
+        end.classList.add('show');
+        ['e-stat','e-line','e-brand','e-by'].forEach(function(id){ var e=document.getElementById(id); if(e) e.classList.add('on'); });
+      }
+    }catch(_){}
+  }
+})();
+</script>
+</body>
+</html>

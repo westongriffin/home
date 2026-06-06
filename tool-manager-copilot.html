@@ -1,0 +1,1260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Manager Copilots — NewWesVentures</title>
+<style>
+  :root{
+    --ink:#0c1020; --ink2:#3a4560; --muted:#6b7794; --line:#e7e9f2; --bg:#f7f8fc; --card:#ffffff;
+    --v1:#7c3aed; --v2:#5b4ef0; --v3:#06b6d4; --pink:#db2777;
+    --amber:#f59e0b; --green:#10b981;
+    --grad:linear-gradient(110deg,#7c3aed,#5b4ef0 45%,#06b6d4);
+    --shadow:0 1px 2px rgba(16,22,48,.04), 0 8px 24px rgba(16,22,48,.06);
+    --shadow-lg:0 18px 50px rgba(16,22,48,.14);
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html,body{height:100%; width:100%;}
+  body{
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Inter,Helvetica,Arial,sans-serif;
+    background:var(--bg); color:var(--ink);
+    -webkit-font-smoothing:antialiased; text-rendering:optimizeLegibility;
+    overflow:hidden;
+  }
+  button{font-family:inherit; cursor:pointer; border:none; background:none; color:inherit;}
+  ::selection{background:rgba(124,58,237,.18);}
+
+  /* ===== App shell ===== */
+  .app{
+    display:flex; flex-direction:column;
+    height:100vh; width:100vw;
+    background:
+      radial-gradient(120% 80% at 0% 0%, rgba(124,58,237,.05), transparent 42%),
+      radial-gradient(120% 80% at 100% 0%, rgba(6,182,212,.05), transparent 42%),
+      var(--bg);
+  }
+
+  /* ===== Top bar ===== */
+  .topbar{
+    flex:0 0 auto;
+    display:flex; align-items:center; gap:14px;
+    padding:11px 20px;
+    background:rgba(255,255,255,.82);
+    backdrop-filter:saturate(180%) blur(14px);
+    -webkit-backdrop-filter:saturate(180%) blur(14px);
+    border-bottom:1px solid var(--line);
+    z-index:30;
+  }
+  .brand{display:flex; align-items:center; gap:11px; min-width:0;}
+  .logo{
+    width:30px; height:30px; border-radius:9px;
+    background:var(--grad); display:grid; place-items:center;
+    color:#fff; font-size:15px; flex:0 0 auto;
+    box-shadow:0 4px 12px rgba(91,78,240,.35);
+  }
+  .brand .title{font-weight:700; font-size:15px; letter-spacing:-.2px; white-space:nowrap;}
+  .brand .title b{font-weight:800;}
+  .brand .sub{font-size:11px; color:var(--muted); white-space:nowrap; margin-top:1px;}
+  .demo-badge{
+    margin-left:6px;
+    display:inline-flex; align-items:center; gap:6px;
+    padding:4px 10px; border-radius:999px;
+    background:rgba(124,58,237,.08); color:var(--v1);
+    font-size:11px; font-weight:700; letter-spacing:.2px;
+    border:1px solid rgba(124,58,237,.16);
+  }
+  .demo-badge .dot{width:6px; height:6px; border-radius:50%; background:var(--v1); animation:pulse 2.4s ease-in-out infinite;}
+  @keyframes pulse{0%,100%{opacity:1;} 50%{opacity:.35;}}
+  .spacer{flex:1 1 auto;}
+  .userchip{
+    display:flex; align-items:center; gap:9px;
+    padding:5px 12px 5px 6px; border-radius:999px;
+    background:#fff; border:1px solid var(--line); box-shadow:var(--shadow);
+    white-space:nowrap;
+  }
+  .userchip .av{
+    width:28px; height:28px; border-radius:50%;
+    background:linear-gradient(135deg,#7c3aed,#06b6d4);
+    color:#fff; display:grid; place-items:center; font-size:11px; font-weight:800;
+  }
+  .userchip .nm{font-size:12.5px; font-weight:700; line-height:1.1;}
+  .userchip .org{font-size:10.5px; color:var(--muted); line-height:1.1; margin-top:1px;}
+
+  /* ===== Body grid ===== */
+  .work{
+    flex:1 1 auto; min-height:0;
+    display:grid;
+    grid-template-columns:236px minmax(0,1fr) minmax(0,1.15fr);
+    gap:16px; padding:16px 20px 18px;
+  }
+  .col{min-height:0; display:flex; flex-direction:column;}
+  .panel{
+    background:var(--card); border:1px solid var(--line); border-radius:16px;
+    box-shadow:var(--shadow); display:flex; flex-direction:column; min-height:0;
+  }
+  .panel-h{
+    flex:0 0 auto; padding:14px 16px 10px;
+    display:flex; align-items:center; gap:9px;
+  }
+  .panel-h .ph-ic{
+    width:24px;height:24px;border-radius:7px;display:grid;place-items:center;font-size:13px;
+    background:rgba(124,58,237,.09); color:var(--v1);
+  }
+  .panel-h .ph-t{font-size:12px; font-weight:800; letter-spacing:.5px; text-transform:uppercase; color:var(--ink2);}
+  .panel-h .ph-sub{font-size:11px; color:var(--muted); margin-left:auto; font-weight:600;}
+  .panel-b{flex:1 1 auto; min-height:0; overflow-y:auto; padding:4px 12px 14px;}
+  .panel-b.pad{padding:6px 16px 16px;}
+
+  /* scrollbars */
+  .panel-b::-webkit-scrollbar{width:9px;}
+  .panel-b::-webkit-scrollbar-thumb{background:#dfe2ee; border-radius:6px; border:2px solid #fff;}
+  .panel-b::-webkit-scrollbar-thumb:hover{background:#cfd3e6;}
+
+  /* ===== LEFT: template list ===== */
+  .tpl{
+    width:100%; text-align:left;
+    display:flex; align-items:center; gap:11px;
+    padding:11px 11px; border-radius:12px;
+    border:1px solid transparent;
+    transition:background .15s, border-color .15s, transform .08s;
+    margin-bottom:3px;
+  }
+  .tpl:hover{background:#f5f6fc;}
+  .tpl:active{transform:scale(.99);}
+  .tpl.on{background:linear-gradient(110deg,rgba(124,58,237,.10),rgba(6,182,212,.08)); border-color:rgba(124,58,237,.22);}
+  .tpl .tic{
+    width:34px; height:34px; flex:0 0 auto; border-radius:10px;
+    display:grid; place-items:center; font-size:16px;
+    background:#f1f2f9; color:var(--ink2);
+    transition:background .15s, color .15s;
+  }
+  .tpl.on .tic{background:var(--grad); color:#fff; box-shadow:0 4px 12px rgba(91,78,240,.3);}
+  .tpl .tt{font-size:13px; font-weight:700; line-height:1.2;}
+  .tpl .td{font-size:10.5px; color:var(--muted); margin-top:2px; line-height:1.25;}
+  .tpl.on .tt{color:var(--v1);}
+
+  .left-foot{
+    flex:0 0 auto; margin-top:auto; padding:12px;
+    border-top:1px solid var(--line);
+  }
+  .mini-stat{display:flex; align-items:center; gap:9px; font-size:11px; color:var(--muted);}
+  .mini-stat .sw{width:28px;height:28px;border-radius:8px;background:rgba(16,185,129,.12);color:var(--green);display:grid;place-items:center;font-size:14px;}
+  .mini-stat b{color:var(--ink); font-size:14px; font-weight:800;}
+
+  /* ===== CENTER: form ===== */
+  .field{margin-bottom:13px;}
+  .field > label{display:block; font-size:11.5px; font-weight:700; color:var(--ink2); margin-bottom:6px; letter-spacing:.1px;}
+  .field .hint{font-size:10.5px; color:var(--muted); font-weight:500; margin-left:6px;}
+  .inp, .ta, .sel{
+    width:100%; font-family:inherit; font-size:13px; color:var(--ink);
+    background:#fbfcff; border:1px solid var(--line); border-radius:10px;
+    padding:10px 12px; transition:border-color .15s, box-shadow .15s, background .15s;
+  }
+  .inp:focus, .ta:focus, .sel:focus{outline:none; border-color:var(--v2); background:#fff; box-shadow:0 0 0 3px rgba(91,78,240,.12);}
+  .ta{resize:none; line-height:1.5; min-height:96px;}
+  .ta.tall{min-height:120px;}
+  .row2{display:grid; grid-template-columns:1fr 1fr; gap:11px;}
+  .row-3{display:grid; grid-template-columns:1.4fr 1fr; gap:11px;}
+
+  /* segmented tone selector */
+  .seg{display:flex; gap:6px; background:#f1f2f9; padding:4px; border-radius:11px;}
+  .seg button{
+    flex:1; padding:8px 6px; border-radius:8px; font-size:12px; font-weight:700; color:var(--muted);
+    display:flex; align-items:center; justify-content:center; gap:6px;
+    transition:all .15s;
+  }
+  .seg button .em{font-size:13px;}
+  .seg button.on{background:#fff; color:var(--ink); box-shadow:0 2px 7px rgba(16,22,48,.10);}
+
+  .form-foot{
+    flex:0 0 auto; padding:13px 16px; border-top:1px solid var(--line);
+    display:flex; gap:10px; align-items:center;
+  }
+  .btn{
+    display:inline-flex; align-items:center; justify-content:center; gap:8px;
+    padding:11px 16px; border-radius:11px; font-size:13px; font-weight:700;
+    transition:transform .08s, box-shadow .2s, background .2s, opacity .2s; white-space:nowrap;
+  }
+  .btn:active{transform:translateY(1px) scale(.99);}
+  .btn.primary{background:var(--grad); color:#fff; box-shadow:0 8px 20px rgba(91,78,240,.32); flex:1;}
+  .btn.primary:hover{box-shadow:0 10px 26px rgba(91,78,240,.42);}
+  .btn.primary[disabled]{opacity:.55; cursor:default; box-shadow:none;}
+  .btn.ghost{background:#fff; border:1px solid var(--line); color:var(--ink2); box-shadow:var(--shadow);}
+  .btn.ghost:hover{border-color:#cfd3e6; color:var(--ink);}
+  .btn.sm{padding:8px 12px; font-size:12px; border-radius:9px;}
+
+  /* ===== RIGHT: output + guardrails ===== */
+  .right-stack{display:flex; flex-direction:column; gap:16px; height:100%; min-height:0;}
+  .out-panel{flex:1 1 auto; min-height:0;}
+  .guard-panel{flex:0 0 auto;}
+
+  .out-toolbar{
+    flex:0 0 auto; display:flex; gap:7px; align-items:center; flex-wrap:wrap;
+    padding:0 16px 12px;
+  }
+  .out-toolbar .chip-btn{
+    display:inline-flex; align-items:center; gap:6px;
+    padding:7px 11px; border-radius:9px; font-size:11.5px; font-weight:700;
+    background:#fff; border:1px solid var(--line); color:var(--ink2); box-shadow:var(--shadow);
+    transition:all .15s;
+  }
+  .out-toolbar .chip-btn:hover{border-color:#cfd3e6; color:var(--ink); background:#fbfcff;}
+  .out-toolbar .chip-btn[disabled]{opacity:.45; cursor:default;}
+  .out-toolbar .chip-btn.copied{background:rgba(16,185,129,.10); border-color:rgba(16,185,129,.35); color:var(--green);}
+
+  .out-doc{
+    flex:1 1 auto; min-height:0; overflow-y:auto;
+    margin:0 14px 14px; padding:20px 22px;
+    background:#fbfcff; border:1px solid var(--line); border-radius:13px;
+    font-size:13.5px; line-height:1.62; color:var(--ink);
+    outline:none; white-space:pre-wrap; word-wrap:break-word;
+  }
+  .out-doc:focus{border-color:rgba(91,78,240,.4); box-shadow:inset 0 0 0 1px rgba(91,78,240,.15);}
+  .out-doc::-webkit-scrollbar{width:9px;}
+  .out-doc::-webkit-scrollbar-thumb{background:#dfe2ee; border-radius:6px; border:2px solid #fbfcff;}
+  .out-doc h4{font-size:15px; font-weight:800; margin:0 0 9px; letter-spacing:-.2px;}
+  .out-doc p{margin:0 0 11px;}
+  .out-doc p:last-child{margin-bottom:0;}
+  .out-doc .lede{color:var(--ink2);}
+  .out-doc .sig{margin-top:14px; color:var(--muted); font-size:12.5px;}
+  .out-doc ul{margin:0 0 11px; padding-left:20px;}
+  .out-doc li{margin-bottom:5px;}
+  .cursor-blink{display:inline-block; width:2px; height:1.05em; vertical-align:text-bottom; background:var(--v2); margin-left:1px; animation:blink 1s step-end infinite;}
+  @keyframes blink{50%{opacity:0;}}
+
+  /* empty state */
+  .empty{
+    flex:1 1 auto; min-height:0; margin:0 14px 14px;
+    display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center;
+    border:1.5px dashed #dfe2ee; border-radius:13px; padding:24px;
+    color:var(--muted);
+  }
+  .empty .big{font-size:34px; margin-bottom:12px; opacity:.9;}
+  .empty .e1{font-size:14px; font-weight:700; color:var(--ink2);}
+  .empty .e2{font-size:12px; margin-top:5px; max-width:280px; line-height:1.5;}
+
+  /* ===== Guardrails ===== */
+  .guard-b{padding:6px 14px 14px;}
+  .checks{display:flex; flex-direction:column; gap:7px;}
+  .check{
+    display:flex; align-items:center; gap:10px;
+    padding:9px 12px; border-radius:10px; background:#fbfcff; border:1px solid var(--line);
+    font-size:12.5px; font-weight:600; color:var(--ink2);
+    transition:background .25s, border-color .25s, opacity .3s, transform .3s;
+  }
+  .check .ck-ic{
+    width:22px; height:22px; flex:0 0 auto; border-radius:7px; display:grid; place-items:center; font-size:12px; font-weight:800;
+    background:#eceefb; color:var(--muted);
+    transition:background .25s, color .25s;
+  }
+  .check.pending{opacity:.5;}
+  .check.pending .ck-ic{background:#eceefb;}
+  .check.ok{border-color:rgba(16,185,129,.28); background:rgba(16,185,129,.05);}
+  .check.ok .ck-ic{background:var(--green); color:#fff;}
+  .check.ok .ck-meta{margin-left:auto; font-size:11px; color:var(--green); font-weight:700;}
+  .check.scanning .ck-ic{background:rgba(124,58,237,.12); color:var(--v1);}
+  .spin{display:inline-block; animation:spin .8s linear infinite;}
+  @keyframes spin{to{transform:rotate(360deg);}}
+
+  .flags-wrap{margin-top:11px; display:flex; flex-direction:column; gap:9px;}
+  .flag{
+    border:1px solid rgba(245,158,11,.4); background:linear-gradient(180deg,rgba(245,158,11,.08),rgba(245,158,11,.03));
+    border-radius:11px; padding:11px 12px;
+    animation:flagIn .35s ease both;
+  }
+  @keyframes flagIn{from{opacity:0; transform:translateY(6px);} to{opacity:1; transform:translateY(0);}}
+  .flag.fixed{border-color:rgba(16,185,129,.4); background:linear-gradient(180deg,rgba(16,185,129,.08),rgba(16,185,129,.03));}
+  .flag .fl-top{display:flex; align-items:flex-start; gap:9px;}
+  .flag .fl-ic{width:22px;height:22px;flex:0 0 auto;border-radius:7px;display:grid;place-items:center;font-size:12px;background:var(--amber);color:#fff;}
+  .flag.fixed .fl-ic{background:var(--green);}
+  .flag .fl-body{flex:1; min-width:0;}
+  .flag .fl-term{font-size:12.5px; font-weight:800; color:var(--ink);}
+  .flag .fl-term .term{background:rgba(245,158,11,.22); padding:1px 6px; border-radius:5px; color:#92560a; text-decoration:line-through; text-decoration-color:rgba(146,86,10,.5);}
+  .flag.fixed .fl-term .term{background:rgba(16,185,129,.18); color:#0a6b4d; text-decoration:none;}
+  .flag .fl-why{font-size:11.5px; color:var(--ink2); margin-top:5px; line-height:1.45;}
+  .flag .fl-sugg{font-size:11.5px; margin-top:7px; color:var(--ink2);}
+  .flag .fl-sugg .arrow{color:var(--green); font-weight:800;}
+  .flag .fl-sugg b{color:var(--ink); font-weight:800;}
+  .flag .fl-act{margin-top:9px; display:flex; gap:7px; align-items:center;}
+  .fixbtn{
+    display:inline-flex; align-items:center; gap:6px;
+    padding:6px 11px; border-radius:8px; font-size:11.5px; font-weight:700;
+    background:var(--amber); color:#fff; box-shadow:0 4px 12px rgba(245,158,11,.3); transition:transform .08s, opacity .2s;
+  }
+  .fixbtn:active{transform:scale(.96);}
+  .flag .fixed-label{display:inline-flex; align-items:center; gap:6px; font-size:11.5px; font-weight:700; color:var(--green);}
+
+  .guard-all-clear{
+    margin-top:10px; display:flex; align-items:center; gap:9px;
+    padding:9px 12px; border-radius:10px;
+    background:rgba(16,185,129,.07); border:1px solid rgba(16,185,129,.25);
+    font-size:12px; font-weight:700; color:#0a6b4d;
+    animation:flagIn .35s ease both;
+  }
+
+  .guard-idle{font-size:12px; color:var(--muted); padding:8px 2px; line-height:1.5;}
+
+  /* toast */
+  .toast{
+    position:fixed; left:50%; bottom:54px; transform:translateX(-50%) translateY(20px);
+    background:#0c1020; color:#fff; font-size:12.5px; font-weight:600;
+    padding:10px 16px; border-radius:11px; box-shadow:var(--shadow-lg);
+    opacity:0; pointer-events:none; transition:opacity .25s, transform .25s; z-index:80;
+    display:flex; align-items:center; gap:8px;
+  }
+  .toast.show{opacity:1; transform:translateX(-50%) translateY(0);}
+  .toast .tk{color:var(--green);}
+
+  /* byline */
+  .byline{
+    flex:0 0 auto; text-align:center; padding:7px 0 9px;
+    font-size:10.5px; color:#9aa2bd; font-weight:500; letter-spacing:.2px;
+    background:transparent;
+  }
+  .byline b{color:#7c84a6; font-weight:600;}
+
+  /* ===== Responsive ===== */
+  @media (max-width:1080px){
+    .work{grid-template-columns:208px minmax(0,1fr) minmax(0,1.05fr); gap:13px; padding:13px 14px 14px;}
+  }
+  @media (max-width:920px){
+    .app{overflow:auto;}
+    body{overflow:auto;}
+    .work{grid-template-columns:1fr; height:auto; padding:14px;}
+    .col{height:auto;}
+    .col-left .panel{max-height:none;}
+    .panel-b{max-height:340px;}
+    .out-doc, .empty{min-height:240px;}
+    .right-stack{height:auto;}
+    .brand .sub{display:none;}
+  }
+  @media (max-width:520px){
+    .topbar{flex-wrap:wrap; gap:8px;}
+    .userchip .org{display:none;}
+    .demo-badge{display:none;}
+    .row2{grid-template-columns:1fr;}
+  }
+</style>
+</head>
+<body>
+<div class="app">
+
+  <!-- ===== TOP BAR ===== -->
+  <header class="topbar">
+    <div class="brand">
+      <div class="logo">◆</div>
+      <div>
+        <div class="title"><b>NewWes</b>Ventures · Manager Copilots</div>
+        <div class="sub">People document studio with built-in guardrails</div>
+      </div>
+    </div>
+    <span class="demo-badge"><span class="dot"></span>DEMO · mock data</span>
+    <div class="spacer"></div>
+    <div class="userchip" title="Wes Griffin · Manager · wes.griffin@newwesventures.com">
+      <span class="av">WG</span>
+      <div>
+        <div class="nm">Wes Griffin <span style="font-weight:600;color:var(--muted);font-size:10.5px;">· Manager</span></div>
+        <div class="org">wes.griffin@newwesventures.com</div>
+      </div>
+    </div>
+  </header>
+
+  <!-- ===== WORK AREA ===== -->
+  <div class="work">
+
+    <!-- LEFT -->
+    <div class="col col-left">
+      <div class="panel" style="flex:1;">
+        <div class="panel-h">
+          <span class="ph-ic">🗂️</span>
+          <span class="ph-t">Templates</span>
+        </div>
+        <div class="panel-b" id="tplList"></div>
+        <div class="left-foot">
+          <div class="mini-stat">
+            <span class="sw">✓</span>
+            <div><b id="draftCount">128</b> drafts checked this quarter<br><span style="font-size:10px;">0 compliance escalations</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CENTER -->
+    <div class="col col-center">
+      <div class="panel" style="flex:1;">
+        <div class="panel-h">
+          <span class="ph-ic" id="formIc">📝</span>
+          <span class="ph-t" id="formKicker">Job Description</span>
+          <span class="ph-sub" id="formSub">Draft details</span>
+        </div>
+        <div class="panel-b pad" id="formBody"><!-- form injected --></div>
+        <div class="form-foot">
+          <button class="btn primary" id="draftBtn">✨ Draft with AI</button>
+          <button class="btn ghost" id="resetBtn" title="Restore example content">↺ Reset</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- RIGHT -->
+    <div class="col col-right">
+      <div class="right-stack">
+
+        <!-- OUTPUT -->
+        <div class="panel out-panel">
+          <div class="panel-h">
+            <span class="ph-ic">✨</span>
+            <span class="ph-t">Draft</span>
+            <span class="ph-sub" id="outMeta">—</span>
+          </div>
+          <div class="out-toolbar">
+            <button class="chip-btn" id="copyBtn" disabled>📋 Copy</button>
+            <button class="chip-btn" id="insertBtn" disabled>↧ Insert</button>
+            <button class="chip-btn" id="shorterBtn" disabled>✂️ Shorter</button>
+            <button class="chip-btn" id="warmerBtn" disabled>🤍 Warmer</button>
+            <button class="chip-btn" id="regenBtn" disabled>↻ Regenerate</button>
+          </div>
+          <div class="empty" id="outEmpty">
+            <div class="big">✨</div>
+            <div class="e1">Your draft will appear here</div>
+            <div class="e2">Pick a template, tweak the details, then hit <b>Draft with AI</b>. Every draft is screened for inclusive, legally-cautious language.</div>
+          </div>
+          <div class="out-doc" id="outDoc" contenteditable="true" spellcheck="false" style="display:none;"></div>
+        </div>
+
+        <!-- GUARDRAILS -->
+        <div class="panel guard-panel">
+          <div class="panel-h">
+            <span class="ph-ic">🛡️</span>
+            <span class="ph-t">Guardrails</span>
+            <span class="ph-sub" id="guardSub">Inclusivity &amp; compliance</span>
+          </div>
+          <div class="guard-b" id="guardBody">
+            <div class="guard-idle">Guardrail checks run automatically every time you draft — inclusive language, plain-English reading level, and legally-cautious phrasing. Risky terms get flagged with a one-click fix.</div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+
+  <div class="byline">Created by Wes Griffin · <b>Designed &amp; built with AI</b></div>
+</div>
+
+<div class="toast" id="toast"><span class="tk">✓</span><span id="toastMsg">Copied</span></div>
+
+<script>
+(function(){
+  "use strict";
+
+  /* ---------------- Safe helpers ---------------- */
+  function $(id){ return document.getElementById(id); }
+  function el(tag, cls, txt){ var n=document.createElement(tag); if(cls) n.className=cls; if(txt!=null) n.textContent=txt; return n; }
+  function esc(s){ return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+  var timers = [];
+  function later(fn, ms){ var t=setTimeout(function(){ try{fn();}catch(e){} }, ms); timers.push(t); return t; }
+  function clearTimers(){ for(var i=0;i<timers.length;i++){ clearTimeout(timers[i]); } timers = []; }
+
+  /* ---------------- Template definitions ---------------- */
+  // Each template: id, icon, name, desc, kicker label, sub label, fields[], builder(fn -> array of paragraph objects)
+  var TONES = [
+    {id:'direct', label:'Direct', em:'🎯'},
+    {id:'warm',   label:'Warm',   em:'🌤️'},
+    {id:'formal', label:'Formal', em:'🎓'}
+  ];
+
+  var TEMPLATES = {
+    jd: {
+      icon:'🧭', name:'Job Description', desc:'Role posting, leveled',
+      kicker:'Job Description', sub:'Role & posting',
+      fields:[
+        {k:'role', label:'Role title', type:'text', val:'Senior Product Designer'},
+        {k:'level', label:'Level', type:'select', val:'L5 · Senior', opts:['L3 · Associate','L4 · Mid','L5 · Senior','L6 · Staff','M1 · Manager']},
+        {k:'team', label:'Team', type:'text', val:'Growth & Onboarding'},
+        {k:'bullets', label:'Key responsibilities & must-haves', type:'textarea', tall:true,
+          // NOTE: pre-filled with a phrase that triggers a guardrail on first use ("young, energetic")
+          val:"Own end-to-end design for our onboarding flows\nPartner with PM and Eng from discovery to ship\nLooking for a young, energetic designer who's a great culture fit\nMust be a native English speaker with a polished portfolio\n5+ years in product design"}
+      ],
+      tone:'formal'
+    },
+    review: {
+      icon:'📈', name:'Performance Review', desc:'Half-year summary',
+      kicker:'Performance Review', sub:'Cycle summary',
+      fields:[
+        {k:'name', label:'Employee first name', type:'text', val:'Priya'},
+        {k:'role', label:'Role & level', type:'text', val:'Data Analyst · L4'},
+        {k:'period', label:'Review period', type:'select', val:'H1 2026', opts:['H1 2026','H2 2025','Q2 2026','Annual 2025']},
+        {k:'bullets', label:'Highlights, impact & growth areas', type:'textarea', tall:true,
+          val:"Led the churn-model refresh — cut false positives by 22%\nBecame the go-to partner for the Lifecycle squad\nGrowth: delegate more so she isn't the single point of failure\nNext: present findings to senior leadership to build visibility"}
+      ],
+      tone:'warm'
+    },
+    recognition: {
+      icon:'🌟', name:'Recognition Note', desc:'Public kudos',
+      kicker:'Recognition Note', sub:'Shout-out',
+      fields:[
+        {k:'name', label:'Employee first name', type:'text', val:'Marcus'},
+        {k:'channel', label:'Where it lands', type:'select', val:'Team channel', opts:['Team channel','All-hands','1:1 follow-up','Manager of manager']},
+        {k:'bullets', label:'What they did & why it mattered', type:'textarea',
+          val:"Jumped on the payments outage at 11pm and had it stable by midnight\nWrote up a clear post-mortem the whole team learned from\nStayed calm and kept everyone in the loop the entire time"}
+      ],
+      tone:'warm'
+    },
+    pip: {
+      icon:'🧩', name:'Performance Improvement Plan', desc:'Structured, fair',
+      kicker:'Performance Improvement Plan', sub:'30 / 60 / 90',
+      fields:[
+        {k:'name', label:'Employee first name', type:'text', val:'Jordan'},
+        {k:'role', label:'Role & level', type:'text', val:'Account Executive · L4'},
+        {k:'duration', label:'Plan length', type:'select', val:'60 days', opts:['30 days','60 days','90 days']},
+        {k:'bullets', label:'Gaps, expectations & support offered', type:'textarea', tall:true,
+          val:"Quota attainment has been below 70% for two consecutive quarters\nExpectation: reach 90% of quota and log activity daily in the CRM\nSupport: weekly coaching with me + shadowing two top reps\nWe'll review progress every two weeks and adjust as needed"}
+      ],
+      tone:'formal'
+    },
+    comp: {
+      icon:'💸', name:'Comp-Change Message', desc:'Raise or adjustment',
+      kicker:'Comp-Change Message', sub:'Pay update',
+      fields:[
+        {k:'name', label:'Employee first name', type:'text', val:'Ava'},
+        {k:'change', label:'Type of change', type:'select', val:'Merit increase', opts:['Merit increase','Promotion increase','Market adjustment','Equity refresh']},
+        {k:'amount', label:'New base / change', type:'text', val:'+8% → $142,000'},
+        {k:'bullets', label:'Why now & what it recognizes', type:'textarea',
+          val:"Recognizes a standout year owning the analytics platform migration\nReflects updated market data for the L5 band\nEffective next pay cycle; equity refresh follows in the spring grant"}
+      ],
+      tone:'warm'
+    }
+  };
+  var TPL_ORDER = ['jd','review','recognition','pip','comp'];
+
+  /* ---------------- Guardrail rules ---------------- */
+  // Each rule: regex (word-boundary, case-insensitive), the flagged display term, why, neutral replacement, and a category.
+  var RULES = [
+    {re:/\byoung\b/i,            term:'young',                 why:'Implies an age preference — can read as age discrimination (protected by the ADEA).', fix:'motivated', drop:false},
+    {re:/\benergetic\b/i,       term:'energetic',             why:'Often a coded age signal. Describe the behavior you actually want instead.',          fix:'proactive', drop:false},
+    {re:/\bnative english speaker\b/i, term:'native English speaker', why:'Screens by national origin rather than skill. Ask for the proficiency the job needs.', fix:'strong written & verbal English', drop:false},
+    {re:/\b(?:great\s+)?culture fit\b/i, term:'culture fit',  why:'Vague and prone to bias. Point to concrete values or ways of working.',                 fix:'strong alignment with how the team collaborates', drop:false},
+    {re:/\brecent grad(?:uate)?\b/i, term:'recent grad',      why:'Signals an age/experience cutoff. State the skills or years you truly require.',         fix:'early-career', drop:false},
+    {re:/\brock\s?star\b/i,     term:'rockstar',              why:'Hype language that can deter qualified applicants. Describe the impact instead.',        fix:'high-impact contributor', drop:false},
+    {re:/\bguys\b/i,            term:'guys',                  why:'Gendered group term. Use an inclusive alternative.',                                    fix:'everyone', drop:false},
+    {re:/\bman\s?power\b/i,     term:'manpower',              why:'Gendered. Prefer a neutral term.',                                                      fix:'staffing', drop:false},
+    {re:/\bhe\/she\b/i,        term:'he/she',                why:'Assumes a binary. "They" is cleaner and inclusive.',                                    fix:'they', drop:false},
+    {re:/\bdigital native\b/i,  term:'digital native',        why:'Proxy for age. Name the actual tool fluency you need.',                                  fix:'comfortable with modern tools', drop:false}
+  ];
+
+  /* ---------------- State ---------------- */
+  var state = {
+    tpl: 'jd',
+    tone: TEMPLATES.jd.tone,
+    values: {},
+    lastDraft: '',
+    flags: [],
+    drafted: false,
+    busy: false
+  };
+  function snapshotDefaults(id){
+    var t = TEMPLATES[id], v = {};
+    for(var i=0;i<t.fields.length;i++){ v[t.fields[i].k] = t.fields[i].val; }
+    return v;
+  }
+  // working copy of values per template so edits persist while switching
+  var workingValues = {};
+  TPL_ORDER.forEach(function(id){ workingValues[id] = snapshotDefaults(id); });
+
+  /* ---------------- LEFT: render template list ---------------- */
+  function renderTemplates(){
+    var list = $('tplList'); list.innerHTML='';
+    TPL_ORDER.forEach(function(id){
+      var t = TEMPLATES[id];
+      var b = el('button','tpl'+(id===state.tpl?' on':''));
+      b.setAttribute('type','button');
+      b.setAttribute('aria-pressed', id===state.tpl?'true':'false');
+      var ic = el('span','tic'); ic.textContent=t.icon;
+      var tx = el('div'); tx.style.minWidth='0';
+      tx.appendChild(el('div','tt',t.name));
+      tx.appendChild(el('div','td',t.desc));
+      b.appendChild(ic); b.appendChild(tx);
+      b.addEventListener('click', function(){ switchTemplate(id); });
+      list.appendChild(b);
+    });
+  }
+
+  function switchTemplate(id){
+    if(state.busy) return;
+    if(id===state.tpl) return;
+    state.tpl = id;
+    state.tone = TEMPLATES[id].tone;
+    renderTemplates();
+    renderForm();
+    // reset output to empty on template switch for clarity
+    resetOutput();
+    resetGuards();
+  }
+
+  /* ---------------- CENTER: render form ---------------- */
+  function renderForm(){
+    var t = TEMPLATES[state.tpl];
+    $('formIc').textContent = t.icon;
+    $('formKicker').textContent = t.kicker;
+    $('formSub').textContent = t.sub;
+    var body = $('formBody'); body.innerHTML='';
+    var vals = workingValues[state.tpl];
+
+    // group simple fields into rows where it reads well
+    var simple = t.fields.filter(function(f){ return f.type!=='textarea'; });
+    var area = t.fields.filter(function(f){ return f.type==='textarea'; });
+
+    // render simple fields, two per row when there are 2+
+    var i=0;
+    while(i < simple.length){
+      var pairCount = (simple.length - i >= 2 && i < simple.length-0) ? 2 : 1;
+      // prefer pairs except when an odd leftover
+      if(simple.length - i === 1) pairCount = 1;
+      var row = el('div', pairCount===2 ? 'field row2' : 'field');
+      if(pairCount===1) row.className='field';
+      var holder = pairCount===2 ? row : null;
+      for(var p=0;p<pairCount;p++){
+        var f = simple[i+p];
+        var cell = buildField(f, vals);
+        if(pairCount===2){ row.appendChild(cell); }
+        else { body.appendChild(cell); }
+      }
+      if(pairCount===2) body.appendChild(row);
+      i += pairCount;
+    }
+
+    // textarea(s)
+    area.forEach(function(f){ body.appendChild(buildField(f, vals)); });
+
+    // tone selector
+    var tf = el('div','field');
+    var lbl = el('label'); lbl.appendChild(document.createTextNode('Tone'));
+    var hint = el('span','hint','— shapes voice & length'); lbl.appendChild(hint);
+    tf.appendChild(lbl);
+    var seg = el('div','seg');
+    TONES.forEach(function(tn){
+      var b = el('button',(tn.id===state.tone?'on':''));
+      b.setAttribute('type','button');
+      b.innerHTML = '<span class="em">'+tn.em+'</span>'+tn.label;
+      b.addEventListener('click', function(){
+        if(state.busy) return;
+        state.tone = tn.id;
+        var bs = seg.querySelectorAll('button');
+        for(var q=0;q<bs.length;q++) bs[q].classList.remove('on');
+        b.classList.add('on');
+      });
+      seg.appendChild(b);
+    });
+    tf.appendChild(seg);
+    body.appendChild(tf);
+  }
+
+  function buildField(f, vals){
+    if(f.type==='textarea'){
+      var wrap = el('div','field');
+      var lab = el('label'); lab.textContent = f.label;
+      wrap.appendChild(lab);
+      var ta = el('textarea','ta'+(f.tall?' tall':''));
+      ta.value = vals[f.k]!=null ? vals[f.k] : f.val;
+      ta.setAttribute('spellcheck','false');
+      ta.addEventListener('input', function(){ vals[f.k] = ta.value; });
+      wrap.appendChild(ta);
+      return wrap;
+    }
+    if(f.type==='select'){
+      var w2 = el('div', null); // when used inside row2 it's a cell; class 'field' applied by caller context
+      w2.className = 'field';
+      // but if caller put it in a row2, we still want margin handled — keep .field; the row2 grid spacing dominates
+      var l2 = el('label'); l2.textContent = f.label; w2.appendChild(l2);
+      var sel = el('select','sel');
+      f.opts.forEach(function(o){
+        var op = el('option'); op.value=o; op.textContent=o;
+        if((vals[f.k]!=null?vals[f.k]:f.val)===o) op.selected=true;
+        sel.appendChild(op);
+      });
+      sel.addEventListener('change', function(){ vals[f.k]=sel.value; });
+      w2.appendChild(sel);
+      return w2;
+    }
+    // text
+    var w = el('div','field');
+    var l = el('label'); l.textContent = f.label; w.appendChild(l);
+    var inp = el('input','inp');
+    inp.type='text';
+    inp.value = vals[f.k]!=null ? vals[f.k] : f.val;
+    inp.addEventListener('input', function(){ vals[f.k]=inp.value; });
+    w.appendChild(inp);
+    return w;
+  }
+
+  /* ---------------- Draft composition ---------------- */
+  function bulletLines(raw){
+    return String(raw||'').split('\n').map(function(s){ return s.trim(); }).filter(function(s){ return s.length>0; });
+  }
+
+  // Tone-aware connective phrases
+  function toneGreeting(name, tone){
+    if(tone==='warm') return 'Hi '+name+' — I wanted to take a moment to share where things stand.';
+    if(tone==='direct') return name+', here’s a clear summary of where we are.';
+    return 'Dear '+name+',';
+  }
+
+  function composeDraft(){
+    var t = TEMPLATES[state.tpl];
+    var v = workingValues[state.tpl];
+    var tone = state.tone;
+    var parts = []; // {type:'h'|'p'|'ul'|'sig', text / items}
+
+    var bl = bulletLines(v.bullets);
+
+    if(state.tpl==='jd'){
+      parts.push({type:'h', text:v.role + ' · ' + (v.level||'') });
+      var intro = tone==='formal'
+        ? 'NewWesVentures is hiring a '+v.role+' to join our '+ (v.team||'team') +' team. This is a high-impact role with real ownership and a clear path to grow.'
+        : tone==='warm'
+        ? 'We’re growing the '+(v.team||'team')+' team at NewWesVentures and looking for a '+v.role+' who’s excited to do their best work here.'
+        : 'NewWesVentures is hiring a '+v.role+' for the '+(v.team||'team')+' team. Below is what the role owns and what we’re looking for.';
+      parts.push({type:'p', text:intro, lede:true});
+      parts.push({type:'p', text:'What you’ll own'});
+      parts.push({type:'ul', items: bl.length?bl:['Drive key initiatives for the team','Partner across functions to ship outcomes']});
+      var closer = tone==='warm'
+        ? 'We welcome applicants from every background and are committed to an inclusive, accessible hiring process. If you need an accommodation at any stage, just let us know.'
+        : 'NewWesVentures is an equal-opportunity employer. We evaluate every applicant on the skills and impact the role requires, and we provide reasonable accommodations on request.';
+      parts.push({type:'p', text:closer});
+      return parts;
+    }
+
+    if(state.tpl==='review'){
+      parts.push({type:'h', text:'Performance Review · '+ (v.name||'') + ' · ' + (v.period||'')});
+      parts.push({type:'p', text:toneGreeting(v.name, tone), lede:true});
+      var ri = tone==='warm'
+        ? 'It’s been a strong cycle, and I want to make sure your impact is recognized clearly. Here’s how I’d sum up your work as '+(v.role||'')+' this period.'
+        : 'This review covers your performance as '+(v.role||'')+' for '+(v.period||'this period')+'. I’ve focused on impact, strengths, and the next areas to grow.';
+      parts.push({type:'p', text:ri});
+      parts.push({type:'p', text:'Highlights & impact'});
+      parts.push({type:'ul', items: bl.length?bl:['Delivered measurable impact for the team','Raised the bar for those around them']});
+      var rc = tone==='direct'
+        ? 'Net: a clearly strong cycle. Let’s lock the next set of goals together in our 1:1.'
+        : 'Thank you for the care and consistency you brought this cycle. Let’s build on it together — I’m here to support what comes next.';
+      parts.push({type:'p', text:rc});
+      parts.push({type:'sig', text:'— Wes'});
+      return parts;
+    }
+
+    if(state.tpl==='recognition'){
+      var open = tone==='formal'
+        ? 'I want to formally recognize '+(v.name||'a teammate')+' for outstanding work this week.'
+        : 'Quick but very deserved shout-out to '+(v.name||'a teammate')+' 🙌';
+      parts.push({type:'p', text:open, lede:true});
+      parts.push({type:'ul', items: bl.length?bl:['Went above and beyond for the team']});
+      var rcl = tone==='direct'
+        ? 'This is exactly the standard we’re aiming for. Thank you, '+(v.name||'')+'.'
+        : 'Moments like this are what make this team special. Thank you, '+(v.name||'')+' — we see you and we appreciate you.';
+      parts.push({type:'p', text:rcl});
+      return parts;
+    }
+
+    if(state.tpl==='pip'){
+      parts.push({type:'h', text:'Performance Improvement Plan · '+(v.name||'')});
+      parts.push({type:'p', text:'Role: '+(v.role||'') + '  ·  Duration: '+(v.duration||'')+'  ·  Manager: Wes Griffin', lede:true});
+      var pi = tone==='warm'
+        ? 'I’m sharing this plan because I’m invested in your success here. The goal isn’t to penalize — it’s to get clear, together, on what good looks like and how I’ll support you in getting there.'
+        : 'The purpose of this plan is to clearly define the performance expectations for your role, the support available to you, and how we’ll measure progress over the next '+(v.duration||'period')+'.';
+      parts.push({type:'p', text:pi});
+      parts.push({type:'p', text:'Specifics'});
+      parts.push({type:'ul', items: bl.length?bl:['Clear, measurable expectations for the role','Defined support and a regular check-in cadence']});
+      parts.push({type:'p', text:'We’ll meet on a regular cadence to review progress in good faith. This plan is a supportive, two-way process, and successful completion returns you to standard performance management. Please reach out any time with questions.'});
+      parts.push({type:'sig', text:'— Wes Griffin, Manager'});
+      return parts;
+    }
+
+    if(state.tpl==='comp'){
+      parts.push({type:'p', text:toneGreeting(v.name, tone), lede:true});
+      var ci = tone==='direct'
+        ? 'Good news: we’re making a change to your compensation. '+(v.change||'')+': '+(v.amount||'')+'.'
+        : 'I’m really pleased to share some good news about your compensation. Effective next cycle, you’ll receive a '+(v.change||'change').toLowerCase()+': '+(v.amount||'')+'.';
+      parts.push({type:'p', text:ci});
+      parts.push({type:'ul', items: bl.length?bl:['Recognizes your impact and contributions','Reflects current market data for your role']});
+      var cc = tone==='formal'
+        ? 'This adjustment reflects our assessment of your contributions and the relevant market. Please reach out to me or your People partner with any questions.'
+        : 'This is well earned, and it’s only part of the picture — I’m glad to talk through any of it whenever you like. Congratulations.';
+      parts.push({type:'p', text:cc});
+      parts.push({type:'sig', text:'— Wes'});
+      return parts;
+    }
+
+    parts.push({type:'p', text:'Draft unavailable.'});
+    return parts;
+  }
+
+  // Convert parts to plain text (for typewriter + copy) and to HTML (for final render)
+  function partsToText(parts){
+    var out=[];
+    parts.forEach(function(p){
+      if(p.type==='h'){ out.push(p.text); }
+      else if(p.type==='p'){ out.push(p.text); }
+      else if(p.type==='ul'){ p.items.forEach(function(it){ out.push('•  '+it); }); }
+      else if(p.type==='sig'){ out.push(p.text); }
+    });
+    return out.join('\n\n');
+  }
+  function partsToHTML(parts){
+    var h='';
+    parts.forEach(function(p){
+      if(p.type==='h'){ h += '<h4>'+esc(p.text)+'</h4>'; }
+      else if(p.type==='p'){ h += '<p'+(p.lede?' class="lede"':'')+'>'+esc(p.text)+'</p>'; }
+      else if(p.type==='ul'){
+        h += '<ul>'; p.items.forEach(function(it){ h += '<li>'+esc(it)+'</li>'; }); h += '</ul>';
+      }
+      else if(p.type==='sig'){ h += '<p class="sig">'+esc(p.text)+'</p>'; }
+    });
+    return h;
+  }
+
+  /* ---------------- Output area control ---------------- */
+  function resetOutput(){
+    state.drafted = false;
+    state.lastDraft='';
+    $('outDoc').style.display='none';
+    $('outDoc').innerHTML='';
+    $('outEmpty').style.display='flex';
+    $('outMeta').textContent='—';
+    setToolbar(false);
+  }
+  function setToolbar(on){
+    ['copyBtn','insertBtn','shorterBtn','warmerBtn','regenBtn'].forEach(function(id){
+      $(id).disabled = !on;
+    });
+    var c=$('copyBtn'); c.classList.remove('copied'); c.innerHTML='📋 Copy';
+  }
+
+  /* ---------------- Typewriter ---------------- */
+  function typeOut(parts, done){
+    var doc = $('outDoc');
+    $('outEmpty').style.display='none';
+    doc.style.display='block';
+    doc.innerHTML='';
+    var full = partsToText(parts);
+    state.lastDraft = full;
+    var html = partsToHTML(parts);
+    // Typewriter: reveal the *rendered* html progressively by typing the text, then swap to formatted.
+    // Simpler robust approach: type plain text with a blinking cursor, then replace with formatted HTML.
+    var idx=0;
+    var chunk = Math.max(2, Math.round(full.length/130)); // ~130 steps
+    doc.classList.add('typing');
+    var cursor = '<span class="cursor-blink"></span>';
+    function step(){
+      idx += chunk + Math.floor(Math.random()*2);
+      if(idx >= full.length){
+        doc.innerHTML = html;
+        doc.classList.remove('typing');
+        if(done) done();
+        return;
+      }
+      var partial = full.slice(0, idx);
+      doc.innerHTML = '<div style="white-space:pre-wrap">'+esc(partial)+cursor+'</div>';
+      doc.scrollTop = doc.scrollHeight;
+      later(step, 16);
+    }
+    later(step, 60);
+  }
+
+  /* ---------------- Guardrails ---------------- */
+  var CHECK_DEFS = [
+    {id:'incl', label:'Inclusive language', okMeta:'No flags', icon:'🌍'},
+    {id:'read', label:'Reading level', okMeta:'Grade 8', icon:'📖'},
+    {id:'legal',label:'Legally cautious', okMeta:'Reviewed', icon:'⚖️'}
+  ];
+
+  function scanForFlags(){
+    var v = workingValues[state.tpl];
+    // scan across all the textual inputs of the active template
+    var hay = '';
+    TEMPLATES[state.tpl].fields.forEach(function(f){
+      var val = v[f.k];
+      if(typeof val==='string') hay += ' \n '+val;
+    });
+    var found=[]; var seen={};
+    RULES.forEach(function(r){
+      var m = hay.match(r.re);
+      if(m && !seen[r.term.toLowerCase()]){
+        seen[r.term.toLowerCase()] = true;
+        found.push({
+          rule:r,
+          matched:m[0],
+          fixed:false
+        });
+      }
+    });
+    return found;
+  }
+
+  function resetGuards(){
+    var b=$('guardBody'); b.innerHTML='';
+    var idle = el('div','guard-idle','Guardrail checks run automatically every time you draft — inclusive language, plain-English reading level, and legally-cautious phrasing. Risky terms get flagged with a one-click fix.');
+    b.appendChild(idle);
+    $('guardSub').textContent='Inclusivity & compliance';
+  }
+
+  function runGuards(){
+    var b=$('guardBody'); b.innerHTML='';
+    $('guardSub').textContent='Scanning…';
+    // build the three checks in "scanning" state
+    var checksWrap = el('div','checks');
+    var checkEls = {};
+    CHECK_DEFS.forEach(function(c){
+      var row = el('div','check pending');
+      var ic = el('span','ck-ic'); ic.textContent=c.icon;
+      var lab = el('span', null, c.label); lab.style.fontWeight='600';
+      row.appendChild(ic); row.appendChild(lab);
+      checksWrap.appendChild(row);
+      checkEls[c.id] = {row:row, ic:ic};
+    });
+    b.appendChild(checksWrap);
+
+    state.flags = scanForFlags();
+
+    // animate checks one by one
+    var order = ['read','legal','incl'];
+    var delay = 260;
+    order.forEach(function(cid, i){
+      later(function(){
+        var ref = checkEls[cid];
+        var def = CHECK_DEFS.filter(function(c){return c.id===cid;})[0];
+        ref.row.classList.remove('pending');
+        ref.row.classList.add('scanning');
+        ref.ic.innerHTML = '<span class="spin">◠</span>';
+        later(function(){
+          ref.row.classList.remove('scanning');
+          var isInclusive = (cid==='incl');
+          var hasFlags = state.flags.length>0;
+          if(isInclusive && hasFlags){
+            // inclusive check shows a warning count instead of a clean tick
+            ref.row.classList.add('ok'); // keep styling neutral-positive but annotate
+            ref.row.classList.remove('ok');
+            ref.row.style.borderColor='rgba(245,158,11,.35)';
+            ref.row.style.background='rgba(245,158,11,.05)';
+            ref.ic.style.background='var(--amber)'; ref.ic.style.color='#fff';
+            ref.ic.textContent='!';
+            var meta = el('span','ck-meta', state.flags.length+' to review');
+            meta.style.color='#a8700a'; meta.style.marginLeft='auto'; meta.style.fontSize='11px'; meta.style.fontWeight='700';
+            ref.row.appendChild(meta);
+          } else {
+            ref.row.classList.add('ok');
+            ref.ic.textContent='✓';
+            var meta2 = el('span','ck-meta', def.okMeta);
+            ref.row.appendChild(meta2);
+          }
+          // after the last check, render flags / all-clear
+          if(i===order.length-1){
+            later(renderFlags, 180);
+          }
+        }, 360);
+      }, delay*i);
+    });
+  }
+
+  function renderFlags(){
+    var b=$('guardBody');
+    // remove any prior flags-wrap / all-clear
+    var old = b.querySelector('.flags-wrap'); if(old) old.remove();
+    var oc = b.querySelector('.guard-all-clear'); if(oc) oc.remove();
+
+    if(state.flags.length===0){
+      $('guardSub').textContent='All clear';
+      var clean = el('div','guard-all-clear');
+      clean.appendChild(el('span',null,'✓'));
+      clean.appendChild(el('span',null,'No risky language detected — this draft is good to send.'));
+      b.appendChild(clean);
+      return;
+    }
+
+    $('guardSub').textContent = state.flags.length+' flag'+(state.flags.length>1?'s':'');
+    var wrap = el('div','flags-wrap');
+    state.flags.forEach(function(fl, idx){
+      var card = el('div','flag'+(fl.fixed?' fixed':''));
+      var top = el('div','fl-top');
+      var ic = el('span','fl-ic'); ic.textContent = fl.fixed?'✓':'!';
+      top.appendChild(ic);
+      var body = el('div','fl-body');
+
+      var term = el('div','fl-term');
+      term.innerHTML = (fl.fixed?'Resolved: ':'Flagged: ')+'<span class="term">'+esc(fl.matched)+'</span>';
+      body.appendChild(term);
+
+      var why = el('div','fl-why', fl.rule.why);
+      body.appendChild(why);
+
+      var sugg = el('div','fl-sugg');
+      sugg.innerHTML = '<span class="arrow">→</span> Suggested: <b>'+esc(fl.rule.fix)+'</b>';
+      body.appendChild(sugg);
+
+      var act = el('div','fl-act');
+      if(!fl.fixed){
+        var btn = el('button','fixbtn'); btn.setAttribute('type','button');
+        btn.innerHTML='✦ Fix it';
+        btn.addEventListener('click', function(){ applyFix(idx); });
+        act.appendChild(btn);
+        var ignore = el('button','btn ghost sm'); ignore.setAttribute('type','button');
+        ignore.textContent='Dismiss';
+        ignore.style.padding='6px 10px'; ignore.style.fontSize='11.5px';
+        ignore.addEventListener('click', function(){ dismissFix(idx); });
+        act.appendChild(ignore);
+      } else {
+        var done = el('span','fixed-label'); done.innerHTML='✓ Fixed in draft & form';
+        act.appendChild(done);
+      }
+      body.appendChild(act);
+
+      top.appendChild(body);
+      card.appendChild(top);
+      wrap.appendChild(card);
+    });
+    b.appendChild(wrap);
+  }
+
+  function applyFix(idx){
+    var fl = state.flags[idx];
+    if(!fl || fl.fixed) return;
+    var rep = fl.rule.fix;
+    var matched = fl.matched;
+
+    // 1) update the form's bullet/text fields (working values + visible inputs)
+    var v = workingValues[state.tpl];
+    var changed=false;
+    TEMPLATES[state.tpl].fields.forEach(function(f){
+      if(typeof v[f.k]==='string' && fl.rule.re.test(v[f.k])){
+        // preserve capitalization of first letter if the match was capitalized
+        v[f.k] = v[f.k].replace(new RegExp(fl.rule.re.source, 'gi'), function(mm){
+          return matchCase(mm, rep);
+        });
+        changed=true;
+      }
+    });
+    // refresh the visible form fields to reflect the change
+    if(changed) refreshFormValues();
+
+    // 2) update the rendered draft text (both the live HTML doc and stored text)
+    var doc=$('outDoc');
+    if(state.drafted && doc){
+      var safeRep = matchCase(matched, rep);
+      // replace in the editable doc's text nodes
+      replaceInDoc(doc, fl.rule.re, rep);
+      state.lastDraft = doc.innerText || doc.textContent || state.lastDraft;
+      flashDoc();
+    }
+
+    fl.fixed = true;
+    renderFlags();
+    // update guard sub + inclusive check meta if all fixed
+    updateInclusiveMetaIfResolved();
+    toast('Fixed: “'+matched+'” → “'+rep+'”');
+  }
+
+  function dismissFix(idx){
+    var fl = state.flags[idx];
+    if(!fl) return;
+    state.flags.splice(idx,1);
+    renderFlags();
+    updateInclusiveMetaIfResolved();
+  }
+
+  function updateInclusiveMetaIfResolved(){
+    var unresolved = state.flags.filter(function(f){ return !f.fixed; }).length;
+    // find inclusive check row (the one we tagged amber)
+    var rows = $('guardBody').querySelectorAll('.check');
+    if(rows.length>=3){
+      var r = rows[2]; // inclusive was rendered third
+      if(unresolved===0){
+        r.style.borderColor=''; r.style.background='';
+        r.classList.add('ok');
+        var ic = r.querySelector('.ck-ic');
+        if(ic){ ic.style.background=''; ic.style.color=''; ic.textContent='✓'; }
+        var meta = r.querySelector('.ck-meta');
+        if(meta){ meta.textContent='No flags'; meta.style.color=''; }
+      } else {
+        var meta2 = r.querySelector('.ck-meta');
+        if(meta2){ meta2.textContent = unresolved+' to review'; }
+      }
+    }
+  }
+
+  function matchCase(source, repl){
+    if(!source) return repl;
+    // if source starts uppercase, capitalize repl's first letter
+    if(/^[A-Z]/.test(source)){
+      return repl.charAt(0).toUpperCase()+repl.slice(1);
+    }
+    return repl;
+  }
+
+  // Replace matches of a regex within all text nodes of a container
+  function replaceInDoc(container, re, repl){
+    var walker = document.createTreeWalker(container, NodeFilter.SHOW_TEXT, null, false);
+    var nodes=[]; var n;
+    while((n=walker.nextNode())){ nodes.push(n); }
+    var g = new RegExp(re.source, 'gi');
+    nodes.forEach(function(node){
+      if(g.test(node.nodeValue)){
+        node.nodeValue = node.nodeValue.replace(new RegExp(re.source,'gi'), function(mm){ return matchCase(mm, repl); });
+      }
+    });
+  }
+
+  function flashDoc(){
+    var doc=$('outDoc');
+    doc.style.transition='background .2s';
+    doc.style.background='rgba(16,185,129,.08)';
+    later(function(){ doc.style.background=''; }, 420);
+  }
+
+  function refreshFormValues(){
+    // re-render the form to reflect updated working values (keeps tone selection)
+    var savedTone = state.tone;
+    renderForm();
+    state.tone = savedTone;
+  }
+
+  /* ---------------- Toast ---------------- */
+  function toast(msg){
+    var t=$('toast'); $('toastMsg').textContent=msg;
+    t.classList.add('show');
+    later(function(){ t.classList.remove('show'); }, 2100);
+  }
+
+  /* ---------------- Main draft action ---------------- */
+  function doDraft(opts){
+    if(state.busy) return;
+    opts = opts||{};
+    clearTimers();
+    state.busy = true;
+    var btn=$('draftBtn');
+    btn.disabled=true;
+    var origLabel = btn.innerHTML;
+    btn.innerHTML='<span class="spin">◠</span> Drafting…';
+    setToolbar(false);
+
+    // optionally mutate the working bullets for shorter / warmer
+    if(opts.shorter){ applyShorter(); }
+    if(opts.warmer){ state.tone='warm'; refreshFormValues(); }
+
+    var parts = composeDraft();
+    // run guardrails in parallel with typing
+    runGuards();
+    $('outMeta').textContent = TEMPLATES[state.tpl].name + ' · ' + toneLabel(state.tone);
+
+    typeOut(parts, function(){
+      state.drafted = true;
+      state.busy=false;
+      btn.disabled=false;
+      btn.innerHTML = origLabel;
+      setToolbar(true);
+    });
+  }
+
+  function toneLabel(id){
+    var t = TONES.filter(function(x){return x.id===id;})[0];
+    return t?t.label:id;
+  }
+
+  // "shorter" — trims bullet list to top items + flips intro shorter feel by toggling tone toward direct
+  function applyShorter(){
+    var v = workingValues[state.tpl];
+    if(typeof v.bullets==='string'){
+      var lines = bulletLines(v.bullets);
+      if(lines.length>2){
+        v.bullets = lines.slice(0, Math.max(2, Math.ceil(lines.length/2))).join('\n');
+        refreshFormValues();
+      }
+    }
+    // shorter reads more direct
+    if(state.tone==='formal') state.tone='direct';
+  }
+
+  /* ---------------- Copy / Insert ---------------- */
+  function copyDraft(){
+    var text = $('outDoc').innerText || state.lastDraft || '';
+    var ok=false;
+    try{
+      if(navigator.clipboard && navigator.clipboard.writeText){
+        navigator.clipboard.writeText(text).then(function(){}, function(){ legacyCopy(text); });
+        ok=true;
+      } else { ok = legacyCopy(text); }
+    }catch(e){ ok = legacyCopy(text); }
+    var c=$('copyBtn'); c.classList.add('copied'); c.innerHTML='✓ Copied';
+    later(function(){ c.classList.remove('copied'); c.innerHTML='📋 Copy'; }, 1800);
+    toast('Draft copied to clipboard');
+  }
+  function legacyCopy(text){
+    try{
+      var ta=document.createElement('textarea');
+      ta.value=text; ta.style.position='fixed'; ta.style.opacity='0';
+      document.body.appendChild(ta); ta.focus(); ta.select();
+      var done=document.execCommand('copy'); document.body.removeChild(ta);
+      return done;
+    }catch(e){ return false; }
+  }
+  function insertDraft(){
+    // Simulated "insert into HRIS" — give clear, tasteful feedback
+    var doc=$('outDoc');
+    doc.style.transition='box-shadow .2s, background .2s';
+    doc.style.boxShadow='inset 0 0 0 2px rgba(16,185,129,.5)';
+    doc.style.background='rgba(16,185,129,.05)';
+    later(function(){ doc.style.boxShadow=''; doc.style.background=''; }, 700);
+    var unresolved = state.flags.filter(function(f){return !f.fixed;}).length;
+    if(unresolved>0){
+      toast('Inserted to Workday draft — '+unresolved+' guardrail note'+(unresolved>1?'s':'')+' still open');
+    } else {
+      toast('Inserted into the Workday record (draft)');
+    }
+  }
+
+  /* ---------------- Reset ---------------- */
+  function resetForm(){
+    if(state.busy) return;
+    workingValues[state.tpl] = snapshotDefaults(state.tpl);
+    state.tone = TEMPLATES[state.tpl].tone;
+    renderForm();
+    resetOutput();
+    resetGuards();
+    toast('Form reset to example');
+  }
+
+  /* ---------------- Wire up ---------------- */
+  function bind(){
+    $('draftBtn').addEventListener('click', function(){ doDraft(); });
+    $('resetBtn').addEventListener('click', resetForm);
+    $('copyBtn').addEventListener('click', function(){ if(!$('copyBtn').disabled) copyDraft(); });
+    $('insertBtn').addEventListener('click', function(){ if(!$('insertBtn').disabled) insertDraft(); });
+    $('regenBtn').addEventListener('click', function(){ if(!$('regenBtn').disabled) doDraft(); });
+    $('shorterBtn').addEventListener('click', function(){ if(!$('shorterBtn').disabled) doDraft({shorter:true}); });
+    $('warmerBtn').addEventListener('click', function(){ if(!$('warmerBtn').disabled) doDraft({warmer:true}); });
+    // keep stored text in sync when the user edits the contenteditable draft
+    $('outDoc').addEventListener('input', function(){
+      state.lastDraft = $('outDoc').innerText || '';
+    });
+  }
+
+  /* ---------------- Init ---------------- */
+  function init(){
+    try{
+      renderTemplates();
+      renderForm();
+      resetOutput();
+      resetGuards();
+      bind();
+    }catch(e){
+      // fail soft — never throw to the page
+      var fb=$('formBody'); if(fb){ fb.textContent='Something went wrong initializing the demo.'; }
+    }
+  }
+
+  if(document.readyState==='loading'){
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
+  }
+})();
+</script>
+</body>
+</html>

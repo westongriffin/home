@@ -1,0 +1,788 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Compliance on Autopilot — NewWesVentures Reel</title>
+<style>
+  :root{
+    --ink:#0c1020; --muted:#6b7794; --line:#e7e9f2; --bg:#f7f8fc; --card:#ffffff;
+    --v1:#7c3aed; --v2:#5b4ef0; --v3:#06b6d4; --pink:#db2777;
+    --green:#10b981; --amber:#f59e0b;
+    --grad:linear-gradient(110deg,#7c3aed,#5b4ef0 45%,#06b6d4);
+  }
+  *{box-sizing:border-box; margin:0; padding:0; -webkit-font-smoothing:antialiased;}
+  html,body{height:100%;}
+  body{
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Inter,Helvetica,Arial,sans-serif;
+    background:#080a16; color:var(--ink); overflow:hidden;
+  }
+  /* ---------- Cinematic backdrop ---------- */
+  #reel{
+    position:fixed; inset:0; overflow:hidden;
+    background:#080a16;
+    display:flex; align-items:center; justify-content:center;
+  }
+  #reel::before{
+    content:""; position:absolute; inset:0; pointer-events:none;
+    background:
+      radial-gradient(60% 80% at 12% 8%, rgba(124,58,237,.5), transparent 60%),
+      radial-gradient(55% 75% at 92% 18%, rgba(6,182,212,.42), transparent 60%);
+  }
+  #reel::after{
+    content:""; position:absolute; inset:0; pointer-events:none;
+    background-image:
+      linear-gradient(rgba(255,255,255,.05) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,.05) 1px, transparent 1px);
+    background-size:42px 42px;
+    -webkit-mask-image:radial-gradient(70% 70% at 50% 45%, #000 0%, transparent 80%);
+    mask-image:radial-gradient(70% 70% at 50% 45%, #000 0%, transparent 80%);
+  }
+  /* ---------- Stage (16:9) ---------- */
+  #stageWrap{
+    position:relative; width:100%; height:100%;
+    display:flex; align-items:center; justify-content:center;
+  }
+  #stage{
+    position:relative;
+    width:min(96vw, calc((100vh - 56px) * 1.7778), 1280px);
+    aspect-ratio:16/9;
+    border-radius:20px; overflow:hidden;
+    background:
+      radial-gradient(120% 140% at 8% -10%, rgba(124,58,237,.20), transparent 55%),
+      radial-gradient(120% 140% at 105% 0%, rgba(6,182,212,.18), transparent 55%),
+      linear-gradient(180deg,#0d1124,#0a0d1c);
+    box-shadow:0 40px 120px rgba(0,0,0,.6), 0 0 0 1px rgba(255,255,255,.06) inset;
+  }
+  /* font-size based scaling so inner UI scales with the stage */
+  #stage{ font-size:clamp(8px, 1.18vw, 15px); }
+  @supports not (aspect-ratio:1/1){ #stage{ height:56.25%; } }
+
+  .scene{
+    position:absolute; inset:0; opacity:0; pointer-events:none;
+    display:flex; flex-direction:column;
+  }
+  .scene.on{ opacity:1; }
+
+  /* ---------- Top progress bar ---------- */
+  #bar{
+    position:fixed; top:0; left:0; height:4px; width:0%;
+    background:var(--grad); z-index:50;
+    box-shadow:0 0 14px rgba(91,78,240,.7);
+  }
+  /* ---------- Controls ---------- */
+  #ctrls{
+    position:fixed; right:18px; bottom:16px; z-index:60;
+    display:flex; gap:10px;
+  }
+  .cbtn{
+    width:40px; height:40px; border-radius:12px; border:0; cursor:pointer;
+    background:rgba(255,255,255,.08); color:#eef1ff; font-size:16px;
+    display:flex; align-items:center; justify-content:center;
+    backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(8px);
+    box-shadow:0 6px 18px rgba(0,0,0,.35), 0 0 0 1px rgba(255,255,255,.1) inset;
+    transition:transform .15s ease, background .15s ease;
+  }
+  .cbtn:hover{ background:rgba(255,255,255,.16); transform:translateY(-1px); }
+  .cbtn:active{ transform:translateY(0); }
+
+  /* ---------- Brand chip ---------- */
+  .brand{
+    position:absolute; top:5%; left:5.2%;
+    display:flex; align-items:center; gap:.7em; z-index:5;
+  }
+  .logo{
+    width:2.4em; height:2.4em; border-radius:.7em; background:var(--grad);
+    display:flex; align-items:center; justify-content:center;
+    font-weight:800; color:#fff; font-size:1em;
+    box-shadow:0 8px 22px rgba(124,58,237,.45);
+  }
+  .brand b{ color:#eef1ff; font-size:1.05em; letter-spacing:.2px; }
+  .brand span{ color:#9aa6c8; font-size:.78em; display:block; margin-top:1px; }
+
+  /* ---------- Lower third caption ---------- */
+  .lower{
+    position:absolute; left:5.2%; bottom:7%; z-index:8;
+    display:flex; align-items:center; gap:.7em;
+    opacity:0; transform:translateY(14px);
+  }
+  .lower.show{ animation:lowIn .7s cubic-bezier(.16,.84,.34,1) forwards; }
+  .lower .kick{
+    font-size:.7em; font-weight:700; letter-spacing:.16em; text-transform:uppercase;
+    color:#0a0d1c; background:linear-gradient(110deg,#7c3aed,#06b6d4);
+    padding:.32em .7em; border-radius:.5em;
+  }
+  .lower .txt{ color:#dfe4f5; font-size:.98em; font-weight:600; }
+  @keyframes lowIn{ to{ opacity:1; transform:translateY(0); } }
+
+  /* ---------- TITLE / END cards ---------- */
+  .card-center{
+    align-items:center; justify-content:center; text-align:center; padding:6%;
+  }
+  .eyebrow{
+    font-size:.82em; font-weight:700; letter-spacing:.28em; text-transform:uppercase;
+    color:#9fb0d8; margin-bottom:1.2em;
+    opacity:0; transform:translateY(12px);
+  }
+  .bigtitle{
+    font-size:5em; font-weight:800; line-height:1.02; letter-spacing:-.02em;
+    background:linear-gradient(110deg,#a784f3,#7c8bff 40%,#46d8ee);
+    -webkit-background-clip:text; background-clip:text; color:transparent;
+    opacity:0; transform:translateY(18px); filter:blur(6px);
+  }
+  .premise{
+    margin-top:.8em; font-size:1.5em; color:#c4cce6; font-weight:500;
+    opacity:0; transform:translateY(14px);
+  }
+  .runIn{ animation:runIn .9s cubic-bezier(.16,.84,.34,1) forwards; }
+  .runInBlur{ animation:runInBlur 1.05s cubic-bezier(.16,.84,.34,1) forwards; }
+  @keyframes runIn{ to{ opacity:1; transform:translateY(0); } }
+  @keyframes runInBlur{ to{ opacity:1; transform:translateY(0); filter:blur(0); } }
+
+  .titlerule{
+    width:0; height:3px; margin:1.6em auto 0; border-radius:3px;
+    background:var(--grad); box-shadow:0 0 16px rgba(91,78,240,.6);
+  }
+  .titlerule.go{ animation:ruleGrow 1s .5s cubic-bezier(.16,.84,.34,1) forwards; }
+  @keyframes ruleGrow{ to{ width:34%; } }
+
+  /* ---------- Panels (scenes) ---------- */
+  .panel{
+    position:absolute; background:rgba(255,255,255,.035);
+    border:1px solid rgba(255,255,255,.09); border-radius:1em;
+    box-shadow:0 24px 60px rgba(0,0,0,.4);
+    backdrop-filter:blur(4px); -webkit-backdrop-filter:blur(4px);
+  }
+  .phead{
+    display:flex; align-items:center; gap:.6em; padding:.95em 1.2em;
+    border-bottom:1px solid rgba(255,255,255,.07);
+  }
+  .phead .pdot{ width:.6em; height:.6em; border-radius:50%; background:var(--v3);
+    box-shadow:0 0 10px var(--v3); }
+  .phead h3{ color:#eaeefc; font-size:1.02em; font-weight:700; }
+  .phead .live{
+    margin-left:auto; font-size:.66em; font-weight:700; letter-spacing:.1em;
+    color:#7ef0d0; display:flex; align-items:center; gap:.45em; text-transform:uppercase;
+  }
+  .blip{ width:.55em; height:.55em; border-radius:50%; background:#10b981;
+    box-shadow:0 0 0 0 rgba(16,185,129,.7); animation:blip 1.6s infinite; }
+  @keyframes blip{ 0%{box-shadow:0 0 0 0 rgba(16,185,129,.6);} 70%{box-shadow:0 0 0 .7em rgba(16,185,129,0);} 100%{box-shadow:0 0 0 0 rgba(16,185,129,0);} }
+
+  /* ===== SCENE 1 — compliance monitor grid ===== */
+  #s1panel{ left:5.2%; right:5.2%; top:18%; bottom:18%; overflow:hidden; }
+  #scanline{
+    position:absolute; left:0; right:0; top:0; height:2px; z-index:6;
+    background:linear-gradient(90deg, transparent, rgba(124,58,237,.9), rgba(6,182,212,.9), transparent);
+    box-shadow:0 0 22px rgba(91,78,240,.8); opacity:0;
+  }
+  #s1grid{
+    position:absolute; inset:0; top:3.4em;
+    display:grid; grid-template-columns:repeat(3,1fr); gap:.8em;
+    padding:1.1em 1.2em 1.2em;
+  }
+  .ob{
+    background:rgba(255,255,255,.04); border:1px solid rgba(255,255,255,.08);
+    border-radius:.7em; padding:.85em .9em; position:relative;
+    display:flex; flex-direction:column; gap:.5em; min-height:0;
+    opacity:0; transform:translateY(10px) scale(.98);
+    transition:border-color .5s ease, background .5s ease, box-shadow .5s ease;
+  }
+  .ob.in{ animation:obIn .55s cubic-bezier(.16,.84,.34,1) forwards; }
+  @keyframes obIn{ to{ opacity:1; transform:translateY(0) scale(1); } }
+  .ob .row1{ display:flex; align-items:center; gap:.5em; }
+  .ob .sdot{
+    width:.6em; height:.6em; border-radius:50%; background:var(--green);
+    box-shadow:0 0 9px rgba(16,185,129,.8); flex:0 0 auto;
+    transition:background .5s ease, box-shadow .5s ease;
+  }
+  .ob .name{ color:#e7ecfb; font-size:.86em; font-weight:600; line-height:1.2; }
+  .ob .meta{ color:#94a1c4; font-size:.72em; }
+  .ob .tag{
+    margin-top:auto; align-self:flex-start; font-size:.64em; font-weight:700;
+    letter-spacing:.06em; text-transform:uppercase; padding:.26em .55em; border-radius:.45em;
+    color:#7ef0d0; background:rgba(16,185,129,.14); border:1px solid rgba(16,185,129,.3);
+    transition:all .5s ease;
+  }
+  .ob.amber{
+    border-color:rgba(245,158,11,.55); background:rgba(245,158,11,.08);
+    box-shadow:0 0 0 1px rgba(245,158,11,.4), 0 10px 30px rgba(245,158,11,.12);
+  }
+  .ob.amber .sdot{ background:var(--amber); box-shadow:0 0 12px rgba(245,158,11,.9); animation:pulseAmb 1.1s infinite; }
+  @keyframes pulseAmb{ 0%,100%{transform:scale(1);} 50%{transform:scale(1.35);} }
+  .ob.amber .tag{ color:#ffd9a0; background:rgba(245,158,11,.18); border-color:rgba(245,158,11,.45); }
+  .ob.focus{ transform:scale(1.04) !important; z-index:3; }
+
+  /* ===== SCENE 2 — auto-resolve ===== */
+  #s2card{ left:14%; right:14%; top:20%; bottom:20%; overflow:hidden; }
+  #s2body{ padding:1.4em 1.6em; display:flex; flex-direction:column; height:100%; }
+  .caseline{ display:flex; align-items:center; gap:.7em; margin-bottom:.3em; }
+  .caseAv{
+    width:2.6em; height:2.6em; border-radius:50%; flex:0 0 auto;
+    background:linear-gradient(135deg,#7c3aed,#06b6d4); color:#fff; font-weight:700;
+    display:flex; align-items:center; justify-content:center; font-size:.95em;
+  }
+  .caseTitle{ color:#eef2fd; font-size:1.15em; font-weight:700; }
+  .caseSub{ color:#9aa7c9; font-size:.8em; margin-top:.15em; }
+  #s2state{
+    margin-left:auto; font-size:.66em; font-weight:700; letter-spacing:.1em; text-transform:uppercase;
+    padding:.34em .7em; border-radius:.5em; color:#ffd9a0;
+    background:rgba(245,158,11,.16); border:1px solid rgba(245,158,11,.4);
+    transition:all .5s ease;
+  }
+  .steps{ margin-top:1.3em; display:flex; flex-direction:column; gap:.7em; }
+  .step{
+    display:flex; align-items:center; gap:.8em;
+    background:rgba(255,255,255,.035); border:1px solid rgba(255,255,255,.07);
+    border-radius:.65em; padding:.7em .9em;
+    opacity:.32; transform:translateX(-8px);
+    transition:opacity .45s ease, transform .45s ease, border-color .45s ease, background .45s ease;
+  }
+  .step.done{ opacity:1; transform:translateX(0); border-color:rgba(16,185,129,.35); background:rgba(16,185,129,.06); }
+  .step .ck{
+    width:1.7em; height:1.7em; border-radius:50%; flex:0 0 auto;
+    border:2px solid rgba(255,255,255,.18); position:relative;
+    transition:all .4s ease;
+  }
+  .step.done .ck{ border-color:var(--green); background:var(--green); box-shadow:0 0 14px rgba(16,185,129,.6); }
+  .step .ck svg{ position:absolute; inset:0; width:100%; height:100%; }
+  .step .ck path{
+    stroke:#06210f; stroke-width:3.2; fill:none; stroke-linecap:round; stroke-linejoin:round;
+    stroke-dasharray:20; stroke-dashoffset:20; transition:stroke-dashoffset .4s .12s ease;
+  }
+  .step.done .ck path{ stroke-dashoffset:0; }
+  .step .stxt{ color:#dde3f5; font-size:.92em; font-weight:600; }
+  .step .ssub{ color:#93a0c2; font-size:.74em; margin-top:.1em; }
+  .step .meta2{ margin-left:auto; color:#8b98ba; font-size:.74em; font-weight:600; }
+
+  #resolveStamp{
+    margin:1.1em auto 0; align-self:center;
+    display:flex; align-items:center; gap:.6em;
+    color:#7ef0d0; font-weight:800; font-size:1.05em;
+    padding:.6em 1.1em; border-radius:.7em;
+    background:rgba(16,185,129,.12); border:1px solid rgba(16,185,129,.4);
+    box-shadow:0 0 0 0 rgba(16,185,129,.5);
+    opacity:0; transform:scale(.8);
+  }
+  #resolveStamp.pop{ animation:stampPop .6s cubic-bezier(.2,1.3,.4,1) forwards; }
+  @keyframes stampPop{ 0%{opacity:0; transform:scale(.7);} 60%{opacity:1; transform:scale(1.06);} 100%{opacity:1; transform:scale(1);} }
+  #resolveStamp .ico{
+    width:1.5em; height:1.5em; border-radius:50%; background:var(--green); color:#06210f;
+    display:flex; align-items:center; justify-content:center; font-size:.9em; font-weight:900;
+  }
+
+  /* ===== SCENE 3 — health dashboard ===== */
+  #s3wrap{ position:absolute; inset:0; top:16%; display:flex; flex-direction:column; align-items:center; padding:0 5.2% 2%; }
+  #gaugeBox{ position:relative; width:20em; max-width:46%; }
+  #gaugeBox svg{ width:100%; height:auto; display:block; overflow:visible; }
+  .gtrack{ fill:none; stroke:rgba(255,255,255,.09); stroke-width:11; stroke-linecap:round; }
+  .gfill{ fill:none; stroke-width:11; stroke-linecap:round; stroke:url(#gg); }
+  #gNeedle{ transition:none; transform-origin:100px 100px; }
+  .gcenter{ text-align:center; position:absolute; left:0; right:0; top:52%; }
+  .gscore{ font-size:2.6em; font-weight:800; color:#eef2fd; line-height:1; }
+  .glabel{ font-size:.72em; letter-spacing:.16em; text-transform:uppercase; color:#9aa7c9; margin-top:.3em; }
+  #gStatus{
+    display:inline-block; margin-top:.5em; font-size:.66em; font-weight:700; letter-spacing:.08em;
+    text-transform:uppercase; padding:.3em .7em; border-radius:.5em;
+    color:#ffd9a0; background:rgba(245,158,11,.16); border:1px solid rgba(245,158,11,.4);
+    transition:all .6s ease;
+  }
+  #statCards{
+    display:grid; grid-template-columns:repeat(4,1fr); gap:.85em; width:100%; margin-top:1.6em;
+  }
+  .scard{
+    background:rgba(255,255,255,.04); border:1px solid rgba(255,255,255,.08);
+    border-radius:.75em; padding:1em .9em; text-align:center;
+    opacity:0; transform:translateY(14px);
+  }
+  .scard.in{ animation:obIn .6s cubic-bezier(.16,.84,.34,1) forwards; }
+  .scard .num{
+    font-size:2em; font-weight:800; line-height:1;
+    background:linear-gradient(110deg,#a784f3,#46d8ee);
+    -webkit-background-clip:text; background-clip:text; color:transparent;
+  }
+  .scard .cap{ color:#9aa7c9; font-size:.74em; margin-top:.55em; line-height:1.3; }
+
+  /* ===== END card ===== */
+  .endline{
+    font-size:2.4em; font-weight:800; line-height:1.12; letter-spacing:-.01em; color:#eef2fd;
+    max-width:14em; opacity:0; transform:translateY(16px);
+  }
+  .endline .hl{
+    background:linear-gradient(110deg,#a784f3,#46d8ee);
+    -webkit-background-clip:text; background-clip:text; color:transparent;
+  }
+  .endbrand{
+    margin-top:1.6em; display:flex; align-items:center; gap:.7em;
+    opacity:0; transform:translateY(12px);
+  }
+  .endbrand .logo{ width:2.7em; height:2.7em; font-size:1em; }
+  .endbrand .t b{ color:#eef1ff; font-size:1.15em; display:block; }
+  .endbrand .t span{ color:#9aa7c9; font-size:.82em; }
+  .byline{
+    position:absolute; bottom:6.5%; left:0; right:0; text-align:center;
+    color:#7e8bb0; font-size:.82em; letter-spacing:.04em;
+    opacity:0; transform:translateY(10px);
+  }
+
+  /* ---------- reduced motion: static final frame ---------- */
+  @media (prefers-reduced-motion: reduce){
+    #bar{ width:100%; }
+    #ctrls{ display:none; }
+    .scene{ transition:none; }
+    *{ animation:none !important; transition:none !important; }
+  }
+</style>
+</head>
+<body>
+<div id="bar"></div>
+
+<div id="reel">
+  <div id="stageWrap">
+    <div id="stage">
+
+      <!-- ============ TITLE CARD ============ -->
+      <section class="scene card-center" id="sceneTitle">
+        <div class="eyebrow" id="t-eye">NewWesVentures · People Operations</div>
+        <h1 class="bigtitle" id="t-title">Compliance<br>on Autopilot</h1>
+        <div class="premise" id="t-prem">Never miss a deadline again.</div>
+        <div class="titlerule" id="t-rule"></div>
+      </section>
+
+      <!-- ============ SCENE 1 ============ -->
+      <section class="scene" id="scene1">
+        <div class="brand">
+          <div class="logo">N</div>
+          <div><b>NewWesVentures</b><span>Compliance Monitor</span></div>
+        </div>
+        <div class="panel" id="s1panel">
+          <div class="phead">
+            <span class="pdot"></span>
+            <h3>Live Obligation Monitor</h3>
+            <span class="live"><span class="blip"></span>Scanning</span>
+          </div>
+          <div id="scanline"></div>
+          <div id="s1grid"></div>
+        </div>
+        <div class="lower" id="low1">
+          <span class="kick">Always watching</span>
+          <span class="txt">Continuously scanning every compliance obligation, 24/7.</span>
+        </div>
+      </section>
+
+      <!-- ============ SCENE 2 ============ -->
+      <section class="scene" id="scene2">
+        <div class="brand">
+          <div class="logo">N</div>
+          <div><b>NewWesVentures</b><span>Auto-Resolution</span></div>
+        </div>
+        <div class="panel" id="s2card">
+          <div id="s2body">
+            <div class="caseline">
+              <div class="caseAv">MA</div>
+              <div>
+                <div class="caseTitle">I-9 Reverification</div>
+                <div class="caseSub">Maria Alvarez · Work authorization expiring</div>
+              </div>
+              <div id="s2state">Action needed</div>
+            </div>
+            <div class="steps">
+              <div class="step" id="st1">
+                <div class="ck"><svg viewBox="0 0 24 24"><path d="M5 12.5l4 4 10-10"/></svg></div>
+                <div><div class="stxt">Drafted reminder notice</div><div class="ssub">Personalized email + secure upload link</div></div>
+                <div class="meta2">auto</div>
+              </div>
+              <div class="step" id="st2">
+                <div class="ck"><svg viewBox="0 0 24 24"><path d="M5 12.5l4 4 10-10"/></svg></div>
+                <div><div class="stxt">Assigned owner — HR Ops</div><div class="ssub">Routed to on-call compliance queue</div></div>
+                <div class="meta2">auto</div>
+              </div>
+              <div class="step" id="st3">
+                <div class="ck"><svg viewBox="0 0 24 24"><path d="M5 12.5l4 4 10-10"/></svg></div>
+                <div><div class="stxt">Scheduled follow-up</div><div class="ssub">Reminders set · escalation if no response</div></div>
+                <div class="meta2">auto</div>
+              </div>
+            </div>
+            <div id="resolveStamp">
+              <span class="ico">&#10003;</span>
+              <span>Resolved &mdash; 4 days early</span>
+            </div>
+          </div>
+        </div>
+        <div class="lower" id="low2">
+          <span class="kick">Hands-off</span>
+          <span class="txt">Drafted, assigned, and scheduled &mdash; before anyone lifts a finger.</span>
+        </div>
+      </section>
+
+      <!-- ============ SCENE 3 ============ -->
+      <section class="scene" id="scene3">
+        <div class="brand">
+          <div class="logo">N</div>
+          <div><b>NewWesVentures</b><span>Compliance Health</span></div>
+        </div>
+        <div id="s3wrap">
+          <div id="gaugeBox">
+            <svg viewBox="0 0 200 130">
+              <defs>
+                <linearGradient id="gg" x1="0" y1="0" x2="1" y2="0">
+                  <stop offset="0" stop-color="#f59e0b"/>
+                  <stop offset=".55" stop-color="#84cc16"/>
+                  <stop offset="1" stop-color="#10b981"/>
+                </linearGradient>
+              </defs>
+              <path class="gtrack" d="M20 100 A80 80 0 0 1 180 100"/>
+              <path class="gfill" id="gFill" d="M20 100 A80 80 0 0 1 180 100"
+                    stroke-dasharray="251.3" stroke-dashoffset="251.3"/>
+              <g id="gNeedle">
+                <line x1="100" y1="100" x2="34" y2="100" stroke="#eef2fd" stroke-width="3" stroke-linecap="round"/>
+                <circle cx="100" cy="100" r="6.5" fill="#eef2fd"/>
+              </g>
+            </svg>
+            <div class="gcenter">
+              <div class="gscore" id="gScore">62</div>
+              <div class="glabel">Compliance Health</div>
+              <div id="gStatus">At risk</div>
+            </div>
+          </div>
+          <div id="statCards">
+            <div class="scard" id="sc1"><div class="num" data-to="100" data-suf="%">0%</div><div class="cap">I-9 on file</div></div>
+            <div class="scard" id="sc2"><div class="num" data-to="0">0</div><div class="cap">Overdue items</div></div>
+            <div class="scard" id="sc3"><div class="num" data-to="7">0</div><div class="cap">Tracked next 30 days</div></div>
+            <div class="scard" id="sc4"><div class="num" data-to="100" data-suf="%">0%</div><div class="cap">Audit-ready</div></div>
+          </div>
+        </div>
+        <div class="lower" id="low3">
+          <span class="kick">Always green</span>
+          <span class="txt">Risk drops to zero &mdash; every obligation tracked and on file.</span>
+        </div>
+      </section>
+
+      <!-- ============ END CARD ============ -->
+      <section class="scene card-center" id="sceneEnd">
+        <div class="endline" id="e-line">Audit-ready <span class="hl">every day</span> &mdash;<br>not the week before.</div>
+        <div class="endbrand" id="e-brand">
+          <div class="logo">N</div>
+          <div class="t">
+            <b>NewWesVentures</b>
+            <span>People Operations, powered by AI</span>
+          </div>
+        </div>
+        <div class="byline" id="e-by">Created by Wes Griffin · Designed &amp; built with AI</div>
+      </section>
+
+    </div>
+  </div>
+</div>
+
+<div id="ctrls">
+  <button class="cbtn" id="btnPlay" title="Pause / Play" aria-label="Pause or play">&#10074;&#10074;</button>
+  <button class="cbtn" id="btnReplay" title="Replay" aria-label="Replay">&#10227;</button>
+</div>
+
+<script>
+(function(){
+  "use strict";
+  try{
+    var $ = function(id){ return document.getElementById(id); };
+    var reduce = false;
+    try{ reduce = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches; }catch(e){}
+
+    /* ---------- Scene 1 obligation data ---------- */
+    var OBS = [
+      { name:"EEO-1 Component 1 filing",     meta:"Federal · annual",        tag:"On track" },
+      { name:"OSHA 300A posting",            meta:"Feb 1 – Apr 30",          tag:"Posted" },
+      { name:"I-9 reverification",           meta:"Maria Alvarez",           tag:"Due in 5 days", amber:true },
+      { name:"Policy acknowledgments",       meta:"Handbook v4 · 214 of 214",tag:"Complete" },
+      { name:"Harassment training renewal",  meta:"CA · biennial",           tag:"Current" },
+      { name:"ACA 1095-C distribution",      meta:"IRS · annual",            tag:"On track" },
+      { name:"Workers' comp posting",        meta:"All locations",           tag:"Verified" },
+      { name:"FMLA notice on file",          meta:"DOL WH-1420",             tag:"On file" },
+      { name:"E-Verify case closure",        meta:"DHS · 3-day rule",        tag:"Closed" }
+    ];
+
+    var grid = $("s1grid");
+    var obEls = [];
+    if(grid){
+      for(var i=0;i<OBS.length;i++){
+        var o=OBS[i];
+        var el=document.createElement("div");
+        el.className="ob"+(o.amber?" amber-pending":"");
+        el.setAttribute("data-amber", o.amber?"1":"0");
+        el.innerHTML =
+          '<div class="row1"><span class="sdot"></span><span class="name">'+o.name+'</span></div>'+
+          '<div class="meta">'+o.meta+'</div>'+
+          '<div class="tag">'+o.tag+'</div>';
+        grid.appendChild(el);
+        obEls.push(el);
+      }
+    }
+
+    /* ---------- count-up helper ---------- */
+    function countUp(el, to, dur, suf){
+      if(!el) return;
+      suf = suf || "";
+      var start = null;
+      function step(ts){
+        if(start===null) start=ts;
+        var p = Math.min(1,(ts-start)/dur);
+        var eased = 1-Math.pow(1-p,3);
+        el.textContent = Math.round(eased*to)+suf;
+        if(p<1) requestAnimationFrame(step);
+        else el.textContent = to+suf;
+      }
+      requestAnimationFrame(step);
+    }
+
+    /* ---------- gauge ---------- */
+    var GMAX = 251.3; // arc length
+    function setGauge(score){
+      var g=$("gFill"), nd=$("gNeedle"), sc=$("gScore");
+      var frac = score/100;
+      if(g) g.setAttribute("stroke-dashoffset", String(GMAX*(1-frac)));
+      if(nd) nd.setAttribute("transform","rotate("+(180*frac)+" 100 100)");
+      if(sc) sc.textContent = Math.round(score);
+    }
+    function animGauge(from,to,dur){
+      var start=null;
+      function step(ts){
+        if(start===null) start=ts;
+        var p=Math.min(1,(ts-start)/dur);
+        var eased = p<0.5 ? 2*p*p : 1-Math.pow(-2*p+2,2)/2;
+        setGauge(from+(to-from)*eased);
+        if(p<1) requestAnimationFrame(step);
+      }
+      requestAnimationFrame(step);
+    }
+
+    /* ---------- timeline definition ----------
+       Each cue = { t: ms, fn }. The director runs cues whose time has passed.
+       Scenes are toggled by helper; per-scene animations triggered via cues. */
+    var TL = 30000; // total loop length (ms)
+    var scenes = {
+      title: $("sceneTitle"), s1:$("scene1"), s2:$("scene2"), s3:$("scene3"), end:$("sceneEnd")
+    };
+    function showOnly(key){
+      for(var k in scenes){ if(scenes[k]) scenes[k].classList.toggle("on", k===key); }
+    }
+
+    // utility to (re)trigger a CSS animation class
+    function reflow(el){ if(el){ void el.offsetWidth; } }
+    function addCls(id,cls){ var e=$(id); if(e){ e.classList.add(cls); } }
+    function rmCls(id,cls){ var e=$(id); if(e){ e.classList.remove(cls); } }
+
+    var cues = [
+      // ---------------- TITLE (0–3s) ----------------
+      { t:0, fn:function(){
+          showOnly("title");
+          var eye=$("t-eye"), ti=$("t-title"), pr=$("t-prem"), ru=$("t-rule");
+          [eye,ti,pr].forEach(function(e){ if(e){ e.classList.remove("runIn","runInBlur"); reflow(e);} });
+          if(ru){ ru.classList.remove("go"); reflow(ru); }
+          if(eye) eye.classList.add("runIn");
+          setTimeout(function(){ if(ti) ti.classList.add("runInBlur"); },180);
+          setTimeout(function(){ if(pr) pr.classList.add("runIn"); },520);
+          if(ru) ru.classList.add("go");
+        }},
+
+      // ---------------- SCENE 1 (3–10s) ----------------
+      { t:3000, fn:function(){
+          showOnly("s1");
+          // reset chips
+          for(var i=0;i<obEls.length;i++){
+            obEls[i].classList.remove("in","amber","focus");
+          }
+          var sl=$("scanline"); if(sl){ sl.style.transition="none"; sl.style.top="0"; sl.style.opacity="0"; reflow(sl); }
+          rmCls("low1","show");
+          // stagger chips in
+          obEls.forEach(function(el,idx){
+            setTimeout(function(){ el.classList.add("in"); }, idx*90);
+          });
+        }},
+      { t:3600, fn:function(){
+          // scan sweep down
+          var sl=$("scanline"), panel=$("s1panel");
+          if(sl && panel){
+            sl.style.opacity="1";
+            sl.style.transition="top 2.6s cubic-bezier(.45,0,.55,1)";
+            // sweep within the grid region
+            sl.style.top = (panel.clientHeight-4)+"px";
+            setTimeout(function(){ if(sl) sl.style.opacity="0"; }, 2650);
+          }
+        }},
+      { t:4200, fn:function(){ addCls("low1","show"); }},
+      { t:6400, fn:function(){
+          // surface the amber chip
+          var amber=null;
+          for(var i=0;i<obEls.length;i++){ if(obEls[i].getAttribute("data-amber")==="1"){ amber=obEls[i]; break; } }
+          if(amber){ amber.classList.add("amber","focus"); }
+        }},
+
+      // ---------------- SCENE 2 (10–17s) ----------------
+      { t:10000, fn:function(){
+          showOnly("s2");
+          ["st1","st2","st3"].forEach(function(id){ rmCls(id,"done"); });
+          rmCls("resolveStamp","pop");
+          var stp=$("resolveStamp"); if(stp){ stp.style.opacity="0"; }
+          var ss=$("s2state");
+          if(ss){ ss.textContent="Action needed"; ss.style.color="#ffd9a0";
+                  ss.style.background="rgba(245,158,11,.16)"; ss.style.borderColor="rgba(245,158,11,.4)"; }
+          rmCls("low2","show");
+        }},
+      { t:10500, fn:function(){ addCls("low2","show"); }},
+      { t:11200, fn:function(){ addCls("st1","done"); }},
+      { t:12100, fn:function(){ addCls("st2","done"); }},
+      { t:13000, fn:function(){ addCls("st3","done"); }},
+      { t:14100, fn:function(){
+          var ss=$("s2state");
+          if(ss){ ss.textContent="Resolved"; ss.style.color="#7ef0d0";
+                  ss.style.background="rgba(16,185,129,.16)"; ss.style.borderColor="rgba(16,185,129,.45)"; }
+          addCls("resolveStamp","pop");
+        }},
+
+      // ---------------- SCENE 3 (17–27s) ----------------
+      { t:17000, fn:function(){
+          showOnly("s3");
+          setGauge(62);
+          var st=$("gStatus");
+          if(st){ st.textContent="At risk"; st.style.color="#ffd9a0";
+                  st.style.background="rgba(245,158,11,.16)"; st.style.borderColor="rgba(245,158,11,.4)"; }
+          ["sc1","sc2","sc3","sc4"].forEach(function(id){ rmCls(id,"in"); });
+          // reset stat numbers
+          var nums=document.querySelectorAll("#statCards .num");
+          for(var i=0;i<nums.length;i++){ nums[i].textContent = (nums[i].getAttribute("data-suf")?"0%":"0"); }
+          rmCls("low3","show");
+        }},
+      { t:17500, fn:function(){ addCls("low3","show"); }},
+      { t:17800, fn:function(){ animGauge(62,97,1900); }},
+      { t:19400, fn:function(){
+          var st=$("gStatus");
+          if(st){ st.textContent="Healthy"; st.style.color="#7ef0d0";
+                  st.style.background="rgba(16,185,129,.16)"; st.style.borderColor="rgba(16,185,129,.45)"; }
+        }},
+      { t:18600, fn:function(){
+          var cards=["sc1","sc2","sc3","sc4"];
+          cards.forEach(function(id,idx){
+            setTimeout(function(){
+              addCls(id,"in");
+              var num=$(id).querySelector(".num");
+              var to=parseInt(num.getAttribute("data-to"),10);
+              var suf=num.getAttribute("data-suf")||"";
+              countUp(num,to,1100,suf);
+            }, idx*220);
+          });
+        }},
+
+      // ---------------- END CARD (27–30s) ----------------
+      { t:27000, fn:function(){
+          showOnly("end");
+          var ln=$("e-line"), br=$("e-brand"), by=$("e-by");
+          [ln,br,by].forEach(function(e){ if(e){ e.classList.remove("runIn"); reflow(e);} });
+          if(ln) ln.classList.add("runIn");
+          setTimeout(function(){ if(br) br.classList.add("runIn"); },450);
+          setTimeout(function(){ if(by) by.classList.add("runIn"); },900);
+        }}
+    ];
+
+    /* ---------- Director (rAF clock) ---------- */
+    var bar=$("bar");
+    var startTs=0, pausedAt=0, paused=false, rafId=0, lastIdx=-1;
+
+    function runCuesUpTo(elapsed){
+      // fire any cue whose time <= elapsed and not yet fired this loop
+      for(var i=0;i<cues.length;i++){
+        if(cues[i].t<=elapsed && i>lastIdx){
+          try{ cues[i].fn(); }catch(err){}
+          lastIdx=i;
+        }
+      }
+    }
+
+    function resetLoop(){
+      lastIdx=-1;
+    }
+
+    function frame(ts){
+      if(paused) return;
+      if(!startTs) startTs=ts;
+      var elapsed = ts - startTs;
+
+      if(elapsed >= TL){
+        // seamless loop: reset clock + state
+        startTs = ts;
+        elapsed = 0;
+        resetLoop();
+      }
+      if(bar) bar.style.width = (Math.min(1,elapsed/TL)*100).toFixed(2)+"%";
+      runCuesUpTo(elapsed);
+      rafId = requestAnimationFrame(frame);
+    }
+
+    function start(){
+      resetLoop();
+      startTs = 0;
+      paused = false;
+      cancelAnimationFrame(rafId);
+      rafId = requestAnimationFrame(frame);
+    }
+
+    /* ---------- Reduced motion: static final composed frame ---------- */
+    function staticFrame(){
+      // Compose a clean "resolved / healthy" end state.
+      showOnly("end");
+      var ln=$("e-line"), br=$("e-brand"), by=$("e-by");
+      [ln,br,by].forEach(function(e){ if(e){ e.style.opacity="1"; e.style.transform="none"; e.style.filter="none"; } });
+      // also pre-set gauge/cards to final values (in case of inspection)
+      setGauge(97);
+      var st=$("gStatus");
+      if(st){ st.textContent="Healthy"; st.style.color="#7ef0d0";
+              st.style.background="rgba(16,185,129,.16)"; st.style.borderColor="rgba(16,185,129,.45)"; }
+      var nums=document.querySelectorAll("#statCards .num");
+      var vals=["100%","0","7","100%"];
+      for(var i=0;i<nums.length && i<vals.length;i++){ nums[i].textContent=vals[i]; }
+      if(bar) bar.style.width="100%";
+    }
+
+    /* ---------- Controls ---------- */
+    var btnPlay=$("btnPlay"), btnReplay=$("btnReplay");
+    function setPaused(p){
+      paused=p;
+      if(btnPlay) btnPlay.innerHTML = p ? "&#9658;" : "&#10074;&#10074;";
+      if(p){
+        cancelAnimationFrame(rafId);
+        pausedAt = performance.now();
+      }else{
+        // shift startTs forward by paused duration to resume seamlessly
+        if(pausedAt){ startTs += (performance.now()-pausedAt); }
+        rafId = requestAnimationFrame(frame);
+      }
+    }
+    if(btnPlay) btnPlay.addEventListener("click", function(){ if(reduce) return; setPaused(!paused); });
+    if(btnReplay) btnReplay.addEventListener("click", function(){ if(reduce){ staticFrame(); return; } start(); });
+
+    /* ---------- Boot ---------- */
+    if(reduce){
+      staticFrame();
+    }else{
+      // kick a render so first frame paints before rAF
+      start();
+    }
+
+    // Safety: if tab is hidden then shown, keep clock sane (avoid huge jumps)
+    document.addEventListener("visibilitychange", function(){
+      if(document.hidden){
+        if(!paused){ cancelAnimationFrame(rafId); pausedAt = performance.now(); paused="auto"; }
+      }else{
+        if(paused==="auto"){ if(pausedAt){ startTs += (performance.now()-pausedAt); } paused=false; rafId=requestAnimationFrame(frame); }
+      }
+    });
+
+  }catch(globalErr){
+    // last-resort: never throw; show end card statically
+    try{
+      var endEl=document.getElementById("sceneEnd");
+      if(endEl){ endEl.classList.add("on"); }
+    }catch(e){}
+  }
+})();
+</script>
+</body>
+</html>

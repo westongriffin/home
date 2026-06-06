@@ -1,0 +1,1208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Onboarding That Runs Itself — NewWesVentures</title>
+<style>
+  /* ============ DESIGN TOKENS ============ */
+  :root{
+    --ink:#0c1020;
+    --muted:#6b7794;
+    --line:#e7e9f2;
+    --bg:#f7f8fc;
+    --card:#ffffff;
+    --v1:#7c3aed;
+    --v2:#5b4ef0;
+    --v3:#06b6d4;
+    --pink:#db2777;
+    --green:#10b981;
+    --grad:linear-gradient(110deg,#7c3aed,#5b4ef0 45%,#06b6d4);
+    --font:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Inter,Helvetica,Arial,sans-serif;
+  }
+
+  *{box-sizing:border-box;margin:0;padding:0;}
+  html,body{height:100%;width:100%;overflow:hidden;}
+  body{
+    font-family:var(--font);
+    color:var(--ink);
+    background:#080a16;
+    -webkit-font-smoothing:antialiased;
+    text-rendering:optimizeLegibility;
+  }
+
+  /* ============ CINEMATIC BACKDROP ============ */
+  #backdrop{
+    position:fixed;inset:0;
+    background:#080a16;
+    overflow:hidden;
+    z-index:0;
+  }
+  #backdrop .glows{
+    position:absolute;inset:0;
+    background:
+      radial-gradient(60% 80% at 12% 8%, rgba(124,58,237,.5), transparent 60%),
+      radial-gradient(55% 75% at 92% 18%, rgba(6,182,212,.42), transparent 60%);
+  }
+  #backdrop .grid{
+    position:absolute;inset:-2px;
+    background-image:
+      linear-gradient(rgba(255,255,255,.05) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,.05) 1px, transparent 1px);
+    background-size:42px 42px;
+    -webkit-mask-image:radial-gradient(70% 65% at 50% 45%, #000 0%, transparent 78%);
+            mask-image:radial-gradient(70% 65% at 50% 45%, #000 0%, transparent 78%);
+  }
+  #backdrop .vign{
+    position:absolute;inset:0;
+    background:radial-gradient(120% 120% at 50% 50%, transparent 55%, rgba(0,0,0,.55) 100%);
+  }
+
+  /* ============ TOP PROGRESS BAR ============ */
+  #progress{
+    position:fixed;top:0;left:0;height:3px;width:0%;
+    background:var(--grad);
+    z-index:50;
+    box-shadow:0 0 12px rgba(91,78,240,.7);
+    will-change:width;
+  }
+
+  /* ============ STAGE (16:9) ============ */
+  #frame{
+    position:fixed;inset:0;
+    display:flex;align-items:center;justify-content:center;
+    z-index:10;
+    padding:18px;
+  }
+  #stage{
+    position:relative;
+    width:min(1280px, calc((100vh - 36px) * (16/9)));
+    max-width:calc(100vw - 36px);
+    aspect-ratio:16/9;
+    border-radius:18px;
+    overflow:hidden;
+    background:
+      radial-gradient(120% 130% at 0% 0%, #11152b 0%, #0a0d1d 48%, #07091a 100%);
+    box-shadow:
+      0 40px 120px rgba(0,0,0,.6),
+      0 0 0 1px rgba(255,255,255,.06),
+      inset 0 1px 0 rgba(255,255,255,.05);
+    /* container query units approximated via JS scaling of inner content */
+  }
+  /* scene base */
+  .scene{
+    position:absolute;inset:0;
+    opacity:0;
+    pointer-events:none;
+    will-change:opacity,transform;
+  }
+  .scene.show{opacity:1;}
+
+  /* internal scaling wrapper: everything sized in px against a 1280x720 canvas, scaled */
+  #scaler{
+    position:absolute;
+    top:50%;left:50%;
+    width:1280px;height:720px;
+    transform:translate(-50%,-50%) scale(1);
+    transform-origin:center center;
+  }
+
+  /* ============ TITLE / END CARDS ============ */
+  .card-center{
+    position:absolute;inset:0;
+    display:flex;flex-direction:column;align-items:center;justify-content:center;
+    text-align:center;
+    padding:60px;
+  }
+  .eyebrow{
+    font-size:15px;letter-spacing:.32em;text-transform:uppercase;
+    color:#9aa6c4;font-weight:700;
+    opacity:0;transform:translateY(14px);
+  }
+  .reel-title{
+    font-size:78px;line-height:1.02;font-weight:800;letter-spacing:-.02em;
+    background:linear-gradient(110deg,#a78bfa,#818cf8 40%,#22d3ee);
+    -webkit-background-clip:text;background-clip:text;color:transparent;
+    margin:22px 0 18px;
+    opacity:0;transform:translateY(22px) scale(.98);
+    max-width:980px;
+  }
+  .premise{
+    font-size:25px;color:#c4cce0;font-weight:450;
+    max-width:680px;line-height:1.45;
+    opacity:0;transform:translateY(16px);
+  }
+  .title-chip{
+    margin-top:36px;
+    display:inline-flex;align-items:center;gap:10px;
+    padding:11px 20px;border-radius:999px;
+    background:rgba(124,58,237,.14);
+    border:1px solid rgba(167,139,250,.35);
+    color:#cbb6ff;font-size:15px;font-weight:600;letter-spacing:.02em;
+    opacity:0;transform:translateY(14px);
+  }
+  .title-chip .dot{width:8px;height:8px;border-radius:50%;background:var(--v3);box-shadow:0 0 10px var(--v3);}
+
+  /* ============ BRAND BUG (top-left of stage) ============ */
+  .brandbug{
+    position:absolute;top:26px;left:30px;
+    display:flex;align-items:center;gap:11px;
+    z-index:6;
+    opacity:0;transform:translateY(-8px);
+  }
+  .brandbug .mark{
+    width:34px;height:34px;border-radius:9px;
+    background:var(--grad);
+    display:flex;align-items:center;justify-content:center;
+    font-weight:800;color:#fff;font-size:17px;
+    box-shadow:0 6px 18px rgba(91,78,240,.45);
+  }
+  .brandbug .name{color:#e8ecf8;font-weight:700;font-size:16px;letter-spacing:.01em;}
+  .brandbug .name small{display:block;color:#8b97b6;font-weight:500;font-size:11px;letter-spacing:.16em;text-transform:uppercase;margin-top:1px;}
+
+  /* ============ LOWER THIRD CAPTION ============ */
+  .lower{
+    position:absolute;left:30px;bottom:28px;
+    z-index:7;
+    display:flex;align-items:center;gap:14px;
+    opacity:0;transform:translateY(18px);
+  }
+  .lower .bar{width:4px;height:42px;border-radius:3px;background:var(--grad);}
+  .lower .ltxt b{display:block;color:#fff;font-size:21px;font-weight:700;letter-spacing:-.01em;}
+  .lower .ltxt span{display:block;color:#9aa6c4;font-size:14px;font-weight:500;margin-top:3px;}
+
+  /* scene number tag */
+  .scenetag{
+    position:absolute;right:30px;bottom:30px;z-index:7;
+    color:#5d678a;font-size:12px;font-weight:700;letter-spacing:.22em;
+    opacity:0;
+  }
+
+  /* ============ SCENE 1: SWIMLANES ============ */
+  .s1-head{
+    position:absolute;top:84px;left:30px;right:30px;
+    display:flex;align-items:center;gap:14px;
+    opacity:0;transform:translateY(-10px);
+  }
+  .s1-head .av{
+    width:50px;height:50px;border-radius:50%;
+    background:linear-gradient(135deg,#f0abfc,#a78bfa 55%,#38bdf8);
+    display:flex;align-items:center;justify-content:center;
+    color:#1a103a;font-weight:800;font-size:19px;
+    box-shadow:0 6px 16px rgba(124,58,237,.4);
+  }
+  .s1-head .meta b{color:#fff;font-size:19px;font-weight:700;}
+  .s1-head .meta span{color:#9aa6c4;font-size:13px;display:block;margin-top:2px;}
+  .s1-head .accepted{
+    margin-left:auto;
+    display:inline-flex;align-items:center;gap:8px;
+    background:rgba(16,185,129,.14);border:1px solid rgba(16,185,129,.4);
+    color:#6ee7b7;font-weight:700;font-size:13px;
+    padding:8px 14px;border-radius:999px;
+  }
+
+  .lanes{
+    position:absolute;top:164px;left:30px;right:30px;bottom:96px;
+    display:grid;grid-template-columns:repeat(4,1fr);gap:16px;
+  }
+  .lane{
+    background:rgba(255,255,255,.022);
+    border:1px solid rgba(255,255,255,.07);
+    border-radius:14px;
+    padding:14px 12px;
+    display:flex;flex-direction:column;
+    opacity:0;transform:translateY(16px);
+    overflow:hidden;
+  }
+  .lane-h{
+    display:flex;align-items:center;gap:9px;
+    padding-bottom:11px;margin-bottom:11px;
+    border-bottom:1px solid rgba(255,255,255,.07);
+  }
+  .lane-h .ic{
+    width:30px;height:30px;border-radius:8px;
+    display:flex;align-items:center;justify-content:center;font-size:15px;
+  }
+  .lane-h b{color:#e8ecf8;font-size:14.5px;font-weight:700;}
+  .lane-h span{color:#7e8aab;font-size:11px;display:block;margin-top:1px;}
+  .lane.it   .ic{background:rgba(124,58,237,.18);}
+  .lane.pay  .ic{background:rgba(91,78,240,.18);}
+  .lane.mgr  .ic{background:rgba(6,182,212,.18);}
+  .lane.fac  .ic{background:rgba(219,39,119,.16);}
+
+  .tasks{display:flex;flex-direction:column;gap:9px;flex:1;}
+  .task{
+    background:var(--card);
+    border-radius:10px;
+    padding:11px 12px;
+    box-shadow:0 4px 14px rgba(0,0,0,.28);
+    opacity:0;transform:translateY(14px) scale(.96);
+    will-change:opacity,transform;
+    position:relative;
+    border-left:3px solid var(--v2);
+  }
+  .task.it{border-left-color:var(--v1);}
+  .task.pay{border-left-color:var(--v2);}
+  .task.mgr{border-left-color:var(--v3);}
+  .task.fac{border-left-color:var(--pink);}
+  .task .ttl{color:var(--ink);font-size:13px;font-weight:650;line-height:1.25;display:flex;align-items:center;gap:7px;}
+  .task .ttl .emo{font-size:14px;}
+  .task .sub{color:var(--muted);font-size:11px;margin-top:5px;display:flex;align-items:center;justify-content:space-between;}
+  .task .pill{
+    font-size:10px;font-weight:700;padding:2px 8px;border-radius:999px;
+    background:#eef0f8;color:#6b7794;letter-spacing:.02em;
+    transition:background .4s ease,color .4s ease;
+  }
+  .task .pill.day0{background:#ede9fe;color:#6d28d9;}
+  .task .pill.wk1{background:#e0f2fe;color:#0369a1;}
+  .task .pill.done{background:#d1fae5;color:#047857;}
+  .task .check{
+    position:absolute;top:10px;right:10px;
+    width:20px;height:20px;border-radius:50%;
+    background:var(--green);
+    display:flex;align-items:center;justify-content:center;
+    color:#fff;font-size:12px;font-weight:800;
+    opacity:0;transform:scale(.3);
+    transition:opacity .35s ease, transform .35s cubic-bezier(.2,1.4,.4,1);
+  }
+  .task.checked .check{opacity:1;transform:scale(1);}
+  .task.checked{border-left-color:var(--green);}
+  .task.checked .ttl{color:#1f2a44;}
+
+  /* ============ SCENE 2: TOAST + WELCOME CARD ============ */
+  .toast{
+    position:absolute;right:30px;top:96px;
+    width:340px;
+    background:#fff;border-radius:14px;
+    padding:14px 16px;
+    box-shadow:0 18px 50px rgba(0,0,0,.45);
+    display:flex;gap:12px;align-items:flex-start;
+    opacity:0;transform:translateX(40px);
+    z-index:8;
+    border-left:4px solid var(--v2);
+  }
+  .toast .ti{
+    width:34px;height:34px;border-radius:9px;flex:none;
+    background:linear-gradient(135deg,#fbbf24,#f59e0b);
+    display:flex;align-items:center;justify-content:center;font-size:17px;
+  }
+  .toast b{display:block;color:var(--ink);font-size:14px;font-weight:700;}
+  .toast p{color:var(--muted);font-size:12.5px;margin-top:4px;line-height:1.4;}
+  .toast .tprog{
+    height:3px;border-radius:3px;background:#eef0f8;margin-top:9px;overflow:hidden;
+  }
+  .toast .tprog i{display:block;height:100%;width:0%;background:var(--grad);}
+
+  .welcome{
+    position:absolute;left:30px;top:96px;
+    width:430px;
+    background:var(--card);
+    border-radius:16px;
+    overflow:hidden;
+    box-shadow:0 22px 60px rgba(0,0,0,.5);
+    opacity:0;transform:translateY(26px) scale(.97);
+    z-index:8;
+  }
+  .welcome .wtop{
+    background:var(--grad);
+    padding:18px 20px;color:#fff;
+    display:flex;align-items:center;gap:13px;
+  }
+  .welcome .wtop .wav{
+    width:44px;height:44px;border-radius:50%;
+    background:rgba(255,255,255,.22);
+    display:flex;align-items:center;justify-content:center;
+    font-weight:800;font-size:18px;color:#fff;
+    border:2px solid rgba(255,255,255,.5);
+  }
+  .welcome .wtop b{font-size:18px;font-weight:750;display:block;}
+  .welcome .wtop span{font-size:12.5px;opacity:.9;display:block;margin-top:1px;}
+  .welcome .wbody{padding:16px 20px 20px;}
+  .welcome .wbody .lbl{
+    font-size:11px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;
+    color:var(--muted);margin-bottom:12px;
+  }
+  .wrow{
+    display:flex;align-items:center;gap:12px;
+    padding:9px 0;
+    border-top:1px solid var(--line);
+    opacity:0;transform:translateX(-12px);
+  }
+  .wrow:first-of-type{border-top:none;}
+  .wrow .wt{
+    font-size:12px;font-weight:700;color:var(--v2);
+    width:62px;flex:none;
+  }
+  .wrow .wd{font-size:13.5px;color:var(--ink);font-weight:550;}
+  .wrow .wd small{display:block;color:var(--muted);font-size:11.5px;font-weight:400;margin-top:1px;}
+  .wrow .wemo{margin-left:auto;font-size:16px;}
+
+  /* status feed ticker bottom center scene2 */
+  .feed{
+    position:absolute;left:50%;transform:translateX(-50%);bottom:92px;
+    display:flex;gap:10px;align-items:center;
+    opacity:0;
+    z-index:7;
+  }
+  .feed .fitem{
+    display:inline-flex;align-items:center;gap:7px;
+    background:rgba(16,185,129,.12);border:1px solid rgba(16,185,129,.32);
+    color:#6ee7b7;font-size:12.5px;font-weight:650;
+    padding:7px 13px;border-radius:999px;
+    opacity:0;transform:translateY(10px) scale(.9);
+  }
+  .feed .fitem .fk{width:16px;height:16px;border-radius:50%;background:var(--green);color:#063;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:800;color:#06281c;}
+
+  /* ============ SCENE 3: 30-60-90 + STATS ============ */
+  .s3-wrap{
+    position:absolute;inset:0;
+    display:flex;flex-direction:column;align-items:center;justify-content:center;
+    padding:90px 60px 96px;
+  }
+  .s3-title{
+    color:#e8ecf8;font-size:15px;font-weight:700;letter-spacing:.22em;text-transform:uppercase;
+    margin-bottom:34px;
+    opacity:0;transform:translateY(12px);
+  }
+  .track{
+    width:920px;max-width:100%;
+    position:relative;
+    margin-bottom:14px;
+    opacity:0;
+  }
+  .track .rail{
+    height:14px;border-radius:999px;
+    background:rgba(255,255,255,.08);
+    overflow:hidden;position:relative;
+  }
+  .track .rail i{
+    display:block;height:100%;width:0%;
+    background:var(--grad);
+    border-radius:999px;
+    box-shadow:0 0 18px rgba(91,78,240,.6);
+  }
+  .track .ticks{
+    display:flex;justify-content:space-between;
+    margin-top:14px;
+  }
+  .track .tk{
+    text-align:center;flex:1;
+    opacity:.4;transition:opacity .5s ease;
+  }
+  .track .tk.lit{opacity:1;}
+  .track .tk .num{
+    font-size:24px;font-weight:800;
+    background:linear-gradient(110deg,#a78bfa,#22d3ee);
+    -webkit-background-clip:text;background-clip:text;color:transparent;
+  }
+  .track .tk .lab{color:#9aa6c4;font-size:12.5px;font-weight:600;margin-top:2px;}
+  .track .node{
+    position:absolute;top:-1px;
+    width:16px;height:16px;border-radius:50%;
+    background:#fff;border:3px solid var(--v2);
+    transform:translate(-50%,0);
+    transition:border-color .4s ease,background .4s ease;
+    box-shadow:0 2px 8px rgba(0,0,0,.4);
+  }
+  .track .node.lit{background:var(--v3);border-color:#fff;}
+
+  .stats{
+    display:grid;grid-template-columns:repeat(3,1fr);gap:18px;
+    width:920px;max-width:100%;
+    margin-top:42px;
+  }
+  .stat{
+    background:rgba(255,255,255,.03);
+    border:1px solid rgba(255,255,255,.08);
+    border-radius:16px;
+    padding:22px 20px;
+    text-align:center;
+    opacity:0;transform:translateY(18px);
+  }
+  .stat .v{
+    font-size:42px;font-weight:850;letter-spacing:-.02em;
+    background:linear-gradient(110deg,#a78bfa,#818cf8 45%,#22d3ee);
+    -webkit-background-clip:text;background-clip:text;color:transparent;
+    line-height:1;
+  }
+  .stat .v.green{
+    background:linear-gradient(110deg,#34d399,#10b981);
+    -webkit-background-clip:text;background-clip:text;color:transparent;
+  }
+  .stat .k{color:#aab4d0;font-size:14px;font-weight:600;margin-top:10px;}
+  .stat .arrow{font-size:30px;}
+
+  /* ============ END CARD ============ */
+  .endline{
+    font-size:40px;font-weight:800;letter-spacing:-.02em;line-height:1.18;
+    color:#fff;max-width:880px;
+    opacity:0;transform:translateY(20px);
+  }
+  .endline .hl{
+    background:linear-gradient(110deg,#a78bfa,#22d3ee);
+    -webkit-background-clip:text;background-clip:text;color:transparent;
+  }
+  .end-brand{
+    margin-top:34px;
+    display:flex;align-items:center;gap:13px;
+    opacity:0;transform:translateY(14px);
+  }
+  .end-brand .mark{
+    width:40px;height:40px;border-radius:10px;background:var(--grad);
+    display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:19px;
+    box-shadow:0 8px 22px rgba(91,78,240,.5);
+  }
+  .end-brand .et{color:#e8ecf8;font-size:18px;font-weight:750;}
+  .end-brand .et span{color:#8b97b6;font-weight:500;font-size:13px;}
+  .byline{
+    margin-top:30px;
+    color:#7e8aab;font-size:14px;font-weight:500;letter-spacing:.02em;
+    opacity:0;transform:translateY(12px);
+  }
+  .byline b{color:#aab4d0;font-weight:700;}
+
+  /* ============ CONTROLS ============ */
+  #controls{
+    position:fixed;right:20px;bottom:18px;
+    display:flex;gap:10px;align-items:center;
+    z-index:60;
+  }
+  .ctrl{
+    width:42px;height:42px;border-radius:12px;
+    background:rgba(255,255,255,.07);
+    border:1px solid rgba(255,255,255,.14);
+    color:#dfe5f3;
+    backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
+    display:flex;align-items:center;justify-content:center;
+    cursor:pointer;
+    font-size:17px;
+    transition:background .2s ease,transform .15s ease,border-color .2s ease;
+    -webkit-user-select:none;user-select:none;
+  }
+  .ctrl:hover{background:rgba(255,255,255,.14);border-color:rgba(255,255,255,.28);}
+  .ctrl:active{transform:scale(.92);}
+  .ctrl svg{width:18px;height:18px;display:block;fill:currentColor;}
+
+  /* ============ ANIMATION HELPERS (class-driven) ============ */
+  .anim{transition:opacity .7s cubic-bezier(.22,.61,.36,1), transform .7s cubic-bezier(.22,.61,.36,1);}
+  .in{opacity:1 !important;transform:none !important;}
+
+  /* fade between scenes */
+  .scene{transition:opacity .55s ease;}
+
+  /* ============ REDUCED MOTION: STATIC FINAL FRAME ============ */
+  @media (prefers-reduced-motion: reduce){
+    #progress{width:100% !important;transition:none !important;}
+  }
+
+  /* small-window safety: nothing else needed since #scaler is JS-scaled,
+     but ensure controls/text stay legible */
+  @media (max-width:760px){
+    #frame{padding:10px;}
+    #stage{border-radius:14px;}
+  }
+</style>
+</head>
+<body>
+
+  <div id="backdrop">
+    <div class="glows"></div>
+    <div class="grid"></div>
+    <div class="vign"></div>
+  </div>
+
+  <div id="progress"></div>
+
+  <div id="frame">
+    <div id="stage" aria-label="Onboarding demo reel">
+      <div id="scaler">
+
+        <!-- ============ SCENE 0: TITLE CARD ============ -->
+        <section class="scene" data-scene="title">
+          <div class="card-center">
+            <div class="eyebrow anim" data-el="t-eyebrow">NewWesVentures · People Operations</div>
+            <h1 class="reel-title anim" data-el="t-title">Onboarding That<br>Runs Itself</h1>
+            <p class="premise anim" data-el="t-premise">From signed offer to a great day one — automatically.</p>
+            <div class="title-chip anim" data-el="t-chip"><span class="dot"></span> Powered by AI workflow automation</div>
+          </div>
+        </section>
+
+        <!-- ============ SCENE 1: SWIMLANES ============ -->
+        <section class="scene" data-scene="s1">
+          <div class="brandbug anim" data-el="s1-brand">
+            <div class="mark">N</div>
+            <div class="name">NewWesVentures<small>Onboarding</small></div>
+          </div>
+
+          <div class="s1-head anim" data-el="s1-head">
+            <div class="av">PA</div>
+            <div class="meta">
+              <b>Priya Anand</b>
+              <span>Software Engineer · Engineering · Start date Jul 15</span>
+            </div>
+            <div class="accepted">✓ Offer accepted</div>
+          </div>
+
+          <div class="lanes">
+            <!-- IT lane -->
+            <div class="lane it anim" data-el="lane-it">
+              <div class="lane-h"><div class="ic">💻</div><div><b>IT</b><span>3 tasks</span></div></div>
+              <div class="tasks">
+                <div class="task it" data-el="task" data-d="0">
+                  <div class="ttl"><span class="emo">💻</span> Ship MacBook Pro</div>
+                  <div class="sub"><span>Device provisioning</span><span class="pill day0">Day 0</span></div>
+                  <div class="check">✓</div>
+                </div>
+                <div class="task it" data-el="task" data-d="1">
+                  <div class="ttl"><span class="emo">🔑</span> Provision accounts</div>
+                  <div class="sub"><span>Email · Slack · Git</span><span class="pill day0">Day 0</span></div>
+                  <div class="check">✓</div>
+                </div>
+                <div class="task it" data-el="task" data-d="2">
+                  <div class="ttl"><span class="emo">🛡️</span> Enroll 2FA / SSO</div>
+                  <div class="sub"><span>Security setup</span><span class="pill wk1">Day 1</span></div>
+                  <div class="check">✓</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Payroll lane -->
+            <div class="lane pay anim" data-el="lane-pay">
+              <div class="lane-h"><div class="ic">💵</div><div><b>Payroll</b><span>2 tasks</span></div></div>
+              <div class="tasks">
+                <div class="task pay" data-el="task" data-d="0">
+                  <div class="ttl"><span class="emo">🏦</span> Direct deposit</div>
+                  <div class="sub"><span>Banking on file</span><span class="pill day0">Day 0</span></div>
+                  <div class="check">✓</div>
+                </div>
+                <div class="task pay" data-el="task" data-d="1">
+                  <div class="ttl"><span class="emo">🧾</span> Tax setup (W-4)</div>
+                  <div class="sub"><span>Withholding</span><span class="pill wk1">Day 1</span></div>
+                  <div class="check">✓</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Manager lane -->
+            <div class="lane mgr anim" data-el="lane-mgr">
+              <div class="lane-h"><div class="ic">🧭</div><div><b>Manager</b><span>2 tasks</span></div></div>
+              <div class="tasks">
+                <div class="task mgr" data-el="task" data-d="0" data-behind="1">
+                  <div class="ttl"><span class="emo">🤝</span> Assign onboarding buddy</div>
+                  <div class="sub"><span>Peer support</span><span class="pill wk1">Week 1</span></div>
+                  <div class="check">✓</div>
+                </div>
+                <div class="task mgr" data-el="task" data-d="1">
+                  <div class="ttl"><span class="emo">🎯</span> Draft 30/60/90 plan</div>
+                  <div class="sub"><span>Goals &amp; ramp</span><span class="pill wk1">Week 1</span></div>
+                  <div class="check">✓</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Facilities lane -->
+            <div class="lane fac anim" data-el="lane-fac">
+              <div class="lane-h"><div class="ic">🏢</div><div><b>Facilities</b><span>2 tasks</span></div></div>
+              <div class="tasks">
+                <div class="task fac" data-el="task" data-d="0">
+                  <div class="ttl"><span class="emo">🪪</span> Print access badge</div>
+                  <div class="sub"><span>Building entry</span><span class="pill wk1">Day 1</span></div>
+                  <div class="check">✓</div>
+                </div>
+                <div class="task fac" data-el="task" data-d="1">
+                  <div class="ttl"><span class="emo">🪑</span> Assign desk + setup</div>
+                  <div class="sub"><span>Workspace ready</span><span class="pill wk1">Day 1</span></div>
+                  <div class="check">✓</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="lower anim" data-el="s1-lower">
+            <div class="bar"></div>
+            <div class="ltxt"><b>An onboarding journey builds itself</b><span>One accepted offer → a full Day 0–90 plan across every team</span></div>
+          </div>
+          <div class="scenetag anim" data-el="s1-tag">SCENE 01</div>
+        </section>
+
+        <!-- ============ SCENE 2: STATUS / TOAST / WELCOME ============ -->
+        <section class="scene" data-scene="s2">
+          <div class="brandbug anim" data-el="s2-brand">
+            <div class="mark">N</div>
+            <div class="name">NewWesVentures<small>Onboarding</small></div>
+          </div>
+
+          <!-- Welcome / first week card -->
+          <div class="welcome anim" data-el="s2-welcome">
+            <div class="wtop">
+              <div class="wav">PA</div>
+              <div>
+                <b>Welcome, Priya 👋</b>
+                <span>Your first week, planned for you</span>
+              </div>
+            </div>
+            <div class="wbody">
+              <div class="lbl">First-week schedule</div>
+              <div class="wrow" data-el="wrow" data-d="0">
+                <div class="wt">9:00 AM</div>
+                <div class="wd">Team welcome &amp; setup<small>Meet your squad</small></div>
+                <div class="wemo">☕</div>
+              </div>
+              <div class="wrow" data-el="wrow" data-d="1">
+                <div class="wt">11:00 AM</div>
+                <div class="wd">Buddy intro — Marcus Lee<small>Your onboarding partner</small></div>
+                <div class="wemo">🤝</div>
+              </div>
+              <div class="wrow" data-el="wrow" data-d="2">
+                <div class="wt">1:30 PM</div>
+                <div class="wd">Dev environment walkthrough<small>Ship your first commit</small></div>
+                <div class="wemo">💻</div>
+              </div>
+              <div class="wrow" data-el="wrow" data-d="3">
+                <div class="wt">3:30 PM</div>
+                <div class="wd">30/60/90 goals with manager<small>Aisha Rahman</small></div>
+                <div class="wemo">🎯</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Nudge toast -->
+          <div class="toast anim" data-el="s2-toast">
+            <div class="ti">🔔</div>
+            <div>
+              <b>Nudge sent automatically</b>
+              <p>Reminder sent to manager: <strong>assign onboarding buddy</strong> — task is behind schedule.</p>
+              <div class="tprog"><i data-el="toast-prog"></i></div>
+            </div>
+          </div>
+
+          <!-- status feed -->
+          <div class="feed" data-el="s2-feed">
+            <div class="fitem" data-el="fitem" data-d="0"><span class="fk">✓</span> Laptop shipped</div>
+            <div class="fitem" data-el="fitem" data-d="1"><span class="fk">✓</span> Accounts provisioned</div>
+            <div class="fitem" data-el="fitem" data-d="2"><span class="fk">✓</span> Direct deposit</div>
+          </div>
+
+          <div class="lower anim" data-el="s2-lower">
+            <div class="bar"></div>
+            <div class="ltxt"><b>Tasks complete themselves — and chase the stragglers</b><span>Live status updates, automatic nudges, a personalized first day</span></div>
+          </div>
+          <div class="scenetag anim" data-el="s2-tag">SCENE 02</div>
+        </section>
+
+        <!-- ============ SCENE 3: 30-60-90 + STATS ============ -->
+        <section class="scene" data-scene="s3">
+          <div class="brandbug anim" data-el="s3-brand">
+            <div class="mark">N</div>
+            <div class="name">NewWesVentures<small>Onboarding</small></div>
+          </div>
+
+          <div class="s3-wrap">
+            <div class="s3-title anim" data-el="s3-title">Priya's 30 · 60 · 90 ramp</div>
+
+            <div class="track anim" data-el="s3-track">
+              <div class="rail"><i data-el="s3-fill"></i></div>
+              <div class="node" data-el="node" data-at="33"></div>
+              <div class="node" data-el="node" data-at="66"></div>
+              <div class="node" data-el="node" data-at="100"></div>
+              <div class="ticks">
+                <div class="tk" data-el="tk" data-d="0"><div class="num">Day 30</div><div class="lab">Onboarded &amp; contributing</div></div>
+                <div class="tk" data-el="tk" data-d="1"><div class="num">Day 60</div><div class="lab">Owning first projects</div></div>
+                <div class="tk" data-el="tk" data-d="2"><div class="num">Day 90</div><div class="lab">Fully ramped</div></div>
+              </div>
+            </div>
+
+            <div class="stats">
+              <div class="stat anim" data-el="stat" data-d="0">
+                <div class="v" data-count="100" data-suffix="%">0%</div>
+                <div class="k">Day-1 readiness</div>
+              </div>
+              <div class="stat anim" data-el="stat" data-d="1">
+                <div class="v green"><span class="arrow">↓</span> <span data-count="40" data-suffix="%">0%</span></div>
+                <div class="k">Time-to-productivity</div>
+              </div>
+              <div class="stat anim" data-el="stat" data-d="2">
+                <div class="v" data-count="94" data-suffix="" data-decimal="1">0.0</div>
+                <div class="k">New-hire experience /10</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="lower anim" data-el="s3-lower">
+            <div class="bar"></div>
+            <div class="ltxt"><b>Faster ramp. Happier hires. Zero dropped balls.</b><span>Every milestone tracked from Day 1 to Day 90</span></div>
+          </div>
+          <div class="scenetag anim" data-el="s3-tag">SCENE 03</div>
+        </section>
+
+        <!-- ============ SCENE 4: END CARD ============ -->
+        <section class="scene" data-scene="end">
+          <div class="card-center">
+            <div class="endline anim" data-el="e-line">Every new hire set up to succeed —<br><span class="hl">nothing falls through the cracks.</span></div>
+            <div class="end-brand anim" data-el="e-brand">
+              <div class="mark">N</div>
+              <div class="et">NewWesVentures <span>· People Operations, powered by AI</span></div>
+            </div>
+            <div class="byline anim" data-el="e-byline">Created by <b>Wes Griffin</b> · Designed &amp; built with AI</div>
+          </div>
+        </section>
+
+      </div><!-- /scaler -->
+    </div><!-- /stage -->
+  </div><!-- /frame -->
+
+  <div id="controls">
+    <div class="ctrl" id="btnPlay" role="button" tabindex="0" aria-label="Pause">
+      <svg viewBox="0 0 24 24" id="icoPlay"><rect x="6" y="5" width="4" height="14" rx="1.2"/><rect x="14" y="5" width="4" height="14" rx="1.2"/></svg>
+    </div>
+    <div class="ctrl" id="btnReplay" role="button" tabindex="0" aria-label="Replay">
+      <svg viewBox="0 0 24 24"><path d="M12 5V2L7 6l5 4V7c3.3 0 6 2.7 6 6s-2.7 6-6 6-6-2.7-6-6H4c0 4.4 3.6 8 8 8s8-3.6 8-8-3.6-8-8-8z"/></svg>
+    </div>
+  </div>
+
+<script>
+(function(){
+  "use strict";
+
+  /* ---------- defensive helpers ---------- */
+  function $(sel, root){ try{ return (root||document).querySelector(sel); }catch(e){ return null; } }
+  function $all(sel, root){ try{ return Array.prototype.slice.call((root||document).querySelectorAll(sel)); }catch(e){ return []; } }
+  function on(el, ev, fn){ if(el && el.addEventListener) el.addEventListener(ev, fn); }
+
+  var REDUCED = false;
+  try{ REDUCED = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches; }catch(e){ REDUCED = false; }
+
+  /* ---------- element refs ---------- */
+  var stage     = $('#stage');
+  var scaler    = $('#scaler');
+  var progress  = $('#progress');
+  var scenes    = {};
+  $all('.scene').forEach(function(s){ scenes[s.getAttribute('data-scene')] = s; });
+  function el(name, root){ return $('[data-el="'+name+'"]', root||document); }
+  function els(name, root){ return $all('[data-el="'+name+'"]', root||document); }
+
+  /* ---------- responsive scaling of the 1280x720 inner canvas ---------- */
+  function fit(){
+    if(!stage || !scaler) return;
+    var w = stage.clientWidth, h = stage.clientHeight;
+    if(!w || !h) return;
+    var s = Math.min(w/1280, h/720);
+    scaler.style.transform = 'translate(-50%,-50%) scale(' + s + ')';
+  }
+  on(window, 'resize', fit);
+  fit();
+  // re-fit a few times early (fonts/layout settle)
+  [60,180,400,900].forEach(function(t){ setTimeout(fit, t); });
+
+  /* ---------- generic show/hide of animated elements ---------- */
+  function reveal(node){ if(node) node.classList.add('in'); }
+  function hide(node){ if(node) node.classList.remove('in'); }
+
+  /* ---------- count-up ---------- */
+  function countUp(node, target, dur, suffix, decimal){
+    if(!node) return;
+    suffix = suffix || '';
+    var start = performance.now();
+    var dec = decimal ? 1 : 0;
+    function fmt(v){
+      if(decimal){ return (v/10).toFixed(1); }
+      return String(Math.round(v));
+    }
+    function step(now){
+      if(state.killed) return;
+      var p = Math.min(1,(now-start)/dur);
+      // easeOutCubic
+      var e = 1 - Math.pow(1-p,3);
+      var val = target * e;
+      node.textContent = fmt(val) + suffix;
+      if(p<1) requestAnimationFrame(step);
+      else node.textContent = fmt(target) + suffix;
+    }
+    requestAnimationFrame(step);
+  }
+
+  /* ============================================================
+     TIMELINE
+     Each cue = { t: ms, fn: function }, fired once per loop when
+     the clock passes t. We use a rAF clock so pause is exact and
+     looping resets cleanly.
+     ============================================================ */
+  var TOTAL = 30000; // 30s loop
+
+  // scene windows (ms)
+  var WIN = {
+    title: [0,     3000],
+    s1:    [3000, 10000],
+    s2:    [10000,17000],
+    s3:    [17000,24000],
+    end:   [24000,30000]
+  };
+
+  var state = {
+    raf:0, last:0, clock:0, playing:true, killed:false, fired:{}, curScene:null
+  };
+
+  function setScene(name){
+    if(state.curScene === name) return;
+    for(var k in scenes){
+      if(scenes[k]) scenes[k].classList.toggle('show', k===name);
+    }
+    state.curScene = name;
+  }
+
+  /* ---------- cue list ---------- */
+  var cues = [];
+  function cue(t, fn){ cues.push({t:t, fn:fn}); }
+
+  /* ===== TITLE (0–3s) ===== */
+  cue(0, function(){
+    setScene('title');
+    reveal(el('t-eyebrow'));
+  });
+  cue(260,  function(){ reveal(el('t-title')); });
+  cue(760,  function(){ reveal(el('t-premise')); });
+  cue(1150, function(){ reveal(el('t-chip')); });
+
+  /* ===== SCENE 1 (3–10s): swimlanes ===== */
+  cue(3000, function(){
+    setScene('s1');
+    reveal(el('s1-brand'));
+    reveal(el('s1-head'));
+  });
+  // lanes appear staggered
+  cue(3180, function(){ reveal(el('lane-it')); });
+  cue(3300, function(){ reveal(el('lane-pay')); });
+  cue(3420, function(){ reveal(el('lane-mgr')); });
+  cue(3540, function(){ reveal(el('lane-fac')); });
+  cue(3650, function(){ reveal(el('s1-tag')); });
+
+  // task cards fly in lane-by-lane, staggered by data-d
+  function flyTasks(laneName, baseDelay){
+    var lane = el(laneName);
+    if(!lane) return;
+    var tasks = els('task', lane);
+    tasks.forEach(function(tk){
+      var d = parseInt(tk.getAttribute('data-d')||'0',10);
+      cue(baseDelay + d*150, function(){ reveal(tk); });
+    });
+  }
+  flyTasks('lane-it',  3550);
+  flyTasks('lane-pay', 3950);
+  flyTasks('lane-mgr', 4300);
+  flyTasks('lane-fac', 4650);
+
+  cue(5100, function(){ reveal(el('s1-lower')); });
+
+  /* ===== SCENE 2 (10–17s): statuses flip, toast, welcome ===== */
+  cue(10000, function(){
+    setScene('s2');
+    reveal(el('s2-brand'));
+    // carry over: nothing checked yet
+  });
+  cue(10150, function(){ reveal(el('s2-welcome')); });
+  cue(10500, function(){ reveal(el('s2-lower')); });
+  cue(10550, function(){ reveal(el('s2-tag')); });
+
+  // welcome rows stagger
+  els('wrow').forEach(function(r){
+    var d = parseInt(r.getAttribute('data-d')||'0',10);
+    cue(10700 + d*180, function(){ reveal(r); });
+  });
+
+  // status feed pills pop + pill flips
+  cue(11000, function(){ var f=el('s2-feed'); if(f){ f.style.opacity='1'; } });
+  els('fitem').forEach(function(p){
+    var d = parseInt(p.getAttribute('data-d')||'0',10);
+    cue(11100 + d*420, function(){ reveal(p); });
+  });
+
+  // nudge toast slides in (manager task behind)
+  cue(13200, function(){
+    reveal(el('s2-toast'));
+    var bar = el('toast-prog');
+    if(bar){
+      bar.style.transition = 'none';
+      bar.style.width = '0%';
+      // next frame animate
+      requestAnimationFrame(function(){
+        requestAnimationFrame(function(){
+          if(state.killed) return;
+          bar.style.transition = 'width 2.6s linear';
+          bar.style.width = '100%';
+        });
+      });
+    }
+  });
+
+  /* ===== SCENE 3 (17–24s): 30-60-90 + stats ===== */
+  cue(17000, function(){
+    setScene('s3');
+    reveal(el('s3-brand'));
+    reveal(el('s3-title'));
+  });
+  cue(17250, function(){
+    var t = el('s3-track'); if(t){ t.style.opacity='1'; }
+    var fill = el('s3-fill');
+    if(fill){
+      fill.style.transition='none';
+      fill.style.width='0%';
+      requestAnimationFrame(function(){
+        requestAnimationFrame(function(){
+          if(state.killed) return;
+          fill.style.transition = 'width 3.4s cubic-bezier(.22,.61,.36,1)';
+          fill.style.width = '100%';
+        });
+      });
+    }
+  });
+  // light up nodes + ticks as the bar passes
+  cue(18250, function(){ litNode(0); litTick(0); });
+  cue(19450, function(){ litNode(1); litTick(1); });
+  cue(20650, function(){ litNode(2); litTick(2); });
+
+  function litNode(i){ var n=els('node')[i]; if(n) n.classList.add('lit'); }
+  function litTick(i){ var t=els('tk')[i]; if(t) t.classList.add('lit'); }
+
+  // stat cards reveal + count
+  cue(18600, function(){
+    var stats = els('stat');
+    stats.forEach(function(s, i){
+      setTimeout(function(){
+        if(state.killed) return;
+        reveal(s);
+        var v = $('[data-count]', s);
+        if(v){
+          var tgt = parseFloat(v.getAttribute('data-count'));
+          var suf = v.getAttribute('data-suffix')||'';
+          var dec = v.getAttribute('data-decimal')==='1';
+          countUp(v, tgt, 1500, suf, dec);
+        }
+      }, i*420);
+    });
+  });
+
+  /* ===== END CARD (24–30s) ===== */
+  cue(24000, function(){
+    setScene('end');
+    reveal(el('e-line'));
+  });
+  cue(24450, function(){ reveal(el('e-brand')); });
+  cue(24900, function(){ reveal(el('e-byline')); });
+
+  /* ============================================================
+     SCENE 1 status flips also happen DURING scene 1's tail and
+     get reinforced in scene 2. We flip the IT/Payroll/Facilities
+     tasks to ✓ near the end of scene 1 / into scene 2, leaving the
+     flagged manager "buddy" task open (it gets the nudge), then
+     resolve it after the nudge.
+     ============================================================ */
+  // mark a task checked by lane + index
+  function checkTask(laneName, idx){
+    var lane = el(laneName);
+    if(!lane) return;
+    var tasks = els('task', lane);
+    var tk = tasks[idx];
+    if(!tk) return;
+    tk.classList.add('checked');
+    var pill = $('.pill', tk);
+    if(pill){ pill.className = 'pill done'; pill.textContent = 'Done'; }
+  }
+  function uncheckAll(){
+    $all('.task').forEach(function(tk){
+      tk.classList.remove('checked');
+      var pill = $('.pill', tk);
+      if(pill){
+        // restore original label from data
+        var orig = pill.getAttribute('data-orig');
+        if(orig){ pill.className='pill ' + pill.getAttribute('data-origcls'); pill.textContent=orig; }
+      }
+    });
+  }
+  // store originals once
+  $all('.task .pill').forEach(function(p){
+    p.setAttribute('data-orig', p.textContent);
+    var cls = p.className.replace('pill','').trim();
+    p.setAttribute('data-origcls', cls);
+  });
+
+  // flips during scene 1 tail (6.0s–9.4s) — visible while still on lanes
+  cue(6100, function(){ checkTask('lane-it',0); });   // laptop
+  cue(6550, function(){ checkTask('lane-it',1); });   // accounts
+  cue(7000, function(){ checkTask('lane-pay',0); });  // direct deposit
+  cue(7450, function(){ checkTask('lane-it',2); });   // 2FA
+  cue(7900, function(){ checkTask('lane-fac',0); });  // badge
+  cue(8350, function(){ checkTask('lane-pay',1); });  // tax
+  cue(8800, function(){ checkTask('lane-fac',1); });  // desk
+  cue(9200, function(){ checkTask('lane-mgr',1); });  // 30/60/90 plan
+  // manager buddy task (lane-mgr idx 0) intentionally left OPEN -> nudged in scene 2,
+  // resolved after the nudge:
+  cue(15600, function(){
+    // resolve the flagged manager buddy task to close the loop
+    var lane = el('lane-mgr');
+    // (lane not visible in s2, but we set it so if user scrubs back it's consistent)
+    checkTask('lane-mgr',0);
+  });
+
+  /* ============================================================
+     RESET — wipe ALL state for a clean seamless loop
+     ============================================================ */
+  function resetAll(){
+    state.fired = {};
+    // remove all reveal/in classes
+    $all('.anim').forEach(hide);
+    // scenes feed/track opacity
+    var f=el('s2-feed'); if(f) f.style.opacity='0';
+    var t=el('s3-track'); if(t) t.style.opacity='0';
+    // task checks + pills
+    uncheckAll();
+    // nodes/ticks
+    els('node').forEach(function(n){ n.classList.remove('lit'); });
+    els('tk').forEach(function(n){ n.classList.remove('lit'); });
+    // fills/toast bar reset
+    var fill=el('s3-fill'); if(fill){ fill.style.transition='none'; fill.style.width='0%'; }
+    var tb=el('toast-prog'); if(tb){ tb.style.transition='none'; tb.style.width='0%'; }
+    // count-ups back to start
+    $all('[data-count]').forEach(function(v){
+      var dec = v.getAttribute('data-decimal')==='1';
+      var suf = v.getAttribute('data-suffix')||'';
+      v.textContent = (dec? '0.0':'0') + suf;
+    });
+  }
+
+  /* ============================================================
+     CLOCK
+     ============================================================ */
+  function fireCues(prev, now){
+    for(var i=0;i<cues.length;i++){
+      var c = cues[i];
+      if(c.t > prev && c.t <= now && !state.fired[i]){
+        state.fired[i] = true;
+        try{ c.fn(); }catch(e){ /* swallow */ }
+      }
+    }
+  }
+
+  function loopTick(ts){
+    if(state.killed) return;
+    if(!state.last) state.last = ts;
+    var dt = ts - state.last;
+    state.last = ts;
+
+    if(state.playing){
+      var prev = state.clock;
+      state.clock += dt;
+
+      if(state.clock >= TOTAL){
+        // fire any remaining cues up to TOTAL, then wrap
+        fireCues(prev, TOTAL);
+        state.clock = state.clock - TOTAL;
+        resetAll();
+        // fire cues from 0 to the new (small) clock
+        fireCues(-1, state.clock);
+      } else {
+        fireCues(prev, state.clock);
+      }
+
+      // progress bar
+      if(progress){
+        progress.style.width = (Math.max(0,Math.min(1, state.clock/TOTAL))*100) + '%';
+      }
+    }
+    state.raf = requestAnimationFrame(loopTick);
+  }
+
+  /* ============================================================
+     REDUCED MOTION: compose a single static final frame, no loop
+     ============================================================ */
+  function staticFrame(){
+    // show END card as the composed final frame, fully revealed,
+    // but also pre-fill scene 3 stat values so the "payoff" reads.
+    setScene('end');
+    reveal(el('e-line'));
+    reveal(el('e-brand'));
+    reveal(el('e-byline'));
+    if(progress) progress.style.width='100%';
+    // freeze controls to a paused look
+    setPaused(true, true);
+    fit();
+  }
+
+  /* ============================================================
+     CONTROLS
+     ============================================================ */
+  var btnPlay = $('#btnPlay');
+  var btnReplay = $('#btnReplay');
+  var icoPlay = $('#icoPlay');
+
+  function pauseIcon(){ // show play triangle
+    if(icoPlay) icoPlay.innerHTML = '<path d="M8 5v14l11-7z"/>';
+    if(btnPlay){ btnPlay.setAttribute('aria-label','Play'); }
+  }
+  function playingIcon(){ // show pause bars
+    if(icoPlay) icoPlay.innerHTML = '<rect x="6" y="5" width="4" height="14" rx="1.2"/><rect x="14" y="5" width="4" height="14" rx="1.2"/>';
+    if(btnPlay){ btnPlay.setAttribute('aria-label','Pause'); }
+  }
+  function setPaused(p, silent){
+    state.playing = !p;
+    if(p) pauseIcon(); else playingIcon();
+  }
+  function togglePlay(){
+    if(REDUCED) return; // static mode: ignore
+    setPaused(state.playing); // if playing -> pause
+  }
+  function replay(){
+    if(REDUCED){ staticFrame(); return; }
+    state.clock = 0;
+    state.last = 0;
+    resetAll();
+    setPaused(false);
+    // immediately fire the t=0 cues
+    fireCues(-1, 0);
+  }
+
+  on(btnPlay, 'click', togglePlay);
+  on(btnReplay, 'click', replay);
+  on(btnPlay, 'keydown', function(e){ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); togglePlay(); } });
+  on(btnReplay,'keydown', function(e){ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); replay(); } });
+
+  // click on stage toggles play/pause too (nice for demos)
+  on(stage, 'click', function(){ togglePlay(); });
+
+  // pause when tab hidden, resume when visible (avoids huge dt jump)
+  on(document, 'visibilitychange', function(){
+    if(document.hidden){
+      // keep state.playing as-is but reset last to avoid dt spike on return
+    } else {
+      state.last = 0;
+    }
+  });
+
+  /* ============================================================
+     BOOT
+     ============================================================ */
+  function boot(){
+    fit();
+    if(REDUCED){
+      staticFrame();
+      return;
+    }
+    playingIcon();
+    state.playing = true;
+    state.clock = 0;
+    state.last = 0;
+    // fire t=0 cues right away so first frame isn't empty
+    fireCues(-1, 0);
+    state.raf = requestAnimationFrame(loopTick);
+  }
+
+  // kick off (guard against double-boot)
+  if(document.readyState === 'loading'){
+    on(document, 'DOMContentLoaded', boot);
+  } else {
+    boot();
+  }
+
+})();
+</script>
+</body>
+</html>
