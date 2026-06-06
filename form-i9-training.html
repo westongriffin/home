@@ -295,6 +295,142 @@
     section.module{padding:26px 22px}
     .hero{padding:40px 24px 34px}
   }
+
+  /* ============================================================
+     MOBILE / PHONE LAYER — additive only. Desktop (>=761px) is
+     untouched. Goals: zero horizontal scroll, collapsible TOC
+     drawer, big touch targets, no-zoom inputs, safe-area aware.
+     ============================================================ */
+  @media (max-width:760px){
+    /* kill any horizontal page scroll */
+    html,body{max-width:100%;overflow-x:hidden}
+
+    /* topbar -> compact single row; height stays predictable so the
+       drawer can pin right beneath it. Scrolls internally if it can't
+       fit instead of widening the page. The Contents toggle is leftmost
+       so it's always reachable to close the drawer. */
+    .topbar{
+      gap:8px;flex-wrap:nowrap;overflow-x:auto;-webkit-overflow-scrolling:touch;
+      scrollbar-width:none;
+      padding:6px calc(12px + env(safe-area-inset-right)) 6px calc(12px + env(safe-area-inset-left));
+    }
+    .topbar::-webkit-scrollbar{display:none}
+    .topbar .brand{font-size:14px;min-width:0;flex:0 1 auto;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+    .topbar .brand .glyph{flex:0 0 auto}
+    .topbar .spacer{flex:1 0 4px}
+    .topbar button{
+      flex:0 0 auto;white-space:nowrap;min-height:44px;
+      display:inline-flex;align-items:center;
+    }
+    #menuToggle{display:inline-flex}
+
+    /* TOC as a slide-in left drawer, pinned just below the 56px-tall bar */
+    .toc{
+      top:calc(56px + env(safe-area-inset-top));right:auto;bottom:0;left:0;
+      width:min(86vw,330px);max-width:330px;
+      border-right:1px solid var(--line);
+      box-shadow:0 24px 60px rgba(12,19,38,.32);
+      padding:10px 12px calc(18px + env(safe-area-inset-bottom)) calc(12px + env(safe-area-inset-left));
+    }
+    html.dark .toc{box-shadow:0 24px 60px rgba(0,0,0,.6)}
+    .toc.open{animation:tocIn .26s cubic-bezier(.2,.7,.2,1)}
+    @keyframes tocIn{from{transform:translateX(-14px);opacity:.4}to{transform:none;opacity:1}}
+    .toc h4{position:sticky;top:0;background:var(--card);margin:0 0 4px;padding:8px 8px 8px 10px;z-index:1}
+    .toc a{padding:11px 12px;font-size:14.5px;min-height:44px}
+    .toc a .n{flex:0 0 24px}
+
+    /* full-width reading column + comfortable spacing */
+    .wrap{padding:0 14px}
+    .layout{gap:0;padding:18px 0 72px}
+    main{max-width:none}
+    .hero{scroll-margin-top:64px}
+    section.module{scroll-margin-top:72px}
+
+    /* hero */
+    .hero{padding:34px 20px 30px;border-radius:22px;margin:6px 0 24px}
+    .hero .lede{max-width:none}
+
+    /* sections: a touch tighter, generous line-height kept */
+    section.module{padding:24px 18px;border-radius:16px}
+    .mhead{gap:14px}
+    .mhead h2{font-size:23px}
+    .module .lead{font-size:15px}
+    blockquote{font-size:16.5px;padding-left:16px}
+
+    /* callouts wrap cleanly */
+    .callout{gap:12px;padding:14px 15px}
+
+    /* interactive tool forms -> single column, full-width controls,
+       16px inputs so iOS doesn't zoom on focus */
+    .tool{padding:18px 16px}
+    .field{flex-direction:column;align-items:stretch;gap:12px}
+    .field > div{width:100%}
+    .field label{margin-bottom:6px}
+    input[type=date],input[type=text]{width:100%;min-width:0;font-size:16px;padding:12px 13px}
+    .field .btn,.field .btn-grad{width:100%;min-height:46px}
+
+    /* doc validator: stacked, big tap targets */
+    .dv-opt{padding:13px 13px;min-height:44px;font-size:14px}
+    .dv-verdict{padding:14px 15px}
+
+    /* knowledge-check / quiz options: easy to tap, readable */
+    .kc{padding:16px 15px}
+    .kc .kc-q{font-size:16px}
+    .kc-opt{padding:13px 13px;min-height:48px}
+    .kc-opt:hover{transform:none} /* avoid sideways shift under a thumb */
+    .quizhero{padding:22px 18px}
+    .quizhero h2{font-size:21px}
+
+    /* score block: ring centered, message full width beneath it */
+    #scorewrap{flex-direction:column;align-items:center;text-align:center;gap:14px}
+    #scorewrap.show{display:flex}
+    .ring{margin:0 auto}
+    #scoremsg{min-width:0;width:100%}
+
+    /* certificate preview scales to fit; PNG export is canvas-based and
+       unaffected by these layout tweaks */
+    .certcard{padding:30px 18px}
+    .certcard .ctitle{font-size:22px}
+    .certcard .cname{font-size:24px;min-width:0;max-width:100%;padding:0 12px 6px}
+    .certcard .cmeta{font-size:13px}
+    #certActions .btn{width:100%;margin:0 0 10px!important;min-height:46px}
+
+    /* any wide table scrolls inside its own box, never the page */
+    .tablewrap{-webkit-overflow-scrolling:touch}
+    table{min-width:480px}
+
+    /* footer */
+    footer.site{max-width:none}
+  }
+
+  /* small-phone refinements (360-430px) */
+  @media (max-width:430px){
+    .wrap{padding:0 12px}
+    .topbar{gap:6px}
+    .topbar .brand{font-size:13px;max-width:34vw}
+    .topbar button{padding:7px 9px;font-size:12.5px}
+    section.module{padding:20px 15px}
+    .mhead{gap:12px}
+    .mhead .idx{width:34px;height:34px;border-radius:10px}
+    .mhead h2{font-size:21px;margin-top:2px}
+    .hero{padding:30px 17px 26px}
+    .stat{padding:15px}
+    .stat .big{font-size:26px}
+    .doccard ul{padding-left:28px}
+    .timeline{padding-left:30px}
+    .tl::before{left:-27px}
+    .certcard{padding:26px 14px}
+    .certcard::before{inset:8px}
+    .certcard .ctitle{font-size:20px}
+    .certcard .cname{font-size:21px;padding:0 8px 6px}
+    table{min-width:420px}
+  }
+
+  /* honor reduced-motion for the drawer slide-in added above */
+  @media (prefers-reduced-motion:reduce){
+    .toc.open{animation:none!important}
+  }
+
   @media print{
     .topbar,.toc,#progress,.kc-options,.btn,.btn-grad,.no-print,.tool .field,.dv-cols{display:none!important}
     body{background:#fff;font-size:12px;color:#000}

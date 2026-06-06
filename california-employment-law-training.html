@@ -175,6 +175,166 @@
   footer.site .credit{font-weight:700;color:var(--ink);font-size:15px;display:flex;align-items:center;gap:9px;flex-wrap:wrap}
   footer.site .credit .glyph{width:24px;height:24px;border-radius:7px;background:var(--grad);display:grid;place-items:center;color:#fff}
   @media (max-width:980px){.toc{display:none;position:fixed;inset:54px 0 0;max-height:none;background:var(--card);z-index:65;padding:16px 18px;overflow:auto}.toc.open{display:block}#menuToggle{display:inline-flex}section.module{padding:26px 22px}.hero{padding:40px 24px 34px}}
+  /* ====================== MOBILE (≤760px) ====================== */
+  @media (max-width:760px){
+    /* NB: deliberately NO overflow-x / clip on html or body — in this engine that
+       breaks document scrolling (scrollTo / scrollIntoView / smooth-scroll go inert).
+       Horizontal overflow is instead prevented at the source: wide tables scroll
+       inside .tablewrap, and the TOC drawer is position:fixed (never widens the page). */
+    body{font-size:16px;line-height:1.62;-webkit-text-size-adjust:100%}
+    img,svg,canvas{max-width:100%}
+    .ic{flex:0 0 auto}
+    /* Break long unbreakable strings (URLs etc.) so they can't force a wide page */
+    p,li,td,th,blockquote,summary,.kc-q,.lead,.toolnote,.footnote,.cname{overflow-wrap:break-word}
+
+    /* Page gutters + safe-area insets (notch) */
+    .wrap{padding-left:max(14px,env(safe-area-inset-left));padding-right:max(14px,env(safe-area-inset-right))}
+    .layout{display:block;gap:0;padding:16px 0 72px}
+    main{max-width:100%;width:100%}
+
+    /* Sticky top bar: keep on one row, comfortable tap targets */
+    .topbar{gap:8px;padding:9px max(12px,env(safe-area-inset-left)) 9px max(12px,env(safe-area-inset-right));flex-wrap:nowrap}
+    .topbar .brand{font-size:13.5px;min-width:0;flex:1 1 auto;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+    .topbar .brand .glyph{flex:0 0 auto}
+    .topbar .spacer{display:none}
+    .topbar button{min-height:44px;padding:9px 11px;font-size:13px}
+    #menuToggle{order:5;flex:0 0 auto}
+    #expandAll{display:none!important}
+    .topbar #printBtn,.topbar #themeBtn{flex:0 0 auto;padding:8px 10px}
+
+    /* ---- Table of contents → slide-in drawer ---- */
+    .toc{top:auto;inset:54px auto 0 0;width:min(84vw,330px);max-width:330px;
+      padding:14px 14px calc(20px + env(safe-area-inset-bottom));
+      box-shadow:0 18px 60px rgba(13,22,34,.34);border-right:1px solid var(--line);
+      -webkit-overflow-scrolling:touch;overscroll-behavior:contain;
+      padding-left:max(14px,env(safe-area-inset-left))}
+    .toc.open{animation:tocIn .26s cubic-bezier(.2,.7,.2,1)}
+    @keyframes tocIn{from{opacity:0;transform:translateX(-16px)}to{opacity:1;transform:none}}
+    .toc h4{margin:4px 8px 8px;font-size:11.5px}
+    .toc a{padding:11px 12px;font-size:15px;min-height:44px;border-radius:11px}
+    .toc a .n{flex:0 0 24px}
+
+    /* Hero */
+    .hero{border-radius:20px;padding:30px 20px 26px;margin:4px 0 22px}
+    .hero h1{font-size:clamp(25px,7.4vw,33px);line-height:1.08}
+    .hero .lede{font-size:15.5px;line-height:1.5}
+    .hero .metarow{gap:7px;margin-top:18px}
+    .hero .metarow span{font-size:12px;padding:6px 11px}
+    .hero .eyebrow{font-size:12px;margin-bottom:14px}
+
+    /* Stats */
+    .stats{gap:10px;margin-bottom:22px}
+    .stat{padding:15px}
+    .stat .big{font-size:23px}
+
+    /* Modules + headings */
+    section.module{padding:22px 17px;border-radius:16px;margin:0 0 16px;scroll-margin-top:64px}
+    .mhead{gap:13px;margin-bottom:4px}
+    .mhead .idx{width:36px;height:36px;border-radius:11px}
+    .mhead h2{font-size:21px;line-height:1.15}
+    .module .lead{font-size:15px}
+    h3{font-size:17px;margin:1.5em 0 .45em}
+    h4{font-size:15px}
+    blockquote{font-size:16px;padding-left:16px}
+    ul,ol{padding-left:1.15em}
+
+    /* Callouts */
+    .callout{padding:14px 15px;gap:12px;border-radius:13px}
+    .callout .cic{flex:0 0 30px;height:30px;font-size:16px}
+
+    /* Do/Don't + reference grids → single column */
+    .ddgrid{grid-template-columns:1fr!important}
+    .resgrid{grid-template-columns:1fr!important}
+
+    /* Tables: scroll inside their own container, never widen the page */
+    .tablewrap{margin:1.1em 0;-webkit-overflow-scrolling:touch;overscroll-behavior-x:contain;max-width:100%}
+    table{font-size:14px;min-width:440px}
+    th,td{padding:10px 12px}
+    thead th{position:static}
+
+    /* Details / accordions */
+    summary{padding:13px 15px;min-height:44px}
+    details .dbody{padding:2px 15px 14px}
+
+    /* Knowledge-check + quiz options: easy tap targets */
+    .kc{padding:16px 15px;border-radius:14px}
+    .kc .kc-q{font-size:16px}
+    .kc-opt{padding:13px 13px;min-height:48px;align-items:center}
+    .kc-opt:hover{transform:none}
+    .kc-opt .mk{flex:0 0 24px;height:24px}
+    .kc-explain{font-size:14.5px;padding:13px 14px}
+
+    /* Tools: stack to one column; inputs ≥16px (no iOS zoom) */
+    .tool{padding:18px 16px;border-radius:16px}
+    .tool .toolhd .tic{width:34px;height:34px}
+    .field{gap:11px;margin:14px 0}
+    .field>div{flex:1 1 100%;min-width:0}
+    .field label{font-size:13.5px}
+    input[type=number],input[type=text],select{width:100%;min-width:0;font-size:16px;padding:12px 13px}
+    .field .btn,.field .btn-grad{width:100%;min-height:48px}
+    .verdict{padding:13px 14px}
+    .rescard .v{font-size:19px}
+
+    /* Quiz header + actions */
+    .quizhero{padding:22px 18px;border-radius:16px}
+    .quizhero h2{font-size:21px}
+    #final-quiz + div .btn,#quizSubmit,#quizReset{flex:1 1 100%}
+
+    /* Score ring scales + message wraps below it */
+    #scorewrap{gap:16px}
+    .ring{width:108px;height:108px}
+    .ring svg{width:108px;height:108px}
+    .ring .num{font-size:25px}
+    #scoremsg{min-width:0;flex:1 1 100%}
+    #scoremsg .h{font-size:19px}
+
+    /* Certificate preview scales; download/print buttons stack & stay tappable */
+    .certcard{padding:26px 18px;border-radius:16px}
+    .certcard::before{inset:8px}
+    .certcard .ctitle{font-size:20px}
+    .certcard .cname{font-size:23px;min-width:0;max-width:100%;padding:0 12px 6px;word-break:break-word}
+    .certcard .cmeta{font-size:13px}
+    #certActions{display:block}
+    #certActions .btn,#certActions .btn-grad{display:block;width:100%;min-height:48px;margin:0 0 10px!important}
+
+    /* Checklist + footer */
+    .checklist li{padding:11px 12px}
+    .checklist input{width:22px;height:22px}
+    .checklist label{font-size:15px}
+    footer.site{max-width:100%}
+
+    /* Generic touch-target floor for any remaining buttons */
+    .btn,.btn-grad{min-height:44px}
+    .anchor-top{min-height:34px}
+  }
+  /* ============== SMALL PHONE REFINEMENTS (≤430px) ============== */
+  @media (max-width:430px){
+    body{font-size:15.5px}
+    .wrap{padding-left:max(11px,env(safe-area-inset-left));padding-right:max(11px,env(safe-area-inset-right))}
+    section.module{padding:20px 14px}
+    .hero{padding:26px 16px 24px}
+    .hero h1{font-size:clamp(23px,8vw,29px)}
+    .hero .lede{font-size:15px}
+    .topbar .brand{font-size:12.5px}
+    .topbar button{padding:8px 9px;font-size:12.5px}
+    .mhead h2{font-size:19.5px}
+    .mhead .idx{width:34px;height:34px;font-size:12px}
+    .stats{grid-template-columns:1fr 1fr}
+    .stat .big{font-size:21px}
+    .stat .lab{font-size:12px}
+    .toc{width:min(88vw,310px)}
+    .kc-opt{padding:12px 12px}
+    .tool{padding:16px 14px}
+    .ring{width:96px;height:96px}
+    .ring svg{width:96px;height:96px}
+    .ring .num{font-size:22px}
+    .quizhero h2{font-size:19.5px}
+    .certcard .cname{font-size:21px}
+    .certcard .ctitle{font-size:18.5px}
+    table{min-width:380px}
+  }
+  /* Honor reduced-motion for the mobile drawer animation */
+  @media (prefers-reduced-motion:reduce){.toc.open{animation:none!important}}
   @media print{.topbar,.toc,#progress,.kc-options,.btn,.btn-grad,.no-print,.tool .field{display:none!important}body{background:#fff;font-size:12px;color:#000}section.module,.hero{box-shadow:none;border:1px solid #ccc;break-inside:avoid;color:#000}.hero{background:#063b4c!important;-webkit-print-color-adjust:exact;print-color-adjust:exact;color:#fff}.kc-explain{display:block!important}details .dbody{display:block}.js .reveal{opacity:1!important;transform:none!important}a{color:#000}body.only-cert *{visibility:hidden}body.only-cert #certCard,body.only-cert #certCard *{visibility:visible}body.only-cert #certCard{position:fixed;inset:0;margin:auto;max-width:640px;max-height:460px}}
 </style>
 </head>

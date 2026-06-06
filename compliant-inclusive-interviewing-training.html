@@ -2,7 +2,7 @@
 <html lang="en" class="no-js">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>Compliant &amp; Inclusive Interviewing — An Interactive Course</title>
 <meta name="description" content="An interactive course on lawful, fair, and effective interviewing: what you can and can't ask, structured interviews, reducing bias, and accommodations.">
 <script>document.documentElement.className = document.documentElement.className.replace('no-js','js');</script>
@@ -177,6 +177,140 @@
   footer.site .credit{font-weight:700;color:var(--ink);font-size:15px;display:flex;align-items:center;gap:9px;flex-wrap:wrap}
   footer.site .credit .glyph{width:24px;height:24px;border-radius:7px;background:var(--grad);display:grid;place-items:center;color:#fff}
   @media (max-width:980px){.toc{display:none;position:fixed;inset:54px 0 0;max-height:none;background:var(--card);z-index:65;padding:16px 18px;overflow:auto}.toc.open{display:block}#menuToggle{display:inline-flex}section.module{padding:26px 22px}.hero{padding:40px 24px 34px}}
+
+  /* ============================================================
+     MOBILE / PHONE LAYER  (additive — desktop ≥820px untouched)
+     Collapses the sticky TOC into a slide-in drawer, makes the
+     top bar + action rows wrap, stacks the checker, and keeps
+     every interaction tappable with no horizontal page scroll.
+     ============================================================ */
+  @media (max-width:760px){
+    /* never let anything force the page wider than the screen */
+    html,body{max-width:100%;overflow-x:hidden}
+    body{font-size:16px}
+    .ic{flex:0 0 auto}
+
+    /* progress bar follows the real viewport, not overflow */
+    #progress{width:100vw}
+
+    /* ---- top bar: single compact row, safe-area aware ---- */
+    .topbar{gap:8px;padding:9px 12px;padding-left:max(12px,env(safe-area-inset-left));padding-right:max(12px,env(safe-area-inset-right));flex-wrap:nowrap}
+    .topbar .brand{font-size:13.5px;min-width:0;flex:1 1 auto;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .topbar .brand .glyph{flex:0 0 auto}
+    .topbar .spacer{display:none}
+    .topbar button{padding:9px 10px;font-size:12.5px;min-height:40px;flex:0 0 auto}
+    #menuToggle{order:-1}
+
+    /* ---- TOC becomes a left slide-in drawer ---- */
+    .toc{display:block;position:fixed;top:0;left:0;bottom:0;right:auto;width:min(84vw,330px);max-height:none;height:100%;
+         padding:calc(env(safe-area-inset-top) + 64px) 16px calc(env(safe-area-inset-bottom) + 20px) max(16px,env(safe-area-inset-left));
+         background:var(--card);border-right:1px solid var(--line);z-index:75;overflow:auto;-webkit-overflow-scrolling:touch;
+         transform:translateX(-102%);transition:transform .28s cubic-bezier(.2,.7,.2,1);box-shadow:none;visibility:hidden}
+    .toc.open{display:block;transform:translateX(0);visibility:visible;box-shadow:0 0 0 100vmax rgba(12,8,20,.46),var(--shadow)}
+    .toc h4{margin:2px 6px 8px;font-size:11.5px}
+    .toc a{padding:11px 12px;font-size:15px;min-height:44px}
+    .toc a .n{flex:0 0 24px}
+
+    /* ---- spacing for content blocks ---- */
+    .wrap{padding:0 16px;padding-left:max(16px,env(safe-area-inset-left));padding-right:max(16px,env(safe-area-inset-right))}
+    .layout{gap:0;padding:18px 0 70px}
+    main{max-width:100%}
+    .hero{padding:34px 20px 30px;border-radius:20px;margin:6px 0 22px}
+    .hero h1{font-size:clamp(26px,8vw,34px)}
+    .hero .lede{font-size:15.5px}
+    .hero .metarow span,.hero .eyebrow{font-size:12px}
+    section.module{padding:22px 18px;border-radius:16px;scroll-margin-top:64px}
+    section.module[id]{scroll-margin-top:64px}
+    .mhead{gap:12px}
+    .mhead .idx{width:34px;height:34px}
+    .mhead h2{font-size:21px}
+    .module .lead{font-size:15px}
+    h3{font-size:17px}
+    blockquote{font-size:16px;padding-left:16px}
+    .quizhero{padding:22px 20px}
+    .quizhero h2{font-size:21px}
+
+    /* ---- tables: scroll inside their box, never widen page ---- */
+    .tablewrap{-webkit-overflow-scrolling:touch;overflow-x:auto;max-width:100%}
+    table{font-size:14px;min-width:520px}
+    th,td{padding:10px 12px}
+
+    /* ---- callouts / do-dont / details stack cleanly ---- */
+    .callout{padding:14px 15px;gap:11px}
+    .ddcol{padding:14px 15px}
+    summary{padding:13px 15px}
+    details .dbody{padding:2px 15px 15px}
+
+    /* ---- knowledge checks & quiz options: big tap targets, no zoom ---- */
+    .kc{padding:16px 16px}
+    .kc-q{font-size:16px}
+    .kc-opt{padding:13px 14px;min-height:48px;font-size:15px}
+    .kc-opt:hover{transform:none}
+    .kc-explain{font-size:14.5px}
+
+    /* ---- "Can I ask this?" checker: one column, usable ---- */
+    .tool{padding:18px 16px}
+    .tool .toolhd{gap:10px}
+    .asklegend{gap:6px}
+    .asklegend span{font-size:11px}
+    .ask-q{padding:13px 14px;font-size:15px;min-height:48px;align-items:flex-start}
+    .ask-q .qm{margin-top:1px}
+    .ask-a{padding:0 14px 14px 46px}
+    .ask-better{font-size:13.5px}
+
+    /* inputs ≥16px so iOS doesn't zoom on focus */
+    input[type=text],#certName{font-size:16px!important}
+    .checklist input{width:22px;height:22px}
+    .checklist li{padding:12px 13px}
+    .checklist label{font-size:15px}
+
+    /* ---- score ring + message stack ---- */
+    #scorewrap{gap:16px}
+    .ring{width:104px;height:104px}
+    .ring svg{width:104px;height:104px}
+    .ring .num{font-size:25px}
+    #scoremsg{min-width:0;flex:1 1 100%}
+    #scoremsg .h{font-size:19px}
+
+    /* ---- certificate preview scales; PNG download untouched ---- */
+    .certcard{padding:26px 18px}
+    .certcard::before{inset:8px}
+    .certcard .ctitle{font-size:20px}
+    .certcard .cname{font-size:23px;min-width:0;max-width:100%;padding:0 8px 6px;word-break:break-word}
+    .certcard .cmeta{font-size:13px}
+    #certgate .field{gap:10px}
+    #certName{min-width:0;width:100%}
+    #certgate .field>div{flex:1 1 100%}
+    #certgate .field>div input{width:100%}
+
+    /* action button rows wrap, comfortable targets */
+    .btn{padding:12px 16px;min-height:44px}
+    #certPrint{margin-left:0}
+    #certActions .btn{margin-left:0}
+    #certActions{display:flex;flex-wrap:wrap;gap:10px}
+    footer.site{max-width:100%}
+    .anchor-top{min-height:44px}
+  }
+
+  @media (prefers-reduced-motion:reduce){.toc{transition:none}}
+
+  /* ---- extra-small phones (≤430px) refinements ---- */
+  @media (max-width:430px){
+    .wrap{padding-left:max(13px,env(safe-area-inset-left));padding-right:max(13px,env(safe-area-inset-right))}
+    .topbar{gap:6px;padding:8px 11px}
+    .topbar .brand{font-size:12.5px}
+    .topbar button{padding:9px 8px;font-size:12px}
+    #menuToggle{font-size:12px}
+    .hero{padding:30px 17px 26px}
+    .hero h1{font-size:clamp(24px,8.4vw,30px)}
+    section.module{padding:20px 15px}
+    .mhead h2{font-size:19.5px}
+    .ask-a{padding-left:42px}
+    .ring{width:96px;height:96px}.ring svg{width:96px;height:96px}.ring .num{font-size:23px}
+    .certcard{padding:22px 14px}
+    .certcard .cname{font-size:21px}
+  }
+
   @media print{.topbar,.toc,#progress,.kc-options,.btn,.btn-grad,.no-print{display:none!important}body{background:#fff;font-size:12px;color:#000}section.module,.hero{box-shadow:none;border:1px solid #ccc;break-inside:avoid;color:#000}.hero{background:#3b1075!important;-webkit-print-color-adjust:exact;print-color-adjust:exact;color:#fff}.kc-explain,.ask-a{display:block!important}details .dbody{display:block}.js .reveal{opacity:1!important;transform:none!important}a{color:#000}body.only-cert *{visibility:hidden}body.only-cert #certCard,body.only-cert #certCard *{visibility:visible}body.only-cert #certCard{position:fixed;inset:0;margin:auto;max-width:640px;max-height:460px}}
 </style>
 </head>
