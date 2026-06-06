@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="en" class="no-js">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Wes Griffin — People Operations, built with AI</title>
+<meta name="description" content="A suite of production-grade HR tools and interactive training, designed and built by one People Operations leader using AI. Explore the live demos.">
+<script>document.documentElement.className=document.documentElement.className.replace('no-js','js');</script>
+<style>
+  :root{
+    --ink:#0c1020; --ink-2:#3a4560; --muted:#6b7794; --line:#e7e9f2; --bg:#f7f8fc; --card:#ffffff;
+    --v1:#7c3aed; --v2:#5b4ef0; --v3:#06b6d4; --pink:#db2777;
+    --vi-soft:#f1ecfe; --shadow:0 1px 3px rgba(12,16,32,.06),0 18px 48px rgba(12,16,32,.10);
+    --shadow-sm:0 1px 2px rgba(12,16,32,.06),0 6px 18px rgba(12,16,32,.06);
+    --grad:linear-gradient(110deg,#7c3aed,#5b4ef0 45%,#06b6d4);
+    --maxw:1180px;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Inter,Helvetica,Arial,sans-serif;font-size:17px;line-height:1.65;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+  a{color:var(--v2);text-decoration:none}a:hover{text-decoration:underline}
+  h1,h2,h3{letter-spacing:-.02em;text-wrap:balance}
+  .wrap{max-width:var(--maxw);margin:0 auto;padding:0 24px}
+  .grad-text{background:var(--grad);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+  .js .reveal{opacity:0;transform:translateY(24px);transition:opacity .7s cubic-bezier(.2,.7,.2,1),transform .7s cubic-bezier(.2,.7,.2,1)}
+  .js .reveal.in{opacity:1;transform:none}
+  @media(prefers-reduced-motion:reduce){.js .reveal{opacity:1!important;transform:none!important}}
+
+  /* nav */
+  .nav{position:sticky;top:0;z-index:60;backdrop-filter:saturate(180%) blur(12px);background:rgba(247,248,252,.8);border-bottom:1px solid var(--line)}
+  .nav .row{display:flex;align-items:center;gap:18px;height:62px}
+  .nav .brand{font-weight:800;letter-spacing:-.01em;display:flex;align-items:center;gap:10px;font-size:16px}
+  .nav .brand .dot{width:30px;height:30px;border-radius:9px;background:var(--grad);display:grid;place-items:center;color:#fff;font-size:14px;box-shadow:var(--shadow-sm)}
+  .nav .links{margin-left:auto;display:flex;align-items:center;gap:6px}
+  .nav .links a{color:var(--ink-2);font-size:14px;font-weight:600;padding:8px 12px;border-radius:9px}
+  .nav .links a:hover{background:var(--vi-soft);color:var(--v1);text-decoration:none}
+  .nav .cta{background:var(--grad);color:#fff!important;padding:9px 16px!important;border-radius:10px;box-shadow:var(--shadow-sm)}
+  .nav .cta:hover{filter:brightness(1.07)}
+  @media(max-width:720px){.nav .links a:not(.cta){display:none}}
+
+  /* hero */
+  .hero{position:relative;overflow:hidden;background:#080a16;color:#fff}
+  .hero::before{content:"";position:absolute;inset:0;background:
+    radial-gradient(60% 80% at 12% 8%,rgba(124,58,237,.55),transparent 60%),
+    radial-gradient(55% 75% at 92% 18%,rgba(6,182,212,.45),transparent 60%),
+    radial-gradient(60% 90% at 70% 100%,rgba(219,39,119,.35),transparent 60%)}
+  .hero::after{content:"";position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,.05) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.05) 1px,transparent 1px);background-size:42px 42px;mask-image:radial-gradient(80% 70% at 50% 30%,#000,transparent)}
+  .hero .wrap{position:relative;z-index:1;padding:84px 24px 92px;text-align:center}
+  .hero .eyebrow{display:inline-flex;align-items:center;gap:9px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);padding:7px 15px;border-radius:999px;font-size:13px;font-weight:700;letter-spacing:.02em;margin-bottom:26px}
+  .hero h1{font-size:clamp(34px,6vw,62px);line-height:1.04;font-weight:850;margin:0 auto 22px;max-width:16ch}
+  .hero p.lede{font-size:clamp(16px,2.2vw,20px);color:#c3c9e0;max-width:62ch;margin:0 auto;line-height:1.6}
+  .hero .btns{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;margin-top:34px}
+  .btn{display:inline-flex;align-items:center;gap:9px;font-weight:800;font-size:15.5px;padding:14px 26px;border-radius:13px;cursor:pointer;border:none;transition:.15s}
+  .btn-primary{background:var(--grad);color:#fff;box-shadow:0 8px 26px rgba(124,58,237,.4)}
+  .btn-primary:hover{filter:brightness(1.08);transform:translateY(-1px);text-decoration:none}
+  .btn-ghost{background:rgba(255,255,255,.08);color:#fff;border:1px solid rgba(255,255,255,.25)}
+  .btn-ghost:hover{background:rgba(255,255,255,.16);text-decoration:none}
+  .hero .meta{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:34px}
+  .hero .meta span{font-size:13px;color:#aeb6d4;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);padding:7px 14px;border-radius:999px}
+
+  /* stats */
+  .stats{margin-top:-44px;position:relative;z-index:5}
+  .stats .grid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px;background:var(--card);border:1px solid var(--line);border-radius:20px;box-shadow:var(--shadow);padding:30px}
+  @media(min-width:760px){.stats .grid{grid-template-columns:repeat(4,1fr)}}
+  .stat{text-align:center}
+  .stat .n{font-size:42px;font-weight:900;line-height:1;letter-spacing:-.03em;background:var(--grad);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+  .stat .l{font-size:13.5px;color:var(--muted);margin-top:8px;font-weight:600}
+
+  section{padding:78px 0}
+  .sec-head{text-align:center;max-width:64ch;margin:0 auto 14px}
+  .sec-head .kicker{font-size:13px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--v1)}
+  .sec-head h2{font-size:clamp(28px,4vw,40px);font-weight:850;margin:.3em 0 .35em}
+  .sec-head p{color:var(--muted);font-size:17px;margin:0}
+
+  /* projects */
+  .group-label{font-size:13px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-2);margin:42px 0 18px;display:flex;align-items:center;gap:12px}
+  .group-label::after{content:"";flex:1;height:1px;background:var(--line)}
+  .projects{display:grid;grid-template-columns:1fr;gap:22px}
+  @media(min-width:640px){.projects{grid-template-columns:1fr 1fr}}
+  @media(min-width:1000px){.projects.three{grid-template-columns:repeat(3,1fr)}}
+  .proj{position:relative;display:flex;flex-direction:column;background:var(--card);border:1px solid var(--line);border-radius:18px;overflow:hidden;box-shadow:var(--shadow-sm);transition:transform .25s,box-shadow .25s;cursor:pointer;text-align:left}
+  .proj:hover{transform:translateY(-5px);box-shadow:var(--shadow)}
+  .proj .top{height:118px;position:relative;display:flex;align-items:center;justify-content:center;color:#fff;overflow:hidden}
+  .proj .top::after{content:"";position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,.12) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.12) 1px,transparent 1px);background-size:26px 26px;opacity:.5;mask-image:radial-gradient(70% 70% at 50% 40%,#000,transparent)}
+  .proj .glyph{position:relative;z-index:1;font-size:40px}
+  .proj .live{position:absolute;top:12px;right:12px;z-index:2;display:inline-flex;align-items:center;gap:6px;background:rgba(0,0,0,.28);border:1px solid rgba(255,255,255,.3);color:#fff;font-size:11px;font-weight:800;letter-spacing:.04em;padding:4px 10px;border-radius:999px}
+  .proj .live i{width:7px;height:7px;border-radius:50%;background:#34d399;box-shadow:0 0 0 0 rgba(52,211,153,.7);animation:pulse 1.8s infinite}
+  @keyframes pulse{0%{box-shadow:0 0 0 0 rgba(52,211,153,.6)}70%{box-shadow:0 0 0 7px rgba(52,211,153,0)}100%{box-shadow:0 0 0 0 rgba(52,211,153,0)}}
+  .g1{background:linear-gradient(135deg,#7c3aed,#5b4ef0)} .g2{background:linear-gradient(135deg,#5b4ef0,#2563eb)}
+  .g3{background:linear-gradient(135deg,#0e7490,#06b6d4)} .g4{background:linear-gradient(135deg,#9333ea,#db2777)}
+  .g5{background:linear-gradient(135deg,#ea580c,#f59e0b)} .g6{background:linear-gradient(135deg,#0b1020,#334155)} .g7{background:linear-gradient(135deg,#0f766e,#10b981)}
+  .proj .body{padding:18px 20px 20px;display:flex;flex-direction:column;flex:1}
+  .proj h3{font-size:18.5px;font-weight:800;margin:0 0 5px}
+  .proj .desc{font-size:14px;color:var(--muted);margin:0 0 13px;line-height:1.5;flex:1}
+  .proj .chips{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:15px}
+  .proj .chips span{font-size:11.5px;font-weight:700;color:var(--ink-2);background:var(--bg);border:1px solid var(--line);padding:3px 9px;border-radius:999px}
+  .proj .launch{display:inline-flex;align-items:center;gap:8px;font-weight:800;font-size:14px;color:var(--v1)}
+  .proj:hover .launch{gap:11px}
+
+  /* thesis band */
+  .band{background:#0b0e1c;color:#fff;border-radius:0}
+  .band .sec-head h2{color:#fff}.band .sec-head .kicker{color:#a78bfa}.band .sec-head p{color:#aab2d0}
+  .pillars{display:grid;grid-template-columns:1fr;gap:18px;margin-top:36px}
+  @media(min-width:780px){.pillars{grid-template-columns:repeat(3,1fr)}}
+  .pillar{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);border-radius:16px;padding:24px}
+  .pillar .pg{width:42px;height:42px;border-radius:11px;background:var(--grad);display:grid;place-items:center;font-size:20px;margin-bottom:14px}
+  .pillar h3{font-size:18px;font-weight:800;margin:0 0 7px}
+  .pillar p{font-size:14.5px;color:#aab2d0;margin:0;line-height:1.55}
+
+  /* future */
+  .vision{display:grid;grid-template-columns:1fr;gap:18px;margin-top:36px}
+  @media(min-width:640px){.vision{grid-template-columns:1fr 1fr}}
+  @media(min-width:1000px){.vision{grid-template-columns:repeat(3,1fr)}}
+  .vcard{position:relative;border:1px solid var(--line);border-radius:16px;padding:24px;background:var(--card);box-shadow:var(--shadow-sm);overflow:hidden}
+  .vcard::before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--grad)}
+  .vcard .vg{font-size:24px;margin-bottom:12px}
+  .vcard h3{font-size:17.5px;font-weight:800;margin:0 0 7px}
+  .vcard p{font-size:14.5px;color:var(--muted);margin:0;line-height:1.55}
+  .roadmap{margin-top:46px;background:var(--card);border:1px solid var(--line);border-radius:20px;box-shadow:var(--shadow-sm);padding:30px 32px}
+  .roadmap h3{font-size:20px;font-weight:850;margin:0 0 4px;display:flex;align-items:center;gap:10px}
+  .roadmap .rsub{color:var(--muted);font-size:15px;margin:0 0 18px}
+  .rlist{display:grid;grid-template-columns:1fr;gap:12px}
+  @media(min-width:760px){.rlist{grid-template-columns:1fr 1fr}}
+  .ritem{display:flex;gap:13px;align-items:flex-start;padding:13px 15px;border:1px solid var(--line);border-radius:13px;background:var(--bg)}
+  .ritem .rn{flex:0 0 30px;height:30px;border-radius:9px;background:var(--vi-soft);color:var(--v1);display:grid;place-items:center;font-weight:800;font-size:14px}
+  .ritem .rt b{display:block;font-size:14.5px;color:var(--ink)}
+  .ritem .rt span{font-size:13px;color:var(--muted)}
+
+  /* contact */
+  .contact{background:#080a16;color:#fff;position:relative;overflow:hidden}
+  .contact::before{content:"";position:absolute;inset:0;background:radial-gradient(60% 90% at 50% 0%,rgba(124,58,237,.5),transparent 60%),radial-gradient(50% 80% at 90% 100%,rgba(6,182,212,.35),transparent 60%)}
+  .contact .wrap{position:relative;z-index:1;text-align:center;padding:86px 24px}
+  .contact h2{font-size:clamp(30px,5vw,48px);font-weight:850;margin:0 0 16px}
+  .contact p{color:#c3c9e0;font-size:18px;max-width:56ch;margin:0 auto 32px}
+  .contact .btns{display:flex;gap:14px;justify-content:center;flex-wrap:wrap}
+  .contact .ph{margin-top:26px;font-size:15px;color:#aab2d0;display:flex;gap:9px 22px;justify-content:center;flex-wrap:wrap}
+  .contact .ph a{color:#fff;font-weight:700;text-decoration:none;display:inline-flex;align-items:center;gap:8px;border-bottom:1px solid rgba(255,255,255,.35);padding-bottom:1px}
+  .contact .ph a:hover{border-color:#fff;text-decoration:none}
+
+  footer{background:#05060d;color:#8b93b5;font-size:14px;padding:34px 0}
+  footer .row{display:flex;flex-wrap:wrap;gap:14px;align-items:center;justify-content:space-between}
+  footer .brand{color:#fff;font-weight:800;display:flex;align-items:center;gap:10px}
+  footer .brand .dot{width:24px;height:24px;border-radius:7px;background:var(--grad);display:grid;place-items:center;color:#fff;font-size:12px}
+
+  /* demo modal */
+  .modal{position:fixed;inset:0;z-index:200;display:none;background:rgba(8,10,22,.74);backdrop-filter:blur(4px);padding:max(20px,3vh) max(16px,3vw)}
+  .modal.open{display:flex}
+  .modal .frame{margin:auto;width:100%;max-width:1340px;height:100%;background:#fff;border-radius:16px;overflow:hidden;box-shadow:0 30px 80px rgba(0,0,0,.5);display:flex;flex-direction:column;animation:pop .3s cubic-bezier(.2,.8,.2,1)}
+  @keyframes pop{from{opacity:0;transform:translateY(14px) scale(.99)}to{opacity:1;transform:none}}
+  .bbar{display:flex;align-items:center;gap:12px;padding:11px 16px;background:#16182a;color:#fff;flex:0 0 auto}
+  .bbar .dots{display:flex;gap:7px}.bbar .dots i{width:12px;height:12px;border-radius:50%}
+  .bbar .dots i:nth-child(1){background:#ff5f57}.bbar .dots i:nth-child(2){background:#febc2e}.bbar .dots i:nth-child(3){background:#28c840}
+  .bbar .addr{flex:1;background:rgba(255,255,255,.1);border-radius:8px;padding:7px 13px;font-size:13px;color:#cfd4ea;display:flex;align-items:center;gap:9px;min-width:0}
+  .bbar .addr .lk{flex:0 0 auto;opacity:.7}
+  .bbar .addr .u{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .bbar .addr .ttl{font-weight:700;color:#fff}
+  .bbar button,.bbar a{background:rgba(255,255,255,.12);color:#fff;border:none;font:inherit;font-size:13px;font-weight:700;padding:8px 13px;border-radius:8px;cursor:pointer;display:inline-flex;align-items:center;gap:6px;text-decoration:none}
+  .bbar button:hover,.bbar a:hover{background:rgba(255,255,255,.22);text-decoration:none}
+  .stage{position:relative;flex:1;background:#fff}
+  .stage iframe{width:100%;height:100%;border:none;display:block}
+  .stage .loading{position:absolute;inset:0;display:grid;place-items:center;background:#fff;color:var(--muted);font-weight:600;gap:14px;flex-direction:column}
+  .stage .loading.hide{display:none}
+  .spin{width:34px;height:34px;border-radius:50%;border:3px solid var(--line);border-top-color:var(--v1);animation:sp 1s linear infinite}
+  @keyframes sp{to{transform:rotate(360deg)}}
+  .demo-note{text-align:center;color:var(--muted);font-size:13.5px;margin-top:30px}
+</style>
+</head>
+<body>
+
+<nav class="nav"><div class="wrap row">
+  <span class="brand"><span class="dot">✦</span> Wes Griffin</span>
+  <span class="links">
+    <a href="#work">The work</a>
+    <a href="#approach">Approach</a>
+    <a href="#future">What's next</a>
+    <a href="#contact" class="cta">Work with me</a>
+  </span>
+</div></nav>
+
+<header class="hero">
+  <div class="wrap">
+    <span class="eyebrow">✦ People Operations × AI</span>
+    <h1>People Operations, reimagined — and <span class="grad-text">shipped</span> — with AI.</h1>
+    <p class="lede">I'm Wes Griffin. In a matter of days — with no engineering team — I designed and built a suite of production-grade HR tools and interactive training. Explore the live demos below, then imagine what we could build for <em>your</em> team.</p>
+    <div class="btns">
+      <a href="#work" class="btn btn-primary">Explore the work ↓</a>
+      <a href="#contact" class="btn btn-ghost">Work with me →</a>
+    </div>
+    <div class="meta"><span>7 live products</span><span>Built solo, AI-assisted</span><span>Days, not quarters</span></div>
+  </div>
+</header>
+
+<div class="stats wrap reveal">
+  <div class="grid">
+    <div class="stat"><div class="n" data-count="7">7</div><div class="l">Interactive products</div></div>
+    <div class="stat"><div class="n" data-count="4">4</div><div class="l">Training courses</div></div>
+    <div class="stat"><div class="n" data-count="3">3</div><div class="l">Internal tools &amp; apps</div></div>
+    <div class="stat"><div class="n">0</div><div class="l">Engineers required</div></div>
+  </div>
+</div>
+
+<!-- WORK -->
+<section id="work">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <div class="kicker">The work</div>
+      <h2>Real, working products — explore them live</h2>
+      <p>Click any project to open the full interactive demo right here on the page. Everything runs on synthetic data — no logins, no setup.</p>
+    </div>
+
+    <div class="group-label reveal">Training &amp; enablement</div>
+    <div class="projects reveal">
+      <button class="proj" onclick="openDemo('form-i9-training.html','Form I-9 Fundamentals','Interactive compliance course')">
+        <div class="top g1"><span class="live"><i></i>LIVE</span><span class="glyph">📋</span></div>
+        <div class="body"><h3>Form I-9 Fundamentals</h3>
+          <p class="desc">A complete, interactive compliance course on U.S. employment-eligibility verification.</p>
+          <div class="chips"><span>12 modules</span><span>Deadline calculator</span><span>Document validator</span><span>Quiz + certificate</span></div>
+          <span class="launch">▶ Launch interactive preview →</span></div>
+      </button>
+      <button class="proj" onclick="openDemo('us-employment-law-training.html','U.S. Employment Law Essentials','Interactive course')">
+        <div class="top g2"><span class="live"><i></i>LIVE</span><span class="glyph">⚖️</span></div>
+        <div class="body"><h3>U.S. Employment Law</h3>
+          <p class="desc">Thirteen modules across wages, classification, discrimination, leave, safety, and labor relations.</p>
+          <div class="chips"><span>FLSA &amp; OT</span><span>Coverage checker</span><span>Salary tool</span><span>Quiz + cert</span></div>
+          <span class="launch">▶ Launch interactive preview →</span></div>
+      </button>
+      <button class="proj" onclick="openDemo('california-employment-law-training.html','California Employment Law Essentials','Interactive course')">
+        <div class="top g3"><span class="live"><i></i>LIVE</span><span class="glyph">🌅</span></div>
+        <div class="body"><h3>California Employment Law</h3>
+          <p class="desc">A standalone, California-specific course — daily overtime, breaks, FEHA, leaves, and 2026 updates.</p>
+          <div class="chips"><span>Break calculator</span><span>Final-pay tool</span><span>16 modules</span><span>2026 laws</span></div>
+          <span class="launch">▶ Launch interactive preview →</span></div>
+      </button>
+      <button class="proj" onclick="openDemo('compliant-inclusive-interviewing-training.html','Compliant &amp; Inclusive Interviewing','Interactive course')">
+        <div class="top g4"><span class="live"><i></i>LIVE</span><span class="glyph">💬</span></div>
+        <div class="body"><h3>Compliant &amp; Inclusive Interviewing</h3>
+          <p class="desc">Train interviewers to ask better questions and stay lawful — with a live "Can I ask this?" checker.</p>
+          <div class="chips"><span>"Can I ask this?" tool</span><span>Bias-aware</span><span>Quiz + cert</span></div>
+          <span class="launch">▶ Launch interactive preview →</span></div>
+      </button>
+    </div>
+
+    <div class="group-label reveal">Tools &amp; systems</div>
+    <div class="projects three reveal">
+      <button class="proj" onclick="openDemo('ask-people-demo.html','Ask People — HR Ticketing','Internal help-desk app')">
+        <div class="top g5"><span class="live"><i></i>LIVE</span><span class="glyph">🎫</span></div>
+        <div class="body"><h3>Ask People — HR Ticketing</h3>
+          <p class="desc">A full People Services help desk: inbox, SLA timers, threaded replies, dashboard, and a knowledge base.</p>
+          <div class="chips"><span>Inbox + SLA</span><span>Dashboard</span><span>Knowledge base</span><span>Guided tour</span></div>
+          <span class="launch">▶ Launch interactive preview →</span></div>
+      </button>
+      <button class="proj" onclick="openDemo('headcount-dashboard-demo.html','Headcount Reporting Dashboard','Live HR analytics')">
+        <div class="top g6"><span class="live"><i></i>LIVE</span><span class="glyph">📊</span></div>
+        <div class="body"><h3>Headcount Reporting Dashboard</h3>
+          <p class="desc">Live workforce analytics — headcount by leader and region, hires, attrition, open reqs, and click-through drill-downs.</p>
+          <div class="chips"><span>By SMT / location</span><span>Hires &amp; attrition</span><span>Drill-downs</span></div>
+          <span class="launch">▶ Launch interactive preview →</span></div>
+      </button>
+      <button class="proj" onclick="openDemo('headcount-requests-demo.html','Headcount Management Portal','Approval workflow app')">
+        <div class="top g7"><span class="live"><i></i>LIVE</span><span class="glyph">🗂️</span></div>
+        <div class="body"><h3>Headcount Management Portal</h3>
+          <p class="desc">A multi-stage headcount-request system — submit a role, route it PBP → SMT → Admin, and track every approval.</p>
+          <div class="chips"><span>PBP→SMT→Admin</span><span>Live request form</span><span>Role workflows</span></div>
+          <span class="launch">▶ Launch interactive preview →</span></div>
+      </button>
+    </div>
+    <p class="demo-note">All demos run entirely on synthetic / mock data — no real employee information, no backend, no sign-in.</p>
+  </div>
+</section>
+
+<!-- APPROACH -->
+<section id="approach" class="band">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <div class="kicker">The unlock</div>
+      <h2>The hard part was never the code</h2>
+      <p>These tools didn't need a dev team. They needed someone who understands the People Operations problems cold — and who can direct AI to build the solution. That's the shift: domain experts can now ship real software.</p>
+    </div>
+    <div class="pillars">
+      <div class="pillar reveal"><div class="pg">🎯</div><h3>Domain-led</h3><p>I bring deep People Ops expertise — compliance, headcount, employee experience — so the tools solve the <em>real</em> problem, not a generic one.</p></div>
+      <div class="pillar reveal"><div class="pg">⚡</div><h3>AI-accelerated</h3><p>AI turns that expertise into working software in days. The loop from "we should have a tool for that" to a live product is now astonishingly short.</p></div>
+      <div class="pillar reveal"><div class="pg">🛡️</div><h3>Production-minded</h3><p>Built with the details that matter to HR — accuracy, privacy, defensibility — and verified, not just generated.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- FUTURE -->
+<section id="future">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <div class="kicker">What's next</div>
+      <h2>Where AI takes People Operations</h2>
+      <p>The demos above are a starting point. Here's the bigger picture — and the concrete things I'd build next.</p>
+    </div>
+    <div class="vision">
+      <div class="vcard reveal"><div class="vg">💡</div><h3>The self-service People team</h3><p>Every policy and benefits question answered instantly and accurately — in any language, 24/7, grounded in your own documents.</p></div>
+      <div class="vcard reveal"><div class="vg">🤖</div><h3>Agentic operations</h3><p>AI agents triage tickets, draft replies, assemble cases, and move approvals along — so the team spends time on people, not busywork.</p></div>
+      <div class="vcard reveal"><div class="vg">🛡️</div><h3>Compliance on autopilot</h3><p>I-9s, filings, trainings, and policy gaps monitored continuously and flagged to an owner <em>before</em> anything slips.</p></div>
+      <div class="vcard reveal"><div class="vg">🔮</div><h3>Predictive, not reactive</h3><p>Attrition risk, capacity gaps, and cost surprises surfaced early — so leaders act on a forecast, not a fire.</p></div>
+      <div class="vcard reveal"><div class="vg">🚀</div><h3>Onboarding that runs itself</h3><p>Orchestrated, personalized journeys from offer to day 90 — coordinating IT, payroll, managers, and the new hire automatically.</p></div>
+      <div class="vcard reveal"><div class="vg">📈</div><h3>From data to decisions</h3><p>Every headcount, engagement, and cost metric one plain-English question away — no dashboards to hunt through.</p></div>
+    </div>
+
+    <div class="roadmap reveal">
+      <h3>🗺️ What I'd build next</h3>
+      <p class="rsub">Concrete, near-term builds — each a natural extension of what you've just explored.</p>
+      <div class="rlist">
+        <div class="ritem"><div class="rn">1</div><div class="rt"><b>Policy &amp; handbook copilot</b><span>Grounded in your own documents, with citations and zero made-up answers.</span></div></div>
+        <div class="ritem"><div class="rn">2</div><div class="rt"><b>Auto-triage + suggested replies</b><span>Layered onto the Ask People ticketing system to cut response time.</span></div></div>
+        <div class="ritem"><div class="rn">3</div><div class="rt"><b>Onboarding orchestrator</b><span>Coordinates IT, payroll, and managers across the first 90 days.</span></div></div>
+        <div class="ritem"><div class="rn">4</div><div class="rt"><b>Attrition early-warning + scenario planner</b><span>Forecast risk and model headcount changes before they bite.</span></div></div>
+        <div class="ritem"><div class="rn">5</div><div class="rt"><b>Manager copilots</b><span>Draft the JD, the review, the PIP — with built-in guardrails and tone.</span></div></div>
+        <div class="ritem"><div class="rn">6</div><div class="rt"><b>Compliance calendar</b><span>Watches every deadline and nudges the right owner automatically.</span></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact" class="contact">
+  <div class="wrap">
+    <h2 class="reveal">Have a People Ops problem worth solving?</h2>
+    <p class="reveal">Let's build it. I design and ship AI-powered HR tools, training, and workflows — fast, accurate, and grounded in real People Operations expertise.</p>
+    <div class="btns reveal">
+      <a href="mailto:wes@wes-griffin.com?subject=Let's%20build%20something" class="btn btn-primary">Get in touch →</a>
+      <a href="https://www.linkedin.com/in/wes-griffin/" target="_blank" rel="noopener" class="btn btn-ghost">Connect on LinkedIn</a>
+    </div>
+    <p class="ph reveal">
+      <a href="mailto:wes@wes-griffin.com">✉️ wes@wes-griffin.com</a>
+      <a href="tel:+19365532347">📱 936-553-2347</a>
+      <a href="https://www.linkedin.com/in/wes-griffin/" target="_blank" rel="noopener">in linkedin.com/in/wes-griffin</a>
+    </p>
+  </div>
+</section>
+
+<footer><div class="wrap row">
+  <span class="brand"><span class="dot">✦</span> Wes Griffin · People Operations × AI</span>
+  <span>Designed &amp; built with AI · Demos run on synthetic data</span>
+</div></footer>
+
+<!-- DEMO MODAL -->
+<div class="modal" id="demoModal" aria-hidden="true">
+  <div class="frame">
+    <div class="bbar">
+      <span class="dots"><i></i><i></i><i></i></span>
+      <span class="addr"><span class="lk">🔒</span><span class="u"><span class="ttl" id="dmTitle">Demo</span> &nbsp;·&nbsp; <span id="dmUrl"></span></span></span>
+      <a id="dmOpen" href="#" target="_blank" rel="noopener" title="Open in a new tab">Open ↗</a>
+      <button onclick="closeDemo()" title="Close (Esc)">✕ Close</button>
+    </div>
+    <div class="stage">
+      <div class="loading" id="dmLoading"><div class="spin"></div><div>Loading the live demo…</div></div>
+      <iframe id="demoFrame" title="Interactive demo" src="about:blank"></iframe>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+  "use strict";
+  var $=function(s){return document.querySelector(s);};
+  // reveal
+  if('IntersectionObserver' in window){
+    var ro=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target.classList.add('in');ro.unobserve(e.target);}});},{rootMargin:'0px 0px -8% 0px',threshold:.04});
+    Array.prototype.forEach.call(document.querySelectorAll('.reveal'),function(el){ro.observe(el);});
+  } else { Array.prototype.forEach.call(document.querySelectorAll('.reveal'),function(el){el.classList.add('in');}); }
+
+  // count-up
+  function countUp(el){
+    var target=parseInt(el.getAttribute('data-count'),10); if(isNaN(target)) return;
+    var n=0,step=Math.max(1,Math.round(target/18));
+    var t=setInterval(function(){ n+=step; if(n>=target){n=target;clearInterval(t);} el.textContent=n; },40);
+  }
+  if('IntersectionObserver' in window){
+    var co=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){countUp(e.target);co.unobserve(e.target);}});},{threshold:.5});
+    Array.prototype.forEach.call(document.querySelectorAll('.stat .n[data-count]'),function(el){co.observe(el);});
+  }
+
+  // demo modal
+  var modal=$('#demoModal'), frame=$('#demoFrame'), loading=$('#dmLoading');
+  window.openDemo=function(file,title,sub){
+    $('#dmTitle').textContent=(title||'Demo').replace('&amp;','&');
+    $('#dmUrl').textContent=file;
+    $('#dmOpen').href='./'+file;
+    loading.classList.remove('hide');
+    frame.src='./'+file;
+    modal.classList.add('open'); modal.setAttribute('aria-hidden','false');
+    document.body.style.overflow='hidden';
+  };
+  window.closeDemo=function(){
+    modal.classList.remove('open'); modal.setAttribute('aria-hidden','true');
+    frame.src='about:blank';
+    document.body.style.overflow='';
+  };
+  frame.addEventListener('load',function(){ if(frame.src.indexOf('about:blank')<0) loading.classList.add('hide'); });
+  modal.addEventListener('click',function(e){ if(e.target===modal) closeDemo(); });
+  document.addEventListener('keydown',function(e){ if(e.key==='Escape' && modal.classList.contains('open')) closeDemo(); });
+})();
+</script>
+</body>
+</html>
