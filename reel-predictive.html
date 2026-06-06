@@ -502,6 +502,67 @@
     display:inline-flex; align-items:center; justify-content:center; color:#fff; font-size:1.4cqw; font-weight:900;
   }
 
+  /* ===================== MOBILE / PORTRAIT — WIDTH-CONSTRAINED STAGE =====================
+     Desktop (>=820px landscape) is untouched. On narrow OR portrait screens the
+     stage is sized by viewport WIDTH (not height), so the 16:9 film fills nearly
+     the full width and letterboxes vertically against the dark backdrop. The stage
+     scales uniformly (container-type:inline-size + cqw), so inline-SVG charts and all
+     text scale with it — no distortion, no horizontal scroll. */
+  @media (max-width:760px), (orientation:portrait){
+    .frame{
+      /* tiny side margins only; vertical centering keeps the film mid-screen */
+      padding:6px;
+      align-items:center;
+    }
+    .stage{
+      /* WIDTH-constrained: ignore the height term entirely. ~6px gutters each side. */
+      width:calc(100vw - 12px);
+      max-width:none;          /* allow filling width on small screens */
+      border-radius:14px;
+    }
+    @supports not (aspect-ratio:16/9){
+      .stage{height:calc((100vw - 12px) * 9 / 16);}
+    }
+    /* keep controls clear of the letterbox & comfortably tappable */
+    .controls{
+      right:10px;
+      bottom:calc(10px + env(safe-area-inset-bottom, 0px));
+      gap:12px;
+    }
+    .ctrl{width:44px; height:44px;}
+    /* progress bar already spans the top (z-50) and stays visible */
+  }
+  /* extra-narrow phones: shave the radius, keep full width */
+  @media (max-width:420px){
+    .stage{border-radius:12px;}
+  }
+
+  /* ===================== PORTRAIT "ROTATE" HINT ===================== */
+  .rotate-hint{
+    position:fixed; left:50%; bottom:calc(74px + env(safe-area-inset-bottom, 0px));
+    transform:translateX(-50%) translateY(8px);
+    z-index:70;
+    display:none;                /* shown only in portrait, via media query below */
+    align-items:center; gap:8px;
+    padding:9px 15px;
+    background:rgba(18,22,40,.74);
+    color:#e8eaf6;
+    border:1px solid rgba(255,255,255,.16);
+    border-radius:999px;
+    font-family:var(--font);
+    font-size:13px; font-weight:600; letter-spacing:.2px;
+    white-space:nowrap;
+    backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(8px);
+    box-shadow:0 8px 24px rgba(0,0,0,.35);
+    opacity:0; pointer-events:none;
+    transition:opacity .5s ease, transform .5s ease;
+  }
+  .rotate-hint .ic{font-size:15px; line-height:1;}
+  @media (orientation:portrait) and (max-width:760px){
+    .rotate-hint{display:flex;}
+    .rotate-hint.show{opacity:1; transform:translateX(-50%) translateY(0);}
+  }
+
   /* ===================== REDUCED MOTION — STATIC FINAL FRAME ===================== */
   @media (prefers-reduced-motion: reduce){
     .drift{animation:none;}
@@ -714,6 +775,8 @@
       <svg viewBox="0 0 24 24"><path d="M12 5V2L8 6l4 4V7a5 5 0 1 1-5 5H5a7 7 0 1 0 7-7z"/></svg>
     </div>
   </div>
+
+  <div class="rotate-hint" id="rotateHint" aria-hidden="true"><span class="ic">⤤</span> Rotate for full screen</div>
 
 <script>
 (function(){
@@ -1018,9 +1081,39 @@
     if(document.hidden){ if(!paused) setPaused(true); }
   });
 
+  /* ---------- portrait "rotate" hint (auto-hides ~4s or on first interaction) ---------- */
+  function initRotateHint(){
+    var hint = $('#rotateHint');
+    if(!hint) return;
+    var isPortrait = false;
+    try{ isPortrait = window.matchMedia && window.matchMedia('(orientation:portrait) and (max-width:760px)').matches; }catch(e){}
+    if(!isPortrait) return;
+    var hideTimer = null;
+    function hide(){
+      if(!hint) return;
+      hint.classList.remove('show');
+      if(hideTimer){ clearTimeout(hideTimer); hideTimer = null; }
+      try{
+        document.removeEventListener('pointerdown', hide, true);
+        document.removeEventListener('touchstart', hide, true);
+        document.removeEventListener('keydown', hide, true);
+      }catch(e){}
+    }
+    // reveal on next frame so the transition runs
+    requestAnimationFrame(function(){ requestAnimationFrame(function(){ hint.classList.add('show'); }); });
+    hideTimer = setTimeout(hide, 4000);
+    // dismiss on first tap/key
+    try{
+      document.addEventListener('pointerdown', hide, true);
+      document.addEventListener('touchstart', hide, true);
+      document.addEventListener('keydown', hide, true);
+    }catch(e){}
+  }
+
   /* ---------- boot ---------- */
   function boot(){
     buildForecast();
+    initRotateHint();
     if(reduce){
       // static composed final frame — no motion, show end card
       scenes.forEach(function(s){ s.classList.remove('is-active'); });

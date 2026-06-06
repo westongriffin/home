@@ -378,6 +378,57 @@
   .ctrl:active{ transform:translateY(0) scale(.95); }
   .ctrl svg{ width:18px; height:18px; fill:currentColor; }
 
+  /* ---------- Rotate hint (portrait only) ---------- */
+  .rotatehint{
+    display:none;
+    position:fixed; left:50%; top:14px; transform:translateX(-50%);
+    z-index:55; pointer-events:none;
+    padding:7px 14px; border-radius:999px;
+    background:rgba(13,16,36,.78); backdrop-filter:blur(8px);
+    border:1px solid rgba(255,255,255,.12);
+    color:#dfe3f5; font-size:12px; font-weight:600; letter-spacing:.2px; white-space:nowrap;
+    box-shadow:0 8px 24px -10px rgba(0,0,0,.7);
+    opacity:0; transition:opacity .5s ease;
+  }
+  .rotatehint span{ color:#a78bfa; font-weight:700; }
+
+  /* ====================================================== */
+  /* MOBILE / PORTRAIT — width-constrained full-bleed stage  */
+  /* Desktop (>=820px landscape) is untouched.               */
+  /* ====================================================== */
+  @media (max-width:760px), (orientation:portrait){
+    /* Let the 16:9 stage fill the full viewport width (scale ~ vw/1280),
+       vertically centered with the dark backdrop letterboxing top/bottom. */
+    .frame{
+      padding:6px;                 /* ~6px side margins, no horizontal scroll */
+      align-items:center;          /* vertical center -> symmetric letterbox */
+    }
+    .stage{
+      width:100%;
+      max-width:none;              /* don't cap below 1280 on small screens */
+      border-radius:14px;
+    }
+    /* Keep controls clear of the bottom letterbox edge and tappable. */
+    .controls{
+      bottom:max(12px, env(safe-area-inset-bottom));
+      right:12px;
+      gap:12px;
+    }
+    .ctrl{ width:44px; height:44px; }   /* >=40px tap targets */
+    /* Nudge the progress bar a hair thicker so it reads on small screens. */
+    .progress{ height:4px; }
+    /* Show the rotate hint only in portrait orientation. */
+    .rotatehint{ display:block; }
+  }
+
+  /* In landscape on a short phone, no hint and no extra letterbox needed. */
+  @media (orientation:landscape) and (max-width:760px){
+    .rotatehint{ display:none; }
+  }
+
+  /* Hidden once dismissed (auto-timeout or first tap). */
+  .rotatehint.hide{ display:none !important; }
+
   /* ---------- Reduced motion: static composed final frame ---------- */
   @media (prefers-reduced-motion:reduce){
     *{ animation:none !important; transition:none !important; }
@@ -396,6 +447,8 @@
   </div>
 
   <div class="progress"><div class="bar" id="bar"></div></div>
+
+  <div class="rotatehint" id="rotateHint" aria-hidden="true">Rotate for full screen <span>⤤</span></div>
 
   <div class="frame">
     <div class="stage" id="stage">
@@ -574,6 +627,35 @@
     }catch(e){}
     return; // no motion, no loop
   }
+
+  /* ---- Portrait "rotate" hint: fade in, auto-hide after ~4s or on first tap ----
+     The element is only visible via the portrait media query; this just handles
+     the fade + dismissal. Touching anywhere (or any control) hides it early. */
+  (function rotateHint(){
+    var hint = document.getElementById("rotateHint");
+    if (!hint) return;
+    var killed = false;
+    function hide(){
+      if (killed) return;
+      killed = true;
+      hint.style.opacity = "0";
+      // remove from flow after the fade so it can't intercept anything
+      setTimeout(function(){ hint.classList.add("hide"); }, 550);
+      window.removeEventListener("pointerdown", hide, true);
+      window.removeEventListener("touchstart", hide, true);
+    }
+    // fade in shortly after load (only actually shown in portrait via CSS)
+    setTimeout(function(){ if(!killed) hint.style.opacity = "1"; }, 600);
+    // auto-hide ~4s after it appears
+    setTimeout(hide, 4600);
+    // Arm "dismiss on first tap" only after it has appeared, so a stray
+    // load-time pointer event can't pre-empt the hint before it's seen.
+    setTimeout(function(){
+      if (killed) return;
+      window.addEventListener("pointerdown", hide, true);
+      window.addEventListener("touchstart", hide, true);
+    }, 750);
+  })();
 
   /* ====================================================== */
   /* TIMELINE DEFINITION                                    */

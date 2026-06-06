@@ -407,11 +407,54 @@
   }
   .wm .d{ width:7px; height:7px; border-radius:50%; background:var(--grad); }
 
-  @media (max-width:760px){
-    .stage-wrap{ padding:16px; }
-    .stage{ width:calc(100vw - 32px); max-height:calc(100vh - 32px); border-radius:14px; }
-    .controls{ right:14px; bottom:12px; }
+  /* ---------- Rotate-for-fullscreen hint (portrait only) ---------- */
+  .rotate-hint{
+    position:fixed; left:50%; top:18px; transform:translateX(-50%);
+    z-index:58; display:none; align-items:center; gap:8px;
+    font-size:12.5px; font-weight:700; letter-spacing:.02em; color:#fff;
+    padding:9px 15px; border-radius:999px;
+    background:rgba(18,20,38,.78); border:1px solid rgba(255,255,255,.16);
+    backdrop-filter:blur(10px); -webkit-backdrop-filter:blur(10px);
+    box-shadow:0 10px 30px -12px rgba(0,0,0,.7);
+    pointer-events:none; white-space:nowrap;
+    transition:opacity .5s ease;
+  }
+  .rotate-hint .rh-ico{ font-size:15px; line-height:1; }
+
+  /* ===========================================================
+     PORTRAIT / NARROW LAYER
+     Goal: the 16:9 stage fills (nearly) the FULL viewport WIDTH,
+     scaled by viewport width — NOT min(width,height) — and is
+     letterboxed (vertically centered) against the dark backdrop.
+     Desktop (>=820px landscape) is untouched.
+     =========================================================== */
+  @media (max-width:760px), (orientation:portrait){
+    .stage-wrap{
+      /* small symmetric side margins; vertical centering handled by flex */
+      padding:0 7px;
+    }
+    .stage{
+      /* width-constrained: fill viewport width minus the ~7px gutters.
+         Drop the height cap so the stage is sized purely by width and
+         never shrunk to fit the (tall) portrait height. */
+      width:calc(100vw - 14px);
+      max-width:1280px;
+      max-height:none;
+      border-radius:12px;
+    }
+    /* keep controls comfortably tappable and clear of stage content */
+    .controls{ right:12px; bottom:14px; gap:12px; }
+    .ctrl{ width:46px; height:46px; }
     .wm{ display:none; }
+    /* surface the rotate hint only in portrait */
+    .rotate-hint{ display:flex; }
+  }
+
+  /* In landscape on a short viewport the width-based stage could exceed
+     the screen height; re-introduce a height cap there only (keeps 16:9). */
+  @media (max-width:760px) and (orientation:landscape){
+    .stage{ max-height:calc(100vh - 24px); }
+    .rotate-hint{ display:none; }
   }
 
   /* ===== Reduced motion: static final frame ===== */
@@ -595,6 +638,9 @@
 
   <!-- watermark -->
   <div class="wm"><span class="d"></span> NEWWESVENTURES — SIZZLE REEL</div>
+
+  <!-- portrait-only rotate hint (auto-hides) -->
+  <div class="rotate-hint" id="rotateHint"><span class="rh-ico">⤤</span> Rotate for full screen</div>
 
   <!-- controls -->
   <div class="controls">
@@ -1140,6 +1186,26 @@
     if(iconPause) iconPause.style.display='none';
     if(iconPlay) iconPlay.style.display='';
   }
+
+  /* ===================== ROTATE HINT (portrait) ===================== */
+  // Auto-hide the "Rotate for full screen" hint after ~4s, or on first tap.
+  (function(){
+    var hint = $('rotateHint');
+    if(!hint) return;
+    var hidden = false;
+    function hideHint(){
+      if(hidden) return;
+      hidden = true;
+      hint.style.opacity = '0';
+      // fully remove from the box after the fade so it can't intercept anything
+      setTimeout(function(){ hint.style.display = 'none'; }, 600);
+      document.removeEventListener('pointerdown', hideHint, true);
+    }
+    // first tap/click anywhere dismisses it
+    document.addEventListener('pointerdown', hideHint, true);
+    // auto-hide timer
+    setTimeout(hideHint, 4000);
+  })();
 
   /* ===================== BOOT ===================== */
   function boot(){

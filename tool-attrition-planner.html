@@ -375,6 +375,113 @@
     .kpi-row{grid-template-columns:1fr 1fr;}
     .titleblock .tool{font-size:13.5px; white-space:normal;}
   }
+
+  /* ===================== PHONE LAYER (≤760px) ===================== */
+  @media (max-width:760px){
+    /* allow internal scroll containers to shrink without forcing horizontal overflow */
+    html,body{overflow-x:hidden;}
+    .app{height:100dvh;}
+
+    /* ---- APP BAR: wrap so title, badge, tabs & user chip all stay visible ---- */
+    .bar{
+      flex-wrap:wrap;
+      align-items:center;
+      gap:9px 10px;
+      padding:10px 14px;
+    }
+    .titleblock{flex:1 1 60%; min-width:0;}
+    .titleblock .tool{font-size:14px; white-space:normal;}
+    /* kill the flex spacer so the chip sits next to the title instead of being pushed off-screen */
+    .bar .spacer{display:none;}
+    .badge{order:3; flex:0 0 auto;}
+    .userchip{order:2; margin-left:auto;}
+    /* re-show the chip text (520px block hides it) and keep the chip compact + tappable */
+    .userchip .utext{display:block;}
+    .userchip{padding:5px 11px 5px 5px; min-height:40px;}
+
+    /* ---- TABS: full-width, tappable, no clip ---- */
+    .tabs{padding:10px 12px 0; gap:6px;}
+    .tab{flex:1 1 0; justify-content:center; min-height:44px; padding:11px 10px; font-size:13.5px;}
+
+    .scroll{padding:14px 12px 20px;}
+    .sec-head{gap:10px; margin-bottom:12px;}
+    .sec-head h2{font-size:18px;}
+
+    /* ---- KPI STRIP: 2-up grid ---- */
+    .kpi-row{grid-template-columns:repeat(2,1fr); gap:10px; margin-bottom:14px;}
+    .kpi .kv{font-size:22px;}
+
+    /* ---- RISK TABLE: let each row wrap so name / chip / bar stay legible ---- */
+    .risk-table{padding:4px;}
+    .rt-head{display:none;}
+    .team-row{
+      display:flex; flex-wrap:wrap; align-items:center;
+      grid-template-columns:none; grid-template-areas:none; /* unset desktop/820px grid */
+      gap:10px 12px; padding:13px 12px;
+    }
+    .tname{flex:1 1 60%; min-width:0; grid-area:auto;}
+    .team-row > .chip{flex:0 0 auto; margin-left:auto; grid-area:auto;}
+    .chev{flex:0 0 auto; grid-area:auto; justify-self:auto; width:34px; height:34px;}
+    /* risk pct + bar take the full width on their own line */
+    .riskcell{flex:1 1 100%; grid-area:auto; gap:10px;}
+    .riskcell .rpct{width:auto; min-width:42px;}
+
+    /* ---- EXPANDED PANEL: single column, full-width blocks ---- */
+    .panel-inner{grid-template-columns:1fr; gap:12px; padding:4px 12px 16px;}
+    .impact{gap:12px; padding:13px 14px;}
+    .imp-bars{flex:1 1 100%; min-width:0;}
+    .imp-delta{flex:1 1 100%; text-align:left; padding-left:0;}
+    .interv{padding:11px;}
+    .interv .sw{width:44px; height:26px;}
+    .interv .sw::after{width:22px; height:22px;}
+    .interv.on .sw::after{transform:translateX(18px);}
+
+    /* ---- SCENARIO PLANNER: controls stack full-width above the chart ---- */
+    .plan-grid{grid-template-columns:1fr; gap:14px;}
+    .controls{padding:14px;}
+    /* bigger, thumb-friendly sliders + number fields */
+    input[type=range]{height:10px;}
+    input[type=range]::-webkit-slider-thumb{width:26px; height:26px; margin-top:-8px;}
+    input[type=range]::-webkit-slider-runnable-track{height:10px;}
+    input[type=range]::-moz-range-thumb{width:26px; height:26px;}
+    input[type=range]::-moz-range-track{height:10px;}
+    .ctrl .cnum{min-height:40px; width:84px; font-size:14px;}
+    .preset{gap:11px; padding:12px;}
+    .preset .btn{min-height:40px;}
+
+    /* ---- CHART: scale to container width, never overflow ---- */
+    .chart-card{padding:14px;}
+    .chart-wrap{width:100%; overflow:hidden;}
+    svg.chart{width:100%; height:auto; max-width:100%;}
+
+    /* ---- RESULT KPI CARDS: 1-up (already stack at 820px, keep readable) ---- */
+    .plan-kpis{grid-template-columns:1fr; gap:10px; margin-top:12px;}
+  }
+
+  /* ===================== SMALL PHONE LAYER (≤430px) ===================== */
+  @media (max-width:430px){
+    /* KPI cards can crowd at ~360px → let them scroll horizontally, 2 visible */
+    .kpi-row{
+      display:flex; gap:10px; margin-bottom:14px;
+      overflow-x:auto; -webkit-overflow-scrolling:touch;
+      scroll-snap-type:x mandatory;
+      padding-bottom:2px;
+    }
+    .kpi-row::-webkit-scrollbar{height:0;}
+    .kpi-row .kpi{flex:0 0 calc(50% - 5px); scroll-snap-align:start; min-width:150px;}
+
+    .titleblock .tool{font-size:13px;}
+    .titleblock .brand{font-size:10px;}
+    .userchip .utext{display:none;} /* tight widths: avatar alone keeps the chip tappable */
+    .userchip{padding:4px; min-width:40px; min-height:40px;}
+
+    .tab{font-size:13px; padding:11px 5px; gap:5px;}
+
+    .team-row{padding:12px 11px;}
+    .tname .tt{font-size:14px;}
+    .interv .it{font-size:13px;}
+    .imp-delta .idv{font-size:24px;}
+  }
 </style>
 </head>
 <body>

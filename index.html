@@ -185,6 +185,32 @@
   .spin{width:34px;height:34px;border-radius:50%;border:3px solid var(--line);border-top-color:var(--v1);animation:sp 1s linear infinite}
   @keyframes sp{to{transform:rotate(360deg)}}
   .demo-note{text-align:center;color:var(--muted);font-size:13.5px;margin-top:30px}
+
+  /* ---- mobile ---- */
+  @media(max-width:760px){
+    /* full-bleed modal so embedded demos & reels get the whole screen */
+    .modal{padding:0}
+    .modal .frame{border-radius:0;max-width:none}
+    .bbar{padding:8px 10px;gap:7px}
+    .bbar .addr{font-size:12px;padding:6px 9px;gap:6px}
+    .bbar .addr .lk,.bbar .addr #dmUrl{display:none}
+    .bbar .addr .u .ttl{font-size:12.5px}
+    .bbar button,.bbar a{padding:9px 12px;font-size:12.5px}
+  }
+  @media(max-width:600px){
+    body{font-size:16px}
+    .wrap{padding:0 18px}
+    section{padding:56px 0}
+    .stats{margin-top:-32px}
+    .stats .grid{padding:22px 16px;gap:10px}
+    .stat .n{font-size:34px}
+    .group-label{margin:34px 0 14px}
+    .roadmap{padding:24px 18px}
+    .builtcallout{padding:22px 18px;gap:14px}
+    .contact .wrap{padding:64px 18px}
+    .pillar{padding:20px}
+    .vcard{padding:20px}
+  }
 </style>
 </head>
 <body>

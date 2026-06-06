@@ -464,6 +464,143 @@
     .cell{min-height:72px; padding:5px;}
     .brandwrap .org{display:none;}
   }
+
+  /* ============================================================
+     PHONE LAYER — applies at ≤760px. Desktop (≥820px) untouched.
+     ============================================================ */
+  @media (max-width:760px){
+    /* prevent any horizontal page scroll */
+    html,body{overflow-x:hidden;}
+    #app{width:100%; max-width:100%;}
+
+    /* ---- App bar: wrap so brand, badge & chip stay visible/tappable ---- */
+    .appbar{
+      flex-wrap:wrap; row-gap:9px; column-gap:10px; padding:10px 14px;
+    }
+    .appbar .spacer{display:none;}          /* let items flow & left-align on wrap */
+    .brandwrap{flex:1 1 auto;}
+    .brandwrap .org{display:block;}          /* re-show org line (hidden under 620) */
+    .brandwrap .tool{font-size:14.5px;}
+    .demo-badge{order:3;}
+    .userchip{order:4; margin-left:auto;}    /* chip hugs the right on its row */
+
+    /* ---- Header summary: stack ring → stats → watch ---- */
+    .summary{flex-direction:column; align-items:stretch; gap:12px; padding:13px 14px;}
+    .ring-card{
+      order:1; width:100%; justify-content:flex-start; gap:14px;
+      padding:2px 0 4px;
+    }
+    .ring-wrap{width:84px; height:84px;}
+
+    /* four stat cards as a 2-up grid */
+    .stat-row{
+      order:2; display:grid; grid-template-columns:1fr 1fr; gap:10px;
+      min-width:0; width:100%;
+    }
+    .stat{padding:12px 14px;}
+    .stat .v{font-size:24px;}
+
+    /* auto-watch full width below the stats */
+    .watch-card{order:3; width:100%; min-width:0; flex:1 1 auto;}
+
+    .nudges.open{padding:12px 14px; max-height:none;}
+    .nudge-list{gap:8px;}
+
+    /* ---- Toolbar stays usable, wraps if needed ---- */
+    .toolbar{padding:10px 14px; gap:10px;}
+    .toolbar .spacer{flex-basis:100%; height:0;}  /* push filter note to its own row */
+    .filter-note{width:100%; justify-content:space-between;}
+
+    /* ---- Agenda items go full-width & stay legible ---- */
+    .view{padding:14px 14px 26px;}
+    .item{gap:11px; padding:12px 13px; align-items:flex-start;}
+    .it-date{padding-top:1px;}
+    .it-main{flex:1 1 100%;}
+    .it-title{font-size:14px; white-space:normal;}
+    .it-meta{gap:8px 12px;}
+    .it-right{
+      /* status chip + chevron align to the right, can wrap under */
+      align-self:flex-start; gap:8px; margin-left:auto;
+    }
+
+    /* ---- Month grid: keep readable; never overflow the page ---- */
+    .cal-title{flex-wrap:wrap; gap:8px;}
+    .cal-title .legend{margin-left:0; width:100%; gap:10px;}
+    .cal-head{gap:4px;}
+    .cal-grid{gap:4px;}
+    .cell{min-height:66px; padding:5px 4px; border-radius:9px;}
+    .cell .dn{font-size:11px;}
+    .ev{font-size:10px; padding:2px 5px;}
+
+    /* ============================================================
+       DRAWER → full-width bottom sheet (slides up from bottom)
+       ============================================================ */
+    .drawer{
+      top:auto; right:0; left:0; bottom:0;
+      width:100%; max-width:100%; height:auto; max-height:92vh;
+      border-radius:20px 20px 0 0; overflow:hidden;
+      transform:translateY(100%);                 /* hidden = below screen */
+      transition:transform .34s cubic-bezier(.2,.8,.2,1);
+      box-shadow:0 -18px 50px rgba(12,16,32,.22);
+    }
+    .drawer.show{transform:translateY(0);}        /* override the desktop translateX */
+    .dr-accent{border-radius:20px 20px 0 0;}
+    /* grab-handle affordance */
+    .dr-head{position:relative; padding:20px 18px 14px;}
+    .dr-head::before{
+      content:""; position:absolute; top:7px; left:50%; transform:translateX(-50%);
+      width:38px; height:4px; border-radius:999px; background:#d4d8e8;
+    }
+    .dr-title{font-size:17px;}
+    .dr-close{width:38px; height:38px; font-size:21px;}  /* ≥40px-ish tap target */
+    .dr-body{padding:16px 16px;}
+    .dr-grid{gap:10px;}
+    .field .desc{font-size:13px;}
+    .ck{padding:12px 12px; align-items:center;}
+    .ck .box{width:22px; height:22px;}
+    .ck .txt{font-size:13.5px;}
+    .owner-opt{padding:11px 11px;}
+    .owner-opt .onm{font-size:13.5px;}
+
+    /* footer buttons: comfy ≥44px tap targets, body text ≥13px */
+    .dr-foot{padding:12px 16px calc(12px + env(safe-area-inset-bottom,0px));}
+    .btn{padding:13px 16px; font-size:14px; min-height:46px;}
+    .snooze-opt{padding:12px 12px; font-size:13.5px; min-height:44px;}
+
+    /* toast: keep clear of the bottom sheet & screen edges */
+    .toast-wrap{left:12px; right:12px; transform:none; bottom:16px; align-items:stretch;}
+    .toast{max-width:100%;}
+
+    .byline{display:none;}   /* avoid overlapping the bottom sheet / toasts */
+  }
+
+  /* ---- Very narrow phones (≤430px): tighten a touch more ---- */
+  @media (max-width:430px){
+    .appbar{padding:9px 12px;}
+    .summary{padding:12px 12px;}
+    .ring-wrap{width:76px; height:76px;}
+    .ring-label .pct{font-size:20px;}
+    .stat-row{gap:8px;}
+    .stat{padding:11px 12px;}
+    .stat .v{font-size:22px;}
+    .stat .k{font-size:11px;}
+    .stat .sub{font-size:10.5px;}
+    .view{padding:12px 12px 24px;}
+    .item{padding:11px 12px; gap:10px;}
+    .it-date{width:42px; padding-right:9px;}
+    .it-title{font-size:13.5px;}
+    .it-meta .m{font-size:11px;}
+    .chip{font-size:10.5px; padding:4px 9px;}
+
+    /* month grid is genuinely tight at this width — shrink gracefully */
+    .cell{min-height:58px; padding:4px 3px;}
+    .cell .dn{font-size:10.5px;}
+    .ev{font-size:9.5px; padding:2px 4px; gap:3px;}
+    .cal-title .mt{font-size:15px;}
+
+    .dr-title{font-size:16px;}
+    .dr-body{padding:14px 13px;}
+  }
 </style>
 </head>
 <body>

@@ -47,7 +47,7 @@
   /* ===== Stage / letterbox ===== */
   .reel{position:fixed; inset:0; display:flex; align-items:center; justify-content:center}
   .stage{
-    position:relative; width:var(--stageW); height:var(--stageH);
+    position:relative; width:var(--stageW); height:var(--stageH); flex:none;
     transform-origin:center center;
     border-radius:20px; overflow:hidden;
     background:
@@ -262,6 +262,32 @@
   .animSlow{transition:opacity .85s cubic-bezier(.22,.61,.36,1), transform .85s cubic-bezier(.22,.61,.36,1)}
   .on{opacity:1 !important; transform:none !important}
 
+  /* ===== rotate hint (portrait only) ===== */
+  .rotateHint{
+    position:fixed; left:50%; bottom:calc(16px + env(safe-area-inset-bottom,0px));
+    transform:translate(-50%, 10px); z-index:65;
+    display:none; max-width:calc(100vw - 24px); white-space:nowrap;
+    padding:9px 16px; border-radius:999px;
+    background:rgba(16,20,38,.72); border:1px solid rgba(255,255,255,.16);
+    backdrop-filter:blur(10px); -webkit-backdrop-filter:blur(10px);
+    color:#eef0fb; font-size:13px; font-weight:600; letter-spacing:.01em;
+    opacity:0; pointer-events:none; transition:opacity .4s ease, transform .4s ease;
+  }
+  .rotateHint.show{opacity:1; transform:translate(-50%,0)}
+
+  /* ===== Mobile / portrait: width-constrained full-bleed stage ===== */
+  @media (max-width:760px), (orientation:portrait){
+    html,body{overflow-x:hidden}
+    /* stage is JS-scaled by viewportWidth/1280 → letterbox top & bottom, vertically centered */
+    .reel{align-items:center}
+    .stage{border-radius:14px}           /* slightly tighter radius when near full-width */
+    /* keep progress bar + controls clear of stage content, in the letterbox bands */
+    .progress{height:4px}
+    .controls{right:12px; bottom:calc(12px + env(safe-area-inset-bottom,0px)); gap:12px}
+    .ctrl{width:44px; height:44px}        /* ≥40px tap targets */
+    .rotateHint{display:block}            /* visible only in this (portrait) layer */
+  }
+
   /* ===== reduced motion: static composed final frame ===== */
   @media (prefers-reduced-motion: reduce){
     .controls{display:none}
@@ -412,6 +438,8 @@
     </div><!-- /stage -->
   </div><!-- /reel -->
 
+  <div class="rotateHint" id="rotateHint" aria-hidden="true">Rotate for full screen ⤤</div>
+
   <div class="controls">
     <button class="ctrl" id="btnPlay" type="button" aria-label="Pause">
       <svg id="icoPlay" viewBox="0 0 24 24" aria-hidden="true"><rect x="6" y="5" width="4" height="14" rx="1.2"/><rect x="14" y="5" width="4" height="14" rx="1.2"/></svg>
@@ -435,15 +463,48 @@
   var BASE_W=1280, BASE_H=720;
   function fit(){
     if(!stage) return;
-    var pad = window.innerWidth < 760 ? 16 : 34;
-    var aw = window.innerWidth - pad*2;
-    var ah = window.innerHeight - pad*2;
-    var s = Math.min(aw/BASE_W, ah/BASE_H);
+    var de = document.documentElement;
+    var vw = de.clientWidth || window.innerWidth, vh = de.clientHeight || window.innerHeight;
+    /* portrait / narrow: fill (nearly) the full viewport WIDTH, letterbox top/bottom */
+    var narrow = vw <= 760 || vh > vw;
+    var s;
+    if(narrow){
+      var pad = 7;                       // tiny side margins, no horizontal scroll
+      var aw = vw - pad*2;
+      s = aw / BASE_W;                   // width-constrained (NOT min of w/h)
+    } else {
+      var padD = 34;
+      s = Math.min((vw - padD*2)/BASE_W, (vh - padD*2)/BASE_H);
+    }
     s = Math.max(0.18, Math.min(s, 1.18));
     stage.style.transform = 'scale('+s+')';
   }
   window.addEventListener('resize', fit, {passive:true});
+  window.addEventListener('orientationchange', fit, {passive:true});
   fit();
+
+  /* ---------- portrait "rotate for full screen" hint ---------- */
+  var rotHint=$('#rotateHint'), rotTimer=null;
+  function isPortrait(){ return window.innerWidth <= 760 || window.innerHeight > window.innerWidth; }
+  function dismissHint(){
+    if(rotHint) rotHint.classList.remove('show');
+    if(rotTimer){ clearTimeout(rotTimer); rotTimer=null; }
+  }
+  function maybeShowHint(){
+    if(!rotHint) return;
+    if(isPortrait()){
+      rotHint.classList.add('show');
+      if(rotTimer) clearTimeout(rotTimer);
+      rotTimer=setTimeout(dismissHint, 4000);   // auto-hide after ~4s
+    } else {
+      dismissHint();
+    }
+  }
+  if(rotHint){
+    window.addEventListener('pointerdown', dismissHint, {passive:true, once:true}); // hide on first tap
+    window.addEventListener('orientationchange', maybeShowHint, {passive:true});
+    maybeShowHint();
+  }
 
   /* ---------- scene registry ---------- */
   var scenes = {

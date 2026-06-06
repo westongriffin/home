@@ -263,6 +263,72 @@ body{
   .user-chip .user-meta{display:none}
   .autopilot-wrap{padding:5px 8px}
 }
+
+/* ===== MOBILE RESPONSIVE LAYER (phones) ===== */
+@media(max-width:760px){
+  /* allow normal vertical page scrolling; never scroll the page sideways */
+  html,body{height:auto;overflow-x:hidden}
+  body{overflow-y:auto}
+  .app{height:auto;min-height:100vh}
+
+  /* TOP BAR: wrap onto multiple rows so nothing clips off the right edge */
+  .topbar{
+    flex-wrap:wrap;align-items:center;gap:10px;padding:10px 12px;
+    position:sticky;top:0;
+  }
+  .brand{flex:1 1 auto;min-width:0}
+  .demo-badge{order:2}
+  /* the flex spacer would force a full-width break before it wraps; neutralise it */
+  .spacer{flex-basis:0;min-width:0}
+  /* controls drop to their own full-width row, evenly shared, all tappable */
+  .autopilot-wrap{order:3;flex:1 1 auto;justify-content:space-between;min-height:44px;padding:5px 10px 5px 13px}
+  .btn#runAp,.topbar>.btn-primary{order:4;flex:1 1 auto;justify-content:center;min-height:44px;padding:10px 14px}
+  .user-chip{order:5;min-height:44px}
+  .ap-label span{display:none}
+
+  /* KPI STRIP: horizontal swipe, no clipping under the page edge */
+  .kpis{
+    gap:10px;padding:11px 12px;flex-wrap:nowrap;overflow-x:auto;
+    -webkit-overflow-scrolling:touch;scroll-snap-type:x mandatory;
+  }
+  .kpi{flex:0 0 auto;min-width:160px;scroll-snap-align:start}
+
+  /* MAIN: single column — queue first (full width), detail below (full width) */
+  .main{flex-direction:column;overflow:visible}
+  .queue{
+    width:100%;max-height:48vh;border-right:none;border-bottom:1px solid var(--line);
+  }
+  .detail{flex:none;width:100%;overflow:visible;padding:16px 14px}
+
+  /* comfortable tap targets / readable body text */
+  .chip-f{padding:10px 14px;font-size:13px;line-height:1.2;min-height:40px;display:inline-flex;align-items:center}
+  .ticket{padding:13px 13px}
+  .t-subj{font-size:13px}
+  .msg{font-size:14px}
+  .reply-box{font-size:14px}
+  .act{min-height:44px}
+  .actionbar .btn{min-height:44px;flex:1 1 auto;justify-content:center}
+  .reply-tools .hint{margin-left:0}
+
+  /* keep the autopilot banner from clipping its progress bar */
+  .ap-banner{flex-wrap:wrap;padding:10px 12px}
+  .ap-banner .mini-prog{max-width:none;flex:1 1 100%}
+}
+
+/* very narrow phones (~≤430px): tighten further, avatar-only user chip */
+@media(max-width:430px){
+  .topbar{gap:8px;padding:9px 11px}
+  .brand-name{font-size:13px}
+  /* shrink the user chip to just the avatar so the controls row stays uncramped */
+  .user-chip{padding:0;border:none;background:transparent;flex:0 0 auto}
+  .autopilot-wrap{flex:1 1 auto}
+  .btn#runAp,.topbar>.btn-primary{flex:1 1 auto}
+  .kpi{min-width:148px}
+  .kpi-val{font-size:23px}
+  .queue{max-height:44vh}
+  /* two-up the analysis-cell action buttons gracefully; let action bar wrap */
+  .actionbar{gap:8px}
+}
 </style>
 </head>
 <body>

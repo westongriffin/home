@@ -324,6 +324,52 @@
     opacity:0; transform:translateY(10px);
   }
 
+  /* ---------- Rotate hint (portrait only) ---------- */
+  #rotateHint{
+    display:none;
+    position:fixed; left:50%; bottom:74px; transform:translateX(-50%);
+    z-index:70; pointer-events:none;
+    font-size:13px; font-weight:600; letter-spacing:.01em; color:#eef1ff;
+    padding:9px 16px; border-radius:999px; white-space:nowrap;
+    background:rgba(20,24,46,.72);
+    backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(8px);
+    box-shadow:0 8px 24px rgba(0,0,0,.4), 0 0 0 1px rgba(255,255,255,.1) inset;
+    transition:opacity .5s ease;
+  }
+
+  /* ============================================================
+     MOBILE / PORTRAIT — fill viewport WIDTH (width-constrained).
+     Desktop (>=820px) is untouched. Animation/timeline unchanged.
+     ============================================================ */
+  @media (max-width:760px), (orientation:portrait){
+    /* Stage fills (nearly) full width; height follows 16:9.
+       Width-constrained: scale by viewport width, NOT min(w,h).
+       The min() with the height term only kicks in on short/wide
+       phones so the stage never spills past the viewport height. */
+    #stage{
+      width:min(98.5vw, calc((100vh - 112px) * 1.7778)) !important;
+      /* font tracks stage width (~width/85, matching desktop ratio)
+         so inner UI scales up with the now-full-width stage.
+         98.5vw / 85.3 ≈ 1.155vw; floor keeps tiny phones legible. */
+      font-size:clamp(7px, 1.155vw, 13px) !important;
+    }
+    /* Controls: keep tappable (>=44px) and clear of the letterbox.
+       Center them along the bottom so they don't crowd the corner. */
+    #ctrls{
+      right:auto; left:50%; transform:translateX(-50%);
+      bottom:16px; gap:14px;
+    }
+    .cbtn{ width:46px; height:46px; font-size:18px; border-radius:14px; }
+    /* Progress bar a touch thicker for visibility on phones */
+    #bar{ height:5px; }
+    /* Show the auto-hiding rotate hint only in portrait */
+    #rotateHint{ display:block; }
+  }
+  /* In landscape phones we don't need the rotate nudge */
+  @media (orientation:landscape){
+    #rotateHint{ display:none !important; }
+  }
+
   /* ---------- reduced motion: static final frame ---------- */
   @media (prefers-reduced-motion: reduce){
     #bar{ width:100%; }
@@ -473,6 +519,8 @@
     </div>
   </div>
 </div>
+
+<div id="rotateHint">Rotate for full screen &#10548;</div>
 
 <div id="ctrls">
   <button class="cbtn" id="btnPlay" title="Pause / Play" aria-label="Pause or play">&#10074;&#10074;</button>
@@ -765,6 +813,26 @@
       // kick a render so first frame paints before rAF
       start();
     }
+
+    /* ---------- Portrait rotate hint: auto-hide after ~4s or first tap ---------- */
+    (function(){
+      var hint=$("rotateHint");
+      if(!hint) return;
+      var hidden=false;
+      function hideHint(){
+        if(hidden) return;
+        hidden=true;
+        hint.style.opacity="0";
+        setTimeout(function(){ if(hint) hint.style.display="none"; }, 600);
+        window.removeEventListener("pointerdown", hideHint, true);
+        window.removeEventListener("touchstart", hideHint, true);
+      }
+      // first interaction anywhere dismisses it
+      window.addEventListener("pointerdown", hideHint, true);
+      window.addEventListener("touchstart", hideHint, true);
+      // auto-hide after ~4s
+      setTimeout(hideHint, 4000);
+    })();
 
     // Safety: if tab is hidden then shown, keep clock sane (avoid huge jumps)
     document.addEventListener("visibilitychange", function(){

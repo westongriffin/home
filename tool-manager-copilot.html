@@ -334,6 +334,107 @@
     .demo-badge{display:none;}
     .row2{grid-template-columns:1fr;}
   }
+
+  /* ===== Phone layer (single column, no horizontal scroll) ===== */
+  @media (max-width:760px){
+    html,body{width:100%; max-width:100%; overflow-x:hidden;}
+    .app{width:100%; max-width:100%; overflow-x:hidden;}
+
+    /* App bar wraps; title + DEMO badge + user chip all stay visible & tappable */
+    .topbar{
+      flex-wrap:wrap; gap:8px 10px; padding:10px 14px; row-gap:8px;
+    }
+    .brand{flex:1 1 auto; min-width:0;}
+    .brand .title{font-size:14px; white-space:normal;}
+    .brand .sub{display:none;}
+    .spacer{display:none;}              /* let flex-wrap do the spacing */
+    .demo-badge{
+      display:inline-flex; order:3; margin-left:0;
+      min-height:30px; padding:6px 12px; font-size:11.5px;
+    }
+    .userchip{
+      order:2; min-height:40px; padding:6px 13px 6px 6px;
+    }
+    .userchip .org{display:none;}
+    .userchip .nm{font-size:13px;}
+
+    /* Work area: one column, page scrolls vertically */
+    .work{
+      grid-template-columns:1fr; height:auto; gap:14px;
+      padding:14px; width:100%; max-width:100%;
+    }
+    .col{height:auto; min-width:0;}
+    .panel{min-width:0;}
+
+    /* Order: Templates (chip row) -> Form -> Draft -> Guardrails */
+    .col-left{order:1;}
+    .col-center{order:2;}
+    .col-right{order:3;}
+
+    /* LEFT: template list becomes a horizontal scrolling chip row */
+    .col-left .panel{flex:0 0 auto !important; max-height:none;}
+    #tplList{
+      display:flex; flex-direction:row; flex-wrap:nowrap; gap:8px;
+      overflow-x:auto; overflow-y:hidden;
+      -webkit-overflow-scrolling:touch; scrollbar-width:thin;
+      max-height:none; padding:4px 12px 10px; scroll-snap-type:x proximity;
+    }
+    #tplList::-webkit-scrollbar{height:7px;}
+    .tpl{
+      width:auto; flex:0 0 auto; margin-bottom:0; padding:9px 12px;
+      min-height:44px; scroll-snap-align:start;
+    }
+    .tpl .td{display:none;}             /* keep chips compact */
+    .tpl .tt{font-size:13px; white-space:nowrap;}
+    .tpl .tic{width:28px; height:28px; font-size:14px;}
+    .left-foot{display:none;}           /* free up vertical space on phones */
+
+    /* CENTER + RIGHT panels: full width, comfortable heights */
+    .col-center .panel, .col-right .panel{max-height:none;}
+    .panel-b{max-height:none;}          /* let the page scroll, not inner panes */
+    .right-stack{height:auto; gap:14px;}
+    .out-panel, .guard-panel{flex:0 0 auto;}
+
+    .out-doc, .empty{min-height:220px;}
+    .out-doc{margin:0 12px 12px; padding:16px 16px; font-size:13.5px;}
+    .empty{margin:0 12px 12px;}
+
+    /* Output toolbar: wrap, stay tappable */
+    .out-toolbar{gap:8px; padding:0 12px 12px;}
+    .out-toolbar .chip-btn{min-height:40px; padding:9px 12px; font-size:13px;}
+
+    /* Form footer buttons stay tappable */
+    .form-foot{padding:12px 14px; gap:10px;}
+    .btn{min-height:44px;}
+    .btn.sm{min-height:36px;}
+
+    /* Tone selector: bigger tap targets */
+    .seg button{min-height:40px; font-size:13px;}
+
+    /* Guardrail flag cards + actions wrap and stay usable */
+    .guard-b{padding:6px 12px 14px;}
+    .flag .fl-act{flex-wrap:wrap; gap:8px;}
+    .fixbtn{min-height:40px; padding:8px 14px; font-size:13px;}
+    .flag .fl-act .btn.ghost.sm{min-height:40px; padding:8px 14px !important; font-size:13px !important;}
+    .check{font-size:13px;}
+    .flag .fl-term, .flag .fl-why, .flag .fl-sugg{font-size:13px;}
+  }
+
+  /* ===== Narrow phones (~360–430px) ===== */
+  @media (max-width:430px){
+    .topbar{padding:9px 12px;}
+    .brand .title{font-size:13.5px;}
+    .logo{width:28px; height:28px;}
+    .work{padding:12px; gap:12px;}
+    .out-doc{padding:14px 14px;}
+    /* toolbar buttons share rows two-up so nothing overflows */
+    .out-toolbar{gap:7px;}
+    .out-toolbar .chip-btn{flex:1 1 auto; justify-content:center; padding:9px 8px;}
+    /* form footer stacks so the primary CTA is full width and easy to hit */
+    .form-foot{flex-wrap:wrap;}
+    .btn.primary{flex:1 1 100%;}
+    .btn.ghost{flex:1 1 auto;}
+  }
 </style>
 </head>
 <body>

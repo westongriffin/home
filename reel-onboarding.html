@@ -495,11 +495,58 @@
     #progress{width:100% !important;transition:none !important;}
   }
 
-  /* small-window safety: nothing else needed since #scaler is JS-scaled,
-     but ensure controls/text stay legible */
+  /* ============ PORTRAIT / NARROW: WIDTH-CONSTRAINED FULL-BLEED ============
+     On phones the height-based fit leaves the film tiny in a sea of dead
+     space. Here we force the 16:9 stage to fill (nearly) the full viewport
+     WIDTH, letterboxed top/bottom against the dark backdrop. The inner
+     #scaler is JS-scaled by viewportWidth/1280 (see fit()); these rules just
+     make the stage box itself width-driven and keep chrome tappable.        */
   @media (max-width:760px){
-    #frame{padding:10px;}
-    #stage{border-radius:14px;}
+    #frame{padding:6px;}
+    #stage{
+      /* width wins: fill the viewport minus tiny side gutters, keep 16:9 */
+      width:calc(100vw - 12px);
+      max-width:calc(100vw - 12px);
+      border-radius:14px;
+    }
+    /* larger, comfortably tappable controls, lifted clear of the letterbox */
+    #controls{right:12px;bottom:12px;gap:12px;}
+    .ctrl{width:46px;height:46px;border-radius:13px;font-size:18px;}
+    .ctrl svg{width:20px;height:20px;}
+  }
+  @media (orientation:portrait) and (max-width:900px){
+    #frame{padding:6px;}
+    #stage{
+      width:calc(100vw - 12px);
+      max-width:calc(100vw - 12px);
+      border-radius:14px;
+    }
+    #controls{right:12px;bottom:12px;gap:12px;}
+    .ctrl{width:46px;height:46px;border-radius:13px;font-size:18px;}
+    .ctrl svg{width:20px;height:20px;}
+  }
+
+  /* ============ PORTRAIT ROTATE HINT ============ */
+  #rotateHint{
+    position:fixed;left:50%;bottom:74px;
+    transform:translateX(-50%) translateY(8px);
+    z-index:55;
+    display:none;
+    align-items:center;gap:8px;
+    padding:9px 15px;border-radius:999px;
+    background:rgba(12,16,32,.72);
+    border:1px solid rgba(255,255,255,.16);
+    backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
+    color:#dfe5f3;font-size:12.5px;font-weight:600;letter-spacing:.01em;
+    white-space:nowrap;
+    box-shadow:0 8px 24px rgba(0,0,0,.45);
+    opacity:0;pointer-events:none;
+    transition:opacity .45s ease, transform .45s ease;
+  }
+  #rotateHint .rotico{font-size:15px;line-height:1;}
+  #rotateHint.show{opacity:1;transform:translateX(-50%) translateY(0);}
+  @media (orientation:portrait) and (max-width:760px){
+    #rotateHint{display:flex;}
   }
 </style>
 </head>
@@ -751,6 +798,8 @@
     </div><!-- /stage -->
   </div><!-- /frame -->
 
+  <div id="rotateHint" aria-hidden="true"><span class="rotico">⤤</span> Rotate for full screen</div>
+
   <div id="controls">
     <div class="ctrl" id="btnPlay" role="button" tabindex="0" aria-label="Pause">
       <svg viewBox="0 0 24 24" id="icoPlay"><rect x="6" y="5" width="4" height="14" rx="1.2"/><rect x="14" y="5" width="4" height="14" rx="1.2"/></svg>
@@ -781,15 +830,35 @@
   function el(name, root){ return $('[data-el="'+name+'"]', root||document); }
   function els(name, root){ return $all('[data-el="'+name+'"]', root||document); }
 
-  /* ---------- responsive scaling of the 1280x720 inner canvas ---------- */
+  /* ---------- responsive scaling of the 1280x720 inner canvas ----------
+     Desktop / landscape: fit the 1280x720 canvas inside the stage box,
+     constrained by whichever dimension is tighter (min).
+     Narrow / portrait phones: the stage is width-driven (see the portrait
+     @media rules), so scale strictly by viewportWidth/1280. This makes the
+     film fill the full viewport width and letterbox top/bottom, instead of
+     shrinking to fit the short portrait height.                            */
+  function isNarrow(){
+    try{
+      return (window.matchMedia &&
+        (window.matchMedia('(max-width:760px)').matches ||
+         window.matchMedia('(orientation:portrait) and (max-width:900px)').matches));
+    }catch(e){ return (window.innerWidth||9999) <= 760; }
+  }
   function fit(){
     if(!stage || !scaler) return;
     var w = stage.clientWidth, h = stage.clientHeight;
     if(!w || !h) return;
-    var s = Math.min(w/1280, h/720);
+    var s;
+    if(isNarrow()){
+      // width-constrained: fill the stage's full width (no horizontal overflow)
+      s = w/1280;
+    } else {
+      s = Math.min(w/1280, h/720);
+    }
     scaler.style.transform = 'translate(-50%,-50%) scale(' + s + ')';
   }
   on(window, 'resize', fit);
+  on(window, 'orientationchange', function(){ fit(); setTimeout(fit, 120); setTimeout(fit, 400); });
   fit();
   // re-fit a few times early (fonts/layout settle)
   [60,180,400,900].forEach(function(t){ setTimeout(fit, t); });
@@ -1168,6 +1237,32 @@
   // click on stage toggles play/pause too (nice for demos)
   on(stage, 'click', function(){ togglePlay(); });
 
+  /* ---------- portrait "rotate for full screen" hint ----------
+     Shows briefly on narrow portrait screens; auto-hides after ~4s or on
+     the first tap/interaction. Pure progressive enhancement.              */
+  var rotateHint = $('#rotateHint');
+  var rotateHintDone = false;
+  function dismissRotateHint(){
+    if(rotateHintDone) return;
+    rotateHintDone = true;
+    if(rotateHint) rotateHint.classList.remove('show');
+  }
+  function maybeShowRotateHint(){
+    if(!rotateHint || rotateHintDone) return;
+    var portrait = false;
+    try{
+      portrait = window.matchMedia &&
+        window.matchMedia('(orientation:portrait) and (max-width:760px)').matches;
+    }catch(e){ portrait = (window.innerWidth||9999) <= 760; }
+    if(!portrait) return;
+    rotateHint.classList.add('show');
+    setTimeout(dismissRotateHint, 4000);
+  }
+  // hide on first interaction anywhere
+  on(document, 'pointerdown', dismissRotateHint);
+  on(document, 'touchstart', dismissRotateHint);
+  on(document, 'keydown', dismissRotateHint);
+
   // pause when tab hidden, resume when visible (avoids huge dt jump)
   on(document, 'visibilitychange', function(){
     if(document.hidden){
@@ -1193,6 +1288,7 @@
     // fire t=0 cues right away so first frame isn't empty
     fireCues(-1, 0);
     state.raf = requestAnimationFrame(loopTick);
+    maybeShowRotateHint();
   }
 
   // kick off (guard against double-boot)
