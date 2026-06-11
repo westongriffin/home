@@ -215,6 +215,8 @@
     padding:4px 14px 18px;
     display:grid; grid-template-columns:1fr 1.15fr; gap:16px;
   }
+  /* the mobile sheet back-bar exists in the DOM for every team but only shows on phones */
+  .sheet-head{display:none;}
   .pblock{background:var(--bg); border:1px solid var(--line); border-radius:var(--r-sm); padding:14px;}
   .pblock h4{font-size:12px; font-weight:800; letter-spacing:.04em; text-transform:uppercase; color:var(--ink2); margin-bottom:11px; display:flex; align-items:center; gap:7px;}
   .pblock h4 .hi{width:18px; height:18px; border-radius:6px; display:flex; align-items:center; justify-content:center; background:var(--grad); color:#fff; font-size:11px;}
@@ -382,26 +384,41 @@
     html,body{overflow-x:hidden;}
     .app{height:100dvh;}
 
-    /* ---- APP BAR: wrap so title, badge, tabs & user chip all stay visible ---- */
+    /* ---- APP BAR: compact single row — logo + title on the left, avatar on the right ---- */
     .bar{
-      flex-wrap:wrap;
+      flex-wrap:nowrap;
       align-items:center;
-      gap:9px 10px;
-      padding:10px 14px;
+      gap:10px;
+      padding:9px 14px;
     }
-    .titleblock{flex:1 1 60%; min-width:0;}
-    .titleblock .tool{font-size:14px; white-space:normal;}
-    /* kill the flex spacer so the chip sits next to the title instead of being pushed off-screen */
+    .titleblock{flex:1 1 auto; min-width:0;}
+    .titleblock .brand{white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
+    .titleblock .tool{
+      font-size:14px; line-height:1.18;
+      white-space:normal; overflow:hidden;
+      display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical;
+    }
+    /* kill the flex spacer; the badge is decorative chrome — hide it on phones to keep the bar to one row */
     .bar .spacer{display:none;}
-    .badge{order:3; flex:0 0 auto;}
-    .userchip{order:2; margin-left:auto;}
-    /* re-show the chip text (520px block hides it) and keep the chip compact + tappable */
+    .badge{display:none;}
+    .userchip{flex:0 0 auto; margin-left:auto; min-height:40px;}
+    /* keep the chip compact + tappable (520px block hides text below) */
     .userchip .utext{display:block;}
-    .userchip{padding:5px 11px 5px 5px; min-height:40px;}
+    .userchip{padding:5px 11px 5px 5px;}
 
-    /* ---- TABS: full-width, tappable, no clip ---- */
-    .tabs{padding:10px 12px 0; gap:6px;}
-    .tab{flex:1 1 0; justify-content:center; min-height:44px; padding:11px 10px; font-size:13.5px;}
+    /* ---- TABS: horizontal scroller — even, tappable pills, never clipped ---- */
+    .tabs{
+      padding:10px 12px 0; gap:8px;
+      flex-wrap:nowrap; overflow-x:auto; overflow-y:hidden;
+      -webkit-overflow-scrolling:touch; scroll-snap-type:x proximity;
+      scrollbar-width:none;
+    }
+    .tabs::-webkit-scrollbar{height:0; display:none;}
+    .tab{
+      flex:1 0 auto; justify-content:center; min-height:46px;
+      padding:12px 16px; font-size:13.5px; white-space:nowrap;
+      border-radius:12px 12px 0 0; scroll-snap-align:start;
+    }
 
     .scroll{padding:14px 12px 20px;}
     .sec-head{gap:10px; margin-bottom:12px;}
@@ -411,30 +428,100 @@
     .kpi-row{grid-template-columns:repeat(2,1fr); gap:10px; margin-bottom:14px;}
     .kpi .kv{font-size:22px;}
 
-    /* ---- RISK TABLE: let each row wrap so name / chip / bar stay legible ---- */
-    .risk-table{padding:4px;}
+    /* ---- RISK TABLE → CARD LIST: each team is a self-contained tappable card ---- */
+    .risk-table{padding:0; background:transparent; border:none; box-shadow:none;}
     .rt-head{display:none;}
+    .team{border-top:none; margin-bottom:10px;}
+    .team:last-child{margin-bottom:0;}
+    .team.flag::before{display:none;} /* card gets its own accent below */
     .team-row{
       display:flex; flex-wrap:wrap; align-items:center;
       grid-template-columns:none; grid-template-areas:none; /* unset desktop/820px grid */
-      gap:10px 12px; padding:13px 12px;
+      gap:11px 12px; padding:14px;
+      background:var(--card); border:1px solid var(--line);
+      border-radius:var(--r-md); box-shadow:var(--sh-sm);
+      transition:box-shadow .15s, border-color .15s, transform .08s;
     }
-    .tname{flex:1 1 60%; min-width:0; grid-area:auto;}
+    .team-row:hover{background:var(--card);}
+    .team-row:active{transform:scale(.992);}
+    .team.flag > .team-row{border-color:rgba(239,68,68,.34); box-shadow:0 2px 8px rgba(239,68,68,.10);}
+    .team.flag > .team-row::before{
+      content:""; position:absolute; left:0; top:12px; bottom:12px; width:4px; border-radius:4px;
+      background:linear-gradient(var(--red),#ff8a8a);
+    }
+    .team-row{position:relative;}
+    /* keep the open-card background off (the detail is a separate full-screen sheet now) */
+    .team.open > .team-row{background:var(--card);}
+    .tname{flex:1 1 58%; min-width:0; grid-area:auto;}
     .team-row > .chip{flex:0 0 auto; margin-left:auto; grid-area:auto;}
-    .chev{flex:0 0 auto; grid-area:auto; justify-self:auto; width:34px; height:34px;}
+    /* chevron points right to signal "drill into detail" (not an inline expand) */
+    .chev{flex:0 0 auto; grid-area:auto; justify-self:auto; width:32px; height:32px; transform:rotate(-90deg);}
+    .team.open .chev{transform:rotate(-90deg);}
+    .team-row:hover .chev{background:transparent; color:var(--muted);}
     /* risk pct + bar take the full width on their own line */
-    .riskcell{flex:1 1 100%; grid-area:auto; gap:10px;}
-    .riskcell .rpct{width:auto; min-width:42px;}
+    .riskcell{flex:1 1 100%; grid-area:auto; gap:12px;}
+    .riskcell .rpct{width:auto; min-width:44px;}
 
-    /* ---- EXPANDED PANEL: single column, full-width blocks ---- */
-    .panel-inner{grid-template-columns:1fr; gap:12px; padding:4px 12px 16px;}
+    /* the view's fade keyframe animates transform, which would trap position:fixed inside it;
+       drop the transform-based fade on phones so the detail sheet anchors to the real viewport */
+    .view.on{animation:none;}
+
+    /* ---- DETAIL SHEET: full-screen slide-in, like a native drill-down ---- */
+    .panel{
+      position:fixed; inset:0; z-index:200;
+      max-height:none !important;            /* defeat the desktop accordion's inline max-height */
+      overflow:hidden;
+      background:var(--bg);
+      display:flex; flex-direction:column;
+      transform:translateX(100%);
+      transition:transform .28s cubic-bezier(.22,1,.36,1);
+      visibility:hidden;
+    }
+    .team.open > .panel{ transform:none; visibility:visible; }
+
+    /* sticky frosted "‹ Teams" header with the team's identity + live risk chip */
+    .sheet-head{
+      display:flex; flex-direction:column; gap:11px;
+      flex:0 0 auto; padding:10px 14px 12px;
+      background:rgba(247,248,252,.94);
+      backdrop-filter:saturate(180%) blur(10px);
+      -webkit-backdrop-filter:saturate(180%) blur(10px);
+      border-bottom:1px solid var(--line);
+    }
+    .sheet-back{
+      appearance:none; border:none; background:transparent; cursor:pointer;
+      align-self:flex-start; padding:6px 6px 6px 0; min-height:40px;
+      font-family:var(--font); font-size:15px; font-weight:800; color:var(--v2);
+      display:inline-flex; align-items:center; gap:5px;
+    }
+    .sheet-back .sb-car{font-size:22px; line-height:1; margin-top:-2px;}
+    .sheet-id{display:flex; align-items:center; gap:11px;}
+    .sheet-ic{
+      width:38px; height:38px; border-radius:11px; flex:0 0 auto;
+      display:flex; align-items:center; justify-content:center; font-size:18px;
+      background:var(--card); border:1px solid var(--line);
+    }
+    .sheet-meta{flex:1 1 auto; min-width:0;}
+    .sheet-tt{font-size:15.5px; font-weight:800; color:var(--ink); line-height:1.15; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
+    .sheet-ts{font-size:11.5px; color:var(--muted); line-height:1.2; margin-top:1px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
+    .sheet-head .chip{flex:0 0 auto;}
+
+    /* the scrollable body of the sheet */
+    .panel-inner{
+      flex:1 1 auto; min-height:0; overflow-y:auto; -webkit-overflow-scrolling:touch;
+      grid-template-columns:1fr; gap:12px; padding:14px 12px calc(20px + env(safe-area-inset-bottom));
+      display:flex; flex-direction:column;
+    }
     .impact{gap:12px; padding:13px 14px;}
     .imp-bars{flex:1 1 100%; min-width:0;}
     .imp-delta{flex:1 1 100%; text-align:left; padding-left:0;}
-    .interv{padding:11px;}
+    .interv{padding:12px; min-height:56px;}
     .interv .sw{width:44px; height:26px;}
     .interv .sw::after{width:22px; height:22px;}
     .interv.on .sw::after{transform:translateX(18px);}
+
+    /* lock the page behind an open sheet */
+    body.sheet-lock{overflow:hidden;}
 
     /* ---- SCENARIO PLANNER: controls stack full-width above the chart ---- */
     .plan-grid{grid-template-columns:1fr; gap:14px;}
@@ -445,9 +532,9 @@
     input[type=range]::-webkit-slider-runnable-track{height:10px;}
     input[type=range]::-moz-range-thumb{width:26px; height:26px;}
     input[type=range]::-moz-range-track{height:10px;}
-    .ctrl .cnum{min-height:40px; width:84px; font-size:14px;}
+    .ctrl .cnum{min-height:44px; width:88px; font-size:16px;} /* 16px avoids iOS focus-zoom; 44px tap target */
     .preset{gap:11px; padding:12px;}
-    .preset .btn{min-height:40px;}
+    .preset .btn{min-height:44px; padding:10px 16px;}
 
     /* ---- CHART: scale to container width, never overflow ---- */
     .chart-card{padding:14px;}
@@ -460,15 +547,10 @@
 
   /* ===================== SMALL PHONE LAYER (≤430px) ===================== */
   @media (max-width:430px){
-    /* KPI cards can crowd at ~360px → let them scroll horizontally, 2 visible */
-    .kpi-row{
-      display:flex; gap:10px; margin-bottom:14px;
-      overflow-x:auto; -webkit-overflow-scrolling:touch;
-      scroll-snap-type:x mandatory;
-      padding-bottom:2px;
-    }
-    .kpi-row::-webkit-scrollbar{height:0;}
-    .kpi-row .kpi{flex:0 0 calc(50% - 5px); scroll-snap-align:start; min-width:150px;}
+    /* keep the KPIs as a clean 2×2 grid (no nested horizontal scroll) and tighten type */
+    .kpi-row{grid-template-columns:repeat(2,1fr); gap:9px;}
+    .kpi{padding:12px;}
+    .kpi .kv{font-size:21px;}
 
     .titleblock .tool{font-size:13px;}
     .titleblock .brand{font-size:10px;}
@@ -840,7 +922,15 @@
             '<svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>'+
           '</div>'+
         '</div>'+
-        '<div class="panel"><div class="panel-inner">'+
+        '<div class="panel">'+
+          '<div class="sheet-head" aria-hidden="true">'+
+            '<button type="button" class="sheet-back"><span class="sb-car">‹</span> Teams</button>'+
+            '<div class="sheet-id"><div class="sheet-ic">'+t.icon+'</div>'+
+              '<div class="sheet-meta"><div class="sheet-tt">'+t.name+'</div><div class="sheet-ts">'+t.sub+'</div></div>'+
+              '<span class="chip '+rc+'" data-sheetchip><i></i>'+lvlTxt+' risk</span>'+
+            '</div>'+
+          '</div>'+
+          '<div class="panel-inner">'+
           buildDrivers(t)+
           buildInterventions(t)+
           buildImpact(t)+
@@ -853,6 +943,9 @@
       row.addEventListener("keydown", function(e){
         if(e.key==="Enter"||e.key===" "){ e.preventDefault(); toggleTeam(wrap); }
       });
+      // wire the mobile sheet "Back" control (closes the sheet on phones)
+      var backBtn = wrap.querySelector(".sheet-back");
+      if(backBtn){ backBtn.addEventListener("click", function(e){ e.stopPropagation(); closeSheet(wrap); }); }
 
       // wire intervention toggles
       wrap.querySelectorAll(".interv").forEach(function(el){
@@ -906,21 +999,36 @@
     '</div>';
   }
 
+  // phones use a full-screen slide-in sheet instead of the inline accordion
+  function isPhone(){ return window.matchMedia && window.matchMedia("(max-width:760px)").matches; }
+  function lockScroll(on){ document.body.classList.toggle("sheet-lock", !!on); }
+
+  function openTeam(wrap){
+    wrap.classList.add("open");
+    var panel = wrap.querySelector(".panel");
+    panel.style.maxHeight = panel.scrollHeight + "px"; // drives the desktop accordion; ignored on phones
+    wrap.querySelector(".team-row").setAttribute("aria-expanded","true");
+    if(isPhone()){ lockScroll(true); var pi=panel.querySelector(".panel-inner"); if(pi)pi.scrollTop=0; }
+  }
+  function closeTeam(wrap){
+    wrap.classList.remove("open");
+    wrap.querySelector(".panel").style.maxHeight="0px";
+    wrap.querySelector(".team-row").setAttribute("aria-expanded","false");
+  }
+  // explicit close from the sheet's Back button (also releases the scroll lock)
+  function closeSheet(wrap){ closeTeam(wrap); if(!document.querySelector(".team.open")) lockScroll(false); }
+
   function toggleTeam(wrap){
     var open = wrap.classList.contains("open");
     // close others for a cleaner single-focus feel
     document.querySelectorAll(".team.open").forEach(function(o){
-      if(o!==wrap){ o.classList.remove("open"); o.querySelector(".panel").style.maxHeight="0px"; o.querySelector(".team-row").setAttribute("aria-expanded","false"); }
+      if(o!==wrap){ closeTeam(o); }
     });
     if(open){
-      wrap.classList.remove("open");
-      wrap.querySelector(".panel").style.maxHeight="0px";
-      wrap.querySelector(".team-row").setAttribute("aria-expanded","false");
+      closeTeam(wrap);
+      if(!document.querySelector(".team.open")) lockScroll(false);
     }else{
-      wrap.classList.add("open");
-      var panel = wrap.querySelector(".panel");
-      panel.style.maxHeight = panel.scrollHeight + "px";
-      wrap.querySelector(".team-row").setAttribute("aria-expanded","true");
+      openTeam(wrap);
     }
   }
 
@@ -928,10 +1036,14 @@
   function updateTeamLive(wrap, t){
     var p = projectedRisk(t);
     var rc = riskClass(p);
+    var lvl = (rc==="high"?"High":(rc==="med"?"Med":"Low"))+" risk";
     // row chip + bar + pct
-    var chip = wrap.querySelector(".chip");
+    var chip = wrap.querySelector(".team-row > .chip");
     chip.className = "chip "+rc;
-    chip.innerHTML = '<i></i>'+(rc==="high"?"High":(rc==="med"?"Med":"Low"))+" risk";
+    chip.innerHTML = '<i></i>'+lvl;
+    // mirror onto the mobile sheet header chip
+    var schip = wrap.querySelector("[data-sheetchip]");
+    if(schip){ schip.className = "chip "+rc; schip.setAttribute("data-sheetchip",""); schip.innerHTML = '<i></i>'+lvl; }
     wrap.classList.toggle("flag", rc==="high");
     wrap.querySelector("[data-rpct]").textContent = p+"%";
     var rbar = wrap.querySelector("[data-rbar]");
@@ -1207,6 +1319,9 @@
         var v = tab.getAttribute("data-view");
         tabs.forEach(function(t){ t.classList.remove("on"); t.setAttribute("aria-selected","false"); });
         tab.classList.add("on"); tab.setAttribute("aria-selected","true");
+        // close any open mobile detail sheet before swapping views so it can't overlay tab B
+        document.querySelectorAll(".team.open").forEach(function(o){ closeTeam(o); });
+        lockScroll(false);
         document.querySelectorAll(".view").forEach(function(vw){ vw.classList.remove("on"); });
         $("view-"+v).classList.add("on");
         // chart needs a (re)draw when its tab becomes visible (it was display:none)
@@ -1225,8 +1340,18 @@
       initPlanner();
       initTabs();
       // open the highest-risk team by default to showcase the panel
+      // (desktop/tablet only — on phones the card list is the page; detail opens on tap)
       var top = document.querySelector('.team[data-team="eng"]');
-      if(top){ setTimeout(function(){ toggleTeam(top); }, 260); }
+      if(top && !isPhone()){ setTimeout(function(){ toggleTeam(top); }, 260); }
+      // if the viewport crosses out of phone width, release any sheet scroll-lock and
+      // re-sync the open panel's height so the desktop accordion stays correct
+      window.addEventListener("resize", function(){
+        if(!isPhone()){
+          lockScroll(false);
+          var op = document.querySelector(".team.open .panel");
+          if(op){ op.style.maxHeight = op.scrollHeight + "px"; }
+        }
+      });
     }catch(err){
       // defensive: never throw uncaught
       if(window.console && console.error) console.error("init error", err);

@@ -144,6 +144,7 @@ body{
 .detail{flex:1;min-width:0;overflow-y:auto;padding:18px 20px;background:var(--bg)}
 .detail::-webkit-scrollbar{width:9px}
 .detail::-webkit-scrollbar-thumb{background:#dfe3f0;border-radius:8px}
+.d-back{display:none}
 .d-head{display:flex;align-items:flex-start;gap:14px;margin-bottom:16px}
 .d-emp-av{width:46px;height:46px;border-radius:13px;background:var(--grad);color:#fff;font-weight:800;font-size:17px;display:flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:0 4px 14px rgba(91,78,240,.28)}
 .d-emp-info{flex:1;min-width:0}
@@ -271,19 +272,19 @@ body{
   body{overflow-y:auto}
   .app{height:auto;min-height:100vh}
 
-  /* TOP BAR: wrap onto multiple rows so nothing clips off the right edge */
+  /* TOP BAR: clean two rows — brand + avatar, then the controls */
   .topbar{
-    flex-wrap:wrap;align-items:center;gap:10px;padding:10px 12px;
+    flex-wrap:wrap;align-items:center;gap:10px;padding:10px 14px;
     position:sticky;top:0;
   }
-  .brand{flex:1 1 auto;min-width:0}
-  .demo-badge{order:2}
-  /* the flex spacer would force a full-width break before it wraps; neutralise it */
-  .spacer{flex-basis:0;min-width:0}
-  /* controls drop to their own full-width row, evenly shared, all tappable */
-  .autopilot-wrap{order:3;flex:1 1 auto;justify-content:space-between;min-height:44px;padding:5px 10px 5px 13px}
-  .btn#runAp,.topbar>.btn-primary{order:4;flex:1 1 auto;justify-content:center;min-height:44px;padding:10px 14px}
-  .user-chip{order:5;min-height:44px}
+  .brand{order:1;flex:1 1 auto;min-width:0}
+  .brand-txt{min-width:0;overflow:hidden}
+  .brand-name{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block}
+  .user-chip{order:2;flex:0 0 auto;margin-left:auto;min-height:40px}
+  .demo-badge{display:none}
+  .spacer{display:none}
+  .autopilot-wrap{order:3;flex:1 1 0;justify-content:space-between;min-height:46px;padding:6px 12px}
+  .btn#runAp,.topbar>.btn-primary{order:4;flex:1 1 0;justify-content:center;min-height:46px;padding:10px 14px}
   .ap-label span{display:none}
 
   /* KPI STRIP: horizontal swipe, no clipping under the page edge */
@@ -293,12 +294,26 @@ body{
   }
   .kpi{flex:0 0 auto;min-width:160px;scroll-snap-align:start}
 
-  /* MAIN: single column — queue first (full width), detail below (full width) */
-  .main{flex-direction:column;overflow:visible}
-  .queue{
-    width:100%;max-height:48vh;border-right:none;border-bottom:1px solid var(--line);
+  /* MAIN: the queue IS the page; the detail slides in as a full-screen sheet */
+  .main{flex-direction:column;overflow:visible;position:relative}
+  .queue{width:100%;max-height:none;border-right:none;border-bottom:none}
+  .detail{
+    position:fixed;inset:0;z-index:140;width:100%;
+    background:var(--bg);overflow-y:auto;-webkit-overflow-scrolling:touch;
+    padding:0 14px 34px;
+    transform:translateX(100%);transition:transform .27s cubic-bezier(.2,.7,.2,1);
+    visibility:hidden;
   }
-  .detail{flex:none;width:100%;overflow:visible;padding:16px 14px}
+  .app.show-detail .detail{transform:none;visibility:visible}
+  /* full-bleed back bar at the top of the detail sheet */
+  .d-back{
+    display:flex;align-items:center;gap:8px;position:sticky;top:0;z-index:5;
+    width:calc(100% + 28px);margin:0 -14px 14px;padding:13px 14px;
+    background:rgba(247,248,252,.94);backdrop-filter:saturate(180%) blur(10px);
+    border:none;border-bottom:1px solid var(--line);
+    font:inherit;font-size:15px;font-weight:800;color:var(--v1);cursor:pointer;
+  }
+  .d-back span{font-size:21px;line-height:1;margin-top:-1px}
 
   /* comfortable tap targets / readable body text */
   .chip-f{padding:10px 14px;font-size:13px;line-height:1.2;min-height:40px;display:inline-flex;align-items:center}
@@ -603,13 +618,16 @@ body{
           '<span class="pri '+priClass(t.pri)+'">'+esc(t.pri)+'</span>'+
           '<span class="conf" title="AI classification confidence">'+t.conf+'%<span class="bar"><i style="width:'+t.conf+'%"></i></span></span>'+
         '</div>';
-      node.addEventListener("click", function(){ select(t.id); });
+      node.addEventListener("click", function(){ select(t.id); window.openMobileDetail(); });
       list.appendChild(node);
     });
     if(!any){ list.appendChild(el("div","empty",'<div class="e-ico">🗂️</div><div>No tickets in this view.</div>')); }
   }
 
   /* ---------- DETAIL ---------- */
+  function isMobileView(){ return window.matchMedia && window.matchMedia("(max-width:760px)").matches; }
+  window.openMobileDetail=function(){ if(isMobileView()){ var a=document.querySelector(".app"); if(a)a.classList.add("show-detail"); var d=document.getElementById("detail"); if(d)d.scrollTop=0; } };
+  window.closeMobileDetail=function(){ var a=document.querySelector(".app"); if(a)a.classList.remove("show-detail"); };
   function select(id, opts){
     selectedId = id;
     renderQueue();
@@ -626,6 +644,7 @@ body{
     var stateLabel = {open:"Open · awaiting triage",awaiting:"Awaiting your approval",resolved:"Resolved · reply sent",held:"Held — human required"}[t.state];
 
     var html = '';
+    html += '<button type="button" class="d-back" onclick="closeMobileDetail()"><span aria-hidden="true">‹</span> All tickets</button>';
     /* header */
     html += '<div class="d-head">'+
       '<div class="d-emp-av">'+esc(initials)+'</div>'+

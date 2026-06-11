@@ -50,6 +50,7 @@
   .topbar button{background:transparent;color:var(--ink);border:1px solid var(--line);padding:7px 12px;border-radius:9px;cursor:pointer;font:inherit;font-size:13px;font-weight:600;display:inline-flex;align-items:center;gap:6px}
   .topbar button:hover{border-color:var(--indigo);color:var(--indigo)}
   #menuToggle{display:none}
+  #tocScrim{display:none}
   .wrap{max-width:1220px;margin:0 auto;padding:0 20px}
   .layout{display:flex;gap:34px;align-items:flex-start;padding:26px 0 90px}
   .toc{position:sticky;top:74px;flex:0 0 256px;max-height:calc(100vh - 96px);overflow:auto;padding:6px 6px 6px 0}
@@ -198,15 +199,24 @@
     .topbar .brand{font-size:13.5px;min-width:0;flex:1 1 auto;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
     .topbar .brand .glyph{flex:0 0 auto}
     .topbar .spacer{display:none}
-    .topbar button{padding:9px 10px;font-size:12.5px;min-height:40px;flex:0 0 auto}
-    #menuToggle{order:-1}
+    .topbar button{padding:10px 11px;font-size:12.5px;min-height:44px;flex:0 0 auto}
+    #menuToggle{order:-1;font-weight:700}
 
     /* ---- TOC becomes a left slide-in drawer ---- */
-    .toc{display:block;position:fixed;top:0;left:0;bottom:0;right:auto;width:min(84vw,330px);max-height:none;height:100%;
+    .toc{display:block;position:fixed;top:0;left:0;bottom:0;right:auto;width:min(86vw,340px);max-height:none;height:100%;
          padding:calc(env(safe-area-inset-top) + 64px) 16px calc(env(safe-area-inset-bottom) + 20px) max(16px,env(safe-area-inset-left));
-         background:var(--card);border-right:1px solid var(--line);z-index:75;overflow:auto;-webkit-overflow-scrolling:touch;
+         background:var(--card);border-right:1px solid var(--line);z-index:75;overflow-y:auto;overflow-x:hidden;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;
          transform:translateX(-102%);transition:transform .28s cubic-bezier(.2,.7,.2,1);box-shadow:none;visibility:hidden}
-    .toc.open{display:block;transform:translateX(0);visibility:visible;box-shadow:0 0 0 100vmax rgba(12,8,20,.46),var(--shadow)}
+    .toc.open{display:block;transform:translateX(0);visibility:visible;box-shadow:var(--shadow)}
+
+    /* real dim scrim behind the drawer — tappable to close, locks the page.
+       Stays non-interactive (pointer-events:none, hidden) until .show is set,
+       so it never intercepts taps on page content while the drawer is closed. */
+    #tocScrim{display:block;position:fixed;inset:0;z-index:72;background:rgba(12,8,20,.46);
+              opacity:0;visibility:hidden;pointer-events:none;
+              transition:opacity .28s ease,visibility .28s ease;-webkit-tap-highlight-color:transparent}
+    #tocScrim.show{opacity:1;visibility:visible;pointer-events:auto}
+    html.toc-locked,html.toc-locked body{overflow:hidden;touch-action:none}
     .toc h4{margin:2px 6px 8px;font-size:11.5px}
     .toc a{padding:11px 12px;font-size:15px;min-height:44px}
     .toc a .n{flex:0 0 24px}
@@ -217,15 +227,16 @@
     main{max-width:100%}
     .hero{padding:34px 20px 30px;border-radius:20px;margin:6px 0 22px}
     .hero h1{font-size:clamp(26px,8vw,34px)}
-    .hero .lede{font-size:15.5px}
+    .hero .lede{font-size:16px;line-height:1.6}
     .hero .metarow span,.hero .eyebrow{font-size:12px}
     section.module{padding:22px 18px;border-radius:16px;scroll-margin-top:64px}
     section.module[id]{scroll-margin-top:64px}
     .mhead{gap:12px}
     .mhead .idx{width:34px;height:34px}
-    .mhead h2{font-size:21px}
-    .module .lead{font-size:15px}
+    .mhead h2{font-size:21px;line-height:1.18}
+    .module .lead{font-size:16px;line-height:1.55}
     h3{font-size:17px}
+    p,li{line-height:1.6}
     blockquote{font-size:16px;padding-left:16px}
     .quizhero{padding:22px 20px}
     .quizhero h2{font-size:21px}
@@ -292,7 +303,7 @@
     .anchor-top{min-height:44px}
   }
 
-  @media (prefers-reduced-motion:reduce){.toc{transition:none}}
+  @media (prefers-reduced-motion:reduce){.toc,#tocScrim{transition:none}}
 
   /* ---- extra-small phones (≤430px) refinements ---- */
   @media (max-width:430px){
@@ -339,6 +350,7 @@
   <button id="printBtn" class="no-print"><svg class="ic"><use href="#i-info"/></svg> PDF</button>
   <button id="themeBtn" class="no-print">🌙 Theme</button>
 </div>
+<div id="tocScrim" class="no-print" aria-hidden="true"></div>
 
 <div class="wrap"><div class="layout">
   <nav class="toc" id="toc">
@@ -942,7 +954,19 @@
   window.addEventListener('afterprint',function(){$$('details').forEach(function(d){d.open=d.getAttribute('data-w')==='1';});});
   try{if(localStorage.getItem('intv_theme')==='dark')document.documentElement.classList.add('dark');}catch(_){}
   if($('#themeBtn'))$('#themeBtn').addEventListener('click',function(){document.documentElement.classList.toggle('dark');try{localStorage.setItem('intv_theme',document.documentElement.classList.contains('dark')?'dark':'light');}catch(_){}});
-  var mt=$('#menuToggle'),toc=$('#toc');if(mt&&toc){mt.addEventListener('click',function(){toc.classList.toggle('open');});toc.addEventListener('click',function(e){if(e.target.closest('a'))toc.classList.remove('open');});}
+  var mt=$('#menuToggle'),toc=$('#toc'),scrim=$('#tocScrim');
+  var drawerMQ=window.matchMedia?window.matchMedia('(max-width:760px)'):null;
+  function drawerMode(){return drawerMQ?drawerMQ.matches:(window.innerWidth<=760);}
+  function setScrim(on){if(!scrim)return;scrim.classList.toggle('show',on);}
+  function openDrawer(){toc.classList.add('open');if(drawerMode()){setScrim(true);document.documentElement.classList.add('toc-locked');}}
+  function closeDrawer(){toc.classList.remove('open');setScrim(false);document.documentElement.classList.remove('toc-locked');}
+  if(mt&&toc){
+    mt.addEventListener('click',function(){if(toc.classList.contains('open'))closeDrawer();else openDrawer();});
+    toc.addEventListener('click',function(e){if(e.target.closest('a'))closeDrawer();});
+    if(scrim)scrim.addEventListener('click',closeDrawer);
+    document.addEventListener('keydown',function(e){if(e.key==='Escape'&&toc.classList.contains('open'))closeDrawer();});
+    if(drawerMQ){var onMQ=function(){if(!drawerMode())closeDrawer();};(drawerMQ.addEventListener?drawerMQ.addEventListener('change',onMQ):drawerMQ.addListener(onMQ));}
+  }
 })();
 </script>
 </body>

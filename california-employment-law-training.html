@@ -174,6 +174,12 @@
   footer.site{max-width:var(--maxw);margin:30px auto 0;padding:26px 0;border-top:1px solid var(--line);color:var(--muted);font-size:13.5px}
   footer.site .credit{font-weight:700;color:var(--ink);font-size:15px;display:flex;align-items:center;gap:9px;flex-wrap:wrap}
   footer.site .credit .glyph{width:24px;height:24px;border-radius:7px;background:var(--grad);display:grid;place-items:center;color:#fff}
+  /* Dim scrim behind the mobile Contents drawer (only un-hidden by JS while the drawer is open) */
+  .toc-scrim{position:fixed;inset:0;z-index:64;background:rgba(8,16,22,.46);-webkit-backdrop-filter:blur(1.5px);backdrop-filter:blur(1.5px);border:0;animation:scrimIn .22s ease}
+  .toc-scrim[hidden]{display:none}
+  @keyframes scrimIn{from{opacity:0}to{opacity:1}}
+  @media (prefers-reduced-motion:reduce){.toc-scrim{animation:none}}
+  @media (min-width:981px){.toc-scrim{display:none!important}}
   @media (max-width:980px){.toc{display:none;position:fixed;inset:54px 0 0;max-height:none;background:var(--card);z-index:65;padding:16px 18px;overflow:auto}.toc.open{display:block}#menuToggle{display:inline-flex}section.module{padding:26px 22px}.hero{padding:40px 24px 34px}}
   /* ====================== MOBILE (≤760px) ====================== */
   @media (max-width:760px){
@@ -203,7 +209,7 @@
     .topbar #printBtn,.topbar #themeBtn{flex:0 0 auto;padding:8px 10px}
 
     /* ---- Table of contents → slide-in drawer ---- */
-    .toc{top:auto;inset:54px auto 0 0;width:min(84vw,330px);max-width:330px;
+    .toc{top:auto;inset:58px auto 0 0;width:min(84vw,330px);max-width:330px;
       padding:14px 14px calc(20px + env(safe-area-inset-bottom));
       box-shadow:0 18px 60px rgba(13,22,34,.34);border-right:1px solid var(--line);
       -webkit-overflow-scrolling:touch;overscroll-behavior:contain;
@@ -309,7 +315,7 @@
   }
   /* ============== SMALL PHONE REFINEMENTS (≤430px) ============== */
   @media (max-width:430px){
-    body{font-size:15.5px}
+    /* keep body copy at 16px for comfortable reading + no iOS zoom; only chrome shrinks below */
     .wrap{padding-left:max(11px,env(safe-area-inset-left));padding-right:max(11px,env(safe-area-inset-right))}
     section.module{padding:20px 14px}
     .hero{padding:26px 16px 24px}
@@ -391,6 +397,7 @@
     <a href="#quiz"><span class="n">★</span> Quiz &amp; certificate</a>
     <a href="#resources"><span class="n">↗</span> Sources</a>
   </nav>
+  <div class="toc-scrim" id="tocScrim" hidden></div>
 
   <main>
     <header class="hero" id="top">
@@ -1171,7 +1178,15 @@
   window.addEventListener('afterprint',function(){$$('details').forEach(function(d){d.open=d.getAttribute('data-w')==='1';});});
   try{if(localStorage.getItem('cael_theme')==='dark')document.documentElement.classList.add('dark');}catch(_){}
   if($('#themeBtn'))$('#themeBtn').addEventListener('click',function(){document.documentElement.classList.toggle('dark');try{localStorage.setItem('cael_theme',document.documentElement.classList.contains('dark')?'dark':'light');}catch(_){}});
-  var mt=$('#menuToggle'),toc=$('#toc');if(mt&&toc){mt.addEventListener('click',function(){toc.classList.toggle('open');});toc.addEventListener('click',function(e){if(e.target.closest('a'))toc.classList.remove('open');});}
+  var mt=$('#menuToggle'),toc=$('#toc'),scrim=$('#tocScrim');
+  if(mt&&toc){
+    function setToc(open){toc.classList.toggle('open',open);mt.setAttribute('aria-expanded',open?'true':'false');if(scrim){if(open){scrim.hidden=false;}else{scrim.hidden=true;}}}
+    mt.setAttribute('aria-controls','toc');mt.setAttribute('aria-expanded','false');
+    mt.addEventListener('click',function(){setToc(!toc.classList.contains('open'));});
+    toc.addEventListener('click',function(e){if(e.target.closest('a'))setToc(false);});
+    if(scrim)scrim.addEventListener('click',function(){setToc(false);});
+    document.addEventListener('keydown',function(e){if(e.key==='Escape'&&toc.classList.contains('open'))setToc(false);});
+  }
 })();
 </script>
 </body>

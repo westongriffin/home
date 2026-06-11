@@ -253,6 +253,11 @@ th.sortable { cursor:pointer; user-select:none; white-space:nowrap; }
 /* MATRIX ACTIONS */
 .row-actions { display:flex; gap:6px; }
 
+/* The mobile live-summary peek handle is injected into the DOM always, but only
+   shown on phones (≤760px). Hidden by default so desktop/tablet keep the
+   original sticky sidebar summary with its in-card progress bar. */
+.hcq-peek { display:none; }
+
 /* ── Tablet (≤900px) ── */
 @media(max-width:900px){
   .kpi-row-4,.kpi-row-3{grid-template-columns:repeat(2,1fr)}
@@ -290,44 +295,59 @@ th.sortable { cursor:pointer; user-select:none; white-space:nowrap; }
   .table-wrap thead { display: none; }
   .table-wrap tbody { display: block; }
   .table-wrap tbody tr {
-    display: block;
+    display: flex; flex-wrap: wrap; align-items: center; gap: 6px 8px;
     background: white;
-    border-radius: 12px;
-    margin-bottom: 8px;
-    padding: 12px 14px;
-    border: none !important;
-    box-shadow: 0 1px 3px rgba(0,0,0,.06);
+    border-radius: 14px;
+    margin-bottom: 10px;
+    padding: 14px 16px;
+    border: 1px solid var(--gray-mid) !important;
+    box-shadow: 0 1px 2px rgba(0,0,0,.04);
   }
+  .table-wrap tbody tr.clickable:active { background: var(--orange-pale); }
   .table-wrap tbody td {
-    display: inline;
-    padding: 0 5px 0 0 !important;
+    display: inline-flex; align-items: center;
+    padding: 0 !important;
     border: none !important;
-    font-size: 11px;
+    font-size: 12px;
     color: var(--gray-dark);
   }
-  /* First cell = title for most tables (date/submitter) */
-  .table-wrap tbody td:first-child {
-    display: block;
-    font-size: 12px;
-    color: #888;
-    padding: 0 0 3px !important;
-    font-weight: 400;
+  /* text-only meta cells get a subtle leading separator dot */
+  .table-wrap tbody td:not(:first-child):not(:nth-child(2))::before{
+    content: "·"; color: var(--gray-mid); margin-right: 8px; font-weight: 700;
   }
-  /* Second cell = title (role name) */
+  /* a tag chip sitting alone in a cell shouldn't show the separator dot,
+     and the first meta cell never gets a leading dot */
+  .table-wrap tbody td:has(> .tag)::before{ content: none !important; margin: 0 !important; }
+  .table-wrap tbody td:nth-child(3)::before{ content: none !important; margin: 0 !important; }
+  /* First cell = date/submitter — full-width muted caption above the title */
+  .table-wrap tbody td:first-child {
+    flex: 1 0 100%; display: block;
+    font-size: 11.5px;
+    color: #8a8a94;
+    padding: 0 0 2px !important;
+    font-weight: 600; letter-spacing:.02em;
+  }
+  /* Second cell = title (role name) — full-width bold heading */
   .table-wrap tbody td:nth-child(2) {
-    display: block;
-    font-size: 14px;
-    font-weight: 700;
+    flex: 1 0 100%; display: block;
+    font-size: 15px;
+    font-weight: 800;
     color: var(--black);
-    padding: 0 0 6px !important;
+    padding: 0 0 4px !important;
+    line-height: 1.3;
   }
   /* Bug Box — first cell is reporter (make it title-style) */
   #issuesTable tbody td:first-child { font-size: 13px; font-weight: 700; color: var(--black); }
   #issuesTable tbody td:nth-child(2) { font-size: 11px; font-weight: 400; color: var(--gray-dark); }
-  /* Actions cell stays block */
-  .table-wrap tbody td:last-child { display: block; margin-top: 8px; }
-  .row-actions { flex-wrap: wrap; gap: 4px; }
-  .row-actions select { font-size: 10px; }
+  /* Actions cell = its own full-width row at the bottom of the card */
+  .table-wrap tbody td:last-child { flex: 1 0 100%; display: block; margin-top: 10px; }
+  .table-wrap tbody td:last-child::before{ content: none !important; }
+  .table-wrap tbody td:last-child .btn,
+  .table-wrap tbody td:last-child button { min-height: 40px; }
+  .row-actions { flex-wrap: wrap; gap: 6px; }
+  .row-actions select { font-size: 11px; min-height: 40px; }
+  /* status / type / category tag chips read as proper pills inside the card */
+  .table-wrap tbody td .tag{ font-size: 11px; padding: 3px 9px; border-radius: 999px; }
 
   /* ── Filter row as chips ── */
   .filter-row { display: flex; gap: 6px; flex-wrap: wrap; padding: 4px 0 8px; }
@@ -405,31 +425,73 @@ th.sortable { cursor:pointer; user-select:none; white-space:nowrap; }
   .nav-bar::-webkit-scrollbar{ display:none; }
   .nav-btn{ flex:0 0 auto; min-height:44px; font-size:12px; padding:11px 14px; }
 
-  /* ── "New Request" two-column form → single column ── */
-  .hcq-wrap{ grid-template-columns:1fr !important; gap:16px; max-width:100%; }
-  .hcq-card{ padding:18px 16px; border-radius:14px; }
-  .hcq-grid{ grid-template-columns:1fr !important; gap:14px; }
+  /* ── "New Request" two-column form → single column ──
+     NOTE: the desktop .hcq-* rules live in a later <style> block, so these
+     mobile overrides need !important to win the source-order battle. */
+  .hcq-wrap{ grid-template-columns:1fr !important; gap:16px !important; max-width:100%; margin:14px auto 0 !important; }
+  .hcq-card{ padding:18px 16px !important; border-radius:14px !important; min-width:0; margin-bottom:0 !important; }
+  .hcq-grid{ grid-template-columns:1fr !important; gap:14px !important; }
   .hcq-grid .full{ grid-column:1/-1; }
+  /* When the New Request view is active, reserve space at the page bottom for the
+     fixed summary bar (collapsed peek height + safe area). */
+  body.hcq-bar-on{ padding-bottom:calc(100px + env(safe-area-inset-bottom)); }
 
-  /* Live "✦ Your Request" summary: stays in flow at the BOTTOM, no longer sticky,
-     progress bar + submit reachable by scroll, keeps updating via hcqSync */
-  .hcq-sum{
-    position:static !important; top:auto !important;
-    order:2; padding:18px 16px; border-radius:14px;
-    margin-bottom:max(8px, env(safe-area-inset-bottom));
-  }
-  .hcq-sum .ey{ font-size:13px; }
-  .hcq-srow .v{ max-width:58%; }
-  .hcq-submit{ min-height:48px; font-size:16px; }
-  .hcq-clear{ min-height:44px; }
-  .hcq-prog{ flex-wrap:wrap; }
-  .hcq-prog .bar{ flex:1 1 100%; order:2; }
-  .hcq-prog .lbl{ order:1; flex:1 1 100%; text-align:left; }
-
-  /* Request-type toggle wraps cleanly, full-width, tappable */
-  .hcq-type{ display:flex; width:100%; }
-  .hcq-type button{ flex:1; min-height:44px; padding:10px 8px; font-size:13px; }
+  /* ── Request-type toggle: clean side-by-side segmented control ──
+     (!important needed — desktop .hcq-type rules are defined later in source) */
+  .hcq-type{ display:flex !important; width:100%; flex-wrap:nowrap !important; gap:0 !important;
+    background:#f1f1f4 !important; border-radius:14px !important; padding:4px !important; margin:0 0 20px !important; }
+  .hcq-type button{ flex:1 1 0 !important; min-width:0; min-height:46px; padding:10px 6px !important;
+    font-size:13.5px !important; border-radius:11px !important; white-space:nowrap;
+    overflow:hidden; text-overflow:ellipsis; }
   .type-toggle .type-btn{ min-height:48px; }
+
+  /* ════════════════════════════════════════════════════════════════
+     LIVE "✦ Your Request" SUMMARY → expandable sticky BOTTOM bar.
+     Collapsed: a compact peek (progress + fields-complete + Submit).
+     Tap the handle to expand the full live card upward. hcqSync keeps
+     driving the same #submitBtn / #sum-progbar / #sum-proglbl nodes.
+     ════════════════════════════════════════════════════════════════ */
+  .hcq-sum{
+    position:fixed !important; left:0; right:0; bottom:0; top:auto !important;
+    z-index:8500; width:100%; margin:0 !important; border-radius:18px 18px 0 0;
+    padding:0 0 max(10px, env(safe-area-inset-bottom));
+    background:#fff; border:1px solid #ececf0; border-bottom:none;
+    box-shadow:0 -8px 30px rgba(20,20,30,.16);
+    display:flex; flex-direction:column;
+    max-height:calc(80px + env(safe-area-inset-bottom));
+    overflow:hidden; transition:max-height .32s cubic-bezier(.2,.7,.2,1);
+  }
+  .hcq-sum.expanded{
+    max-height:88vh; overflow-y:auto; -webkit-overflow-scrolling:touch;
+  }
+  /* Injected tap handle / peek row (added once by JS) */
+  .hcq-peek{
+    flex:0 0 auto; order:-2; position:sticky; top:0; z-index:2;
+    display:flex; align-items:center; gap:12px; width:100%; min-height:48px;
+    padding:14px 16px; background:#fff; border:none; cursor:pointer;
+    font:inherit; text-align:left; border-bottom:1px solid #f0f0f4;
+  }
+  .hcq-peek .pk-bar{ flex:1; height:7px; border-radius:999px; background:#eee; overflow:hidden; }
+  .hcq-peek .pk-bar i{ display:block; height:100%; border-radius:999px; background:#7c3aed; width:0; transition:width .25s; }
+  .hcq-peek .pk-lbl{ font-size:12px; font-weight:800; color:#2a2a33; white-space:nowrap; }
+  .hcq-peek .pk-caret{ font-size:13px; color:#9a9aa4; transition:transform .3s; margin-left:2px; }
+  .hcq-sum.expanded .hcq-peek .pk-caret{ transform:rotate(180deg); }
+  /* A grab indicator line above the peek content */
+  .hcq-peek::before{ content:""; position:absolute; top:5px; left:50%; transform:translateX(-50%);
+    width:38px; height:4px; border-radius:999px; background:#e0e0e6; }
+
+  /* The full card body scrolls inside the expanded sheet */
+  .hcq-sum .ey{ font-size:13px; padding:0 16px; margin-top:6px; }
+  .hcq-sum .role{ padding:0 16px; }
+  .hcq-sum > div:not(.hcq-peek):not(.hcq-prog){ /* tag wrapper + groups */ }
+  .hcq-sum .hcq-grp{ padding:0 16px; }
+  .hcq-sum > div:nth-of-type(2){ padding:0 16px; } /* tag row */
+  .hcq-srow .v{ max-width:58%; }
+  .hcq-bstat{ margin-left:16px !important; margin-right:16px !important; }
+  .hcq-submit{ min-height:50px; font-size:16px !important; margin:14px 16px 0 !important; width:calc(100% - 32px) !important; }
+  .hcq-clear{ min-height:44px; }
+  /* Hide the in-card progress row on mobile — the peek bar represents it */
+  .hcq-prog{ display:none !important; }
 
   /* 16px+ inputs kill iOS auto-zoom; comfortable touch targets */
   .hcq-f input, .hcq-f select, .hcq-f textarea,
@@ -459,14 +521,64 @@ th.sortable { cursor:pointer; user-select:none; white-space:nowrap; }
   .btn{ min-height:44px; }
   .btn-sm{ min-height:36px; }
 
-  /* Detail/approval modal = full-width bottom sheet, safe-area aware */
-  .modal-overlay{ align-items:flex-end !important; padding:0 !important; }
-  .modal-overlay .modal{
+  /* ════════════════════════════════════════════════════════════════
+     REQUEST DETAIL / APPROVAL → full-screen slide-in sheet with a sticky
+     "‹ Back" bar (matches the tool-auto-triage reference pattern).
+     Scoped to #modalOverlay so the small confirm dialogs stay compact.
+     ════════════════════════════════════════════════════════════════ */
+  #modalOverlay{
+    padding:0 !important; align-items:stretch !important; justify-content:flex-start !important;
+    background:transparent !important; opacity:1 !important;
+    /* sit above the sticky demo header (z 9000) so it's truly full-screen */
+    z-index:9500 !important;
+    /* keep hidden/non-interactive until open (base sets pointer-events:none) */
+    visibility:hidden; transition:visibility 0s linear .27s;
+  }
+  #modalOverlay.open{ visibility:visible; transition:visibility 0s; pointer-events:auto; }
+  #modalOverlay .modal{
+    width:100% !important; max-width:100% !important; height:100% !important;
+    max-height:none !important; border-radius:0 !important;
+    transform:translateX(100%); transition:transform .27s cubic-bezier(.2,.7,.2,1);
+    box-shadow:none; background:#fff;
+  }
+  #modalOverlay.open .modal{ transform:none; }
+  /* Turn the dark header into a full-bleed light sticky back bar */
+  #modalOverlay .modal-hdr{
+    position:sticky; top:0; z-index:5;
+    background:rgba(247,245,240,.96); backdrop-filter:saturate(180%) blur(10px);
+    -webkit-backdrop-filter:saturate(180%) blur(10px);
+    border-bottom:1px solid var(--gray-mid);
+    padding:10px 14px max(10px, env(safe-area-inset-top, 0px));
+    padding-top:max(12px, env(safe-area-inset-top));
+    display:flex; align-items:center; gap:10px; flex-direction:row-reverse; justify-content:flex-end;
+  }
+  #modalOverlay .modal-hdr h3{ color:var(--black) !important; font-size:15px; }
+  #modalOverlay .modal-hdr .sub{ color:var(--gray-dark) !important; }
+  #modalOverlay .modal-hdr > div{ min-width:0; flex:1; overflow:hidden; }
+  #modalOverlay .modal-hdr h3{ white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  /* the close (✕) becomes a "‹ Back" affordance on mobile only */
+  #modalOverlay .modal-close{
+    flex:0 0 auto; display:inline-flex; align-items:center; gap:3px;
+    color:var(--orange) !important; font-size:0; padding:8px 10px 8px 4px;
+    min-height:44px; min-width:44px;
+  }
+  #modalOverlay .modal-close::before{
+    content:"‹ Back"; font-size:16px; font-weight:800; color:var(--orange);
+    white-space:nowrap;
+  }
+  #modalOverlay .modal-body{
+    flex:1; overflow-y:auto; -webkit-overflow-scrolling:touch;
+    padding-bottom:max(28px, env(safe-area-inset-bottom));
+  }
+
+  /* The smaller confirm dialogs (admin action, issue report) stay bottom-sheets */
+  #adminCommentOverlay, #issueModalOverlay{ align-items:flex-end !important; padding:0 !important; }
+  #adminCommentOverlay .modal, #issueModalOverlay .modal{
     border-radius:18px 18px 0 0 !important;
     width:100% !important; max-width:100% !important;
     max-height:90vh; overflow-y:auto;
   }
-  .modal-body{ padding-bottom:max(20px, env(safe-area-inset-bottom)); }
+  #adminCommentOverlay .modal-body, #issueModalOverlay .modal-body{ padding-bottom:max(20px, env(safe-area-inset-bottom)); }
 
   /* Page-title scale */
   .page-title h2{ font-size:21px; }
@@ -475,17 +587,15 @@ th.sortable { cursor:pointer; user-select:none; white-space:nowrap; }
 /* ── Hard phone (≤430px: 360–430) ── */
 @media (max-width:430px){
   .content{ padding-top:16px; }
-  .hcq-card, .hcq-sum{ padding:16px 14px; }
+  .hcq-card{ padding:16px 14px; }
   .hcq-sec h4{ font-size:12px; }
 
   /* One KPI per row where they were 5/4-up so values never clip */
   .kpi-row[style*="repeat(5"]{ grid-template-columns:repeat(2,1fr) !important; }
   .kpi-value{ font-size:24px; }
 
-  /* Request-type pill toggle: stack if two long labels would overflow */
-  .hcq-type{ flex-wrap:wrap; gap:4px; background:transparent; padding:0; }
-  .hcq-type button{ flex:1 1 100%; background:#f1f1f4; border-radius:12px; }
-  .hcq-type button.active{ background:var(--orange); }
+  /* Request-type segmented control stays side-by-side; shrink labels slightly */
+  .hcq-type button{ font-size:12.5px; padding:10px 4px; }
 
   /* Summary rows stack key/value if value is long */
   .hcq-srow .v{ max-width:55%; }
@@ -857,8 +967,27 @@ document.addEventListener("DOMContentLoaded", function() {
       var pb=g('sum-progbar'); if(pb) pb.style.width=Math.round(done/8*100)+'%';
       var pl=g('sum-proglbl'); if(pl) pl.textContent=done+' of 8 fields complete';
       var sb=g('submitBtn'); if(sb) sb.disabled = done<8;
+      // Mirror progress into the mobile peek bar (exists only on phones)
+      var pkb=g('hcq-peek-bar'); if(pkb) pkb.style.width=Math.round(done/8*100)+'%';
+      var pkl=g('hcq-peek-lbl'); if(pkl) pkl.textContent = done>=8 ? 'Ready to submit' : (done+' of 8 fields');
     };
-    document.addEventListener('DOMContentLoaded', function(){ setTimeout(function(){ try{ hcqSync(); }catch(e){} }, 400); });
+
+    /* ── Mobile: build the expandable sticky-summary peek + wire expand/collapse ── */
+    window.hcqInitBar = function(){
+      var sum=document.querySelector('.hcq-sum'); if(!sum) return;
+      if(!document.getElementById('hcq-peek')){
+        var peek=document.createElement('button');
+        peek.type='button'; peek.id='hcq-peek'; peek.className='hcq-peek';
+        peek.setAttribute('aria-label','Toggle request summary');
+        peek.innerHTML='<span class="pk-bar"><i id="hcq-peek-bar"></i></span>'+
+                       '<span class="pk-lbl" id="hcq-peek-lbl">0 of 8 fields</span>'+
+                       '<span class="pk-caret" aria-hidden="true">▲</span>';
+        peek.addEventListener('click', function(){ sum.classList.toggle('expanded'); if(sum.classList.contains('expanded')) sum.scrollTop=0; });
+        sum.insertBefore(peek, sum.firstChild);
+      }
+      try{ hcqSync(); }catch(e){}
+    };
+    document.addEventListener('DOMContentLoaded', function(){ setTimeout(function(){ try{ hcqInitBar(); hcqSync(); }catch(e){} }, 400); });
   </script>
 </div>
 
@@ -1344,6 +1473,11 @@ function setupUI() {
   populateSMTFilters();
   populateProxySelector();
   renderAll();
+
+  // Mobile: the default landing view is New Request → enable its sticky summary bar.
+  var _active = document.querySelector('.view.active');
+  document.body.classList.toggle('hcq-bar-on', !_active || _active.id === 'view-submit');
+  try { if (window.hcqInitBar) hcqInitBar(); } catch(e) {}
 }
 
 function renderUserBadges() {
@@ -1439,6 +1573,10 @@ function showView(id, btn) {
   document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
   document.getElementById('view-'+id)?.classList.add('active');
   if (btn) btn.classList.add('active');
+  // Mobile: only the New Request view gets the fixed live-summary bar + bottom padding
+  document.body.classList.toggle('hcq-bar-on', id === 'submit');
+  // collapse the summary sheet whenever we navigate
+  var _sum = document.querySelector('.hcq-sum'); if (_sum) _sum.classList.remove('expanded');
   // sync mobile bottom nav
   document.querySelectorAll('.cr-btm-btn').forEach(b => b.classList.remove('cr-btm-active'));
   // map admin views back to admin button

@@ -335,14 +335,19 @@
     .row2{grid-template-columns:1fr;}
   }
 
-  /* ===== Phone layer (single column, no horizontal scroll) ===== */
+  /* The mobile back bar is desktop-hidden chrome; it only appears in the phone sheet. */
+  .result-back{display:none;}
+
+  /* ===== Phone layer — form IS the page; the draft opens as a full-screen sheet ===== */
   @media (max-width:760px){
     html,body{width:100%; max-width:100%; overflow-x:hidden;}
-    .app{width:100%; max-width:100%; overflow-x:hidden;}
+    body{overflow-y:auto;}
+    .app{width:100%; max-width:100%; height:auto; min-height:100vh; overflow-x:hidden; overflow-y:visible;}
 
-    /* App bar wraps; title + DEMO badge + user chip all stay visible & tappable */
+    /* App bar: two clean rows — brand + user chip, then the DEMO badge */
     .topbar{
       flex-wrap:wrap; gap:8px 10px; padding:10px 14px; row-gap:8px;
+      position:sticky; top:0;
     }
     .brand{flex:1 1 auto; min-width:0;}
     .brand .title{font-size:14px; white-space:normal;}
@@ -358,20 +363,17 @@
     .userchip .org{display:none;}
     .userchip .nm{font-size:13px;}
 
-    /* Work area: one column, page scrolls vertically */
+    /* Work area: single column. Templates (chip row) -> Form. */
     .work{
       grid-template-columns:1fr; height:auto; gap:14px;
       padding:14px; width:100%; max-width:100%;
     }
     .col{height:auto; min-width:0;}
     .panel{min-width:0;}
-
-    /* Order: Templates (chip row) -> Form -> Draft -> Guardrails */
     .col-left{order:1;}
     .col-center{order:2;}
-    .col-right{order:3;}
 
-    /* LEFT: template list becomes a horizontal scrolling chip row */
+    /* LEFT: template list becomes a horizontal scrolling chip row above the form */
     .col-left .panel{flex:0 0 auto !important; max-height:none;}
     #tplList{
       display:flex; flex-direction:row; flex-wrap:nowrap; gap:8px;
@@ -389,35 +391,66 @@
     .tpl .tic{width:28px; height:28px; font-size:14px;}
     .left-foot{display:none;}           /* free up vertical space on phones */
 
-    /* CENTER + RIGHT panels: full width, comfortable heights */
-    .col-center .panel, .col-right .panel{max-height:none;}
-    .panel-b{max-height:none;}          /* let the page scroll, not inner panes */
-    .right-stack{height:auto; gap:14px;}
-    .out-panel, .guard-panel{flex:0 0 auto;}
-
-    .out-doc, .empty{min-height:220px;}
-    .out-doc{margin:0 12px 12px; padding:16px 16px; font-size:13.5px;}
-    .empty{margin:0 12px 12px;}
-
-    /* Output toolbar: wrap, stay tappable */
-    .out-toolbar{gap:8px; padding:0 12px 12px;}
-    .out-toolbar .chip-btn{min-height:40px; padding:9px 12px; font-size:13px;}
-
-    /* Form footer buttons stay tappable */
+    /* CENTER: the form is the whole page, full width, page scrolls vertically */
+    .col-center .panel{max-height:none;}
+    .col-center .panel-b{max-height:none;}
     .form-foot{padding:12px 14px; gap:10px;}
+
+    /* ≥16px inputs (no iOS zoom) + comfortable tap targets in the form */
+    .inp, .ta, .sel{font-size:16px; padding:12px 13px;}
+    .seg button{min-height:44px; font-size:14px;}
+    .seg button .em{font-size:15px;}
     .btn{min-height:44px;}
-    .btn.sm{min-height:36px;}
+    .btn.sm{min-height:40px;}
 
-    /* Tone selector: bigger tap targets */
-    .seg button{min-height:40px; font-size:13px;}
+    /* ===== RIGHT column → full-screen slide-in RESULT sheet ===== */
+    .col-right{
+      position:fixed; inset:0; z-index:140; width:100%;
+      order:0; padding:0; margin:0; height:auto;
+      background:var(--bg);
+      transform:translateX(100%);
+      transition:transform .27s cubic-bezier(.2,.7,.2,1);
+      visibility:hidden;
+      overflow-y:auto; -webkit-overflow-scrolling:touch;
+      overscroll-behavior:contain;
+    }
+    .app.show-result .col-right{transform:none; visibility:visible;}
 
-    /* Guardrail flag cards + actions wrap and stay usable */
-    .guard-b{padding:6px 12px 14px;}
+    /* the stack fills the sheet; panels flow naturally and the page (sheet) scrolls */
+    .right-stack{height:auto; min-height:100%; gap:14px; padding:0 14px 34px;}
+    .out-panel, .guard-panel{flex:0 0 auto; max-height:none;}
+    .out-panel .panel-b, .guard-panel .panel-b{max-height:none;}
+
+    /* sticky full-bleed back bar at the top of the sheet */
+    .result-back{
+      display:flex; align-items:center; gap:8px;
+      position:sticky; top:0; z-index:5;
+      width:calc(100% + 28px); margin:0 -14px 14px; padding:13px 14px;
+      background:rgba(247,248,252,.94);
+      backdrop-filter:saturate(180%) blur(10px);
+      -webkit-backdrop-filter:saturate(180%) blur(10px);
+      border:none; border-bottom:1px solid var(--line);
+      font:inherit; font-size:15px; font-weight:800; color:var(--v1);
+      min-height:48px; text-align:left;
+    }
+    .result-back span{font-size:22px; line-height:1; margin-top:-2px;}
+
+    /* draft body + empty state: comfortable height, ≥16px text */
+    .out-doc, .empty{min-height:240px;}
+    .out-doc{margin:0 2px 14px; padding:16px 16px; font-size:16px;}
+    .empty{margin:0 2px 14px;}
+
+    /* Output toolbar: wraps, every button tappable */
+    .out-toolbar{gap:8px; padding:0 2px 14px;}
+    .out-toolbar .chip-btn{min-height:44px; padding:10px 13px; font-size:13.5px;}
+
+    /* Guardrail flags sit directly below the draft, fully usable */
+    .guard-b{padding:6px 2px 14px;}
     .flag .fl-act{flex-wrap:wrap; gap:8px;}
-    .fixbtn{min-height:40px; padding:8px 14px; font-size:13px;}
-    .flag .fl-act .btn.ghost.sm{min-height:40px; padding:8px 14px !important; font-size:13px !important;}
-    .check{font-size:13px;}
-    .flag .fl-term, .flag .fl-why, .flag .fl-sugg{font-size:13px;}
+    .fixbtn{min-height:44px; padding:9px 15px; font-size:13.5px;}
+    .flag .fl-act .btn.ghost.sm{min-height:44px; padding:9px 15px !important; font-size:13.5px !important;}
+    .check{font-size:13.5px; min-height:44px;}
+    .flag .fl-term, .flag .fl-why, .flag .fl-sugg{font-size:13.5px;}
   }
 
   /* ===== Narrow phones (~360–430px) ===== */
@@ -426,10 +459,12 @@
     .brand .title{font-size:13.5px;}
     .logo{width:28px; height:28px;}
     .work{padding:12px; gap:12px;}
+    .right-stack{padding:0 12px 34px;}
     .out-doc{padding:14px 14px;}
+    .result-back{width:calc(100% + 24px); margin:0 -12px 14px;}
     /* toolbar buttons share rows two-up so nothing overflows */
     .out-toolbar{gap:7px;}
-    .out-toolbar .chip-btn{flex:1 1 auto; justify-content:center; padding:9px 8px;}
+    .out-toolbar .chip-btn{flex:1 1 auto; justify-content:center; padding:10px 8px;}
     /* form footer stacks so the primary CTA is full width and easy to hit */
     .form-foot{flex-wrap:wrap;}
     .btn.primary{flex:1 1 100%;}
@@ -500,6 +535,9 @@
     <div class="col col-right">
       <div class="right-stack">
 
+        <!-- MOBILE BACK BAR (slide-in result sheet only) -->
+        <button type="button" class="result-back" id="resultBack"><span aria-hidden="true">‹</span> Back to form</button>
+
         <!-- OUTPUT -->
         <div class="panel out-panel">
           <div class="panel-h">
@@ -555,6 +593,17 @@
   var timers = [];
   function later(fn, ms){ var t=setTimeout(function(){ try{fn();}catch(e){} }, ms); timers.push(t); return t; }
   function clearTimers(){ for(var i=0;i<timers.length;i++){ clearTimeout(timers[i]); } timers = []; }
+
+  /* ---------------- Mobile result sheet (full-screen draft + guardrails) ---------------- */
+  function isMobileView(){ return window.matchMedia && window.matchMedia('(max-width:760px)').matches; }
+  function openMobileResult(){
+    if(!isMobileView()) return;
+    var a=document.querySelector('.app'); if(a) a.classList.add('show-result');
+    var col=document.querySelector('.col-right'); if(col) col.scrollTop=0;
+  }
+  function closeMobileResult(){
+    var a=document.querySelector('.app'); if(a) a.classList.remove('show-result');
+  }
 
   /* ---------------- Template definitions ---------------- */
   // Each template: id, icon, name, desc, kicker label, sub label, fields[], builder(fn -> array of paragraph objects)
@@ -1228,6 +1277,8 @@
     if(state.busy) return;
     opts = opts||{};
     clearTimers();
+    // On phones, surface the full-screen result sheet so the draft + guardrails are visible.
+    openMobileResult();
     state.busy = true;
     var btn=$('draftBtn');
     btn.disabled=true;
@@ -1318,6 +1369,7 @@
     renderForm();
     resetOutput();
     resetGuards();
+    closeMobileResult();
     toast('Form reset to example');
   }
 
@@ -1325,6 +1377,7 @@
   function bind(){
     $('draftBtn').addEventListener('click', function(){ doDraft(); });
     $('resetBtn').addEventListener('click', resetForm);
+    var rb=$('resultBack'); if(rb) rb.addEventListener('click', closeMobileResult);
     $('copyBtn').addEventListener('click', function(){ if(!$('copyBtn').disabled) copyDraft(); });
     $('insertBtn').addEventListener('click', function(){ if(!$('insertBtn').disabled) insertDraft(); });
     $('regenBtn').addEventListener('click', function(){ if(!$('regenBtn').disabled) doDraft(); });

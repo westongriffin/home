@@ -51,6 +51,7 @@
   .topbar button{background:transparent;color:var(--ink);border:1px solid var(--line);padding:7px 12px;border-radius:9px;cursor:pointer;font:inherit;font-size:13px;font-weight:600;display:inline-flex;align-items:center;gap:6px}
   .topbar button:hover{border-color:var(--indigo);color:var(--indigo)}
   #menuToggle{display:none}
+  .scrim{display:none}
   .wrap{max-width:1220px;margin:0 auto;padding:0 20px}
   .layout{display:flex;gap:34px;align-items:flex-start;padding:26px 0 90px}
   .toc{position:sticky;top:74px;flex:0 0 256px;max-height:calc(100vh - 96px);overflow:auto;padding:6px 6px 6px 0}
@@ -193,29 +194,41 @@
      Desktop (≥820px) is unaffected — all rules gated below 820px.
      ============================================================ */
   @media (max-width:760px){
-    /* Kill any horizontal page scroll; keep a clean single column. */
-    html{overflow-x:hidden;scroll-padding-top:64px;-webkit-text-size-adjust:100%}
-    body{overflow-x:hidden;font-size:16px}
+    /* Kill any horizontal page scroll, but use overflow-x:clip (NOT hidden) so the
+       root stays a normal box — `hidden` makes html+body scroll containers and
+       breaks in-page anchor / TOC scrolling. */
+    html{overflow-x:clip;scroll-padding-top:64px;-webkit-text-size-adjust:100%}
+    body{overflow-x:clip;font-size:16px}
     .wrap{padding-left:14px;padding-right:14px;padding-left:max(14px,env(safe-area-inset-left));padding-right:max(14px,env(safe-area-inset-right));overflow-x:clip}
     img,canvas,svg,table{max-width:100%}
     #progress{height:3px}
 
-    /* --- Topbar: stays one row; brand absorbs the squeeze, buttons stay tappable --- */
-    .topbar{flex-wrap:nowrap;gap:6px;padding:8px 12px;padding-top:max(8px,env(safe-area-inset-top));padding-left:max(12px,env(safe-area-inset-left));padding-right:max(12px,env(safe-area-inset-right))}
-    .topbar .brand{font-size:14px;gap:7px;min-width:0;flex-shrink:1;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
-    .topbar .brand .glyph{flex:0 0 auto;width:24px;height:24px}
-    .topbar .spacer{flex:0 1 auto}
-    .topbar button{padding:9px 10px;font-size:12px;min-height:44px;flex:0 0 auto;white-space:nowrap}
+    /* --- Topbar: one clean row. The brand collapses to its glyph mark so the
+           "Contents" toggle + action buttons all keep ≥44px tap targets. --- */
+    .topbar{flex-wrap:nowrap;gap:8px;padding:7px 12px;padding-top:max(7px,env(safe-area-inset-top));padding-left:max(12px,env(safe-area-inset-left));padding-right:max(12px,env(safe-area-inset-right))}
+    .topbar .brand{font-size:0;gap:0;min-width:0;flex:0 0 auto}
+    .topbar .brand .glyph{flex:0 0 auto;width:34px;height:34px}
+    .topbar .spacer{flex:1 1 auto}
+    .topbar button{padding:0 11px;font-size:12.5px;min-height:44px;height:44px;flex:0 0 auto;white-space:nowrap;display:inline-flex;align-items:center}
+    /* Order: glyph mark, Contents, spacer, then the action buttons. */
+    .topbar .brand{order:-2}
     #menuToggle{order:-1}
 
-    /* --- Contents: full-screen slide-in drawer below the sticky topbar --- */
-    .toc{position:fixed;top:calc(58px + env(safe-area-inset-top));right:0;bottom:0;left:0;width:auto;max-height:none;
-         padding:14px 16px calc(28px + env(safe-area-inset-bottom));
-         padding-left:max(16px,env(safe-area-inset-left));padding-right:max(16px,env(safe-area-inset-right));
+    /* --- Contents: left slide-in drawer below the sticky topbar, with a dim
+           scrim over the rest of the page. Capped width so the scrim shows. --- */
+    .scrim{display:block;position:fixed;inset:0;z-index:64;background:rgba(12,19,38,.46);
+           opacity:0;visibility:hidden;transition:opacity .28s,visibility 0s linear .28s;
+           -webkit-tap-highlight-color:transparent}
+    .scrim.open{opacity:1;visibility:visible;transition:opacity .28s,visibility 0s}
+    .toc{display:block;position:fixed;top:calc(56px + env(safe-area-inset-top));bottom:0;left:0;right:auto;
+         width:min(86vw,340px);max-width:340px;max-height:none;
+         padding:14px 14px calc(28px + env(safe-area-inset-bottom));
+         padding-left:max(14px,env(safe-area-inset-left));
          -webkit-overflow-scrolling:touch;box-shadow:var(--shadow);
-         transform:translateX(-100%);opacity:0;visibility:hidden;
-         transition:transform .28s cubic-bezier(.2,.7,.2,1),opacity .28s,visibility 0s linear .28s}
-    .toc.open{display:block;transform:none;opacity:1;visibility:visible;transition:transform .28s cubic-bezier(.2,.7,.2,1),opacity .28s,visibility 0s}
+         border-right:1px solid var(--line);
+         transform:translateX(-102%);opacity:1;visibility:hidden;
+         transition:transform .28s cubic-bezier(.2,.7,.2,1),visibility 0s linear .28s}
+    .toc.open{transform:none;visibility:visible;transition:transform .28s cubic-bezier(.2,.7,.2,1),visibility 0s}
     .toc h4{margin-top:2px}
     .toc a{padding:13px 12px;font-size:15px;min-height:44px;box-sizing:border-box}
     .toc a .n{flex:0 0 26px}
@@ -241,16 +254,20 @@
     .mhead{gap:13px}
     .mhead .idx{width:34px;height:34px;border-radius:10px;font-size:12px}
     .mhead h2{font-size:21px;line-height:1.18}
-    .module .lead{font-size:15px}
-    h3{font-size:17px}
-    h4{font-size:15px}
-    p,li{font-size:15.5px}
+    .module .lead{font-size:15.5px;line-height:1.5}
+    h3{font-size:17.5px}
+    h4{font-size:15.5px}
+    /* Comfortable body copy: ≥16px with ~1.6 line-height. */
+    p,li{font-size:16px;line-height:1.6}
+    ul,ol{padding-left:1.2em}
+    li{margin:.4em 0}
     blockquote{font-size:16px;padding-left:16px}
     [id]{scroll-margin-top:64px}
 
     /* --- Callouts --- */
     .callout{padding:14px 15px;gap:12px}
     .callout .cic{flex:0 0 30px;height:30px}
+    .callout p{font-size:15.5px;line-height:1.55}
 
     /* --- Tables: scroll inside their own container, never widen the page --- */
     .tablewrap{max-width:100%;overflow-x:auto;-webkit-overflow-scrolling:touch}
@@ -260,18 +277,21 @@
     /* --- Do/Don't grid stacks --- */
     .ddgrid{gap:13px}
     .ddcol{padding:14px 15px}
+    .ddcol ul{font-size:15.5px;line-height:1.55}
 
     /* --- Details / accordions --- */
     summary{padding:14px 16px;min-height:44px}
     details .dbody{padding:2px 16px 15px}
 
-    /* --- Knowledge-check & quiz options: easy tap targets --- */
+    /* --- Knowledge-check & quiz options: large tappable cards (≥44px) --- */
     .kc{padding:16px}
-    .kc .kc-q{font-size:16px}
-    .kc-opt{padding:13px 14px;gap:10px}
+    .kc .kc-q{font-size:16px;line-height:1.45}
+    .kc-options{gap:10px}
+    .kc-opt{padding:13px 14px;gap:11px;min-height:48px}
     .kc-opt:hover{transform:none}
     .kc-opt .mk{flex:0 0 24px;height:24px}
-    .kc-explain{font-size:14.5px}
+    .kc-opt>span:last-child{line-height:1.45}
+    .kc-explain{font-size:15px;line-height:1.55}
 
     /* --- Interactive tools: stack to one column, inputs full-width, ≥16px (no iOS zoom) --- */
     .tool{padding:18px 16px}
@@ -298,24 +318,28 @@
     #certActions #certPrint{margin-left:0!important}
 
     /* --- Checklist & footer --- */
-    .checklist label{font-size:15px}
+    .checklist label{font-size:15.5px;line-height:1.5}
+    .checklist li{padding:12px 13px}
     footer.site{max-width:100%}
 
     /* --- Buttons in general: comfortable tap height --- */
     .btn,.btn-grad{min-height:44px}
 
-    /* Honor reduced-motion for the drawer slide. */
+    /* Honor reduced-motion for the drawer slide + scrim fade. */
     @media (prefers-reduced-motion:reduce){
-      .toc,.toc.open{transition:none}
+      .toc,.toc.open{transition:visibility 0s}
+      .scrim,.scrim.open{transition:visibility 0s}
     }
   }
 
   /* --------- Small-phone refinements (≤430px) --------- */
   @media (max-width:430px){
     .wrap{padding-left:12px;padding-right:12px;padding-left:max(12px,env(safe-area-inset-left));padding-right:max(12px,env(safe-area-inset-right))}
-    .topbar{gap:5px;padding-left:10px;padding-right:10px}
-    .topbar .brand{font-size:13px}
-    .topbar button{padding:9px 8px;font-size:11.5px}
+    /* Keep the single clean row; just tighten spacing so the narrowest
+       phones (375) still fit with no clipping. */
+    .topbar{gap:5px;padding-left:9px;padding-right:9px}
+    .topbar .brand .glyph{width:32px;height:32px}
+    .topbar button{padding:0 9px;font-size:12px}
     .hero{padding:26px 16px 24px}
     .hero h1{font-size:clamp(23px,7.6vw,30px)}
     .hero .lede{font-size:15px}
@@ -1089,7 +1113,21 @@
   window.addEventListener('afterprint',function(){$$('details').forEach(function(d){d.open=d.getAttribute('data-w')==='1';});});
   try{if(localStorage.getItem('usel_theme')==='dark')document.documentElement.classList.add('dark');}catch(_){}
   if($('#themeBtn'))$('#themeBtn').addEventListener('click',function(){document.documentElement.classList.toggle('dark');try{localStorage.setItem('usel_theme',document.documentElement.classList.contains('dark')?'dark':'light');}catch(_){}});
-  var mt=$('#menuToggle'),toc=$('#toc');if(mt&&toc){mt.addEventListener('click',function(){toc.classList.toggle('open');});toc.addEventListener('click',function(e){if(e.target.closest('a'))toc.classList.remove('open');});}
+  var mt=$('#menuToggle'),toc=$('#toc');
+  if(mt&&toc){
+    var scrim=document.createElement('div');scrim.className='scrim';scrim.setAttribute('aria-hidden','true');
+    document.body.appendChild(scrim);
+    function setMenu(open){
+      toc.classList.toggle('open',open);
+      scrim.classList.toggle('open',open);
+      mt.setAttribute('aria-expanded',open?'true':'false');
+    }
+    mt.setAttribute('aria-controls','toc');mt.setAttribute('aria-expanded','false');
+    mt.addEventListener('click',function(){setMenu(!toc.classList.contains('open'));});
+    scrim.addEventListener('click',function(){setMenu(false);});
+    toc.addEventListener('click',function(e){if(e.target.closest('a'))setMenu(false);});
+    document.addEventListener('keydown',function(e){if(e.key==='Escape'&&toc.classList.contains('open'))setMenu(false);});
+  }
 })();
 </script>
 </body>

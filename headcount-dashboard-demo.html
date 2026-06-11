@@ -212,16 +212,11 @@
     .kpi { padding: 14px 16px; }
     .section-header { margin-top: 18px; }
     .hbar-label { width: 100px; font-size: 11px; }
-    /* Tables: scrollable on mobile — no card layout (avoids unlabelled "random numbers") */
-    .table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
-    .table-wrap table { min-width: 480px; }
-    .table-scroll { max-height: none !important; }
-    /* Distribution bars: hide on mobile */
+    /* NOTE: data tables become stacked CARDS at ≤760px (see that block below) —
+       the old horizontal-scroll strategy was removed. Bars hidden on mobile. */
     .bar-wrap { display: none; }
-    /* Drill-down modals: scrollable horizontally */
     .modal { border-radius: 10px; max-height: 88vh; overflow: hidden; }
-    .modal-body { padding: 16px 18px; overflow-x: auto; }
-    .modal-body table { min-width: 480px; }
+    .modal-body { padding: 16px 18px; }
     .modal-kpis { grid-template-columns: repeat(2, 1fr); gap: 8px; }
     .modal-header { padding: 14px 18px; }
     /* Mapping boards: constrain to viewport so inner scroll-wrap handles horizontal scroll */
@@ -292,16 +287,133 @@
     .summary-row { flex-wrap: wrap; }
     .mob-chips { flex-wrap: wrap; }
 
-    /* DATA TABLES: scroll horizontally INSIDE their own wrapper, never widen
-       the page. A right-edge fade hints there's more to swipe. */
+    /* ════════════════════════════════════════════════════════════════
+       DATA TABLES → STACKED CARDS (the headline mobile reconfiguration)
+       Each <tr> becomes a self-contained card; the leader/name cell is the
+       card title and every metric <td> becomes a labelled value row using
+       its column header (stamped onto data-label by crStampLabels() in JS).
+       No side-scroll, no "random numbers" — fully readable at 375px.
+       ════════════════════════════════════════════════════════════════ */
     .table-wrap {
-      overflow-x: auto;
-      -webkit-overflow-scrolling: touch;
-      overscroll-behavior-x: contain;
+      overflow: visible;          /* cards flow vertically; nothing scrolls sideways */
+      background: transparent;
+      border: none;
+      border-radius: 0;
       max-width: 100%;
     }
-    .table-wrap table { min-width: 520px; }
-    .table-scroll { max-height: none !important; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+    .table-scroll { max-height: none !important; overflow: visible; }
+
+    /* Collapse the table shell — thead is hidden, the table is just a flow box. */
+    .table-wrap table,
+    .table-scroll table { min-width: 0; width: 100%; display: block; background: transparent; }
+    .table-wrap thead,
+    .table-scroll thead { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; } /* visually hidden, kept for crStampLabels */
+    .table-wrap tbody,
+    .table-scroll tbody { display: block; }
+
+    /* Each data row → a card. */
+    .table-wrap tbody tr,
+    .table-scroll tbody tr {
+      display: block;
+      background: var(--white);
+      border: 1px solid var(--gray-mid);
+      border-radius: 12px;
+      padding: 4px 14px 6px;
+      margin-bottom: 12px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+    }
+    .table-wrap tbody tr:last-child,
+    .table-scroll tbody tr:last-child { margin-bottom: 4px; }
+    /* Clickable cards get a violet rail + clear affordance. */
+    .table-wrap tbody tr.clickable,
+    .table-scroll tbody tr.clickable {
+      position: relative;
+      cursor: pointer;
+      border-left: 3px solid var(--orange);
+      padding-left: 14px;
+    }
+    .table-wrap tbody tr.clickable:active,
+    .table-scroll tbody tr.clickable:active { background: var(--orange-pale); }
+    /* Each cell → a labelled value row. */
+    .table-wrap tbody td,
+    .table-scroll tbody td {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      text-align: right;
+      padding: 9px 0;
+      min-height: 40px;
+      border-bottom: 1px solid #f0eee9;
+      white-space: normal;
+      font-size: 13.5px;
+    }
+    .table-wrap tbody td:last-child,
+    .table-scroll tbody td:last-child { border-bottom: none; }
+    .table-wrap tbody td::before,
+    .table-scroll tbody td::before {
+      content: attr(data-label);
+      flex: 0 0 auto;
+      max-width: 56%;
+      text-align: left;
+      font-size: 10.5px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--gray-dark);
+    }
+    /* First cell (leader / name / job title) = the card TITLE — full-width, no label. */
+    .table-wrap tbody td:first-child,
+    .table-scroll tbody td:first-child {
+      justify-content: flex-start;
+      text-align: left;
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--black);
+      padding: 11px 0 9px;
+      min-height: 0;
+      border-bottom: 2px solid var(--gray-mid);
+      margin-bottom: 2px;
+    }
+    .table-wrap tbody td:first-child::before,
+    .table-scroll tbody td:first-child::before { content: none; }
+    /* Override inline font-size on title cells (e.g. reqs/pending text columns). */
+    .table-wrap tbody td:first-child[style],
+    .table-scroll tbody td:first-child[style] { font-size: 15px !important; color: var(--black) !important; }
+    .table-wrap tbody td:first-child .drill-hint,
+    .table-scroll tbody td:first-child .drill-hint { margin-left: auto; font-size: 13px; }
+
+    /* Hide the distribution/attainment "bar" cells — bars are noise on a card.
+       Matched by the labels crStampLabels assigns (incl. the empty-header bars). */
+    .table-wrap tbody td[data-label="Distribution"],
+    .table-wrap tbody td[data-label="Attainment"],
+    .table-wrap tbody td[data-label="Capacity Used"],
+    .table-wrap tbody td[data-label=""],
+    .table-scroll tbody td[data-label="Distribution"],
+    .table-scroll tbody td[data-label="Attainment"],
+    .table-scroll tbody td[data-label="Capacity Used"],
+    .table-scroll tbody td[data-label=""] { display: none; }
+    /* The bar markup itself stays hidden even if a cell slips through. */
+    .bar-wrap { display: none; }
+
+    /* Total / summary rows → a filled "summary" card that stands apart. */
+    .table-wrap tbody tr.total-row,
+    .table-scroll tbody tr.total-row {
+      background: #f5f1ec;
+      border: 1px solid var(--orange);
+      border-left: 3px solid var(--orange);
+    }
+    .table-wrap tbody tr.total-row td:first-child,
+    .table-scroll tbody tr.total-row td:first-child { color: var(--orange); border-bottom-color: var(--orange); }
+
+    /* Loading / empty / "no data" rows use a real colspan — show them plainly,
+       not as a malformed card. */
+    .table-wrap tbody tr.cr-msgrow,
+    .table-scroll tbody tr.cr-msgrow { background: var(--white); border: 1px solid var(--gray-mid); padding: 0; }
+    .table-wrap tbody tr.cr-msgrow td,
+    .table-scroll tbody tr.cr-msgrow td { display: block; text-align: center; border: none; min-height: 0; }
+    .table-wrap tbody tr.cr-msgrow td::before,
+    .table-scroll tbody tr.cr-msgrow td::before { content: none; }
 
     /* Inputs ≥16px so iOS doesn't auto-zoom on focus. */
     .issue-form-group input, .issue-form-group textarea,
@@ -340,12 +452,25 @@
     }
     .modal-body {
       overflow-y: auto;
-      overflow-x: auto;
+      overflow-x: hidden;          /* drill-down tables card-stack; never scroll sideways */
       -webkit-overflow-scrolling: touch;
       overscroll-behavior: contain;
       padding-bottom: max(18px, env(safe-area-inset-bottom));
     }
-    .modal-body table { min-width: 520px; }
+    /* Drill-down tables card-stack exactly like the page tables. Inside a modal,
+       the inner .table-wrap keeps a subtle frame + its caption bar as a section. */
+    .modal-body .table-wrap {
+      background: var(--white);
+      border: 1px solid var(--gray-mid);
+      border-radius: 10px;
+      overflow: hidden;
+      margin-top: 12px;
+    }
+    .modal-body .table-wrap > div:first-child { background: var(--gray); } /* caption bar */
+    .modal-body .table-scroll { padding: 8px 12px; }
+    .modal-body table,
+    .modal-body .table-wrap table,
+    .modal-body .table-scroll table { min-width: 0 !important; }
     .modal-kpis { grid-template-columns: repeat(2, 1fr); gap: 8px; }
 
     /* FAB clears the home indicator and sits above any open sheet's reach. */
@@ -2354,6 +2479,48 @@ function renderAll() {
   renderReqsTab();
   renderPATab();
   _renderFYLabels();
+  crStampLabels();
+}
+
+/* ════════════════════════════════════════════════════════════════════
+   MOBILE STACKED-CARD SUPPORT
+   Stamp every body cell with data-label = its column header, so the
+   ≤760px CSS can render each row as a labelled card. Centralized here so
+   no per-table render code (or any data/markup) needs to change.
+   Also tags colspan "message" rows (Loading… / No data) as .cr-msgrow.
+   Safe to call repeatedly and on any subtree (page or an open modal).
+   ════════════════════════════════════════════════════════════════════ */
+function crStampLabels(root) {
+  try {
+    var scope = root || document;
+    var tables = scope.querySelectorAll('.table-wrap table, .table-scroll table');
+    for (var t = 0; t < tables.length; t++) {
+      var table = tables[t];
+      var heads = table.querySelectorAll('thead th');
+      var labels = [];
+      for (var h = 0; h < heads.length; h++) {
+        // header text minus any drill arrows / icons, trimmed
+        labels.push((heads[h].textContent || '').replace(/[▶▸►]/g, '').trim());
+      }
+      var rows = table.querySelectorAll('tbody tr');
+      for (var r = 0; r < rows.length; r++) {
+        var row = rows[r];
+        var cells = row.children;
+        // A real data row has one <td> per column; a "message" row uses colspan.
+        var isMsg = false;
+        for (var c = 0; c < cells.length; c++) {
+          if (cells[c].hasAttribute && cells[c].hasAttribute('colspan')) { isMsg = true; break; }
+        }
+        if (isMsg) { row.classList.add('cr-msgrow'); continue; }
+        row.classList.remove('cr-msgrow');
+        for (var c2 = 0; c2 < cells.length; c2++) {
+          if (cells[c2].tagName === 'TD' && labels[c2] != null) {
+            cells[c2].setAttribute('data-label', labels[c2]);
+          }
+        }
+      }
+    }
+  } catch (e) { /* never let labelling break a render */ }
 }
 
 // ============================================================
@@ -2878,7 +3045,10 @@ function renderPATab() {
 function openModal(title, subtitle, body) {
   document.getElementById('modalTitle').textContent    = title;
   document.getElementById('modalSubtitle').textContent = subtitle;
-  document.getElementById('modalBody').innerHTML       = body;
+  var mb = document.getElementById('modalBody');
+  mb.innerHTML = body;
+  mb.scrollTop = 0;
+  crStampLabels(mb);   // card-stack any drill-down tables on mobile
   document.getElementById('modalOverlay').classList.add('open');
 }
 function closeModal(e) { if (e.target===document.getElementById('modalOverlay')) closeModalDirect(); }

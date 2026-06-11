@@ -317,64 +317,105 @@
   .fade-swap{animation:fadeSwap .32s ease;}
   @keyframes fadeSwap{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:none;}}
 
+  /* Mobile-only "‹ All hires" back bar that lives at the top of the plan sheet.
+     Hidden on desktop; revealed inside the ≤760px layer. */
+  .back-bar{display:none;}
+
   /* ============================================================
-     MOBILE / PHONE LAYER  (≤760px)  — does not affect ≥820px
-     - page scrolls vertically (no fixed 100vh / overflow:hidden)
-     - single column: hire list becomes a horizontal chip row ABOVE the plan
-     - the five swimlanes stack VERTICALLY, each full-width
-     - app bar wraps so title + DEMO badge + user chip stay tappable
+     MOBILE / PHONE LAYER  (≤760px)  — does NOT affect ≥820px
+     Real reconfiguration (mirrors the auto-triage pattern):
+       • The new-hire LIST *is* the page — clean full-width cards.
+       • Tapping a hire slides their PLAN in full-screen (.center becomes a
+         fixed sheet, translateX off-canvas until .app.show-detail).
+       • A sticky "‹ All hires" back bar sits atop the plan sheet.
+       • The five swimlanes stack vertically, each full-width.
      ============================================================ */
   @media (max-width:760px){
     html,body{height:auto;min-height:100%;}
-    /* let the whole page scroll; release the desktop's locked 100vh shell */
+    /* release the desktop's locked 100vh shell so the list page scrolls */
     .app{height:auto;min-height:100vh;overflow:visible;}
-    .body{flex-direction:column;flex:1 1 auto;min-height:0;}
+    .body{flex-direction:column;flex:1 1 auto;min-height:0;position:relative;}
 
-    /* ---- top bar wraps, nothing clipped ---- */
+    /* ---- top bar: compact, ≤2 rows, everything stays tappable ---- */
     .topbar{
-      flex-wrap:wrap;gap:10px 12px;padding:10px 14px;
+      flex-wrap:wrap;gap:9px 12px;padding:10px 14px;
       position:sticky;top:0;
     }
     .brand{flex:1 1 auto;min-width:0;}
-    .brand-txt .t1{font-size:14px;white-space:normal;}
+    .brand-txt .t1{font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
     .brand-txt .t2{display:none;}
-    .spacer{display:none;}                 /* no flexible gap when wrapping */
-    .demo-badge{order:3;}
-    .user-chip{order:2;margin-left:auto;}  /* keep chip on the top row, right side */
+    .spacer{display:none;}
+    .demo-badge{display:none;}              /* drop the lone dot; keeps header to one tidy row */
+    .user-chip{order:2;margin-left:auto;min-height:38px;}
     .user-chip .u-org{display:none;}
 
-    /* ---- LEFT becomes a horizontal scrolling row of hire chips ABOVE plan ---- */
+    /* ---- LEFT (hire list) becomes the full-width page ---- */
     .left{
-      width:auto;flex:none;
-      border-right:none;border-bottom:1px solid var(--line);
+      width:auto;flex:1 1 auto;min-height:0;
+      border-right:none;border-bottom:none;background:var(--bg);
     }
-    .left-head{padding:12px 14px 8px;}
-    .left-head h2{font-size:15px;}
+    .left-head{padding:14px 16px 6px;}
+    .left-head h2{font-size:17px;}
+    .left-head .sub{font-size:12px;}
     .hire-list{
-      flex:none;overflow-x:auto;overflow-y:hidden;
-      display:flex;gap:10px;
-      padding:2px 14px 14px;
-      -webkit-overflow-scrolling:touch;scroll-snap-type:x proximity;
+      flex:1 1 auto;overflow:visible;
+      display:block;padding:8px 14px 28px;
     }
+    /* roomy, tappable list cards (full width, generous height) */
     .hire{
-      flex:0 0 auto;width:240px;margin-bottom:0;
-      scroll-snap-align:start;padding:11px 12px;
+      width:auto;margin:0 0 10px;padding:14px 14px;gap:13px;
+      background:var(--card);border:1px solid var(--line);border-radius:15px;
+      box-shadow:var(--shadow-sm);min-height:64px;
     }
-    .hire.active::before{top:11px;bottom:11px;}
+    .hire:hover{background:var(--card);}
+    .hire.active{box-shadow:var(--shadow-sm);border-color:var(--line);}
+    .hire.active::before{display:none;}     /* no active rail in list mode */
+    .h-av{width:46px;height:46px;border-radius:13px;font-size:15px;}
+    .h-name{font-size:15px;}
+    .h-role{font-size:12.5px;}
+    .h-start{font-size:12px;margin-top:4px;}
+    .ring{width:46px;height:46px;}
+    /* affordance: a chevron hinting the row opens a full plan */
+    .hire::after{
+      content:"›";position:absolute;right:13px;top:50%;transform:translateY(-50%);
+      font-size:22px;line-height:1;color:var(--muted);opacity:.6;font-weight:400;
+    }
+    .hire .ring{margin-right:16px;}         /* leave room for the chevron */
 
-    /* ---- CENTER / plan uses full width, scrolls with the page ---- */
-    .center{flex:none;overflow:visible;}
+    /* ---- CENTER (plan) becomes a full-screen slide-in sheet ---- */
+    .center{
+      position:fixed;inset:0;z-index:140;width:100%;
+      background:var(--bg);
+      display:flex;flex-direction:column;overflow-y:auto;-webkit-overflow-scrolling:touch;
+      transform:translateX(100%);transition:transform .27s cubic-bezier(.2,.7,.2,1);
+      visibility:hidden;
+    }
+    .app.show-detail .center{transform:none;visibility:visible;}
+
+    /* sticky full-bleed back bar at the top of the plan sheet */
+    .back-bar{
+      display:flex;align-items:center;gap:8px;
+      position:sticky;top:0;z-index:6;flex:none;
+      width:100%;padding:13px 15px;min-height:50px;
+      background:rgba(247,248,252,.94);backdrop-filter:saturate(180%) blur(10px);
+      border:none;border-bottom:1px solid var(--line);
+      font:inherit;font-size:15px;font-weight:750;color:var(--v1);cursor:pointer;
+    }
+    .back-bar .chev{font-size:22px;line-height:1;margin-top:-2px;}
+
+    /* plan header: gauge + identity, comfortable on a phone */
     .plan-head{
-      padding:14px 14px 14px;gap:14px;
-      flex-wrap:wrap;position:static;
+      padding:15px 15px 14px;gap:14px;
+      flex-wrap:wrap;position:static;flex:none;
     }
-    .ph-gauge{width:64px;height:64px;}
-    .ph-info{flex:1 1 180px;}
+    .ph-gauge{width:62px;height:62px;}
+    .ph-info{flex:1 1 180px;min-width:0;}
     .ph-info .nm{font-size:18px;}
-    .ph-actions{align-items:flex-start;width:100%;flex-direction:row;justify-content:flex-start;}
+    .ph-actions{align-items:flex-start;width:100%;flex-direction:row;justify-content:flex-start;flex-wrap:wrap;gap:10px;}
+    .header-gen{min-height:44px;}
 
-    /* the board no longer scrolls internally; it grows down the page */
-    .lanes-wrap{flex:none;overflow:visible;padding:14px 14px 90px;}
+    /* the board grows down the sheet; no internal sideways scroll */
+    .lanes-wrap{flex:1 1 auto;overflow:visible;padding:14px 15px 40px;}
     /* STACK the five swimlanes vertically, each full width */
     .lanes{
       display:flex;flex-direction:column;gap:18px;
@@ -385,33 +426,40 @@
       position:static;padding:2px 2px 10px;
       border-bottom:1px solid var(--line);margin-bottom:2px;
     }
-    .lane-ic{width:34px;height:34px;}      /* ≥40px combined tap row */
-    .lane-title{font-size:14.5px;}
+    .lane-ic{width:36px;height:36px;}       /* ≥44px combined tap row */
+    .lane-title{font-size:15px;}
     .lane-count{font-size:11px;padding:3px 9px;}
     .lane-body{gap:10px;}
 
-    /* roomier tap targets on cards */
-    .task{padding:13px 13px 13px 15px;}
+    /* roomier tap targets on task cards (≥44px) */
+    .task{padding:14px 14px 14px 16px;min-height:48px;}
     .check{width:22px;height:22px;}
-    .task-name{font-size:13px;}
-    .nudge-btn{padding:9px 14px;font-size:11.5px;}
+    .task-name{font-size:13.5px;}
+    .task-sub{font-size:11.5px;}
+    .nudge-btn{padding:10px 15px;font-size:12px;min-height:40px;}
+
+    /* empty-state Generate view: keep it centered within the sheet */
+    .empty-state{flex:1 1 auto;padding:26px 22px 40px;}
+    .gen-btn{min-height:52px;}
 
     /* toasts span the width nicely on a phone */
-    .toasts{right:12px;left:12px;bottom:14px;align-items:stretch;}
+    .toasts{right:12px;left:12px;bottom:14px;align-items:stretch;z-index:160;}
     .toast{max-width:none;}
     .byline{display:none;}
   }
 
-  /* ---- very narrow phones (≤430px) ---- */
+  /* ---- very narrow phones (≤430px): tighten, never overflow ---- */
   @media (max-width:430px){
     .topbar{padding:9px 12px;}
     .brand-txt .t1{font-size:13.5px;}
     .user-chip{padding:5px 10px 5px 5px;}
     .user-chip .u-name{font-size:12px;}
-    .hire{width:84vw;}                      /* nearly full-width chips */
+    .left-head{padding:13px 14px 6px;}
+    .hire-list{padding:8px 12px 28px;}
     .ph-info .nm{font-size:17px;}
     .ph-meta .pill{font-size:11px;}
-    .lanes-wrap{padding:12px 12px 90px;}
+    .lanes-wrap{padding:13px 13px 40px;}
+    .back-bar{padding:13px 13px;}
   }
 </style>
 </head>
@@ -659,6 +707,24 @@
 
   function getHire(id){ for(var i=0;i<HIRES.length;i++) if(HIRES[i].id===id) return HIRES[i]; return null; }
 
+  /* ---------- mobile full-screen plan sheet ---------- */
+  function isMobileView(){ return !!(window.matchMedia && window.matchMedia("(max-width:760px)").matches); }
+  window.openMobileDetail=function(){
+    if(!isMobileView()) return;
+    var a=document.getElementById("app"); if(a) a.classList.add("show-detail");
+    var c=document.getElementById("center"); if(c) c.scrollTop=0;
+  };
+  window.closeMobileDetail=function(){
+    var a=document.getElementById("app"); if(a) a.classList.remove("show-detail");
+  };
+  /* the sticky "‹ All hires" bar shown atop the plan sheet on phones */
+  function buildBackBar(){
+    var b=el("button","back-bar",'<span class="chev" aria-hidden="true">‹</span> All hires');
+    b.setAttribute("type","button");
+    b.addEventListener("click",function(){ window.closeMobileDetail(); });
+    return b;
+  }
+
   /* ---------- ring svg builder ---------- */
   function ringSVG(pct, r, sw, klass){
     var C=2*Math.PI*r;
@@ -735,6 +801,7 @@
     state.selectedId=id;
     renderHires();
     renderCenter(true);
+    window.openMobileDetail();   /* on phones, slide the plan in full-screen */
   }
 
   function renderCenter(animate){
@@ -749,6 +816,7 @@
     }
 
     center.innerHTML="";
+    center.appendChild(buildBackBar());
     var head=buildPlanHead(h);
     var wrap=el("div","lanes-wrap"+(animate?" fade-swap":""));
     var lanes=el("div","lanes");
@@ -895,6 +963,7 @@
   /* ============ EMPTY STATE + GENERATE ============ */
   function renderEmptyState(center,h){
     center.innerHTML="";
+    center.appendChild(buildBackBar());
     var head=el("div","plan-head");
     head.innerHTML=
       '<div class="ph-gauge">'+ringSVG(0,30,7,"g-prog").replace('class="track"','class="g-track"')+
@@ -974,6 +1043,7 @@
     var center=document.getElementById("center");
     if(!center) return;
     center.innerHTML="";
+    center.appendChild(buildBackBar());
     var head=buildPlanHead(h);
     var wrap=el("div","lanes-wrap");
     var lanes=el("div","lanes");

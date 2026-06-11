@@ -225,6 +225,8 @@
     display:flex; flex-direction:column; z-index:20;
   }
   .viewer.open{ transform:translateX(0); }
+  /* mobile-only sticky back bar inside the source sheet (hidden on desktop) */
+  .v-back{ display:none; }
   .viewer-head{
     flex:0 0 auto; padding:16px 18px; border-bottom:1px solid var(--line);
     display:flex; align-items:flex-start; gap:12px;
@@ -305,98 +307,108 @@
   @media (max-width:760px){
     .ch-sub{ display:none; }
 
-    /* keep the whole app inside the viewport — no horizontal scroll */
+    /* keep the whole app inside the viewport — no horizontal scroll, chat owns the screen */
     html, body{ overflow-x:hidden; }
-    .app{ height:100vh; height:100dvh; max-width:100vw; overflow-x:hidden; }
+    .app{ height:100vh; height:100dvh; max-width:100vw; overflow:hidden; }
 
-    /* ----- top app bar: allow a graceful 2nd-row wrap, fix the overlap ----- */
+    /* ----- top app bar: a single tidy row (brand · demo · avatar) ----- */
     .topbar{
-      flex-wrap:wrap; row-gap:8px; column-gap:10px;
-      padding:10px 14px;
+      flex-wrap:nowrap; gap:10px; padding:9px 14px;
     }
-    .brand{ flex:1 1 auto; gap:9px; }
+    .brand{ flex:1 1 auto; gap:9px; min-width:0; }
     .logo{ width:30px; height:30px; border-radius:9px; }
     .logo svg{ width:17px; height:17px; }
-    .brand-name{ font-size:14px; white-space:normal; line-height:1.2; }
-    .brand-sub{ display:block; font-size:10.5px; }            /* was hidden at 820px — bring it back, small */
-    .demo-badge{ font-size:10px; padding:3px 8px; order:3; }  /* drops onto row 2 with the chip */
-    .spacer{ display:none; }                                  /* not needed once we wrap */
-    .user-chip{ order:2; margin-left:auto; padding:4px 10px 4px 5px; gap:7px; }
-    .avatar{ width:26px; height:26px; font-size:11px; }
-    .user-name{ font-size:12.5px; }
-    .user-org{ font-size:10.5px; }
+    .brand-name{ font-size:14.5px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+    .brand-sub{ display:block; font-size:10.5px; overflow:hidden; text-overflow:ellipsis; }
+    .demo-badge{ flex:0 0 auto; font-size:10px; padding:3px 9px; }
+    .spacer{ display:none; }
+    .user-chip{ flex:0 0 auto; padding:4px; gap:0; box-shadow:none; }
+    .user-meta{ display:none; }                 /* avatar-only keeps the row to one line */
+    .avatar{ width:30px; height:30px; font-size:11px; }
 
-    /* ----- stack to a single column; left rail collapses ABOVE the chat ----- */
-    .body{ flex-direction:column; }
+    /* ----- body becomes a single column; the CHAT is the page ----- */
+    .body{ flex-direction:column; min-height:0; }
+
+    /* ----- left rail collapses into a slim horizontal "sources" chip strip ----- */
     .rail{
-      display:flex;                 /* override the 820px hide */
-      flex:0 0 auto; width:100%;
+      display:flex; flex:0 0 auto; width:100%;
       flex-direction:column;
       border-right:none; border-bottom:1px solid var(--line);
-      max-height:none;
+      max-height:none; background:var(--card);
     }
-    .rail-head{ padding:12px 14px 8px; }
-    .rail-title{ margin:0 0 8px; }
-    .grounded-badge{ padding:10px; }
-    /* turn the sources list into a single horizontal scrolling chip row */
+    .rail-head{ display:none; }                  /* drop the heavy grounded-badge card on phones */
     .rail-list{
       flex:0 0 auto; overflow-x:auto; overflow-y:hidden;
       display:flex; flex-wrap:nowrap; align-items:center; gap:8px;
-      padding:4px 14px 12px; -webkit-overflow-scrolling:touch;
+      padding:9px 14px; -webkit-overflow-scrolling:touch; scroll-snap-type:x proximity;
     }
+    .rail-list::-webkit-scrollbar{ display:none; }   /* clean strip, no scrollbar gutter */
+    .rail-list{ scrollbar-width:none; }
+    /* lead the strip with a compact "Sources" label so the row reads clearly */
     .rail-list .lbl{
-      flex:0 0 auto; padding:0 4px 0 0; align-self:center; white-space:nowrap;
+      flex:0 0 auto; padding:0 2px 0 0; align-self:center; white-space:nowrap;
+      font-size:11px; letter-spacing:.05em;
     }
     .src{
-      flex:0 0 auto; min-height:40px; padding:8px 12px; white-space:nowrap;
-      border:1px solid var(--line); background:#fff;
+      flex:0 0 auto; min-height:44px; padding:10px 13px; white-space:nowrap;
+      border:1px solid var(--line); background:#fff; scroll-snap-align:start;
     }
     .src .pg{ margin-left:8px; }
 
-    /* ----- chat fills full width; comfortable phone padding ----- */
-    .chat-head{ padding:12px 16px; }
-    .thread{ padding:16px 14px 6px; }
-    .composer{ padding:10px 14px 14px; }
+    /* ----- chat fills the remaining height; thread scrolls, composer pinned ----- */
+    .center{ flex:1 1 auto; min-height:0; }
+    .chat-head{ padding:11px 16px; }
+    .thread{ flex:1 1 auto; min-height:0; padding:16px 14px 6px; }
+    .composer{ flex:0 0 auto; padding:10px 14px calc(12px + env(safe-area-inset-bottom)); }
     .bubble{ max-width:88%; }
     .msg{ gap:9px; margin-bottom:16px; }
 
-    /* suggested chips wrap (already flex-wrap) + bigger tap targets */
-    .chip{ min-height:40px; }
+    /* suggested chips wrap + comfortable tap targets */
+    .chips{ gap:8px; }
+    .chip{ min-height:44px; }
     .input-row{ padding:6px 6px 6px 14px; }
-    .input-row textarea{ font-size:16px; }   /* >=16px stops iOS zoom-on-focus */
-    .send{ width:42px; height:42px; }
+    .input-row textarea{ font-size:16px; }       /* >=16px stops iOS zoom-on-focus */
+    .send{ width:44px; height:44px; flex:0 0 44px; }
 
-    /* ----- right source viewer becomes a full-width bottom sheet ----- */
+    /* ===== source viewer: full-screen slide-in sheet (mirrors reference) ===== */
+    .scrim{ display:none; }                       /* full-screen sheet covers everything itself */
     .viewer{
-      top:auto; right:0; bottom:0; left:0;
-      width:100%; max-width:100vw; height:auto; max-height:82vh;
-      border-left:none; border-top:1px solid var(--line);
-      border-radius:18px 18px 0 0;
-      transform:translateY(102%);
-      box-shadow:0 -22px 48px rgba(12,16,32,.18);
-      transition:transform .32s cubic-bezier(.4,0,.2,1);
+      position:fixed; inset:0; top:0; right:0; bottom:0; left:0;
+      width:100%; max-width:100vw; height:100%; max-height:none;
+      border:none; border-radius:0;
+      box-shadow:none; z-index:200;
+      transform:translateX(100%);
+      transition:transform .3s cubic-bezier(.2,.7,.2,1);
+      visibility:hidden;
     }
-    .viewer.open{ transform:translateY(0); }
+    .app.show-viewer .viewer{ transform:none; visibility:visible; }
+
+    /* full-bleed sticky "‹ Back" bar at the top of the sheet */
+    .v-back{
+      display:flex; align-items:center; gap:8px; flex:0 0 auto;
+      position:sticky; top:0; z-index:5; width:100%;
+      padding:calc(13px + env(safe-area-inset-top,0px)) 16px 13px;
+      background:rgba(247,248,252,.94); -webkit-backdrop-filter:saturate(180%) blur(10px); backdrop-filter:saturate(180%) blur(10px);
+      border:none; border-bottom:1px solid var(--line);
+      font:inherit; font-size:15px; font-weight:800; color:var(--v1); cursor:pointer;
+      text-align:left;
+    }
+    .v-back span{ font-size:21px; line-height:1; margin-top:-1px; }
+
     .viewer-head{ padding:14px 16px 12px; position:relative; }
-    /* grab handle for the sheet */
-    .viewer-head::before{
-      content:""; position:absolute; top:6px; left:50%; transform:translateX(-50%);
-      width:38px; height:4px; border-radius:999px; background:var(--line);
-    }
-    .vclose{ width:34px; height:34px; }
-    .viewer-body{ padding:14px 16px 20px; }
+    .vclose{ display:none; }                      /* the Back bar is the close affordance now */
+    .viewer-body{ flex:1 1 auto; min-height:0; padding:14px 16px 22px; -webkit-overflow-scrolling:touch; }
+    .viewer-foot{ flex:0 0 auto; padding-bottom:calc(12px + env(safe-area-inset-bottom)); }
 
     /* keep the demo byline from colliding with the composer */
     .byline{ display:none; }
   }
 
   @media (max-width:430px){
-    /* shrink the user chip to avatar-only so row 1/2 never crowd */
-    .user-meta{ display:none; }
-    .user-chip{ padding:4px; gap:0; }
-    .brand-name{ font-size:13.5px; }
-    .brand-sub{ font-size:10px; }
-    .demo-badge{ font-size:9.5px; letter-spacing:0; padding:3px 7px; }
+    /* narrowest phones: keep the header to one clean line */
+    .brand-name{ font-size:14px; }
+    .brand-sub{ display:none; }                  /* drop the org sub-line so the name never wraps */
+    .demo-badge{ font-size:9.5px; letter-spacing:0; padding:3px 8px; }
     .chat-head{ gap:8px; }
     .ch-title{ font-size:14px; }
     .ch-pill{ font-size:10px; padding:3px 8px; }
@@ -484,6 +496,9 @@
     <!-- scrim + RIGHT source viewer -->
     <div class="scrim" id="scrim"></div>
     <aside class="viewer" id="viewer" aria-hidden="true">
+      <button type="button" class="v-back" id="vBack">
+        <span aria-hidden="true">‹</span> Back
+      </button>
       <div class="viewer-head">
         <div class="vh-icon" aria-hidden="true">
           <svg viewBox="0 0 24 24" fill="none"><path d="M5 4.5A1.5 1.5 0 0 1 6.5 3H17a1 1 0 0 1 1 1v15.5a1.5 1.5 0 0 1-1.5 1.5H6.5A1.5 1.5 0 0 1 5 19.5v-15z" stroke="#fff" stroke-width="1.6" stroke-linejoin="round"/><path d="M8.5 8h6M8.5 11h6M8.5 14h4" stroke="#fff" stroke-width="1.6" stroke-linecap="round"/></svg>
@@ -1042,6 +1057,13 @@
   }
 
   /* ---------- source viewer ---------- */
+  /* On phones (≤760px) the viewer is a full-screen slide-in sheet toggled by a
+     .show-viewer class on the app root (mirrors the reference pattern). On desktop
+     it remains the in-pane slide-in panel driven by the .open class + scrim. */
+  function isMobileView(){ return window.matchMedia && window.matchMedia("(max-width:760px)").matches; }
+  function openMobileViewer(){ if(isMobileView()){ var a=$("app"); if(a) a.classList.add("show-viewer"); } }
+  function closeMobileViewer(){ var a=$("app"); if(a) a.classList.remove("show-viewer"); }
+
   function openViewer(key){
     var p = PASSAGES[key];
     if(!p) return;
@@ -1055,12 +1077,14 @@
     $("viewer").classList.add("open");
     $("viewer").setAttribute("aria-hidden","false");
     $("scrim").classList.add("show");
+    openMobileViewer();
     body.scrollTop = 0;
   }
   function closeViewer(){
     $("viewer").classList.remove("open");
     $("viewer").setAttribute("aria-hidden","true");
     $("scrim").classList.remove("show");
+    closeMobileViewer();
   }
 
   /* delegate clicks on citation chips (works for all current + future) */
@@ -1075,6 +1099,7 @@
     }
   });
   $("vClose").addEventListener("click", closeViewer);
+  $("vBack").addEventListener("click", closeViewer);
   $("scrim").addEventListener("click", closeViewer);
   document.addEventListener("keydown", function(e){ if(e.key === "Escape") closeViewer(); });
 

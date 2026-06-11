@@ -199,17 +199,55 @@
   }
   @media(max-width:600px){
     body{font-size:16px}
+    html{scroll-padding-top:66px}
     .wrap{padding:0 18px}
-    section{padding:56px 0}
-    .stats{margin-top:-32px}
+    section{padding:52px 0}
+
+    /* nav — slimmer */
+    .nav .row{height:56px;gap:12px}
+    .nav .brand{font-size:15px}
+    .nav .brand .dot{width:28px;height:28px;border-radius:8px}
+    .nav .cta{padding:9px 15px!important;font-size:13.5px}
+
+    /* hero — tighter, thumb-first */
+    .hero .wrap{padding:48px 20px 56px}
+    .hero .eyebrow{margin-bottom:18px;font-size:12px;padding:6px 13px}
+    .hero h1{font-size:clamp(28px,8.5vw,36px);line-height:1.08;margin-bottom:16px}
+    .hero p.lede{font-size:16px;line-height:1.55;color:#c8cee3}
+    .hero .btns{flex-direction:column;align-items:stretch;gap:11px;margin-top:26px}
+    .hero .btns .btn{width:100%;justify-content:center;padding:16px 22px;font-size:16px;border-radius:14px}
+    .hero .meta{gap:8px;margin-top:24px}
+    .hero .meta span{font-size:12px;padding:6px 12px}
+
+    /* section heads — calmer scale */
+    .sec-head{margin-bottom:8px}
+    .sec-head h2{font-size:25px;line-height:1.18}
+    .sec-head p{font-size:15.5px}
+    .group-note{font-size:14px}
+
+    /* stats */
+    .stats{margin-top:-30px}
     .stats .grid{padding:22px 16px;gap:10px}
-    .stat .n{font-size:34px}
-    .group-label{margin:34px 0 14px}
-    .roadmap{padding:24px 18px}
-    .builtcallout{padding:22px 18px;gap:14px}
-    .contact .wrap{padding:64px 18px}
+    .stat .n{font-size:32px}
+    .stat .l{font-size:12.5px}
+
+    /* projects — tighter cards, bigger tap target */
+    .group-label{margin:32px 0 14px}
+    .proj .top{height:100px}
+    .proj .glyph{font-size:34px}
+    .proj .body{padding:16px 18px 18px}
+    .proj h3{font-size:17.5px}
+    .proj .launch{font-size:15px;padding-top:2px}
+
+    /* vision + roadmap + contact */
+    .vwatch{width:100%;justify-content:center;padding:14px 16px;font-size:15px}
     .pillar{padding:20px}
     .vcard{padding:20px}
+    .roadmap{padding:22px 16px}
+    .builtcallout{padding:22px 18px;gap:14px}
+    .contact .wrap{padding:60px 18px}
+    .contact .btns{flex-direction:column;align-items:stretch;gap:11px}
+    .contact .btns .btn{width:100%;justify-content:center}
   }
 </style>
 </head>

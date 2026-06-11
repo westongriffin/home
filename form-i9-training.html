@@ -64,6 +64,13 @@
   .topbar button:hover{border-color:var(--indigo);color:var(--indigo)}
   #menuToggle{display:none}
 
+  /* dim scrim behind the mobile Contents drawer (revealed by JS on phones only) */
+  #tocScrim{position:fixed;inset:0;z-index:64;background:rgba(8,12,24,.46);
+    opacity:0;transition:opacity .24s ease;-webkit-tap-highlight-color:transparent}
+  #tocScrim.show{opacity:1}
+  html.dark #tocScrim{background:rgba(0,0,0,.6)}
+  body.toc-locked{overflow:hidden}
+
   .wrap{max-width:1220px;margin:0 auto;padding:0 20px}
   .layout{display:flex;gap:34px;align-items:flex-start;padding:26px 0 90px}
 
@@ -295,6 +302,8 @@
     section.module{padding:26px 22px}
     .hero{padding:40px 24px 34px}
   }
+  /* scrim + scroll-lock are a phone-only affordance; keep tablet/desktop (>=761px) exactly as before */
+  @media (min-width:761px){#tocScrim{display:none!important}body.toc-locked{overflow:visible}}
 
   /* ============================================================
      MOBILE / PHONE LAYER — additive only. Desktop (>=761px) is
@@ -335,7 +344,13 @@
     html.dark .toc{box-shadow:0 24px 60px rgba(0,0,0,.6)}
     .toc.open{animation:tocIn .26s cubic-bezier(.2,.7,.2,1)}
     @keyframes tocIn{from{transform:translateX(-14px);opacity:.4}to{transform:none;opacity:1}}
-    .toc h4{position:sticky;top:0;background:var(--card);margin:0 0 4px;padding:8px 8px 8px 10px;z-index:1}
+    /* sticky drawer header doubles as a close affordance (>=44px, tap to dismiss) */
+    .toc h4{position:sticky;top:0;background:var(--card);margin:0 0 6px;z-index:1;
+      min-height:44px;display:flex;align-items:center;gap:8px;cursor:pointer;
+      padding:8px 8px 8px 10px;border-bottom:1px solid var(--line)}
+    .toc h4::after{content:"✕";margin-left:auto;font-size:15px;line-height:1;
+      width:30px;height:30px;display:grid;place-items:center;border-radius:8px;
+      color:var(--ink-2);background:var(--bg-2);letter-spacing:0}
     .toc a{padding:11px 12px;font-size:14.5px;min-height:44px}
     .toc a .n{flex:0 0 24px}
 
@@ -353,8 +368,12 @@
     /* sections: a touch tighter, generous line-height kept */
     section.module{padding:24px 18px;border-radius:16px}
     .mhead{gap:14px}
-    .mhead h2{font-size:23px}
-    .module .lead{font-size:15px}
+    .mhead h2{font-size:23px;line-height:1.18}
+    .module .lead{font-size:15.5px}
+    /* sub-headings: scale down from desktop so they don't dominate the column,
+       and trim the big top gap so sections read tighter on a phone */
+    section.module h3{font-size:17px;margin-top:1.5em}
+    section.module h4{font-size:14.5px}
     blockquote{font-size:16.5px;padding-left:16px}
 
     /* callouts wrap cleanly */
@@ -426,9 +445,10 @@
     table{min-width:420px}
   }
 
-  /* honor reduced-motion for the drawer slide-in added above */
+  /* honor reduced-motion for the drawer slide-in + scrim fade added above */
   @media (prefers-reduced-motion:reduce){
     .toc.open{animation:none!important}
+    #tocScrim{transition:none!important}
   }
 
   @media print{
@@ -475,6 +495,8 @@
   <button id="printBtn" class="no-print"><svg class="ic"><use href="#i-doc"/></svg> PDF</button>
   <button id="themeBtn" class="no-print">🌙 Theme</button>
 </div>
+
+<div id="tocScrim" hidden aria-hidden="true"></div>
 
 <div class="wrap">
 <div class="layout">
@@ -1633,9 +1655,25 @@
     try{localStorage.setItem('i9pub_theme',document.documentElement.classList.contains('dark')?'dark':'light');}catch(_){}
   });
 
-  // ---- mobile nav ----
-  var mt=$('#menuToggle'),toc=$('#toc');
-  if(mt&&toc){mt.addEventListener('click',function(){toc.classList.toggle('open');});toc.addEventListener('click',function(e){if(e.target.closest('a'))toc.classList.remove('open');});}
+  // ---- mobile nav (drawer + dim scrim) ----
+  var mt=$('#menuToggle'),toc=$('#toc'),scrim=$('#tocScrim');
+  function tocOpen(open){
+    if(!toc)return;
+    toc.classList.toggle('open',open);
+    if(mt)mt.setAttribute('aria-expanded',open?'true':'false');
+    if(scrim){ if(open){scrim.hidden=false; requestAnimationFrame(function(){scrim.classList.add('show');});}
+               else{scrim.classList.remove('show'); setTimeout(function(){if(!toc.classList.contains('open'))scrim.hidden=true;},220);} }
+    document.body.classList.toggle('toc-locked',open);
+  }
+  if(mt&&toc){
+    mt.setAttribute('aria-expanded','false');
+    mt.addEventListener('click',function(){tocOpen(!toc.classList.contains('open'));});
+    toc.addEventListener('click',function(e){if(e.target.closest('a')||e.target.closest('h4'))tocOpen(false);});
+    if(scrim)scrim.addEventListener('click',function(){tocOpen(false);});
+    document.addEventListener('keydown',function(e){if(e.key==='Escape'&&toc.classList.contains('open'))tocOpen(false);});
+    // if the viewport grows back to desktop, never leave the drawer/scrim stuck open
+    window.addEventListener('resize',function(){if(window.innerWidth>=820&&toc.classList.contains('open'))tocOpen(false);});
+  }
 })();
 </script>
 </body>
