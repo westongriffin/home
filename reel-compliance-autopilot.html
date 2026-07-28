@@ -482,8 +482,7 @@
               <path class="gfill" id="gFill" d="M20 100 A80 80 0 0 1 180 100"
                     stroke-dasharray="251.3" stroke-dashoffset="251.3"/>
               <g id="gNeedle">
-                <line x1="100" y1="100" x2="34" y2="100" stroke="#eef2fd" stroke-width="3" stroke-linecap="round"/>
-                <circle cx="100" cy="100" r="6.5" fill="#eef2fd"/>
+                <line x1="28" y1="100" x2="44" y2="100" stroke="#eef2fd" stroke-width="4.5" stroke-linecap="round"/>
               </g>
             </svg>
             <div class="gcenter">
@@ -589,7 +588,7 @@
       var g=$("gFill"), nd=$("gNeedle"), sc=$("gScore");
       var frac = score/100;
       if(g) g.setAttribute("stroke-dashoffset", String(GMAX*(1-frac)));
-      if(nd) nd.setAttribute("transform","rotate("+(180*frac)+" 100 100)");
+      if(nd) nd.style.transform = "rotate("+(180*frac)+"deg)";
       if(sc) sc.textContent = Math.round(score);
     }
     function animGauge(from,to,dur){
@@ -703,11 +702,6 @@
         }},
       { t:17500, fn:function(){ addCls("low3","show"); }},
       { t:17800, fn:function(){ animGauge(62,97,1900); }},
-      { t:19400, fn:function(){
-          var st=$("gStatus");
-          if(st){ st.textContent="Healthy"; st.style.color="#7ef0d0";
-                  st.style.background="rgba(16,185,129,.16)"; st.style.borderColor="rgba(16,185,129,.45)"; }
-        }},
       { t:18600, fn:function(){
           var cards=["sc1","sc2","sc3","sc4"];
           cards.forEach(function(id,idx){
@@ -719,6 +713,11 @@
               countUp(num,to,1100,suf);
             }, idx*220);
           });
+        }},
+      { t:19400, fn:function(){
+          var st=$("gStatus");
+          if(st){ st.textContent="Healthy"; st.style.color="#7ef0d0";
+                  st.style.background="rgba(16,185,129,.16)"; st.style.borderColor="rgba(16,185,129,.45)"; }
         }},
 
       // ---------------- END CARD (27–30s) ----------------

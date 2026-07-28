@@ -110,6 +110,8 @@
     padding:4.6cqw 5cqw;
   }
   .scene.is-active{opacity:1;}
+  /* reserve space for the lower-third ribbon so content never sits under it */
+  #s-risk, #s-alert, #s-forecast{ padding-bottom:9.8cqw; }
 
   /* ===================== LOWER THIRD CAPTION ===================== */
   .ribbon{
@@ -224,14 +226,14 @@
   .scene.is-active .reveal{animation:popUp .7s cubic-bezier(.16,.84,.32,1) forwards;}
 
   /* ===================== SCENE 1 — RISK BOARD ===================== */
-  .riskboard{display:flex; flex-direction:column; gap:1.9cqw; flex:1; justify-content:center;}
+  .riskboard{display:flex; flex-direction:column; gap:1.1cqw; flex:1; justify-content:center;}
   .riskrow{
     display:grid; grid-template-columns:18cqw 1fr 9cqw;
     align-items:center; gap:2cqw;
     background:var(--card);
     border:1px solid var(--line);
     border-radius:14px;
-    padding:1.7cqw 2cqw;
+    padding:1.1cqw 2cqw;
     box-shadow:var(--shadow-sm);
     position:relative;
   }
@@ -239,8 +241,8 @@
     box-shadow:0 0 0 2px rgba(239,68,68,.55), 0 18px 40px rgba(239,68,68,.18);
     background:linear-gradient(180deg,#fff, #fff6f6);
   }
-  .riskrow .team{font-weight:700; font-size:2.05cqw; color:var(--ink); line-height:1.15;}
-  .riskrow .team small{display:block; font-size:1.4cqw; color:var(--muted); font-weight:600; margin-top:.25cqw;}
+  .riskrow .team{font-weight:700; font-size:1.85cqw; color:var(--ink); line-height:1.15;}
+  .riskrow .team small{display:block; font-size:1.25cqw; color:var(--muted); font-weight:600; margin-top:.25cqw;}
   .track{
     position:relative; height:2.5cqw; border-radius:999px;
     background:#eef0f8; overflow:hidden;
@@ -277,7 +279,7 @@
     transition:max-height .7s ease, opacity .6s ease, margin-top .6s ease;
     margin-top:0;
   }
-  .drivers.open{max-height:10cqw; opacity:1; margin-top:1.4cqw;}
+  .drivers.open{max-height:5cqw; opacity:1; margin-top:.8cqw;}
   .drivers .chip{
     display:inline-flex; align-items:center; gap:.6cqw;
     font-size:1.55cqw; font-weight:600; color:#7a1d2b;
@@ -288,7 +290,7 @@
   .drivers .chip b{font-weight:800;}
 
   /* ===================== SCENE 2 — ALERT + INTERVENTIONS ===================== */
-  #s-alert{padding:4.6cqw 5cqw;}
+  #s-alert{padding:4.6cqw 5cqw 9.8cqw;}
   .alert-card{
     display:flex; align-items:flex-start; gap:1.8cqw;
     background:linear-gradient(180deg,#fff,#fff5f5);
@@ -381,7 +383,7 @@
   .proj-delta .old{color:#8b93b4; text-decoration:line-through; font-weight:600;}
 
   /* ===================== SCENE 3 — FORECAST CHART ===================== */
-  #s-forecast{padding:4.6cqw 5cqw;}
+  #s-forecast{padding:4.6cqw 5cqw 9.8cqw;}
   .fc-grid{display:grid; grid-template-columns:1.75fr 1fr; gap:2.6cqw; flex:1; align-items:stretch;}
   .chart-card{
     background:var(--card); border:1px solid var(--line); border-radius:16px;
