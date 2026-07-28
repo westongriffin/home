@@ -4,6 +4,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>Headcount Requests | NewWesVentures</title>
+<meta name="description" content="A multi-stage headcount request and approval workflow demo — submit a role, route it PBP to SMT to Admin, and track every approval. Built with AI by Wes Griffin.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0' stop-color='%237c3aed'/%3E%3Cstop offset='.55' stop-color='%235b4ef0'/%3E%3Cstop offset='1' stop-color='%2306b6d4'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='64' height='64' rx='16' fill='url(%23g)'/%3E%3Ctext x='32' y='44' font-size='34' text-anchor='middle' fill='white' font-family='Georgia,serif'%3E%E2%9C%A6%3C/text%3E%3C/svg%3E">
 <!-- Google Identity Services removed for standalone demo -->
 <style>
 * { margin:0; padding:0; box-sizing:border-box; }
@@ -2838,7 +2840,7 @@ async function openReqModal(reqId, canApprove=false, isAdmin=false) {
       <div class="detail-item" id="modalStatusCell-${reqId}"><div class="label">Status</div><div class="value">${stag(status)}</div></div>
       ${r[27]?`<div class="detail-item"><div class="label">Comp Status</div><div class="value"><span class="tag tag-pending">${r[27]}</span></div></div>`:''}
       ${r[28]?`<div class="detail-item"><div class="label">Recruiting Status</div><div class="value"><span class="tag tag-pbp">${r[28]}</span></div></div>`:''}
-      ${r[26]?`<div class="detail-item full"><div class="label">Job Description Link</div><div class="value"><a href="${r[26]}" target="_blank" style="color:var(--orange)">${r[26]}</a></div></div>`:''}
+      ${r[26]?`<div class="detail-item full"><div class="label">Job Description Link</div><div class="value"><a href="${r[26]}" target="_blank" rel="noopener" style="color:var(--orange)">${r[26]}</a></div></div>`:''}
       <div class="detail-item full"><div class="label">Justification</div><div class="value" style="font-weight:400;line-height:1.5">${r[14]||'—'}</div></div>
     </div>
     <div style="font-size:13px;font-weight:700;margin-bottom:12px">Approval Progress</div>
