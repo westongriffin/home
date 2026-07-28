@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Wes Griffin — People Operations, built with AI</title>
-<meta name="description" content="A suite of production-grade HR tools and interactive training, designed and built by one People Operations leader using AI. Explore the live demos.">
+<meta name="description" content="Twelve live products on their own domains — an HR platform, People Ops tools, interactive compliance training, and client sites — designed and built by one People Operations leader using AI.">
 <script>document.documentElement.className=document.documentElement.className.replace('no-js','js');</script>
 <style>
   :root{
@@ -96,6 +96,24 @@
   .proj .chips span{font-size:11.5px;font-weight:700;color:var(--ink-2);background:var(--bg);border:1px solid var(--line);padding:3px 9px;border-radius:999px}
   .proj .launch{display:inline-flex;align-items:center;gap:8px;font-weight:800;font-size:14px;color:var(--v1)}
   .proj:hover .launch{gap:11px}
+  /* domain chip on live-site cards */
+  .proj .dom{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:800;color:var(--v1);background:var(--vi-soft);padding:4px 11px;border-radius:999px;margin-bottom:10px;align-self:flex-start;letter-spacing:.01em}
+  /* featured flagship card */
+  .feat{position:relative;display:flex;flex-direction:column;background:linear-gradient(120deg,#0b0e1c,#1c1442);color:#fff;border:1px solid rgba(255,255,255,.12);border-radius:22px;overflow:hidden;box-shadow:var(--shadow);cursor:pointer;text-align:left;width:100%;font:inherit;padding:0;transition:transform .25s,box-shadow .25s}
+  .feat:hover{transform:translateY(-4px);box-shadow:0 22px 60px rgba(12,16,32,.28)}
+  .feat::before{content:"";position:absolute;inset:0;background:radial-gradient(55% 90% at 8% 0%,rgba(124,58,237,.5),transparent 60%),radial-gradient(45% 80% at 96% 100%,rgba(6,182,212,.4),transparent 60%)}
+  .feat::after{content:"";position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,.05) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.05) 1px,transparent 1px);background-size:34px 34px;mask-image:radial-gradient(85% 80% at 50% 20%,#000,transparent)}
+  .feat .fin{position:relative;z-index:1;padding:34px 34px 32px;display:flex;flex-direction:column;gap:0}
+  .feat .fbadge{display:inline-flex;align-items:center;gap:8px;align-self:flex-start;font-size:12px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:#fff;background:var(--grad);padding:6px 13px;border-radius:999px;margin-bottom:18px;box-shadow:0 6px 18px rgba(124,58,237,.4)}
+  .feat h3{font-size:clamp(24px,3.4vw,34px);font-weight:850;margin:0 0 10px;letter-spacing:-.02em}
+  .feat .fdesc{color:#c3c9e0;font-size:16.5px;line-height:1.6;margin:0 0 18px;max-width:70ch}
+  .feat .chips{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:20px}
+  .feat .chips span{font-size:12px;font-weight:700;color:#dfe3f5;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.18);padding:4px 11px;border-radius:999px}
+  .feat .frow{display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+  .feat .fdom{font-size:13.5px;font-weight:800;color:#fff;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.22);padding:7px 15px;border-radius:999px}
+  .feat .launch{display:inline-flex;align-items:center;gap:8px;font-weight:800;font-size:15px;color:#fff;background:var(--grad);padding:11px 20px;border-radius:12px;box-shadow:0 8px 22px rgba(124,58,237,.35);transition:gap .15s}
+  .feat:hover .launch{gap:11px}
+  @media(max-width:600px){.feat .fin{padding:24px 20px 22px}.feat .frow{gap:10px}.feat .launch{width:100%;justify-content:center}}
   .c1{background:linear-gradient(135deg,#7c3aed,#06b6d4)} .c2{background:linear-gradient(135deg,#4f46e5,#7c3aed)}
   .c3{background:linear-gradient(135deg,#0ea5e9,#6366f1)} .c4{background:linear-gradient(135deg,#db2777,#7c3aed)}
   .c5{background:linear-gradient(135deg,#0d9488,#0ea5e9)} .c6{background:linear-gradient(135deg,#6366f1,#0ea5e9)}
@@ -267,20 +285,20 @@
   <div class="wrap">
     <span class="eyebrow">✦ People Operations × AI</span>
     <h1>People Operations, reimagined — and <span class="grad-text">shipped</span> — with AI.</h1>
-    <p class="lede">I'm Wes Griffin. In a matter of days — with no engineering team — I designed and built a suite of production-grade HR tools and interactive training. Explore the live demos below, then imagine what we could build for <em>your</em> team.</p>
+    <p class="lede">I'm Wes Griffin. With no engineering team, I designed, built, and shipped <b>twelve live products — each on its own domain</b>: a full HR platform, People Ops tools, interactive compliance training, and real client sites. Explore them below, then imagine what we could build for <em>your</em> team.</p>
     <div class="btns">
       <a href="#work" class="btn btn-primary">Explore the work ↓</a>
       <a href="#contact" class="btn btn-ghost">Work with me →</a>
     </div>
-    <div class="meta"><span>19 built with AI</span><span>Built solo, AI-assisted</span><span>Days, not quarters</span></div>
+    <div class="meta"><span>12 live products, 12 domains</span><span>Built solo, AI-assisted</span><span>Days, not quarters</span></div>
   </div>
 </header>
 
 <div class="stats wrap reveal">
   <div class="grid">
-    <div class="stat"><div class="n" data-count="19">19</div><div class="l">Built with AI</div></div>
-    <div class="stat"><div class="n" data-count="13">13</div><div class="l">Interactive products</div></div>
-    <div class="stat"><div class="n" data-count="6">6</div><div class="l">New AI copilots</div></div>
+    <div class="stat"><div class="n" data-count="12">12</div><div class="l">Live products on their own domains</div></div>
+    <div class="stat"><div class="n" data-count="4">4</div><div class="l">Interactive training courses</div></div>
+    <div class="stat"><div class="n" data-count="6">6</div><div class="l">AI copilots</div></div>
     <div class="stat"><div class="n">0</div><div class="l">Engineers required</div></div>
   </div>
 </div>
@@ -290,64 +308,110 @@
   <div class="wrap">
     <div class="sec-head reveal">
       <div class="kicker">The work</div>
-      <h2>Real, working products — explore them live</h2>
-      <p>Click any project to open the full interactive demo right here on the page. Everything runs on synthetic data — no logins, no setup.</p>
+      <h2>Twelve live products, each on its own domain</h2>
+      <p>Every one of these is deployed and live right now. Click any card to explore it here on the page, or open it in its own tab.</p>
     </div>
 
-    <div class="group-label reveal">Training &amp; enablement</div>
-    <div class="projects reveal">
-      <button class="proj" onclick="openDemo('form-i9-training.html','Form I-9 Fundamentals','Interactive compliance course')">
-        <div class="top g1"><span class="live"><i></i>LIVE</span><span class="glyph">📋</span></div>
-        <div class="body"><h3>Form I-9 Fundamentals</h3>
-          <p class="desc">A complete, interactive compliance course on U.S. employment-eligibility verification.</p>
-          <div class="chips"><span>12 modules</span><span>Deadline calculator</span><span>Document validator</span><span>Quiz + certificate</span></div>
-          <span class="launch">▶ Launch interactive preview →</span></div>
-      </button>
-      <button class="proj" onclick="openDemo('us-employment-law-training.html','U.S. Employment Law Essentials','Interactive course')">
-        <div class="top g2"><span class="live"><i></i>LIVE</span><span class="glyph">⚖️</span></div>
-        <div class="body"><h3>U.S. Employment Law</h3>
-          <p class="desc">Thirteen modules across wages, classification, discrimination, leave, safety, and labor relations.</p>
-          <div class="chips"><span>FLSA &amp; OT</span><span>Coverage checker</span><span>Salary tool</span><span>Quiz + cert</span></div>
-          <span class="launch">▶ Launch interactive preview →</span></div>
-      </button>
-      <button class="proj" onclick="openDemo('california-employment-law-training.html','California Employment Law Essentials','Interactive course')">
-        <div class="top g3"><span class="live"><i></i>LIVE</span><span class="glyph">🌅</span></div>
-        <div class="body"><h3>California Employment Law</h3>
-          <p class="desc">A standalone, California-specific course — daily overtime, breaks, FEHA, leaves, and 2026 updates.</p>
-          <div class="chips"><span>Break calculator</span><span>Final-pay tool</span><span>16 modules</span><span>2026 laws</span></div>
-          <span class="launch">▶ Launch interactive preview →</span></div>
-      </button>
-      <button class="proj" onclick="openDemo('compliant-inclusive-interviewing-training.html','Compliant &amp; Inclusive Interviewing','Interactive course')">
-        <div class="top g4"><span class="live"><i></i>LIVE</span><span class="glyph">💬</span></div>
-        <div class="body"><h3>Compliant &amp; Inclusive Interviewing</h3>
-          <p class="desc">Train interviewers to ask better questions and stay lawful — with a live "Can I ask this?" checker.</p>
-          <div class="chips"><span>"Can I ask this?" tool</span><span>Bias-aware</span><span>Quiz + cert</span></div>
-          <span class="launch">▶ Launch interactive preview →</span></div>
+    <div class="group-label reveal">The flagship <span class="tag">new</span></div>
+    <div class="reveal">
+      <button class="feat" onclick="openDemo('https://mosaic.wes-griffin.com','Mosaic','The technology that powers work')">
+        <div class="fin">
+          <span class="fbadge">✦ Flagship platform</span>
+          <h3>Mosaic — the technology that powers work</h3>
+          <p class="fdesc">A full HR platform built from scratch: HRIS, ATS, LMS, Performance, Time, Pay, Engagement &amp; Insights — one platform, one data spine. The kind of product that takes companies years and whole teams, built solo with AI.</p>
+          <div class="chips"><span>HRIS</span><span>ATS</span><span>LMS</span><span>Performance</span><span>Time</span><span>Pay</span><span>Engagement</span><span>Insights</span></div>
+          <div class="frow"><span class="fdom">mosaic.wes-griffin.com</span><span class="launch">▶ Explore Mosaic live →</span></div>
+        </div>
       </button>
     </div>
 
-    <div class="group-label reveal">Tools &amp; systems</div>
+    <div class="group-label reveal">People Operations tools</div>
     <div class="projects three reveal">
-      <button class="proj" onclick="openDemo('ask-people-demo.html','Ask People — HR Ticketing','Internal help-desk app')">
+      <button class="proj" onclick="openDemo('https://ticketing.wes-griffin.com','Ask People — HR Ticketing','People Services help desk')">
         <div class="top g5"><span class="live"><i></i>LIVE</span><span class="glyph">🎫</span></div>
-        <div class="body"><h3>Ask People — HR Ticketing</h3>
+        <div class="body"><span class="dom">ticketing.wes-griffin.com</span><h3>Ask People — HR Ticketing</h3>
           <p class="desc">A full People Services help desk: inbox, SLA timers, threaded replies, dashboard, and a knowledge base.</p>
-          <div class="chips"><span>Inbox + SLA</span><span>Dashboard</span><span>Knowledge base</span><span>Guided tour</span></div>
-          <span class="launch">▶ Launch interactive preview →</span></div>
+          <div class="chips"><span>Inbox + SLA</span><span>Dashboard</span><span>Knowledge base</span></div>
+          <span class="launch">▶ Explore it live →</span></div>
       </button>
-      <button class="proj" onclick="openDemo('headcount-dashboard-demo.html','Headcount Reporting Dashboard','Live HR analytics')">
+      <button class="proj" onclick="openDemo('https://dashboard.wes-griffin.com','Global HR Dashboard','Live workforce analytics')">
         <div class="top g6"><span class="live"><i></i>LIVE</span><span class="glyph">📊</span></div>
-        <div class="body"><h3>Headcount Reporting Dashboard</h3>
+        <div class="body"><span class="dom">dashboard.wes-griffin.com</span><h3>Global HR Dashboard</h3>
           <p class="desc">Live workforce analytics — headcount by leader and region, hires, attrition, open reqs, and click-through drill-downs.</p>
           <div class="chips"><span>By SMT / location</span><span>Hires &amp; attrition</span><span>Drill-downs</span></div>
-          <span class="launch">▶ Launch interactive preview →</span></div>
+          <span class="launch">▶ Explore it live →</span></div>
       </button>
-      <button class="proj" onclick="openDemo('headcount-requests-demo.html','Headcount Management Portal','Approval workflow app')">
+      <button class="proj" onclick="openDemo('https://headcount.wes-griffin.com','Headcount Requests Portal','Approval workflow app')">
         <div class="top g7"><span class="live"><i></i>LIVE</span><span class="glyph">🗂️</span></div>
-        <div class="body"><h3>Headcount Management Portal</h3>
+        <div class="body"><span class="dom">headcount.wes-griffin.com</span><h3>Headcount Requests Portal</h3>
           <p class="desc">A multi-stage headcount-request system — submit a role, route it PBP → SMT → Admin, and track every approval.</p>
           <div class="chips"><span>PBP→SMT→Admin</span><span>Live request form</span><span>Role workflows</span></div>
-          <span class="launch">▶ Launch interactive preview →</span></div>
+          <span class="launch">▶ Explore it live →</span></div>
+      </button>
+    </div>
+
+    <div class="group-label reveal">Interactive training &amp; certification</div>
+    <div class="projects reveal">
+      <button class="proj" onclick="openDemo('https://i9.wes-griffin.com','Form I-9 Fundamentals','Interactive compliance course')">
+        <div class="top g1"><span class="live"><i></i>LIVE</span><span class="glyph">📋</span></div>
+        <div class="body"><span class="dom">i9.wes-griffin.com</span><h3>Form I-9 Fundamentals</h3>
+          <p class="desc">A complete, interactive course on U.S. employment-eligibility verification — the law, the documents, the deadlines, corrections, and retention.</p>
+          <div class="chips"><span>Deadline calculator</span><span>Document validator</span><span>Quiz + certificate</span></div>
+          <span class="launch">▶ Take the course →</span></div>
+      </button>
+      <button class="proj" onclick="openDemo('https://usemplaw.wes-griffin.com','U.S. Employment Law Essentials','Interactive course')">
+        <div class="top g2"><span class="live"><i></i>LIVE</span><span class="glyph">⚖️</span></div>
+        <div class="body"><span class="dom">usemplaw.wes-griffin.com</span><h3>U.S. Employment Law Essentials</h3>
+          <p class="desc">Federal employment law end to end — wages &amp; hours, classification, discrimination, leave, safety, and labor relations.</p>
+          <div class="chips"><span>FLSA &amp; OT</span><span>Coverage checker</span><span>Quiz + cert</span></div>
+          <span class="launch">▶ Take the course →</span></div>
+      </button>
+      <button class="proj" onclick="openDemo('https://caemplaw.wes-griffin.com','California Employment Law Essentials','Interactive course')">
+        <div class="top g3"><span class="live"><i></i>LIVE</span><span class="glyph">🌅</span></div>
+        <div class="body"><span class="dom">caemplaw.wes-griffin.com</span><h3>California Employment Law Essentials</h3>
+          <p class="desc">A standalone, California-specific course — daily overtime, meal &amp; rest breaks, FEHA, leaves, PAGA, and 2026 updates.</p>
+          <div class="chips"><span>Break calculator</span><span>Final-pay tool</span><span>2026 laws</span></div>
+          <span class="launch">▶ Take the course →</span></div>
+      </button>
+      <button class="proj" onclick="openDemo('https://interviewing.wes-griffin.com','Compliant &amp; Inclusive Interviewing','Interactive course')">
+        <div class="top g4"><span class="live"><i></i>LIVE</span><span class="glyph">💬</span></div>
+        <div class="body"><span class="dom">interviewing.wes-griffin.com</span><h3>Compliant &amp; Inclusive Interviewing</h3>
+          <p class="desc">Train interviewers to ask better questions and stay lawful — with a live "Can I ask this?" checker and bias-aware guidance.</p>
+          <div class="chips"><span>"Can I ask this?" tool</span><span>Bias-aware</span><span>Quiz + cert</span></div>
+          <span class="launch">▶ Take the course →</span></div>
+      </button>
+    </div>
+
+    <div class="group-label reveal">Beyond HR — client &amp; passion builds</div>
+    <p class="group-note reveal"><b>The same build-anything skill set, pointed at the real world:</b> sites for real businesses and a couple of projects built purely for fun.</p>
+    <div class="projects reveal">
+      <button class="proj" onclick="openDemo('https://nutritionworthy.wes-griffin.com','Nutrition Worthy','Nutrition practice site')">
+        <div class="top g7"><span class="live"><i></i>LIVE</span><span class="glyph">🥗</span></div>
+        <div class="body"><span class="dom">nutritionworthy.wes-griffin.com</span><h3>Nutrition Worthy</h3>
+          <p class="desc">A polished practice site for Shyler Landry, M.S. — mindful nutrition coaching, services, and booking.</p>
+          <div class="chips"><span>Client site</span><span>Services &amp; booking</span></div>
+          <span class="launch">▶ Visit the site →</span></div>
+      </button>
+      <button class="proj" onclick="openDemo('https://auction.wes-griffin.com','Brinkley Auctions Inc.','Auction house site')">
+        <div class="top g5"><span class="live"><i></i>LIVE</span><span class="glyph">🔨</span></div>
+        <div class="body"><span class="dom">auction.wes-griffin.com</span><h3>Brinkley Auctions Inc.</h3>
+          <p class="desc">A full auction-house web presence — listings, sale events, and bidder information.</p>
+          <div class="chips"><span>Client site</span><span>Listings &amp; events</span></div>
+          <span class="launch">▶ Visit the site →</span></div>
+      </button>
+      <button class="proj" onclick="openDemo('https://boat.wes-griffin.com','Pontoon Nation','Boating safety & captain certification')">
+        <div class="top g2"><span class="live"><i></i>LIVE</span><span class="glyph">🛥️</span></div>
+        <div class="body"><span class="dom">boat.wes-griffin.com</span><h3>Pontoon Nation</h3>
+          <p class="desc">Boating safety &amp; captain certification — an interactive course and quiz, the training engine applied to open water.</p>
+          <div class="chips"><span>Safety course</span><span>Captain cert</span></div>
+          <span class="launch">▶ Get certified →</span></div>
+      </button>
+      <button class="proj" onclick="openDemo('https://castle.wes-griffin.com','Wes\'s Castle','Medieval chamber booking')">
+        <div class="top g4"><span class="live"><i></i>LIVE</span><span class="glyph">🏰</span></div>
+        <div class="body"><span class="dom">castle.wes-griffin.com</span><h3>Wes's Castle — Book Thy Chamber</h3>
+          <p class="desc">A fully themed medieval booking experience — browse chambers and reserve thy stay. Built for pure fun.</p>
+          <div class="chips"><span>Booking flow</span><span>Just for fun</span></div>
+          <span class="launch">▶ Book thy chamber →</span></div>
       </button>
     </div>
     <div class="group-label reveal">AI copilots &amp; automation <span class="tag">just shipped</span></div>
@@ -396,7 +460,7 @@
           <span class="launch">▶ Launch interactive preview →</span></div>
       </button>
     </div>
-    <p class="demo-note">All demos run entirely on synthetic / mock data — no real employee information, no backend, no sign-in.</p>
+    <p class="demo-note">Every product above is live on its own domain. HR demos run entirely on synthetic / mock data — no real employee information, no sign-in.</p>
   </div>
 </section>
 
@@ -518,11 +582,13 @@
   // demo modal
   var modal=$('#demoModal'), frame=$('#demoFrame'), loading=$('#dmLoading');
   window.openDemo=function(file,title,sub){
+    var isAbs=/^https?:\/\//.test(file);
+    var url=isAbs?file:'./'+file;
     $('#dmTitle').textContent=(title||'Demo').replace('&amp;','&');
-    $('#dmUrl').textContent=file;
-    $('#dmOpen').href='./'+file;
+    $('#dmUrl').textContent=isAbs?file.replace(/^https?:\/\//,''):file;
+    $('#dmOpen').href=url;
     loading.classList.remove('hide');
-    frame.src='./'+file;
+    frame.src=url;
     modal.classList.add('open'); modal.setAttribute('aria-hidden','false');
     document.body.style.overflow='hidden';
   };
