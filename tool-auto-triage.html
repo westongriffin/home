@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Auto-Triage + Suggested Replies | NewWesVentures</title>
-<meta name="description" content="AI ticket triage demo — auto-classification, suggested replies, and routing with human approval and guardrails. Built with AI by Wes Griffin.">
+<meta name="description" content="AI ticket triage demo - auto-classification, suggested replies, and routing with human approval and guardrails. Built with AI by Wes Griffin.">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0' stop-color='%237c3aed'/%3E%3Cstop offset='.55' stop-color='%235b4ef0'/%3E%3Cstop offset='1' stop-color='%2306b6d4'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='64' height='64' rx='16' fill='url(%23g)'/%3E%3Ctext x='32' y='44' font-size='34' text-anchor='middle' fill='white' font-family='Georgia,serif'%3E%E2%9C%A6%3C/text%3E%3C/svg%3E">
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
@@ -274,7 +274,7 @@ body{
   body{overflow-y:auto}
   .app{height:auto;min-height:100vh}
 
-  /* TOP BAR: clean two rows — brand + avatar, then the controls */
+  /* TOP BAR: clean two rows - brand + avatar, then the controls */
   .topbar{
     flex-wrap:wrap;align-items:center;gap:10px;padding:10px 14px;
     position:sticky;top:0;
@@ -376,7 +376,7 @@ body{
   <!-- AUTOPILOT BANNER -->
   <div class="ap-banner" id="apBanner">
     <div class="ap-spin"></div>
-    <span id="apBannerTxt">Autopilot running — classifying low-risk tickets…</span>
+    <span id="apBannerTxt">Autopilot running - classifying low-risk tickets…</span>
     <div class="mini-prog"><i id="apProg"></i></div>
   </div>
 
@@ -411,7 +411,7 @@ body{
     <aside class="queue">
       <div class="queue-head">
         <div class="row">
-          <div class="queue-title">📥 Ticket Queue <span class="count-pill" id="openCount">— open</span></div>
+          <div class="queue-title">📥 Ticket Queue <span class="count-pill" id="openCount">open</span></div>
         </div>
         <div class="filters" id="filters">
           <div class="chip-f active" data-f="all">All</div>
@@ -448,17 +448,17 @@ body{
   var TICKETS = [
     {
       id:"HR-4821", emp:"Priya Natarajan", title:"Software Engineer II · Austin, TX", tenure:"2y 4m",
-      subject:"Adding my newborn to my health insurance — what's the deadline?",
+      subject:"Adding my newborn to my health insurance - what's the deadline?",
       msg:"Hi People Team,\n\nMy wife and I just welcomed our daughter last Thursday! 🎉 I want to add her to my medical and dental plans. What documents do you need, and is there a deadline I should worry about? I don't want to miss the window.\n\nThanks,\nPriya",
       cat:"Benefits Enrollment", pri:"high", conf:96, sentiment:"pos", risk:"low",
       entities:[["Event","Birth / new dependent"],["Plan","Medical + Dental"],["Window","Qualifying life event"]],
-      analysis:"Qualifying Life Event (QLE) — birth of a dependent. Member has a 30-day special enrollment window from the date of birth. Routine, high-confidence benefits request.",
-      reply:"Hi Priya — congratulations on your new arrival! 🎉\n\nGreat news, this qualifies as a Qualifying Life Event, so you can add your daughter to your medical and dental plans. You have 30 days from her date of birth to make the change. To complete it, please upload her birth certificate (or the hospital's official birth confirmation) in the Benefits portal under \"Life Events → Add Dependent.\"\n\nOnce submitted, coverage is backdated to her date of birth. I've attached the step-by-step guide — reach out anytime if you'd like a hand.\n\nWarmly,\nPeople Services",
+      analysis:"Qualifying Life Event (QLE) - birth of a dependent. Member has a 30-day special enrollment window from the date of birth. Routine, high-confidence benefits request.",
+      reply:"Hi Priya - congratulations on your new arrival! 🎉\n\nGreat news, this qualifies as a Qualifying Life Event, so you can add your daughter to your medical and dental plans. You have 30 days from her date of birth to make the change. To complete it, please upload her birth certificate (or the hospital's official birth confirmation) in the Benefits portal under \"Life Events → Add Dependent.\"\n\nOnce submitted, coverage is backdated to her date of birth. I've attached the step-by-step guide - reach out anytime if you'd like a hand.\n\nWarmly,\nPeople Services",
       actions:[["Open QLE special-enrollment case","Benefits"],["Send dependent-add checklist + portal link","Email"],["Set 30-day deadline reminder","Workflow"]]
     },
     {
       id:"HR-4822", emp:"Marcus Bell", title:"Account Executive · Remote (FL)", tenure:"1y 1m",
-      subject:"My last paycheck was short — missing commission?",
+      subject:"My last paycheck was short - missing commission?",
       msg:"Hey,\n\nMy 5/31 paycheck looks about $1,180 lower than I expected. I closed three deals in May that should have paid out commission. Can someone look into this? It's a pretty big gap and rent is due.\n\nMarcus",
       cat:"Payroll Discrepancy", pri:"urgent", conf:88, sentiment:"concern", risk:"low",
       entities:[["Pay date","2025-05-31"],["Delta","≈ -$1,180"],["Type","Commission"]],
@@ -472,24 +472,24 @@ body{
       msg:"Hi! I just moved across town. Can you update my address on file? New address is 1442 Larimer St, Unit 7B, Denver, CO 80202. Want to make sure my tax forms go to the right place. Thanks!",
       cat:"Address Change", pri:"normal", conf:99, sentiment:"neu", risk:"low",
       entities:[["New address","1442 Larimer St #7B"],["City","Denver, CO 80202"],["Impacts","Payroll · W-2"]],
-      analysis:"Standard self-service address update. Clean, unambiguous, fully extractable. Highest-confidence category — ideal for full automation.",
-      reply:"Hi Dana,\n\nHappy to help! I've updated your home address in our HR system to:\n\n1442 Larimer St, Unit 7B\nDenver, CO 80202\n\nThis automatically flows to payroll and your year-end W-2, so your tax forms will go to the new place. The change is effective today — no further action needed on your end.\n\nThanks for keeping us current!\n\nPeople Services",
+      analysis:"Standard self-service address update. Clean, unambiguous, fully extractable. Highest-confidence category - ideal for full automation.",
+      reply:"Hi Dana,\n\nHappy to help! I've updated your home address in our HR system to:\n\n1442 Larimer St, Unit 7B\nDenver, CO 80202\n\nThis automatically flows to payroll and your year-end W-2, so your tax forms will go to the new place. The change is effective today - no further action needed on your end.\n\nThanks for keeping us current!\n\nPeople Services",
       actions:[["Update home address in HRIS","Workday"],["Sync to payroll + tax profile","Payroll"],["Send confirmation of change","Email"]]
     },
     {
       id:"HR-4824", emp:"Aisha Mohammed", title:"Operations Manager · Chicago, IL", tenure:"5y 2m",
       subject:"Question about FMLA leave for an upcoming surgery",
-      msg:"Hello,\n\nI have a scheduled surgery in about six weeks and will need roughly 8 weeks to recover. I'd like to understand how FMLA works here — is my job protected, do I get paid, and what paperwork do I need to start? I'd rather get ahead of this.\n\nThank you,\nAisha",
+      msg:"Hello,\n\nI have a scheduled surgery in about six weeks and will need roughly 8 weeks to recover. I'd like to understand how FMLA works here - is my job protected, do I get paid, and what paperwork do I need to start? I'd rather get ahead of this.\n\nThank you,\nAisha",
       cat:"LOA / FMLA", pri:"high", conf:84, sentiment:"neu", risk:"low",
       entities:[["Leave type","Medical (FMLA)"],["Duration","≈ 8 weeks"],["Start","≈ 6 weeks out"]],
       analysis:"Proactive FMLA inquiry for a planned medical leave. Employee appears FMLA-eligible (tenure 5y, >1,250 hrs likely). Provide overview + initiate certification paperwork; coordinate with disability for pay continuation.",
-      reply:"Hi Aisha,\n\nThank you for planning ahead — that makes this much smoother. Based on your tenure, you appear eligible for FMLA, which provides up to 12 weeks of job-protected leave, so your role is protected during your ~8-week recovery.\n\nFor pay, FMLA itself is unpaid, but it runs alongside our short-term disability benefit, which typically replaces a portion of your salary during medical recovery — I'll have our leave specialist confirm your specific coverage.\n\nTo start, please complete the FMLA request in the Leave portal; we'll then send a Certification of Health Care Provider form for your surgeon. I've opened a leave case so a specialist can walk you through it.\n\nWishing you a smooth procedure,\nPeople Services",
+      reply:"Hi Aisha,\n\nThank you for planning ahead - that makes this much smoother. Based on your tenure, you appear eligible for FMLA, which provides up to 12 weeks of job-protected leave, so your role is protected during your ~8-week recovery.\n\nFor pay, FMLA itself is unpaid, but it runs alongside our short-term disability benefit, which typically replaces a portion of your salary during medical recovery - I'll have our leave specialist confirm your specific coverage.\n\nTo start, please complete the FMLA request in the Leave portal; we'll then send a Certification of Health Care Provider form for your surgeon. I've opened a leave case so a specialist can walk you through it.\n\nWishing you a smooth procedure,\nPeople Services",
       actions:[["Open FMLA leave case","Leave Admin"],["Send WH-380 certification form","Email"],["Loop short-term disability for pay continuation","Benefits"]]
     },
     {
       id:"HR-4825", emp:"Tomás Herrera", title:"Senior Recruiter · San Diego, CA", tenure:"4y 0m",
       subject:"Relocation support for transfer to the NYC office",
-      msg:"Hi team — I've accepted the internal transfer to the New York office starting next quarter. Can you tell me what relocation benefits I'm eligible for? Movers, temporary housing, lease-break assistance? Trying to budget.",
+      msg:"Hi team - I've accepted the internal transfer to the New York office starting next quarter. Can you tell me what relocation benefits I'm eligible for? Movers, temporary housing, lease-break assistance? Trying to budget.",
       cat:"Relocation", pri:"normal", conf:90, sentiment:"pos", risk:"low",
       entities:[["From → To","San Diego → NYC"],["Trigger","Internal transfer"],["Start","Next quarter"]],
       analysis:"Internal relocation eligibility question tied to an approved transfer. Standard policy lookup by tier/role. Recommend sending the relocation package summary and opening a relo case with our mobility vendor.",
@@ -497,13 +497,13 @@ body{
       actions:[["Open relocation case with mobility vendor","Mobility"],["Send Tier 2 relocation summary","Email"],["Confirm transfer effective date with HRBP","Workday"]]
     },
     {
-      id:"HR-4826", emp:"Greenfield Mortgage (3rd party)", title:"Verification request · re: J. Okafor", tenure:"—",
+      id:"HR-4826", emp:"Greenfield Mortgage (3rd party)", title:"Verification request · re: J. Okafor", tenure:" - ",
       subject:"Verification of employment & income for mortgage application",
-      msg:"To Whom It May Concern:\n\nWe are processing a mortgage application for Joseph Okafor and require written verification of employment, job title, start date, and current annual base salary. Please complete the attached VOE form at your earliest convenience.\n\nGreenfield Mortgage — Lending Operations",
+      msg:"To Whom It May Concern:\n\nWe are processing a mortgage application for Joseph Okafor and require written verification of employment, job title, start date, and current annual base salary. Please complete the attached VOE form at your earliest convenience.\n\nGreenfield Mortgage - Lending Operations",
       cat:"Verification of Employment", pri:"normal", conf:93, sentiment:"neu", risk:"low",
       entities:[["Subject","Joseph Okafor"],["Requester","Greenfield Mortgage"],["Scope","Title · Start · Salary"]],
       analysis:"Third-party VOE for a mortgage. Requires verifying employee consent on file before releasing income. With signed authorization present, this can be fully automated through the verification service.",
-      reply:"Hello Greenfield Mortgage,\n\nThank you for your request regarding Joseph Okafor. We have a signed authorization on file, so we're able to assist.\n\nFor security and consistency, all employment and income verifications are issued through our automated verification service. I've generated a secure access code for this request and sent it to your lending operations email; you'll be able to instantly retrieve employment status, title, start date, and income.\n\nPlease let us know if you need anything further.\n\nPeople Services — NewWesVentures",
+      reply:"Hello Greenfield Mortgage,\n\nThank you for your request regarding Joseph Okafor. We have a signed authorization on file, so we're able to assist.\n\nFor security and consistency, all employment and income verifications are issued through our automated verification service. I've generated a secure access code for this request and sent it to your lending operations email; you'll be able to instantly retrieve employment status, title, start date, and income.\n\nPlease let us know if you need anything further.\n\nPeople Services - NewWesVentures",
       actions:[["Confirm signed consent on file","Compliance"],["Issue verification access code","Verify Svc"],["Log VOE disclosure for audit","Records"]]
     },
     {
@@ -513,38 +513,38 @@ body{
       cat:"401(k) Rollover", pri:"low", conf:91, sentiment:"neu", risk:"low",
       entities:[["Action","Inbound rollover"],["Source","Former employer plan"],["Provider","Plan recordkeeper"]],
       analysis:"Inbound 401(k) rollover request. Process is owned by the plan recordkeeper. Provide the rollover steps and the provider contact; no sensitive HR action required.",
-      reply:"Hi Rachel,\n\nGreat idea to consolidate! Rolling an old 401(k) into the NewWesVentures plan is straightforward and is handled directly with our plan provider, Meridian Retirement.\n\nHere's how to start:\n1. Log in to the Meridian portal (link below) → \"Roll money in.\"\n2. Request a direct rollover from your former employer's plan to avoid any tax withholding.\n3. Meridian will provide the receiving account details for your old provider.\n\nA Meridian rollover specialist can also do this with you over the phone — I've included their direct line. You've got this!\n\nPeople Services",
-      actions:[["Send Meridian rollover guide + portal link","Email"],["Share rollover specialist contact","401k"],["No HRIS change required","—"]]
+      reply:"Hi Rachel,\n\nGreat idea to consolidate! Rolling an old 401(k) into the NewWesVentures plan is straightforward and is handled directly with our plan provider, Meridian Retirement.\n\nHere's how to start:\n1. Log in to the Meridian portal (link below) → \"Roll money in.\"\n2. Request a direct rollover from your former employer's plan to avoid any tax withholding.\n3. Meridian will provide the receiving account details for your old provider.\n\nA Meridian rollover specialist can also do this with you over the phone - I've included their direct line. You've got this!\n\nPeople Services",
+      actions:[["Send Meridian rollover guide + portal link","Email"],["Share rollover specialist contact","401k"],["No HRIS change required"," - "]]
     },
     {
       id:"HR-4828", emp:"Leon Carter", title:"Warehouse Lead · Columbus, OH", tenure:"6y 7m",
       subject:"How much PTO do I have left for the year?",
-      msg:"Quick one — how many PTO days do I have left? Thinking about a trip in August and want to make sure I have enough before I book anything.",
+      msg:"Quick one - how many PTO days do I have left? Thinking about a trip in August and want to make sure I have enough before I book anything.",
       cat:"PTO Balance", pri:"low", conf:98, sentiment:"neu", risk:"low",
       entities:[["Request","Current PTO balance"],["Context","Planning August trip"],["Source","Time-off system"]],
-      analysis:"Simple balance lookup from the time-off system. Deterministic, no judgment required — prime candidate for instant automated self-service.",
+      analysis:"Simple balance lookup from the time-off system. Deterministic, no judgment required - prime candidate for instant automated self-service.",
       reply:"Hi Leon,\n\nHappy to help you plan! As of today, your PTO balance is:\n\n• Available now: 14.5 days\n• Accruing by end of August: +2.0 days (≈ 16.5 days by your trip)\n\nThat should give you comfortable room for an August getaway. You can request the dates anytime in the Time Off portal, and your manager will get the approval notification automatically.\n\nHave a great trip!\nPeople Services",
       actions:[["Pull live PTO balance","Time Off"],["Send balance + accrual projection","Email"],["Share time-off request link","Self-Service"]]
     },
     {
       id:"HR-4829", emp:"Bianca Rossi", title:"Marketing Specialist · Remote (NY)", tenure:"0y 8m",
       subject:"Concerned about how my manager handled my performance review",
-      msg:"Hi,\n\nI'm not sure who to talk to. My manager gave me a really harsh review and made some comments in our 1:1 that felt unfair and a little personal. I don't think it was about my actual work. I'd like to talk to someone in HR about it — I'm pretty upset.\n\nBianca",
+      msg:"Hi,\n\nI'm not sure who to talk to. My manager gave me a really harsh review and made some comments in our 1:1 that felt unfair and a little personal. I don't think it was about my actual work. I'd like to talk to someone in HR about it - I'm pretty upset.\n\nBianca",
       cat:"Manager / Performance Concern", pri:"high", conf:80, sentiment:"neg", risk:"low",
       entities:[["Theme","Performance review dispute"],["Tone","Upset / interpersonal"],["Needs","HR conversation"]],
-      analysis:"Employee relations concern about a performance review and 1:1 comments. Negative sentiment but not a protected-class allegation. Route to an HRBP for a live conversation rather than an auto-reply — handle with care, but does not require the harassment guardrail.",
-      reply:"Hi Bianca,\n\nThank you for reaching out, and I'm sorry you're feeling this way — it takes courage to raise something like this. You absolutely have the right people to talk to.\n\nI'd like to connect you directly with an HR Business Partner who can listen, understand what happened in your review and 1:1, and talk through your options confidentially. This won't be an automated process — a real person will reach out to you within one business day to schedule a private conversation at a time that works for you.\n\nIn the meantime, please know your concern is taken seriously. You're not alone in this.\n\nWarmly,\nPeople Services",
+      analysis:"Employee relations concern about a performance review and 1:1 comments. Negative sentiment but not a protected-class allegation. Route to an HRBP for a live conversation rather than an auto-reply - handle with care, but does not require the harassment guardrail.",
+      reply:"Hi Bianca,\n\nThank you for reaching out, and I'm sorry you're feeling this way - it takes courage to raise something like this. You absolutely have the right people to talk to.\n\nI'd like to connect you directly with an HR Business Partner who can listen, understand what happened in your review and 1:1, and talk through your options confidentially. This won't be an automated process - a real person will reach out to you within one business day to schedule a private conversation at a time that works for you.\n\nIn the meantime, please know your concern is taken seriously. You're not alone in this.\n\nWarmly,\nPeople Services",
       actions:[["Assign to HR Business Partner (live follow-up)","ER"],["Schedule confidential 1:1 within 1 business day","Workflow"],["Log as employee-relations concern","ER Case"]]
     },
     {
-      id:"HR-4830", emp:"Confidential reporter", title:"Sensitive concern · details withheld in queue", tenure:"—",
-      subject:"Reporting harassment by a coworker — need this handled discreetly",
+      id:"HR-4830", emp:"Confidential reporter", title:"Sensitive concern · details withheld in queue", tenure:" - ",
+      subject:"Reporting harassment by a coworker - need this handled discreetly",
       msg:"I need to report that a coworker has been making repeated unwanted comments and advances toward me, and it's gotten worse over the past few weeks. It's affecting my ability to work and I feel unsafe. I want to report this but I'm scared about retaliation. Please tell me what happens next and keep this confidential.",
       cat:"Harassment Concern", pri:"urgent", conf:97, sentiment:"distress", risk:"sensitive",
       entities:[["Category","Harassment / unwanted conduct"],["Risk","Retaliation fear · safety"],["Handling","Confidential investigation"]],
-      analysis:"SENSITIVE — allegation of harassment with safety and retaliation concerns. This class of case is excluded from any automated reply. The AI's only action is to detect, flag, and route to a human investigator under the company's anti-retaliation policy. No suggested reply is generated.",
+      analysis:"SENSITIVE - allegation of harassment with safety and retaliation concerns. This class of case is excluded from any automated reply. The AI's only action is to detect, flag, and route to a human investigator under the company's anti-retaliation policy. No suggested reply is generated.",
       reply:null,
-      actions:[["HOLD — escalate to ER investigations lead","Required"],["Notify on-call HRBP (human) immediately","Required"],["Open confidential, anti-retaliation case file","Required"]]
+      actions:[["HOLD - escalate to ER investigations lead","Required"],["Notify on-call HRBP (human) immediately","Required"],["Open confidential, anti-retaliation case file","Required"]]
     }
   ];
 
@@ -643,7 +643,7 @@ body{
     if(!t){ d.innerHTML='<div class="empty"><div class="e-ico">📨</div><div><b>Select a ticket</b></div></div>'; return; }
     var initials = t.emp.split(/\s+/).slice(0,2).map(function(w){return w[0];}).join("").toUpperCase().slice(0,2);
     var s = SENTIMENT[t.sentiment] || SENTIMENT.neu;
-    var stateLabel = {open:"Open · awaiting triage",awaiting:"Awaiting your approval",resolved:"Resolved · reply sent",held:"Held — human required"}[t.state];
+    var stateLabel = {open:"Open · awaiting triage",awaiting:"Awaiting your approval",resolved:"Resolved · reply sent",held:"Held - human required"}[t.state];
 
     var html = '';
     html += '<button type="button" class="d-back" onclick="closeMobileDetail()"><span aria-hidden="true">‹</span> All tickets</button>';
@@ -652,11 +652,11 @@ body{
       '<div class="d-emp-av">'+esc(initials)+'</div>'+
       '<div class="d-emp-info">'+
         '<div class="d-emp-name">'+esc(t.emp)+'</div>'+
-        '<div class="d-emp-sub"><b>'+esc(t.title)+'</b>'+(t.tenure!=="—"?' · Tenure '+esc(t.tenure):'')+' · '+esc(t.id)+'</div>'+
+        '<div class="d-emp-sub"><b>'+esc(t.title)+'</b>'+(t.tenure!==" - "?' · Tenure '+esc(t.tenure):'')+' · '+esc(t.id)+'</div>'+
       '</div>'+
       '<div class="d-head-status">'+
         '<span class="statebadge '+t.state+'">'+esc(stateLabel)+'</span>'+
-        '<span class="sla">AI response drafted in '+(t.state==='held'?'—':t.conf>95?'2s':'4s')+'</span>'+
+        '<span class="sla">AI response drafted in '+(t.state==='held'?' - ':t.conf>95?'2s':'4s')+'</span>'+
       '</div>'+
     '</div>';
 
@@ -671,7 +671,7 @@ body{
       html += '<div class="guard show">'+
         '<div class="guard-top">'+
           '<div class="guard-ico">🛡️</div>'+
-          '<div><b>Human required — not auto-handled</b><span>Sensitive case · automated replies disabled by policy guardrail</span></div>'+
+          '<div><b>Human required - not auto-handled</b><span>Sensitive case · automated replies disabled by policy guardrail</span></div>'+
         '</div>'+
         '<div class="guard-body">The AI detected a <b>harassment / safety concern</b>. This category is <b>hard-excluded from autopilot and suggested replies</b>. No draft is generated and no message is sent automatically. The system\'s only action is to <b>flag and route to a trained human investigator</b> under the anti-retaliation policy.'+
         '<div class="guard-route">'+
@@ -684,7 +684,7 @@ body{
 
     /* original message */
     html += '<div class="card">'+
-      '<div class="card-title"><span class="ico">✉️</span> Original message<span class="ai-tag">inbound · '+(t.tenure==="—"?'external':'employee')+'</span></div>'+
+      '<div class="card-title"><span class="ico">✉️</span> Original message<span class="ai-tag">inbound · '+(t.tenure===" - "?'external':'employee')+'</span></div>'+
       '<div class="msg">'+esc(t.msg)+'</div>'+
       '<div class="msg-foot"><span>📂 Subject: <b>'+esc(t.subject)+'</b></span><span>🕑 Received: <b>today, 9:1'+(t.id.slice(-1))+' AM</b></span></div>'+
     '</div>';
@@ -697,7 +697,7 @@ body{
         '<div class="ana-cell"><div class="lbl">Category</div><div class="val">'+esc(t.cat)+'</div></div>'+
         '<div class="ana-cell"><div class="lbl">Suggested priority</div><div class="val"><span class="pri '+priClass(t.pri)+'" style="font-size:11px">'+esc(t.pri)+'</span></div></div>'+
         '<div class="ana-cell"><div class="lbl">Sentiment</div><div class="val"><span class="sent-dot" style="background:'+s.c+'"></span>'+esc(s.t)+'</div></div>'+
-        '<div class="ana-cell"><div class="lbl">Risk gate</div><div class="val">'+(t.risk==="sensitive"?'<span style="color:var(--red)">⛔ Sensitive — hold</span>':'<span style="color:var(--green)">✓ Low risk</span>')+'</div></div>'+
+        '<div class="ana-cell"><div class="lbl">Risk gate</div><div class="val">'+(t.risk==="sensitive"?'<span style="color:var(--red)">⛔ Sensitive - hold</span>':'<span style="color:var(--green)">✓ Low risk</span>')+'</div></div>'+
       '</div>'+
       '<div class="ana-cell" style="margin-top:11px;background:#fafbff">'+
         '<div class="lbl">Extracted entities</div><div class="entities">'+ent+'</div>'+
@@ -755,7 +755,7 @@ body{
         '<button class="btn btn-primary" id="approveBtn">✓ Approve &amp; send</button>'+
         '<button class="btn" id="editBtn">✏️ Edit</button>'+
         '<button class="btn" id="regenBtn">↻ Regenerate</button>'+
-        (t.state==="awaiting"?'<span class="hint" style="font-size:11.5px;color:var(--v2);font-weight:600;display:flex;align-items:center;gap:6px;margin-left:4px">⚡ Auto-classified by Autopilot — review &amp; approve</span>':'')+
+        (t.state==="awaiting"?'<span class="hint" style="font-size:11.5px;color:var(--v2);font-weight:600;display:flex;align-items:center;gap:6px;margin-left:4px">⚡ Auto-classified by Autopilot - review &amp; approve</span>':'')+
       '</div>';
     }
 
@@ -788,7 +788,7 @@ body{
         toast("Routed to ER Investigations Lead + on-call HRBP. No automated reply was sent.","warn");
       });
       var ack=$("ackBtn");
-      if(ack) ack.addEventListener("click", function(){ toast("Guardrail acknowledged — case stays with a human.","ap"); });
+      if(ack) ack.addEventListener("click", function(){ toast("Guardrail acknowledged - case stays with a human.","ap"); });
       return;
     }
 
@@ -867,7 +867,7 @@ body{
     var r = t.reply;
     r = r.replace(/^Hi [^,\n]+,\s*\n\n?/, "Hello "+t.emp.split(/\s+/)[0]+",\n\n");
     r = r.replace(/(Warmly,|Best,|Thanks,|Warmly|Best)\s*\nPeople Services/, "Thank you,\nPeople Services · NewWesVentures");
-    if(r===t.reply){ r = r + "\n\n(Happy to adjust the tone or detail — just let me know.)"; }
+    if(r===t.reply){ r = r + "\n\n(Happy to adjust the tone or detail - just let me know.)"; }
     return r;
   }
 
@@ -884,15 +884,15 @@ body{
   /* ---------- AUTOPILOT ---------- */
   var apToggle = $("apToggle");
   apToggle.addEventListener("change", function(){
-    if(apToggle.checked){ toast("AI Autopilot ON — low-risk tickets will auto-classify for approval.","ap"); }
-    else { toast("AI Autopilot OFF — all tickets require manual triage.","ap"); }
+    if(apToggle.checked){ toast("AI Autopilot ON - low-risk tickets will auto-classify for approval.","ap"); }
+    else { toast("AI Autopilot OFF - all tickets require manual triage.","ap"); }
   });
 
   $("runAp").addEventListener("click", function(){
     if(apRunning) return;
     if(!apToggle.checked){
       apToggle.checked = true;
-      toast("Autopilot enabled — starting run.","ap");
+      toast("Autopilot enabled - starting run.","ap");
     }
     runAutopilot();
   });
@@ -929,13 +929,13 @@ body{
       }, 650*(i+1));
     });
 
-    // Then explicitly hold the sensitive ticket — the headline guardrail moment
+    // Then explicitly hold the sensitive ticket - the headline guardrail moment
     setTimeout(function(){
       prog.style.width="100%";
       if(heldSensitive.length){
         var h = heldSensitive[0];
         flashHeld(h);
-        $("apBannerTxt").innerHTML = '🛡️ Guardrail enforced — <b style="color:#b3261e">'+esc(h.cat)+'</b> held for human review (never auto-replied).';
+        $("apBannerTxt").innerHTML = '🛡️ Guardrail enforced<b style="color:#b3261e">'+esc(h.cat)+'</b> held for human review (never auto-replied).';
         banner.querySelector(".ap-spin").style.display="none";
         toast("Guardrail: "+h.cat+" held for a human. Autopilot will not reply to sensitive cases.","warn");
       }

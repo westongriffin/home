@@ -4,7 +4,7 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Policy &amp; Handbook Copilot · NewWesVentures</title>
-<meta name="description" content="Policy and handbook copilot demo — grounded answers to policy questions with a citation on every claim. Built with AI by Wes Griffin.">
+<meta name="description" content="Policy and handbook copilot demo - grounded answers to policy questions with a citation on every claim. Built with AI by Wes Griffin.">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0' stop-color='%237c3aed'/%3E%3Cstop offset='.55' stop-color='%235b4ef0'/%3E%3Cstop offset='1' stop-color='%2306b6d4'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='64' height='64' rx='16' fill='url(%23g)'/%3E%3Ctext x='32' y='44' font-size='34' text-anchor='middle' fill='white' font-family='Georgia,serif'%3E%E2%9C%A6%3C/text%3E%3C/svg%3E">
 <style>
   *, *::before, *::after { box-sizing: border-box; }
@@ -65,7 +65,7 @@
   /* ===== Body: three panes ===== */
   .body{ flex:1 1 auto; display:flex; min-height:0; position:relative; }
 
-  /* LEFT rail — Sources */
+  /* LEFT rail - Sources */
   .rail{
     flex:0 0 268px; width:268px; background:var(--card); border-right:1px solid var(--line);
     display:flex; flex-direction:column; min-height:0;
@@ -96,7 +96,7 @@
   .src .dot{ width:9px; height:9px; border-radius:3px; flex:0 0 auto; background:var(--grad); opacity:.85; }
   .src .pg{ margin-left:auto; font-size:11px; color:var(--muted); font-weight:500; }
 
-  /* CENTER — chat */
+  /* CENTER - chat */
   .center{ flex:1 1 auto; display:flex; flex-direction:column; min-height:0; min-width:0; background:var(--bg); }
   .chat-head{
     flex:0 0 auto; padding:14px 22px; border-bottom:1px solid var(--line);
@@ -219,7 +219,7 @@
   .composer-foot{ text-align:center; margin-top:9px; font-size:11px; color:var(--muted); }
   .composer-foot strong{ color:var(--ink2); font-weight:600; }
 
-  /* RIGHT — source viewer (slides in) */
+  /* RIGHT - source viewer (slides in) */
   .viewer{
     position:absolute; top:0; right:0; height:100%; width:380px; max-width:88vw;
     background:var(--card); border-left:1px solid var(--line); box-shadow:-24px 0 48px rgba(12,16,32,.10);
@@ -309,7 +309,7 @@
   @media (max-width:760px){
     .ch-sub{ display:none; }
 
-    /* keep the whole app inside the viewport — no horizontal scroll, chat owns the screen */
+    /* keep the whole app inside the viewport - no horizontal scroll, chat owns the screen */
     html, body{ overflow-x:hidden; }
     .app{ height:100vh; height:100dvh; max-width:100vw; overflow:hidden; }
 
@@ -470,7 +470,7 @@
       <div class="chat-head">
         <div>
           <div class="ch-title">Ask the Handbook</div>
-          <div class="ch-sub">Answers come only from the Employee Handbook — every claim is cited.</div>
+          <div class="ch-sub">Answers come only from the Employee Handbook - every claim is cited.</div>
         </div>
         <div class="ch-pill"><span class="live"></span> Grounded mode</div>
       </div>
@@ -485,7 +485,7 @@
         <div class="composer-inner">
           <div class="chips" id="chips"><!-- chips injected --></div>
           <div class="input-row">
-            <textarea id="input" rows="1" placeholder="Ask a policy question — e.g. “How much PTO can I roll over?”"></textarea>
+            <textarea id="input" rows="1" placeholder="Ask a policy question - e.g. “How much PTO can I roll over?”"></textarea>
             <button class="send" id="send" title="Send" aria-label="Send">
               <svg viewBox="0 0 24 24" fill="none"><path d="M4 12l16-8-6 16-3-7-7-1z" stroke="#fff" stroke-width="1.8" stroke-linejoin="round" stroke-linecap="round"/></svg>
             </button>
@@ -517,7 +517,7 @@
       <div class="viewer-body" id="vBody"></div>
       <div class="viewer-foot">
         <svg viewBox="0 0 24 24" fill="none"><path d="M5 12l4 4 10-11" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        Verbatim passage from the handbook — highlighted lines are the cited source.
+        Verbatim passage from the handbook - highlighted lines are the cited source.
       </div>
     </aside>
   </div>
@@ -544,7 +544,7 @@
   // Each passage: title, secNo (label), page, html paragraphs with <span class="hl"> on cited lines.
   var PASSAGES = {
     "pto-rollover": {
-      title:"Paid Time Off — Carryover & Accrual", secNo:"PTO Policy §4.2", page:"p. 28",
+      title:"Paid Time Off - Carryover & Accrual", secNo:"PTO Policy §4.2", page:"p. 28",
       section:"pto",
       body:
         "<p>Full-time employees accrue Paid Time Off (PTO) on a monthly basis according to tenure, beginning on the first day of employment.</p>"+
@@ -552,7 +552,7 @@
         "<p>Carried-over hours must be used by March 31 of the new year. The Company encourages managers to help employees schedule time off well before these deadlines.</p>"
     },
     "pto-accrual": {
-      title:"Paid Time Off — Accrual Rates", secNo:"PTO Policy §4.1", page:"p. 27",
+      title:"Paid Time Off - Accrual Rates", secNo:"PTO Policy §4.1", page:"p. 27",
       section:"pto",
       body:
         "<p>PTO accrues each month and is available for use as it is earned.</p>"+
@@ -568,7 +568,7 @@
         "<p>Leave may be taken continuously or, with manager approval, intermittently within the first 12 months following the qualifying event.</p>"
     },
     "remote-stipend": {
-      title:"Remote & Hybrid Work — Home Office Stipend", secNo:"Remote Work §5.3", page:"p. 35",
+      title:"Remote & Hybrid Work - Home Office Stipend", secNo:"Remote Work §5.3", page:"p. 35",
       section:"remote",
       body:
         "<p>Employees in remote or hybrid roles are eligible for support toward home-office and connectivity costs.</p>"+
@@ -576,7 +576,7 @@
         "<p>New remote employees are also eligible for a one-time $500 equipment allowance during their first 30 days.</p>"
     },
     "remote-eligibility": {
-      title:"Remote & Hybrid Work — Eligibility", secNo:"Remote Work §5.1", page:"p. 33",
+      title:"Remote & Hybrid Work - Eligibility", secNo:"Remote Work §5.1", page:"p. 33",
       section:"remote",
       body:
         "<p>Remote and hybrid arrangements are available where role responsibilities allow and with manager approval.</p>"+
@@ -584,7 +584,7 @@
         "<p>Fully remote arrangements are reviewed annually and documented in the employee’s remote work agreement.</p>"
     },
     "expense-approval": {
-      title:"Expenses & Travel — Approval Thresholds", secNo:"Expense Policy §8.4", page:"p. 58",
+      title:"Expenses & Travel - Approval Thresholds", secNo:"Expense Policy §8.4", page:"p. 58",
       section:"expenses",
       body:
         "<p>All business expenses must be reasonable, necessary, and submitted with itemized receipts through the expense system within 30 days.</p>"+
@@ -592,7 +592,7 @@
         "<p>Expenses of $5,000 or more additionally require Finance Director sign-off. Reimbursements are processed within two pay cycles of approval.</p>"
     },
     "travel-perdiem": {
-      title:"Expenses & Travel — Meal Per Diem", secNo:"Expense Policy §8.6", page:"p. 60",
+      title:"Expenses & Travel - Meal Per Diem", secNo:"Expense Policy §8.6", page:"p. 60",
       section:"expenses",
       body:
         "<p>When traveling on business overnight, employees may claim meals under the standard per-diem schedule in lieu of itemized meal receipts.</p>"+
@@ -616,7 +616,7 @@
         "<p>“Immediate family” includes a spouse or domestic partner, child, parent, sibling, grandparent, or grandchild. Additional unpaid time may be arranged with your manager.</p>"
     },
     "benefits-401k": {
-      title:"Benefits — 401(k) Match", secNo:"Benefits §10.3", page:"p. 71",
+      title:"Benefits - 401(k) Match", secNo:"Benefits §10.3", page:"p. 71",
       section:"benefits",
       body:
         "<p>Eligible employees may contribute to the Company 401(k) plan beginning on their first day of employment.</p>"+
@@ -624,7 +624,7 @@
         "<p>Annual contribution limits follow IRS guidelines. Plan details are available in the benefits portal.</p>"
     },
     "benefits-medical": {
-      title:"Benefits — Medical Coverage", secNo:"Benefits §10.1", page:"p. 69",
+      title:"Benefits - Medical Coverage", secNo:"Benefits §10.1", page:"p. 69",
       section:"benefits",
       body:
         "<p>NewWesVentures offers medical, dental, and vision coverage to full-time employees and their eligible dependents.</p>"+
@@ -656,7 +656,7 @@
       tokens:[
         "You can carry over up to ",
         {b:"40 hours (5 days)"},
-        " of unused PTO into the next calendar year — anything above that as of December 31 is forfeited and isn’t paid out ",
+        " of unused PTO into the next calendar year - anything above that as of December 31 is forfeited and isn’t paid out ",
         {cite:"pto-rollover", label:"PTO Policy §4.2"},
         ". Carried-over hours must be used by ",
         {b:"March 31"},
@@ -685,7 +685,7 @@
       tokens:[
         "NewWesVentures offers ",
         {b:"16 weeks of fully paid parental leave"},
-        " to all new parents — birth, adoption, or foster — regardless of gender or caregiver role ",
+        " to all new parents - birth, adoption, or foster - regardless of gender or caregiver role ",
         {cite:"parental", label:"Parental Leave §6.1"},
         ". You’re eligible after ",
         {b:"6 months"},
@@ -701,7 +701,7 @@
       tokens:[
         "The remote work stipend is ",
         {b:"$75 per month"},
-        " for internet and home-office costs — applied automatically to your paycheck with no receipts needed ",
+        " for internet and home-office costs - applied automatically to your paycheck with no receipts needed ",
         {cite:"remote-stipend", label:"Remote Work §5.3"},
         ". New remote hires also get a one-time ",
         {b:"$500 equipment allowance"},
@@ -717,7 +717,7 @@
       tokens:[
         "Hybrid employees are expected on-site ",
         {b:"at least 2 days per week"},
-        " — typically Tuesday and Thursday — to support collaboration ",
+        " - typically Tuesday and Thursday - to support collaboration ",
         {cite:"remote-eligibility", label:"Remote Work §5.1"},
         ". Fully remote arrangements are reviewed annually and documented in your remote work agreement ",
         {cite:"remote-eligibility", label:"Remote Work §5.1"},
@@ -747,7 +747,7 @@
       tokens:[
         "The domestic meal per diem is ",
         {b:"$65 per full travel day"},
-        " — split as $15 breakfast, $20 lunch, and $30 dinner ",
+        " - split as $15 breakfast, $20 lunch, and $30 dinner ",
         {cite:"travel-perdiem", label:"Expense Policy §8.6"},
         ". International travel follows the city-specific rates in the travel portal ",
         {cite:"travel-perdiem", label:"Expense Policy §8.6"},
@@ -837,7 +837,7 @@
 
   // passage for conduct (added here to keep PASSAGES block tidy)
   PASSAGES["conduct"] = {
-    title:"Code of Conduct — Reporting & Non-Retaliation", secNo:"Code of Conduct §11.5", page:"p. 81",
+    title:"Code of Conduct - Reporting & Non-Retaliation", secNo:"Code of Conduct §11.5", page:"p. 81",
     section:"conduct",
     body:
       "<p>Every employee shares responsibility for upholding the Company’s standards of ethical conduct.</p>"+
@@ -1009,7 +1009,7 @@
           setTimeout(step, 42);
         }
       } else if(tok.b){
-        // bold phrase — reveal whole (it's a single emphasized value)
+        // bold phrase - reveal whole (it's a single emphasized value)
         html += '<strong>'+esc(tok.b)+'</strong>';
         ti++; ci=0; render(); setTimeout(step, 60);
       } else if(tok.cite){
@@ -1027,7 +1027,7 @@
 
   /* ---------- no-match answer ---------- */
   function streamNoMatch(bubble, text, done){
-    var line = "I couldn’t find that in the Employee Handbook, so I won’t guess — I can route this to People Services instead.";
+    var line = "I couldn’t find that in the Employee Handbook, so I won’t guess - I can route this to People Services instead.";
     var i = 0;
     bubble.classList.add("nomatch");
     var head = '<div class="nomatch-head"><svg viewBox="0 0 24 24" fill="none"><path d="M12 8.5v4.5M12 16h.01" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M12 3.5l8.5 15a1 1 0 0 1-.87 1.5H4.37a1 1 0 0 1-.87-1.5l8.5-15a1 1 0 0 1 1.74 0z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>No handbook match</div>';
@@ -1046,7 +1046,7 @@
           btn.disabled = true;
           btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none"><path d="M5 12l4 4 10-11" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>Routed to People Services';
           var note = el("div","routed-note");
-          note.innerHTML = '<svg viewBox="0 0 24 24" fill="none"><path d="M5 12l4 4 10-11" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>Ticket <strong>&nbsp;#PS-4821&nbsp;</strong> created — a People Services specialist will follow up by email.';
+          note.innerHTML = '<svg viewBox="0 0 24 24" fill="none"><path d="M5 12l4 4 10-11" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>Ticket <strong>&nbsp;#PS-4821&nbsp;</strong> created - a People Services specialist will follow up by email.';
           bubble.appendChild(note);
           scrollDown();
         });
@@ -1169,8 +1169,8 @@
     m.innerHTML = '<div class="who" aria-hidden="true">'+
       '<svg viewBox="0 0 24 24" fill="none" width="16" height="16"><path d="M12 3l1.6 4.2L18 8.5l-3.4 2.8L15.4 16 12 13.6 8.6 16l.8-4.7L6 8.5l4.4-1.3L12 3z" fill="#fff"/></svg>'+
       '</div><div class="bubble">'+
-        '<p><strong>Hi Wes 👋 — I’m your Policy &amp; Handbook Copilot.</strong></p>'+
-        '<p>Ask me anything about company policy and I’ll answer <strong>only from the Employee Handbook</strong>, with a citation you can open and verify. If it’s not in the handbook, I’ll tell you — I won’t guess.</p>'+
+        '<p><strong>Hi Wes 👋 - I’m your Policy &amp; Handbook Copilot.</strong></p>'+
+        '<p>Ask me anything about company policy and I’ll answer <strong>only from the Employee Handbook</strong>, with a citation you can open and verify. If it’s not in the handbook, I’ll tell you - I won’t guess.</p>'+
         '<p style="margin-bottom:0;color:var(--muted);font-size:13px;">Try a suggested question below, click a section on the left, or type your own.</p>'+
       '</div>';
     threadInner.appendChild(m);

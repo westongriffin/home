@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Manager Copilots — NewWesVentures</title>
-<meta name="description" content="Manager copilot demo — draft JDs, reviews, PIPs, and comp messages with inclusivity and compliance guardrails. Built with AI by Wes Griffin.">
+<title>Manager Copilots - NewWesVentures</title>
+<meta name="description" content="Manager copilot demo - draft JDs, reviews, PIPs, and comp messages with inclusivity and compliance guardrails. Built with AI by Wes Griffin.">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0' stop-color='%237c3aed'/%3E%3Cstop offset='.55' stop-color='%235b4ef0'/%3E%3Cstop offset='1' stop-color='%2306b6d4'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='64' height='64' rx='16' fill='url(%23g)'/%3E%3Ctext x='32' y='44' font-size='34' text-anchor='middle' fill='white' font-family='Georgia,serif'%3E%E2%9C%A6%3C/text%3E%3C/svg%3E">
 <style>
   :root{
@@ -340,13 +340,13 @@
   /* The mobile back bar is desktop-hidden chrome; it only appears in the phone sheet. */
   .result-back{display:none;}
 
-  /* ===== Phone layer — form IS the page; the draft opens as a full-screen sheet ===== */
+  /* ===== Phone layer - form IS the page; the draft opens as a full-screen sheet ===== */
   @media (max-width:760px){
     html,body{width:100%; max-width:100%; overflow-x:hidden;}
     body{overflow-y:auto;}
     .app{width:100%; max-width:100%; height:auto; min-height:100vh; overflow-x:hidden; overflow-y:visible;}
 
-    /* App bar: two clean rows — brand + user chip, then the DEMO badge */
+    /* App bar: two clean rows - brand + user chip, then the DEMO badge */
     .topbar{
       flex-wrap:wrap; gap:8px 10px; padding:10px 14px; row-gap:8px;
       position:sticky; top:0;
@@ -545,7 +545,7 @@
           <div class="panel-h">
             <span class="ph-ic">✨</span>
             <span class="ph-t">Draft</span>
-            <span class="ph-sub" id="outMeta">—</span>
+            <span class="ph-sub" id="outMeta"></span>
           </div>
           <div class="out-toolbar">
             <button class="chip-btn" id="copyBtn" disabled>📋 Copy</button>
@@ -570,7 +570,7 @@
             <span class="ph-sub" id="guardSub">Inclusivity &amp; compliance</span>
           </div>
           <div class="guard-b" id="guardBody">
-            <div class="guard-idle">Guardrail checks run automatically every time you draft — inclusive language, plain-English reading level, and legally-cautious phrasing. Risky terms get flagged with a one-click fix.</div>
+            <div class="guard-idle">Guardrail checks run automatically every time you draft - inclusive language, plain-English reading level, and legally-cautious phrasing. Risky terms get flagged with a one-click fix.</div>
           </div>
         </div>
 
@@ -637,7 +637,7 @@
         {k:'role', label:'Role & level', type:'text', val:'Data Analyst · L4'},
         {k:'period', label:'Review period', type:'select', val:'H1 2026', opts:['H1 2026','H2 2025','Q2 2026','Annual 2025']},
         {k:'bullets', label:'Highlights, impact & growth areas', type:'textarea', tall:true,
-          val:"Led the churn-model refresh — cut false positives by 22%\nBecame the go-to partner for the Lifecycle squad\nGrowth: delegate more so she isn't the single point of failure\nNext: present findings to senior leadership to build visibility"}
+          val:"Led the churn-model refresh - cut false positives by 22%\nBecame the go-to partner for the Lifecycle squad\nGrowth: delegate more so she isn't the single point of failure\nNext: present findings to senior leadership to build visibility"}
       ],
       tone:'warm'
     },
@@ -682,7 +682,7 @@
   /* ---------------- Guardrail rules ---------------- */
   // Each rule: regex (word-boundary, case-insensitive), the flagged display term, why, neutral replacement, and a category.
   var RULES = [
-    {re:/\byoung\b/i,            term:'young',                 why:'Implies an age preference — can read as age discrimination (protected by the ADEA).', fix:'motivated', drop:false},
+    {re:/\byoung\b/i,            term:'young',                 why:'Implies an age preference - can read as age discrimination (protected by the ADEA).', fix:'motivated', drop:false},
     {re:/\benergetic\b/i,       term:'energetic',             why:'Often a coded age signal. Describe the behavior you actually want instead.',          fix:'proactive', drop:false},
     {re:/\bnative english speaker\b/i, term:'native English speaker', why:'Screens by national origin rather than skill. Ask for the proficiency the job needs.', fix:'strong written & verbal English', drop:false},
     {re:/\b(?:great\s+)?culture fit\b/i, term:'culture fit',  why:'Vague and prone to bias. Point to concrete values or ways of working.',                 fix:'strong alignment with how the team collaborates', drop:false},
@@ -781,7 +781,7 @@
     // tone selector
     var tf = el('div','field');
     var lbl = el('label'); lbl.appendChild(document.createTextNode('Tone'));
-    var hint = el('span','hint','— shapes voice & length'); lbl.appendChild(hint);
+    var hint = el('span','hint',' - shapes voice & length'); lbl.appendChild(hint);
     tf.appendChild(lbl);
     var seg = el('div','seg');
     TONES.forEach(function(tn){
@@ -816,7 +816,7 @@
     if(f.type==='select'){
       var w2 = el('div', null); // when used inside row2 it's a cell; class 'field' applied by caller context
       w2.className = 'field';
-      // but if caller put it in a row2, we still want margin handled — keep .field; the row2 grid spacing dominates
+      // but if caller put it in a row2, we still want margin handled - keep .field; the row2 grid spacing dominates
       var l2 = el('label'); l2.textContent = f.label; w2.appendChild(l2);
       var sel = el('select','sel');
       f.opts.forEach(function(o){
@@ -846,7 +846,7 @@
 
   // Tone-aware connective phrases
   function toneGreeting(name, tone){
-    if(tone==='warm') return 'Hi '+name+' — I wanted to take a moment to share where things stand.';
+    if(tone==='warm') return 'Hi '+name+' - I wanted to take a moment to share where things stand.';
     if(tone==='direct') return name+', here’s a clear summary of where we are.';
     return 'Dear '+name+',';
   }
@@ -887,9 +887,9 @@
       parts.push({type:'ul', items: bl.length?bl:['Delivered measurable impact for the team','Raised the bar for those around them']});
       var rc = tone==='direct'
         ? 'Net: a clearly strong cycle. Let’s lock the next set of goals together in our 1:1.'
-        : 'Thank you for the care and consistency you brought this cycle. Let’s build on it together — I’m here to support what comes next.';
+        : 'Thank you for the care and consistency you brought this cycle. Let’s build on it together - I’m here to support what comes next.';
       parts.push({type:'p', text:rc});
-      parts.push({type:'sig', text:'— Wes'});
+      parts.push({type:'sig', text:' - Wes'});
       return parts;
     }
 
@@ -901,7 +901,7 @@
       parts.push({type:'ul', items: bl.length?bl:['Went above and beyond for the team']});
       var rcl = tone==='direct'
         ? 'This is exactly the standard we’re aiming for. Thank you, '+(v.name||'')+'.'
-        : 'Moments like this are what make this team special. Thank you, '+(v.name||'')+' — we see you and we appreciate you.';
+        : 'Moments like this are what make this team special. Thank you, '+(v.name||'')+' - we see you and we appreciate you.';
       parts.push({type:'p', text:rcl});
       return parts;
     }
@@ -910,13 +910,13 @@
       parts.push({type:'h', text:'Performance Improvement Plan · '+(v.name||'')});
       parts.push({type:'p', text:'Role: '+(v.role||'') + '  ·  Duration: '+(v.duration||'')+'  ·  Manager: Wes Griffin', lede:true});
       var pi = tone==='warm'
-        ? 'I’m sharing this plan because I’m invested in your success here. The goal isn’t to penalize — it’s to get clear, together, on what good looks like and how I’ll support you in getting there.'
+        ? 'I’m sharing this plan because I’m invested in your success here. The goal isn’t to penalize - it’s to get clear, together, on what good looks like and how I’ll support you in getting there.'
         : 'The purpose of this plan is to clearly define the performance expectations for your role, the support available to you, and how we’ll measure progress over the next '+(v.duration||'period')+'.';
       parts.push({type:'p', text:pi});
       parts.push({type:'p', text:'Specifics'});
       parts.push({type:'ul', items: bl.length?bl:['Clear, measurable expectations for the role','Defined support and a regular check-in cadence']});
       parts.push({type:'p', text:'We’ll meet on a regular cadence to review progress in good faith. This plan is a supportive, two-way process, and successful completion returns you to standard performance management. Please reach out any time with questions.'});
-      parts.push({type:'sig', text:'— Wes Griffin, Manager'});
+      parts.push({type:'sig', text:' - Wes Griffin, Manager'});
       return parts;
     }
 
@@ -929,9 +929,9 @@
       parts.push({type:'ul', items: bl.length?bl:['Recognizes your impact and contributions','Reflects current market data for your role']});
       var cc = tone==='formal'
         ? 'This adjustment reflects our assessment of your contributions and the relevant market. Please reach out to me or your People partner with any questions.'
-        : 'This is well earned, and it’s only part of the picture — I’m glad to talk through any of it whenever you like. Congratulations.';
+        : 'This is well earned, and it’s only part of the picture - I’m glad to talk through any of it whenever you like. Congratulations.';
       parts.push({type:'p', text:cc});
-      parts.push({type:'sig', text:'— Wes'});
+      parts.push({type:'sig', text:' - Wes'});
       return parts;
     }
 
@@ -970,7 +970,7 @@
     $('outDoc').style.display='none';
     $('outDoc').innerHTML='';
     $('outEmpty').style.display='flex';
-    $('outMeta').textContent='—';
+    $('outMeta').textContent=' - ';
     setToolbar(false);
   }
   function setToolbar(on){
@@ -1043,7 +1043,7 @@
 
   function resetGuards(){
     var b=$('guardBody'); b.innerHTML='';
-    var idle = el('div','guard-idle','Guardrail checks run automatically every time you draft — inclusive language, plain-English reading level, and legally-cautious phrasing. Risky terms get flagged with a one-click fix.');
+    var idle = el('div','guard-idle','Guardrail checks run automatically every time you draft - inclusive language, plain-English reading level, and legally-cautious phrasing. Risky terms get flagged with a one-click fix.');
     b.appendChild(idle);
     $('guardSub').textContent='Inclusivity & compliance';
   }
@@ -1116,7 +1116,7 @@
       $('guardSub').textContent='All clear';
       var clean = el('div','guard-all-clear');
       clean.appendChild(el('span',null,'✓'));
-      clean.appendChild(el('span',null,'No risky language detected — this draft is good to send.'));
+      clean.appendChild(el('span',null,'No risky language detected - this draft is good to send.'));
       b.appendChild(clean);
       return;
     }
@@ -1311,7 +1311,7 @@
     return t?t.label:id;
   }
 
-  // "shorter" — trims bullet list to top items + flips intro shorter feel by toggling tone toward direct
+  // "shorter" - trims bullet list to top items + flips intro shorter feel by toggling tone toward direct
   function applyShorter(){
     var v = workingValues[state.tpl];
     if(typeof v.bullets==='string'){
@@ -1349,7 +1349,7 @@
     }catch(e){ return false; }
   }
   function insertDraft(){
-    // Simulated "insert into HRIS" — give clear, tasteful feedback
+    // Simulated "insert into HRIS" - give clear, tasteful feedback
     var doc=$('outDoc');
     doc.style.transition='box-shadow .2s, background .2s';
     doc.style.boxShadow='inset 0 0 0 2px rgba(16,185,129,.5)';
@@ -1357,7 +1357,7 @@
     later(function(){ doc.style.boxShadow=''; doc.style.background=''; }, 700);
     var unresolved = state.flags.filter(function(f){return !f.fixed;}).length;
     if(unresolved>0){
-      toast('Inserted to Workday draft — '+unresolved+' guardrail note'+(unresolved>1?'s':'')+' still open');
+      toast('Inserted to Workday draft - '+unresolved+' guardrail note'+(unresolved>1?'s':'')+' still open');
     } else {
       toast('Inserted into the Workday record (draft)');
     }
@@ -1400,7 +1400,7 @@
       resetGuards();
       bind();
     }catch(e){
-      // fail soft — never throw to the page
+      // fail soft - never throw to the page
       var fb=$('formBody'); if(fb){ fb.textContent='Something went wrong initializing the demo.'; }
     }
   }

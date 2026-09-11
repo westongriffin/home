@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>Headcount Requests | NewWesVentures</title>
-<meta name="description" content="A multi-stage headcount request and approval workflow demo — submit a role, route it PBP to SMT to Admin, and track every approval. Built with AI by Wes Griffin.">
+<meta name="description" content="A multi-stage headcount request and approval workflow demo - submit a role, route it PBP to SMT to Admin, and track every approval. Built with AI by Wes Griffin.">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0' stop-color='%237c3aed'/%3E%3Cstop offset='.55' stop-color='%235b4ef0'/%3E%3Cstop offset='1' stop-color='%2306b6d4'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='64' height='64' rx='16' fill='url(%23g)'/%3E%3Ctext x='32' y='44' font-size='34' text-anchor='middle' fill='white' font-family='Georgia,serif'%3E%E2%9C%A6%3C/text%3E%3C/svg%3E">
 <!-- Google Identity Services removed for standalone demo -->
 <style>
@@ -321,7 +321,7 @@ th.sortable { cursor:pointer; user-select:none; white-space:nowrap; }
      and the first meta cell never gets a leading dot */
   .table-wrap tbody td:has(> .tag)::before{ content: none !important; margin: 0 !important; }
   .table-wrap tbody td:nth-child(3)::before{ content: none !important; margin: 0 !important; }
-  /* First cell = date/submitter — full-width muted caption above the title */
+  /* First cell = date/submitter - full-width muted caption above the title */
   .table-wrap tbody td:first-child {
     flex: 1 0 100%; display: block;
     font-size: 11.5px;
@@ -329,7 +329,7 @@ th.sortable { cursor:pointer; user-select:none; white-space:nowrap; }
     padding: 0 0 2px !important;
     font-weight: 600; letter-spacing:.02em;
   }
-  /* Second cell = title (role name) — full-width bold heading */
+  /* Second cell = title (role name) - full-width bold heading */
   .table-wrap tbody td:nth-child(2) {
     flex: 1 0 100%; display: block;
     font-size: 15px;
@@ -338,7 +338,7 @@ th.sortable { cursor:pointer; user-select:none; white-space:nowrap; }
     padding: 0 0 4px !important;
     line-height: 1.3;
   }
-  /* Bug Box — first cell is reporter (make it title-style) */
+  /* Bug Box - first cell is reporter (make it title-style) */
   #issuesTable tbody td:first-child { font-size: 13px; font-weight: 700; color: var(--black); }
   #issuesTable tbody td:nth-child(2) { font-size: 11px; font-weight: 400; color: var(--gray-dark); }
   /* Actions cell = its own full-width row at the bottom of the card */
@@ -390,7 +390,7 @@ th.sortable { cursor:pointer; user-select:none; white-space:nowrap; }
 }
 
 /* ════════════════════════════════════════════════════════════════════
-   PHONE-FIRST RESPONSIVE LAYER (appended — colors/layout only)
+   PHONE-FIRST RESPONSIVE LAYER (appended - colors/layout only)
    Targets 360–430px hard; ≤760px tablet-to-phone. Desktop ≥820px untouched.
    ════════════════════════════════════════════════════════════════════ */
 
@@ -439,7 +439,7 @@ th.sortable { cursor:pointer; user-select:none; white-space:nowrap; }
   body.hcq-bar-on{ padding-bottom:calc(100px + env(safe-area-inset-bottom)); }
 
   /* ── Request-type toggle: clean side-by-side segmented control ──
-     (!important needed — desktop .hcq-type rules are defined later in source) */
+     (!important needed - desktop .hcq-type rules are defined later in source) */
   .hcq-type{ display:flex !important; width:100%; flex-wrap:nowrap !important; gap:0 !important;
     background:#f1f1f4 !important; border-radius:14px !important; padding:4px !important; margin:0 0 20px !important; }
   .hcq-type button{ flex:1 1 0 !important; min-width:0; min-height:46px; padding:10px 6px !important;
@@ -492,7 +492,7 @@ th.sortable { cursor:pointer; user-select:none; white-space:nowrap; }
   .hcq-bstat{ margin-left:16px !important; margin-right:16px !important; }
   .hcq-submit{ min-height:50px; font-size:16px !important; margin:14px 16px 0 !important; width:calc(100% - 32px) !important; }
   .hcq-clear{ min-height:44px; }
-  /* Hide the in-card progress row on mobile — the peek bar represents it */
+  /* Hide the in-card progress row on mobile - the peek bar represents it */
   .hcq-prog{ display:none !important; }
 
   /* 16px+ inputs kill iOS auto-zoom; comfortable touch targets */
@@ -611,7 +611,7 @@ th.sortable { cursor:pointer; user-select:none; white-space:nowrap; }
 }
 </style>
 <script>
-/* DEMO BUILD — standalone Headcount Requests (Management Portal). No Google sign-in, no backend. */
+/* DEMO BUILD - standalone Headcount Requests (Management Portal). No Google sign-in, no backend. */
 (function(){
   var DEMO_USER = { name:'Wes Griffin', email:'wes.griffin@newwesventures.com' };
   try {
@@ -673,20 +673,20 @@ th.sortable { cursor:pointer; user-select:none; white-space:nowrap; }
       ['20101 Finance & Strategy','Priya Anand','Jordan Pike','']
     ],
     requests: [
-      REQ({id:'REQ-1716200000001',reqName:'Wes Griffin',reqEmail:'wes.griffin@newwesventures.com',type:'EE',title:'Senior Product Manager, Apps',cc:'40402 Engineering: Apps',smt:'Adrian Vance',pbp:'Naomi Brooks',location:'US — San Francisco',level:'M4',justification:'Own the mobile apps roadmap for FY26 growth bets.',status:'Pending SMT',pbpAction:'Approved',pbpBy:'Naomi Brooks',pbpDate:'2026-05-21T16:00:00Z',jd:'https://example.com/jd/spm-apps'}),
-      REQ({id:'REQ-1716200000002',reqName:'Wes Griffin',reqEmail:'wes.griffin@newwesventures.com',type:'CW',title:'Contract Localization QA',category:'Backfill',cc:'30201 Content: Localization',smt:'Devon Hale',pbp:'Priya Anand',location:'APAC — Tokyo',justification:'Backfill departing contractor; subtitle QA coverage.',status:'Pending PBP'}),
-      REQ({id:'REQ-1716200000003',reqName:'Marco Silva',reqEmail:'marco.silva@newwesventures.com',type:'EE',title:'Growth Marketing Lead',cc:'50301 Marketing: Growth',smt:'Jordan Pike',pbp:'Dana Calloway',location:'US — Los Angeles',level:'M3',justification:'Net-new role to drive paid acquisition.',status:'Approved',pbpAction:'Approved',pbpBy:'Dana Calloway',pbpDate:'2026-05-12T16:00:00Z',smtAction:'Approved',smtBy:'Jordan Pike',smtDate:'2026-05-13T16:00:00Z',adminStatus:'Approved',compStatus:'Compensation Done'}),
-      REQ({id:'REQ-1716200000004',reqName:'Aisha Khan',reqEmail:'aisha.khan@newwesventures.com',type:'EE',title:'Data Analyst, Finance',cc:'20101 Finance & Strategy',smt:'Jordan Pike',pbp:'Priya Anand',location:'EMEA — London',level:'P3',justification:'Support FP&A reporting automation.',status:'Pending SMT',pbpAction:'Approved',pbpBy:'Priya Anand',pbpDate:'2026-05-19T16:00:00Z'}),
-      REQ({id:'REQ-1716200000005',reqName:'Leo Martinez',reqEmail:'leo.martinez@newwesventures.com',type:'EE',title:'Platform Engineer II',cc:'40401 Engineering: Platform',smt:'Adrian Vance',pbp:'Naomi Brooks',location:'US — Los Angeles',level:'P2',justification:'Scale streaming infra for new regions.',status:'Rejected',pbpAction:'Rejected',pbpBy:'Naomi Brooks',pbpDate:'2026-05-15T16:00:00Z'}),
-      REQ({id:'REQ-1716200000006',reqName:'Grace Liu',reqEmail:'grace.liu@newwesventures.com',type:'EE',title:'UX Designer',cc:'40402 Engineering: Apps',smt:'Adrian Vance',pbp:'Naomi Brooks',location:'US — San Francisco',level:'P3',justification:'Design system + apps redesign.',status:'With Compensation',pbpAction:'Approved',pbpBy:'Naomi Brooks',pbpDate:'2026-05-10T16:00:00Z',smtAction:'Approved',smtBy:'Adrian Vance',smtDate:'2026-05-11T16:00:00Z',adminStatus:'With Compensation',compStatus:'Comp In Progress'}),
-      REQ({id:'REQ-1716200000007',reqName:'Omar Haddad',reqEmail:'omar.haddad@newwesventures.com',type:'CW',title:'Freelance Motion Designer',cc:'50301 Marketing: Growth',smt:'Jordan Pike',pbp:'Dana Calloway',location:'Remote — US',end:'2026-12-31',justification:'Campaign assets for the fall slate.',status:'Pending PBP'}),
-      REQ({id:'REQ-1716200000008',reqName:'Dana Lee',reqEmail:'dana.lee@newwesventures.com',type:'EE',title:'Localization Program Manager',category:'Backfill',cc:'30201 Content: Localization',smt:'Devon Hale',pbp:'Priya Anand',location:'APAC — Tokyo',level:'M3',justification:'Backfill PM who relocated internally.',status:'Cancelled'})
+      REQ({id:'REQ-1716200000001',reqName:'Wes Griffin',reqEmail:'wes.griffin@newwesventures.com',type:'EE',title:'Senior Product Manager, Apps',cc:'40402 Engineering: Apps',smt:'Adrian Vance',pbp:'Naomi Brooks',location:'US - San Francisco',level:'M4',justification:'Own the mobile apps roadmap for FY26 growth bets.',status:'Pending SMT',pbpAction:'Approved',pbpBy:'Naomi Brooks',pbpDate:'2026-05-21T16:00:00Z',jd:'https://example.com/jd/spm-apps'}),
+      REQ({id:'REQ-1716200000002',reqName:'Wes Griffin',reqEmail:'wes.griffin@newwesventures.com',type:'CW',title:'Contract Localization QA',category:'Backfill',cc:'30201 Content: Localization',smt:'Devon Hale',pbp:'Priya Anand',location:'APAC - Tokyo',justification:'Backfill departing contractor; subtitle QA coverage.',status:'Pending PBP'}),
+      REQ({id:'REQ-1716200000003',reqName:'Marco Silva',reqEmail:'marco.silva@newwesventures.com',type:'EE',title:'Growth Marketing Lead',cc:'50301 Marketing: Growth',smt:'Jordan Pike',pbp:'Dana Calloway',location:'US - Los Angeles',level:'M3',justification:'Net-new role to drive paid acquisition.',status:'Approved',pbpAction:'Approved',pbpBy:'Dana Calloway',pbpDate:'2026-05-12T16:00:00Z',smtAction:'Approved',smtBy:'Jordan Pike',smtDate:'2026-05-13T16:00:00Z',adminStatus:'Approved',compStatus:'Compensation Done'}),
+      REQ({id:'REQ-1716200000004',reqName:'Aisha Khan',reqEmail:'aisha.khan@newwesventures.com',type:'EE',title:'Data Analyst, Finance',cc:'20101 Finance & Strategy',smt:'Jordan Pike',pbp:'Priya Anand',location:'EMEA - London',level:'P3',justification:'Support FP&A reporting automation.',status:'Pending SMT',pbpAction:'Approved',pbpBy:'Priya Anand',pbpDate:'2026-05-19T16:00:00Z'}),
+      REQ({id:'REQ-1716200000005',reqName:'Leo Martinez',reqEmail:'leo.martinez@newwesventures.com',type:'EE',title:'Platform Engineer II',cc:'40401 Engineering: Platform',smt:'Adrian Vance',pbp:'Naomi Brooks',location:'US - Los Angeles',level:'P2',justification:'Scale streaming infra for new regions.',status:'Rejected',pbpAction:'Rejected',pbpBy:'Naomi Brooks',pbpDate:'2026-05-15T16:00:00Z'}),
+      REQ({id:'REQ-1716200000006',reqName:'Grace Liu',reqEmail:'grace.liu@newwesventures.com',type:'EE',title:'UX Designer',cc:'40402 Engineering: Apps',smt:'Adrian Vance',pbp:'Naomi Brooks',location:'US - San Francisco',level:'P3',justification:'Design system + apps redesign.',status:'With Compensation',pbpAction:'Approved',pbpBy:'Naomi Brooks',pbpDate:'2026-05-10T16:00:00Z',smtAction:'Approved',smtBy:'Adrian Vance',smtDate:'2026-05-11T16:00:00Z',adminStatus:'With Compensation',compStatus:'Comp In Progress'}),
+      REQ({id:'REQ-1716200000007',reqName:'Omar Haddad',reqEmail:'omar.haddad@newwesventures.com',type:'CW',title:'Freelance Motion Designer',cc:'50301 Marketing: Growth',smt:'Jordan Pike',pbp:'Dana Calloway',location:'Remote - US',end:'2026-12-31',justification:'Campaign assets for the fall slate.',status:'Pending PBP'}),
+      REQ({id:'REQ-1716200000008',reqName:'Dana Lee',reqEmail:'dana.lee@newwesventures.com',type:'EE',title:'Localization Program Manager',category:'Backfill',cc:'30201 Content: Localization',smt:'Devon Hale',pbp:'Priya Anand',location:'APAC - Tokyo',level:'M3',justification:'Backfill PM who relocated internally.',status:'Cancelled'})
     ]
   };
 })();
 </script>
 <script>
-// Inline session helpers — must be available before nav.js loads
+// Inline session helpers - must be available before nav.js loads
 (function() {
   var KEY_USER  = 'cr_user';
   var KEY_TOKEN = 'cr_token';
@@ -700,7 +700,7 @@ th.sortable { cursor:pointer; user-select:none; white-space:nowrap; }
 <body>
 <script>
 document.addEventListener("DOMContentLoaded", function() {
-  // Simple session check — nav.js defines crGetUser/crGetToken/crTokenValid
+  // Simple session check - nav.js defines crGetUser/crGetToken/crTokenValid
   // sessionStorage was set by index.html on successful login
   var user = (typeof crGetUser === 'function') ? crGetUser() : null;
   if (!user) {
@@ -711,7 +711,7 @@ document.addEventListener("DOMContentLoaded", function() {
   var tokenOk  = tokenExp > Date.now() + 60000;
 
   if (user && tokenOk) {
-    // Valid session — initialise app immediately
+    // Valid session - initialise app immediately
     realUser  = user;
     userToken = sessionStorage.getItem('cr_token');
     crInjectNav('requests');
@@ -722,10 +722,10 @@ document.addEventListener("DOMContentLoaded", function() {
     showScreen('loading', 'Loading data…');
     initApp().catch(function(e) {
       showScreen('auth');
-      toast('Session error — please sign in again: ' + e.message, 'error');
+      toast('Session error - please sign in again: ' + e.message, 'error');
     });
   } else {
-    // No valid session — show sign-in (window.onload will render Google button)
+    // No valid session - show sign-in (window.onload will render Google button)
     showScreen('auth');
   }
 });
@@ -767,7 +767,7 @@ document.addEventListener("DOMContentLoaded", function() {
       </p>
       <div class="form-group">
         <label for="adminCommentText">Comment <span class="req">*</span></label>
-        <textarea id="adminCommentText" placeholder="e.g. Sent to recruiting team — req posted in Greenhouse…" style="min-height:100px"></textarea>
+        <textarea id="adminCommentText" placeholder="e.g. Sent to recruiting team - req posted in Greenhouse…" style="min-height:100px"></textarea>
         <span id="adminCommentErr" style="font-size:11px;color:var(--red);display:none">A comment is required to proceed.</span>
       </div>
       <div class="btn-row" style="margin-top:16px">
@@ -874,7 +874,7 @@ document.addEventListener("DOMContentLoaded", function() {
     .hcq-type button.active{background:#7c3aed;color:#fff}
   </style>
   <div class="page-title"><h2>New Headcount Request</h2><p>Submit a request for a new employee or contingent worker hire.</p></div>
-  <div id="draftBanner" style="display:none;max-width:1140px;margin:0 auto">📝 Draft restored — <button onclick="clearDraft()">Clear draft</button></div>
+  <div id="draftBanner" style="display:none;max-width:1140px;margin:0 auto">📝 Draft restored<button onclick="clearDraft()">Clear draft</button></div>
   <form id="requestForm" onsubmit="submitRequest(event)" oninput="hcqSync()" onchange="hcqSync()">
     <div class="hcq-wrap">
       <div class="hcq-card">
@@ -930,17 +930,17 @@ document.addEventListener("DOMContentLoaded", function() {
         <div class="role empty" id="sum-role">Untitled role</div>
         <div><span class="hcq-tag" id="sum-tag">Employee · FTE</span></div>
         <div class="hcq-grp">
-          <div class="hcq-srow"><span class="k">Cost center</span><span class="v empty" id="sum-cc">—</span></div>
-          <div class="hcq-srow"><span class="k">SMT</span><span class="v empty" id="sum-smt">—</span></div>
-          <div class="hcq-srow"><span class="k">PBP</span><span class="v empty" id="sum-pbp">—</span></div>
+          <div class="hcq-srow"><span class="k">Cost center</span><span class="v empty" id="sum-cc"></span></div>
+          <div class="hcq-srow"><span class="k">SMT</span><span class="v empty" id="sum-smt"></span></div>
+          <div class="hcq-srow"><span class="k">PBP</span><span class="v empty" id="sum-pbp"></span></div>
         </div>
         <div class="hcq-grp">
-          <div class="hcq-srow"><span class="k">Location</span><span class="v empty" id="sum-loc">—</span></div>
-          <div class="hcq-srow"><span class="k">Start date</span><span class="v empty" id="sum-start">—</span></div>
+          <div class="hcq-srow"><span class="k">Location</span><span class="v empty" id="sum-loc"></span></div>
+          <div class="hcq-srow"><span class="k">Start date</span><span class="v empty" id="sum-start"></span></div>
         </div>
         <div class="hcq-grp">
-          <div class="hcq-srow"><span class="k">Justification</span><span class="v empty" id="sum-just">—</span></div>
-          <div class="hcq-srow"><span class="k">JD link</span><span class="v empty" id="sum-jd">—</span></div>
+          <div class="hcq-srow"><span class="k">Justification</span><span class="v empty" id="sum-just"></span></div>
+          <div class="hcq-srow"><span class="k">JD link</span><span class="v empty" id="sum-jd"></span></div>
         </div>
         <div class="hcq-bstat" id="sum-budget"><span>✕</span> Budget not yet confirmed</div>
         <button type="submit" class="hcq-submit" id="submitBtn" disabled>Submit Request →</button>
@@ -953,7 +953,7 @@ document.addEventListener("DOMContentLoaded", function() {
     window.hcqSync = function(){
       var g=function(id){return document.getElementById(id);};
       var v=function(id){var e=g(id);return e?(e.value||'').trim():'';};
-      function set(id,val){var e=g(id);if(!e)return;e.textContent=val||'—';e.classList.toggle('empty',!val);}
+      function set(id,val){var e=g(id);if(!e)return;e.textContent=val||' - ';e.classList.toggle('empty',!val);}
       var title=v('f-title');
       var rEl=g('sum-role'); if(rEl){rEl.textContent=title||'Untitled role';rEl.classList.toggle('empty',!title);}
       var isCW=g('typeCW')&&g('typeCW').classList.contains('active');
@@ -997,11 +997,11 @@ document.addEventListener("DOMContentLoaded", function() {
 <div class="view" id="view-my">
   <div class="page-title"><h2>My Requests</h2><p>All requests you have submitted</p></div>
   <div class="kpi-row" style="grid-template-columns:repeat(5,1fr)">
-    <div class="kpi" style="cursor:pointer" onclick="filterMyReqs('')"><div class="kpi-label">Total</div><div class="kpi-value" id="my-total">—</div></div>
-    <div class="kpi amber" style="cursor:pointer" onclick="filterMyReqs('pending')"><div class="kpi-label">Pending</div><div class="kpi-value" id="my-pending">—</div></div>
-    <div class="kpi green" style="cursor:pointer" onclick="filterMyReqs('approved')"><div class="kpi-label">Approved</div><div class="kpi-value" id="my-approved">—</div></div>
-    <div class="kpi red" style="cursor:pointer" onclick="filterMyReqs('rejected')"><div class="kpi-label">Rejected</div><div class="kpi-value" id="my-rejected">—</div></div>
-    <div class="kpi" style="cursor:pointer;border-top:3px solid #666" onclick="filterMyReqs('cancelled')"><div class="kpi-label">Cancelled</div><div class="kpi-value" id="my-cancelled">—</div></div>
+    <div class="kpi" style="cursor:pointer" onclick="filterMyReqs('')"><div class="kpi-label">Total</div><div class="kpi-value" id="my-total"></div></div>
+    <div class="kpi amber" style="cursor:pointer" onclick="filterMyReqs('pending')"><div class="kpi-label">Pending</div><div class="kpi-value" id="my-pending"></div></div>
+    <div class="kpi green" style="cursor:pointer" onclick="filterMyReqs('approved')"><div class="kpi-label">Approved</div><div class="kpi-value" id="my-approved"></div></div>
+    <div class="kpi red" style="cursor:pointer" onclick="filterMyReqs('rejected')"><div class="kpi-label">Rejected</div><div class="kpi-value" id="my-rejected"></div></div>
+    <div class="kpi" style="cursor:pointer;border-top:3px solid #666" onclick="filterMyReqs('cancelled')"><div class="kpi-label">Cancelled</div><div class="kpi-value" id="my-cancelled"></div></div>
   </div>
   <div class="filter-row" id="myFilterRow" style="display:none">
     <select id="myStatusF" onchange="renderMyRequests()">
@@ -1027,9 +1027,9 @@ document.addEventListener("DOMContentLoaded", function() {
 <div class="view" id="view-review">
   <div class="page-title"><h2>Approvals Queue</h2><p>Requests awaiting your review</p></div>
   <div class="kpi-row kpi-row-3">
-    <div class="kpi amber" style="cursor:pointer" onclick="filterReview('pending')"><div class="kpi-label">Awaiting Action</div><div class="kpi-value" id="rev-pending">—</div></div>
-    <div class="kpi green" style="cursor:pointer" onclick="filterReview('my-approved')"><div class="kpi-label">Approved by You</div><div class="kpi-value" id="rev-approved">—</div></div>
-    <div class="kpi red" style="cursor:pointer" onclick="filterReview('my-rejected')"><div class="kpi-label">Rejected by You</div><div class="kpi-value" id="rev-rejected">—</div></div>
+    <div class="kpi amber" style="cursor:pointer" onclick="filterReview('pending')"><div class="kpi-label">Awaiting Action</div><div class="kpi-value" id="rev-pending"></div></div>
+    <div class="kpi green" style="cursor:pointer" onclick="filterReview('my-approved')"><div class="kpi-label">Approved by You</div><div class="kpi-value" id="rev-approved"></div></div>
+    <div class="kpi red" style="cursor:pointer" onclick="filterReview('my-rejected')"><div class="kpi-label">Rejected by You</div><div class="kpi-value" id="rev-rejected"></div></div>
   </div>
   <div class="filter-row">
     <select id="revTypeF" onchange="renderReviewTable()"><option value="">All Types</option><option value="EE">Employee</option><option value="CW">Contingent</option></select>
@@ -1055,9 +1055,9 @@ document.addEventListener("DOMContentLoaded", function() {
 <div class="view" id="view-comp">
   <div class="page-title"><h2>Compensation Queue</h2><p>Approved requests sent to Compensation for review</p></div>
   <div class="kpi-row kpi-row-3">
-    <div class="kpi amber" style="cursor:pointer" onclick="filterComp('with-compensation')"><div class="kpi-label">With Compensation</div><div class="kpi-value" id="comp-with">—</div><div class="kpi-sub">Sent — not yet reviewed</div></div>
-    <div class="kpi" style="cursor:pointer;border-top:3px solid var(--orange)" onclick="filterComp('in-progress')"><div class="kpi-label">In Progress</div><div class="kpi-value" id="comp-in-progress">—</div><div class="kpi-sub">Saved for later</div></div>
-    <div class="kpi green" style="cursor:pointer" onclick="filterComp('done')"><div class="kpi-label">Comp Done</div><div class="kpi-value" id="comp-done">—</div><div class="kpi-sub">Marked as complete</div></div>
+    <div class="kpi amber" style="cursor:pointer" onclick="filterComp('with-compensation')"><div class="kpi-label">With Compensation</div><div class="kpi-value" id="comp-with"></div><div class="kpi-sub">Sent - not yet reviewed</div></div>
+    <div class="kpi" style="cursor:pointer;border-top:3px solid var(--orange)" onclick="filterComp('in-progress')"><div class="kpi-label">In Progress</div><div class="kpi-value" id="comp-in-progress"></div><div class="kpi-sub">Saved for later</div></div>
+    <div class="kpi green" style="cursor:pointer" onclick="filterComp('done')"><div class="kpi-label">Comp Done</div><div class="kpi-value" id="comp-done"></div><div class="kpi-sub">Marked as complete</div></div>
   </div>
   <div class="filter-row">
     <select id="compTypeF" onchange="renderComp()"><option value="">All Types</option><option value="EE">Employee</option><option value="CW">Contingent</option></select>
@@ -1085,11 +1085,11 @@ document.addEventListener("DOMContentLoaded", function() {
 <div class="view" id="view-adminEE">
   <div class="page-title"><h2>Admin: Employee Requests</h2><p>All employee headcount requests</p></div>
   <div class="kpi-row" style="grid-template-columns:repeat(5,1fr)">
-    <div class="kpi" style="cursor:pointer" onclick="filterAdminEE('')"><div class="kpi-label">Total</div><div class="kpi-value" id="adm-ee-total">—</div></div>
-    <div class="kpi amber" style="cursor:pointer" onclick="filterAdminEE('pending')"><div class="kpi-label">Pending</div><div class="kpi-value" id="adm-ee-review">—</div></div>
-    <div class="kpi green" style="cursor:pointer" onclick="filterAdminEE('Approved')"><div class="kpi-label">Approved</div><div class="kpi-value" id="adm-ee-approved">—</div></div>
-    <div class="kpi red" style="cursor:pointer" onclick="filterAdminEE('Rejected')"><div class="kpi-label">Rejected</div><div class="kpi-value" id="adm-ee-rejected">—</div></div>
-    <div class="kpi" style="cursor:pointer;border-top:3px solid #666" onclick="filterAdminEE('Cancelled')"><div class="kpi-label">Cancelled</div><div class="kpi-value" id="adm-ee-cancelled">—</div></div>
+    <div class="kpi" style="cursor:pointer" onclick="filterAdminEE('')"><div class="kpi-label">Total</div><div class="kpi-value" id="adm-ee-total"></div></div>
+    <div class="kpi amber" style="cursor:pointer" onclick="filterAdminEE('pending')"><div class="kpi-label">Pending</div><div class="kpi-value" id="adm-ee-review"></div></div>
+    <div class="kpi green" style="cursor:pointer" onclick="filterAdminEE('Approved')"><div class="kpi-label">Approved</div><div class="kpi-value" id="adm-ee-approved"></div></div>
+    <div class="kpi red" style="cursor:pointer" onclick="filterAdminEE('Rejected')"><div class="kpi-label">Rejected</div><div class="kpi-value" id="adm-ee-rejected"></div></div>
+    <div class="kpi" style="cursor:pointer;border-top:3px solid #666" onclick="filterAdminEE('Cancelled')"><div class="kpi-label">Cancelled</div><div class="kpi-value" id="adm-ee-cancelled"></div></div>
   </div>
   <div class="filter-row">
     <input type="text" id="eeSearch" placeholder="Search…" oninput="renderAdminEE()">
@@ -1113,11 +1113,11 @@ document.addEventListener("DOMContentLoaded", function() {
 <div class="view" id="view-adminCW">
   <div class="page-title"><h2>Admin: Contingent Worker Requests</h2><p>All contingent worker requests</p></div>
   <div class="kpi-row" style="grid-template-columns:repeat(5,1fr)">
-    <div class="kpi" style="cursor:pointer" onclick="filterAdminCW('')"><div class="kpi-label">Total</div><div class="kpi-value" id="adm-cw-total">—</div></div>
-    <div class="kpi amber" style="cursor:pointer" onclick="filterAdminCW('pending')"><div class="kpi-label">Pending</div><div class="kpi-value" id="adm-cw-review">—</div></div>
-    <div class="kpi green" style="cursor:pointer" onclick="filterAdminCW('Approved')"><div class="kpi-label">Approved</div><div class="kpi-value" id="adm-cw-approved">—</div></div>
-    <div class="kpi red" style="cursor:pointer" onclick="filterAdminCW('Rejected')"><div class="kpi-label">Rejected</div><div class="kpi-value" id="adm-cw-rejected">—</div></div>
-    <div class="kpi" style="cursor:pointer;border-top:3px solid #666" onclick="filterAdminCW('Cancelled')"><div class="kpi-label">Cancelled</div><div class="kpi-value" id="adm-cw-cancelled">—</div></div>
+    <div class="kpi" style="cursor:pointer" onclick="filterAdminCW('')"><div class="kpi-label">Total</div><div class="kpi-value" id="adm-cw-total"></div></div>
+    <div class="kpi amber" style="cursor:pointer" onclick="filterAdminCW('pending')"><div class="kpi-label">Pending</div><div class="kpi-value" id="adm-cw-review"></div></div>
+    <div class="kpi green" style="cursor:pointer" onclick="filterAdminCW('Approved')"><div class="kpi-label">Approved</div><div class="kpi-value" id="adm-cw-approved"></div></div>
+    <div class="kpi red" style="cursor:pointer" onclick="filterAdminCW('Rejected')"><div class="kpi-label">Rejected</div><div class="kpi-value" id="adm-cw-rejected"></div></div>
+    <div class="kpi" style="cursor:pointer;border-top:3px solid #666" onclick="filterAdminCW('Cancelled')"><div class="kpi-label">Cancelled</div><div class="kpi-value" id="adm-cw-cancelled"></div></div>
   </div>
   <div class="filter-row">
     <input type="text" id="cwSearch" placeholder="Search…" oninput="renderAdminCW()">
@@ -1160,7 +1160,7 @@ document.addEventListener("DOMContentLoaded", function() {
     <button class="btn btn-secondary btn-sm" onclick="clearMatrixFilters()">Clear</button>
   </div>
   <div class="table-wrap">
-    <div class="table-header"><h3>Cost Centers (<span id="mxCount">—</span>)</h3></div>
+    <div class="table-header"><h3>Cost Centers (<span id="mxCount"></span>)</h3></div>
     <table><thead><tr>
   <th class="sortable" onclick="sortMatrix('cc')">Cost Center <span id="mx-sort-cc" class="sort-arrow" class="sort-arrow active-sort">▲</span></th>
   <th class="sortable" onclick="sortMatrix('pbp')">PBP <span id="mx-sort-pbp" class="sort-arrow">▲</span></th>
@@ -1202,13 +1202,13 @@ document.addEventListener("DOMContentLoaded", function() {
         <label>Security Groups (select all that apply)</label>
         <div class="sg-chips" id="sgChips">
           <span class="sg-chip sg-chip-master_admin" data-sg="master_admin" onclick="toggleSG(this)" title="Full access to all tabs and features">Master Admin</span>
-          <span class="sg-chip sg-chip-admin_ee"     data-sg="admin_ee"     onclick="toggleSG(this)" title="Full access to the Admin: Employees tab">Admin — Employee</span>
-          <span class="sg-chip sg-chip-admin_cw"     data-sg="admin_cw"     onclick="toggleSG(this)" title="Full access to the Admin: Contingent tab">Admin — CW</span>
+          <span class="sg-chip sg-chip-admin_ee"     data-sg="admin_ee"     onclick="toggleSG(this)" title="Full access to the Admin: Employees tab">Admin - Employee</span>
+          <span class="sg-chip sg-chip-admin_cw"     data-sg="admin_cw"     onclick="toggleSG(this)" title="Full access to the Admin: Contingent tab">Admin - CW</span>
           <span class="sg-chip sg-chip-view_admin"   data-sg="view_admin"   onclick="toggleSG(this)" title="View-only access to the Admin: Employees and Admin: Contingent tabs">View Only Admin</span>
           <span class="sg-chip sg-chip-compensation" data-sg="compensation" onclick="toggleSG(this)" title="Access to the Compensation tab for reviewing and recording comp details">Compensation</span>
           <span class="sg-chip sg-chip-dashboard"    data-sg="dashboard"    onclick="toggleSG(this)" title="Access to the Headcount Report Dashboard">Dashboard</span>
           <span class="sg-chip sg-chip-targets"      data-sg="targets"      onclick="toggleSG(this)" title="Access to the Targets tab on the Headcount Dashboard for editing top-line targets and starting headcount">Targets</span>
-          <span class="sg-chip sg-chip-normal"       data-sg="normal"       onclick="toggleSG(this)" title="Access to New Request, My Requests, and Approvals tabs — standard for all users">Normal User</span>
+          <span class="sg-chip sg-chip-normal"       data-sg="normal"       onclick="toggleSG(this)" title="Access to New Request, My Requests, and Approvals tabs - standard for all users">Normal User</span>
         </div>
       </div>
     </div>
@@ -1228,8 +1228,8 @@ document.addEventListener("DOMContentLoaded", function() {
     <select id="puSGF" onchange="renderPeopleTable()">
       <option value="">All Security Groups</option>
       <option value="master_admin">Master Admin</option>
-      <option value="admin_ee">Admin — Employee</option>
-      <option value="admin_cw">Admin — CW</option>
+      <option value="admin_ee">Admin - Employee</option>
+      <option value="admin_cw">Admin - CW</option>
       <option value="view_admin">View Only Admin</option>
       <option value="compensation">Compensation</option>
       <option value="dashboard">Dashboard</option>
@@ -1240,7 +1240,7 @@ document.addEventListener("DOMContentLoaded", function() {
   </div>
 
   <div class="table-wrap">
-    <div class="table-header"><h3>All Users (<span id="peopleCount">—</span>)</h3></div>
+    <div class="table-header"><h3>All Users (<span id="peopleCount"></span>)</h3></div>
     <table><thead><tr>
       <th class="sortable" onclick="sortPeople('name')">Name <span id="pu-sort-name" class="sort-arrow" class="sort-arrow active-sort">▲</span></th>
       <th class="sortable" onclick="sortPeople('email')">Email <span id="pu-sort-email" class="sort-arrow">▲</span></th>
@@ -1256,7 +1256,7 @@ document.addEventListener("DOMContentLoaded", function() {
   <!-- Bug Box section (master admin only) -->
   <div id="issuesSection" style="display:none;margin-top:32px">
     <div class="table-header" style="display:flex;align-items:center;justify-content:space-between">
-      <h3>Bug Box 🐛 (<span id="issueCount">—</span>)</h3>
+      <h3>Bug Box 🐛 (<span id="issueCount"></span>)</h3>
       <div style="display:flex;gap:8px;align-items:center">
         <select id="issueStatusF" onchange="renderIssuesTable()">
           <option value="">All Statuses</option>
@@ -1326,7 +1326,7 @@ const SCOPES    = 'https://www.googleapis.com/auth/spreadsheets';
 const MASTER_ADMIN_EMAIL = 'wes.griffin@newwesventures.com';
 
 // ── Service account: identical to dashboard.html. Used for ALL Sheets API calls
-//    so users don't need direct edit access to the Google Sheet — they just need
+//    so users don't need direct edit access to the Google Sheet - they just need
 //    to sign in with Google so we can identify them.
 const SA_EMAIL = 'demo-service-account@example.com';
 const SA_KEY   = `REDACTED\n`;
@@ -1529,7 +1529,7 @@ function activateProxy() {
     isSMT:  r[3]==='Y',
   };
   document.getElementById('proxyBanner').classList.add('visible');
-  document.getElementById('proxyBannerText').textContent = `Acting as: ${proxyUser.name} — You are acting as ${proxyUser.name} - this is not a sandbox`;
+  document.getElementById('proxyBannerText').textContent = `Acting as: ${proxyUser.name} - You are acting as ${proxyUser.name} - this is not a sandbox`;
   renderUserBadges();
   // Re-run nav visibility
   ['nav-review','nav-comp','nav-admin-ee','nav-admin-cw','nav-matrix','nav-people'].forEach(hide);
@@ -1626,7 +1626,7 @@ function initMobileSteppedForm() {
   const stepLabel = document.createElement('span');
   stepLabel.style.cssText = 'font-size:11px;color:#888;margin-left:4px';
   stepLabel.id = 'mobStepLabel';
-  stepLabel.textContent = 'Step 1 of 3 — Role Info';
+  stepLabel.textContent = 'Step 1 of 3 - Role Info';
   indicator.appendChild(stepLabel);
   grid.parentNode.insertBefore(indicator, grid);
 
@@ -1674,7 +1674,7 @@ function initMobileSteppedForm() {
     currentStep = n;
     document.getElementById('mobStep-' + currentStep).classList.add('active');
     document.getElementById('mobDot-' + currentStep).classList.add('active');
-    stepLabel.textContent = 'Step ' + (currentStep+1) + ' of 3 — ' + stepLabels[currentStep];
+    stepLabel.textContent = 'Step ' + (currentStep+1) + ' of 3 - ' + stepLabels[currentStep];
     backBtn.style.display = currentStep === 0 ? 'none' : '';
     nextBtn.style.display = currentStep === 2 ? 'none' : '';
     window.scrollTo(0, 0);
@@ -1758,7 +1758,7 @@ async function ensureHeaders() {
       const v=await apiGet(range);
       if (!v.length) await apiUpdate(range, headers);  // use update not append for A1
     } catch(e){
-      // Range might not exist yet — try to write headers directly
+      // Range might not exist yet - try to write headers directly
       try { await apiUpdate(range, headers); } catch(e2){}
     }
   }
@@ -1803,12 +1803,12 @@ async function recordLogin() {
   if (idx>=0) {
     peopleData[idx][5] = now;
     try { await apiUpdate(T.people+'!F'+(idx+2), [[now]]); }
-    catch(e){ console.warn('recordLogin: failed to update LastLogin —', e.message); }
+    catch(e){ console.warn('recordLogin: failed to update LastLogin - ', e.message); }
   } else {
-    // New user — add as Normal User
+    // New user - add as Normal User
     const row = [realUser.name, realUser.email, 'N', 'N', 'normal', now];
     try { await apiAppend(T.people+'!A2', [row]); peopleData.push(row); }
-    catch(e){ console.error('recordLogin: failed to add new user to People sheet —', e.message, '(usually means the signed-in user lacks edit access to the Google Sheet)'); }
+    catch(e){ console.error('recordLogin: failed to add new user to People sheet - ', e.message, '(usually means the signed-in user lacks edit access to the Google Sheet)'); }
   }
 }
 
@@ -1837,7 +1837,7 @@ async function saveCompFields(reqId, markDone) {
     if (markDone) {
       await apiUpdate(T.requests+'!AB'+(idx+2), [['Compensation Done']]);
       allRequests[idx][27] = 'Compensation Done';
-      await apiAppend(T.comments+'!A2', [[reqId, now, eu.name, eu.email, 'Compensation', 'Compensation complete — marked Done']]);
+      await apiAppend(T.comments+'!A2', [[reqId, now, eu.name, eu.email, 'Compensation', 'Compensation complete - marked Done']]);
       toast('Compensation marked Done', 'success');
       closeModal();
     } else {
@@ -1882,7 +1882,7 @@ function renderComp() {
       smts.map(s=>`<option${s===cur?' selected':''}>${s}</option>`).join('');
   }
 
-  // Board counts — keyed exactly to the CompStatus values
+  // Board counts - keyed exactly to the CompStatus values
   const withComp   = compAll.filter(r => r[27]==='With Compensation');
   const inProgress = compAll.filter(r => r[27]==='Comp In Progress');
   const done       = compAll.filter(r => r[27]==='Compensation Done');
@@ -1917,11 +1917,11 @@ function renderComp() {
   document.getElementById('compTable').innerHTML = queue.length
     ? [...queue].reverse().map(r => `<tr class="clickable" onclick="openReqModal('${r[0]}',false,true)">
         <td style="font-size:11px;color:var(--gray-dark)">${fd(r[1])}</td>
-        <td style="font-size:11px">${r[2]||'—'}</td>
-        <td><strong>${r[5]||'—'}</strong></td>
-        <td><span class="tag tag-${(r[4]||'').toLowerCase()}">${r[4]||'—'}</span></td>
-        <td style="font-size:11px">${r[7]||'—'}</td>
-        <td style="font-size:11px">${r[8]||'—'}</td>
+        <td style="font-size:11px">${r[2]||' - '}</td>
+        <td><strong>${r[5]||' - '}</strong></td>
+        <td><span class="tag tag-${(r[4]||'').toLowerCase()}">${r[4]||' - '}</span></td>
+        <td style="font-size:11px">${r[7]||' - '}</td>
+        <td style="font-size:11px">${r[8]||' - '}</td>
         <td>${compTag(r[27])}</td>
         <td>${stag(r[16])}</td>
         <td><button class="btn btn-sm btn-primary" onclick="event.stopPropagation();openReqModal('${r[0]}',false,true)">Review</button></td>
@@ -2008,7 +2008,7 @@ async function submitRequest(e) {
   e.preventDefault();
   const eu = effectiveUser();
   const canSubmit = hasGroup('normal') || hasGroup('master_admin') || eu.isPBP || eu.isSMT;
-  if (!canSubmit) { toast('View-only access — cannot submit','error'); return; }
+  if (!canSubmit) { toast('View-only access - cannot submit','error'); return; }
   const btn=document.getElementById('submitBtn');
   btn.disabled=true; btn.textContent='Submitting…';
   try {
@@ -2129,7 +2129,7 @@ function filterAdminCW(val) {
   renderAdminCW();
 }
 
-// KPI board overrides — set by clicking a board, cleared when user uses the dropdown manually
+// KPI board overrides - set by clicking a board, cleared when user uses the dropdown manually
 let _eeKPIFilter = '';
 let _cwKPIFilter = '';
 
@@ -2171,11 +2171,11 @@ function renderMyRequests() {
           : `${stag(status)}${compSt?` <span class="tag tag-pending" style="font-size:10px">${compSt}</span>`:''}${recruitSt?` <span class="tag tag-pbp" style="font-size:10px">${recruitSt}</span>`:''}`;
         return `<tr class="clickable" onclick="openReqModal('${r[0]}')">
           <td style="font-size:11px;color:var(--gray-dark)">${fd(r[1])}</td>
-          <td><strong>${r[5]||'—'}</strong></td>
-          <td><span class="tag tag-${(r[4]||'').toLowerCase()}">${r[4]||'—'}</span></td>
-          <td><span class="tag ${r[6]==='Backfill'?'tag-backfill':'tag-new'}">${r[6]||'—'}</span></td>
-          <td style="font-size:11px">${r[7]||'—'}</td>
-          <td style="font-size:11px">${r[10]||'—'}</td>
+          <td><strong>${r[5]||' - '}</strong></td>
+          <td><span class="tag tag-${(r[4]||'').toLowerCase()}">${r[4]||' - '}</span></td>
+          <td><span class="tag ${r[6]==='Backfill'?'tag-backfill':'tag-new'}">${r[6]||' - '}</span></td>
+          <td style="font-size:11px">${r[7]||' - '}</td>
+          <td style="font-size:11px">${r[10]||' - '}</td>
           <td>${dispStatus}</td>
           <td><button class="btn btn-sm btn-secondary" onclick="event.stopPropagation();openReqModal('${r[0]}')">View</button></td>
         </tr>`;
@@ -2253,11 +2253,11 @@ function renderReviewTable() {
     if (statF==='my-approved') return (iActedPBP(r)&&r[17]==='Approved') || (iActedSMT(r)&&r[20]==='Approved');
     if (statF==='my-rejected') return (iActedPBP(r)&&r[17]==='Rejected') || (iActedSMT(r)&&r[20]==='Rejected');
     if (statF)                 return (isPendingForMe || iActedOnIt) && s===statF;
-    // Default: all in my queue — pending for me OR I (or admin on my behalf) acted
+    // Default: all in my queue - pending for me OR I (or admin on my behalf) acted
     return isPendingForMe || iActedOnIt;
   });
 
-  // KPIs — awaiting MY action specifically
+  // KPIs - awaiting MY action specifically
   const awaitingCount = allRequests.filter(r=>{
     const s=r[16]||'';
     if (eu.isPBP&&s==='Pending PBP') return inMyPBPScope(r);
@@ -2266,7 +2266,7 @@ function renderReviewTable() {
   }).length;
   set('rev-pending',  awaitingCount);
   updateApprovalBadge(awaitingCount);
-  // Count by MY stage action (not overall status) — includes admin-proxied approvals in scope
+  // Count by MY stage action (not overall status) - includes admin-proxied approvals in scope
   set('rev-approved', allRequests.filter(r=>
     (iActedPBP(r)&&r[17]==='Approved') || (iActedSMT(r)&&r[20]==='Approved')).length);
   set('rev-rejected', allRequests.filter(r=>
@@ -2277,10 +2277,10 @@ function renderReviewTable() {
         const stage=(r[16]||'').includes('PBP')?'PBP Review':(r[16]||'').includes('SMT')?'SMT or Delegate Review':r[16]||'';
         return `<tr class="clickable" onclick="openReqModal('${r[0]}',true)">
           <td style="font-size:11px;color:var(--gray-dark)">${fd(r[1])}</td>
-          <td style="font-size:11px">${r[2]||'—'}</td>
-          <td><strong>${r[5]||'—'}</strong></td>
-          <td><span class="tag tag-${(r[4]||'').toLowerCase()}">${r[4]||'—'}</span></td>
-          <td style="font-size:11px">${r[7]||'—'}</td>
+          <td style="font-size:11px">${r[2]||' - '}</td>
+          <td><strong>${r[5]||' - '}</strong></td>
+          <td><span class="tag tag-${(r[4]||'').toLowerCase()}">${r[4]||' - '}</span></td>
+          <td style="font-size:11px">${r[7]||' - '}</td>
           <td style="font-size:11px;color:var(--amber);font-weight:600">${stage}</td>
           <td>${stag(r[16])}</td>
           <td><button class="btn btn-sm btn-primary" onclick="event.stopPropagation();openReqModal('${r[0]}',true)">Review</button></td>
@@ -2343,12 +2343,12 @@ function renderAdminEE() {
           : `${stag(status)}${compSt?` <span class="tag tag-pending" style="font-size:10px">${compSt}</span>`:''}${recruitSt?` <span class="tag tag-pbp" style="font-size:10px">${recruitSt}</span>`:''}`;
         return `<tr class="clickable" onclick="openReqModal('${r[0]}',false,true)">
           <td style="font-size:11px;color:var(--gray-dark)">${fd(r[1])}</td>
-          <td style="font-size:11px">${r[2]||'—'}</td>
-          <td><strong>${r[5]||'—'}</strong></td>
-          <td><span class="tag ${r[6]==='Backfill'?'tag-backfill':'tag-new'}">${r[6]||'—'}</span></td>
-          <td style="font-size:11px">${r[7]||'—'}</td>
-          <td style="font-size:11px;font-weight:600">${r[8]||'—'}</td>
-          <td style="font-size:11px">${r[10]||'—'}</td>
+          <td style="font-size:11px">${r[2]||' - '}</td>
+          <td><strong>${r[5]||' - '}</strong></td>
+          <td><span class="tag ${r[6]==='Backfill'?'tag-backfill':'tag-new'}">${r[6]||' - '}</span></td>
+          <td style="font-size:11px">${r[7]||' - '}</td>
+          <td style="font-size:11px;font-weight:600">${r[8]||' - '}</td>
+          <td style="font-size:11px">${r[10]||' - '}</td>
           <td>${statusTags}</td>
           <td><div class="row-actions">
             <button class="btn btn-sm btn-secondary" onclick="event.stopPropagation();openReqModal('${r[0]}',false,true)">View</button>
@@ -2402,12 +2402,12 @@ function renderAdminCW() {
           : `${stag(status)}${compSt?` <span class="tag tag-pending" style="font-size:10px">${compSt}</span>`:''}${recruitSt?` <span class="tag tag-pbp" style="font-size:10px">${recruitSt}</span>`:''}`;
         return `<tr class="clickable" onclick="openReqModal('${r[0]}',false,true)">
           <td style="font-size:11px;color:var(--gray-dark)">${fd(r[1])}</td>
-          <td style="font-size:11px">${r[2]||'—'}</td>
-          <td><strong>${r[5]||'—'}</strong></td>
-          <td style="font-size:11px">${r[7]||'—'}</td>
-          <td style="font-size:11px;font-weight:600">${r[8]||'—'}</td>
-          <td style="font-size:11px">${r[11]||'—'}</td>
-          <td style="font-size:11px">${r[12]||'—'}</td>
+          <td style="font-size:11px">${r[2]||' - '}</td>
+          <td><strong>${r[5]||' - '}</strong></td>
+          <td style="font-size:11px">${r[7]||' - '}</td>
+          <td style="font-size:11px;font-weight:600">${r[8]||' - '}</td>
+          <td style="font-size:11px">${r[11]||' - '}</td>
+          <td style="font-size:11px">${r[12]||' - '}</td>
           <td>${statusTags}</td>
           <td><div class="row-actions">
             <button class="btn btn-sm btn-secondary" onclick="event.stopPropagation();openReqModal('${r[0]}',false,true)">View</button>
@@ -2417,12 +2417,12 @@ function renderAdminCW() {
         </tr>`;
         return `<tr class="clickable" onclick="openReqModal('${r[0]}',false,true)">
           <td style="font-size:11px;color:var(--gray-dark)">${fd(r[1])}</td>
-          <td style="font-size:11px">${r[2]||'—'}</td>
-          <td><strong>${r[5]||'—'}</strong></td>
-          <td style="font-size:11px">${r[7]||'—'}</td>
-          <td style="font-size:11px;font-weight:600">${r[8]||'—'}</td>
-          <td style="font-size:11px">${r[11]||'—'}</td>
-          <td style="font-size:11px">${r[12]||'—'}</td>
+          <td style="font-size:11px">${r[2]||' - '}</td>
+          <td><strong>${r[5]||' - '}</strong></td>
+          <td style="font-size:11px">${r[7]||' - '}</td>
+          <td style="font-size:11px;font-weight:600">${r[8]||' - '}</td>
+          <td style="font-size:11px">${r[11]||' - '}</td>
+          <td style="font-size:11px">${r[12]||' - '}</td>
           <td>${statusTags}</td>
           <td><div class="row-actions">
             <button class="btn btn-sm btn-secondary" onclick="event.stopPropagation();openReqModal('${r[0]}',false,true)">View</button>
@@ -2435,7 +2435,7 @@ function renderAdminCW() {
 }
 
 // ============================================================
-// ADMIN STATUS — comment-gated advancement
+// ADMIN STATUS - comment-gated advancement
 // ============================================================
 // Comments cache: reqId -> array of comment rows
 const _commentsCache = {};
@@ -2467,7 +2467,7 @@ function promptApproval(reqId, decision) {
   _pendingAdminMode   = 'approval';
 
   document.getElementById('adminCommentTitle').textContent =
-    decision === 'Approved' ? `Approve — ${stage} Stage` : `Reject — ${stage} Stage`;
+    decision === 'Approved' ? `Approve - ${stage} Stage` : `Reject - ${stage} Stage`;
   document.getElementById('adminCommentSub').textContent = r ? (r[5]||reqId) : reqId;
   document.getElementById('adminCommentText').value        = '';
   document.getElementById('adminCommentErr').style.display = 'none';
@@ -2578,7 +2578,7 @@ function _refreshAdminActionsRow(reqId, idx) {
 }
 
 function cancelReq(reqId) {
-  // Require a comment before cancelling — reuse the admin comment modal
+  // Require a comment before cancelling - reuse the admin comment modal
   const r = allRequests.find(x => x[0] === reqId);
   _pendingAdminReqId  = reqId;
   _pendingAdminStatus = 'Cancelled';
@@ -2614,7 +2614,7 @@ async function confirmCancelReqWithComment(reqId, comment) {
     renderMyRequests(); renderReviewTable(); renderAdminEE(); renderAdminCW();
   } catch(e) { toast('Error: '+e.message,'error'); }
 }
-// Legacy alias — kept for any inline calls
+// Legacy alias - kept for any inline calls
 async function confirmCancelReq(reqId) { cancelReq(reqId); }
 
 function resetCancelRow(reqId) {
@@ -2628,7 +2628,7 @@ function cancelRowHtml(reqId) {
 }
 
 function reopenRowHtml(reqId) {
-  return `<span style="font-size:12px;color:var(--gray-dark)">This requisition was cancelled. Admins can reopen it — prior approval history is preserved.</span>
+  return `<span style="font-size:12px;color:var(--gray-dark)">This requisition was cancelled. Admins can reopen it - prior approval history is preserved.</span>
     <button class="btn btn-primary btn-sm" onclick="reopenReq('${reqId}')">Reopen / Resubmit</button>`;
 }
 
@@ -2640,7 +2640,7 @@ async function reopenReq(reqId) {
   const status = hasPBP ? 'Pending PBP' : (r[8] ? 'Pending SMT' : 'Pending Admin');
   const now = new Date().toISOString();
 
-  // Snapshot current approval data before clearing — this becomes "Prior History"
+  // Snapshot current approval data before clearing - this becomes "Prior History"
   const priorData = JSON.stringify({
     pbpAction: r[17]||'', pbpBy: r[18]||'', pbpDate: r[19]||'',
     smtAction: r[20]||'', smtBy: r[21]||'', smtDate: r[22]||''
@@ -2658,7 +2658,7 @@ async function reopenReq(reqId) {
       await apiUpdate(T.requests+'!AM'+(idx+2), [[priorData]]);
       wroteExtended = true;
     } catch(extErr) {
-      // Sheet grid too small — store in comments instead
+      // Sheet grid too small - store in comments instead
       await apiAppend(T.comments+'!A2', [[reqId, now, eu.name, eu.email, 'Reopened', priorData]]);
     }
 
@@ -2668,7 +2668,7 @@ async function reopenReq(reqId) {
     allRequests[idx][37] = now;   // in-memory only if sheet write failed
     allRequests[idx][38] = priorData;
 
-    toast('Requisition reopened — status set to '+status,'success');
+    toast('Requisition reopened - status set to '+status,'success');
     const statusCell = document.getElementById('modalStatusCell-'+reqId);
     if (statusCell) statusCell.innerHTML = `<div class="label">Status</div><div class="value">${stag(status)}</div>`;
     const cancelRow = document.getElementById('modalCancelRow-'+reqId);
@@ -2705,13 +2705,13 @@ function adminActionSteps(reqId, isCW, adminSt, compSt, recruitSt) {
     `<button class="btn btn-sm" style="margin-top:4px;font-size:10px;background:none;border:1px solid var(--gray-mid);color:var(--gray-dark)" onclick="${onclick}">Revert</button>`;
   const connector = `<div style="height:2px;width:20px;background:var(--gray-mid);margin:0 2px;flex-shrink:0;align-self:flex-start;margin-top:16px;"></div>`;
 
-  // Step 1 — Approved (always done)
+  // Step 1 - Approved (always done)
   const step1 = `<div style="display:flex;flex-direction:column;align-items:center;text-align:center;min-width:70px;">
     <div style="width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;background:var(--green);color:white">✓</div>
     <div style="font-size:11px;margin-top:6px;color:var(--green);font-weight:700">Approved</div>
   </div>`;
 
-  // Step 2 — Compensation
+  // Step 2 - Compensation
   const compDone    = compSt === 'Compensation Done';
   const compProg    = compSt === 'Comp In Progress';
   const compSkipped = compSt === 'Compensation Skipped';
@@ -2727,12 +2727,12 @@ function adminActionSteps(reqId, isCW, adminSt, compSt, recruitSt) {
   const compRevert = (!ro && !isFinished && (compSent || compProg || compDone || compSkipped))
     ? revertBtn(`setCompStatus('${reqId}','')`, false) : '';
   const step2 = `<div style="display:flex;flex-direction:column;align-items:center;text-align:center;min-width:90px;">
-    <div style="width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;${dot(compDone, compSkipped, false)}">${compDone?'✓':compSkipped?'—':compProg?'…':'2'}</div>
+    <div style="width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;${dot(compDone, compSkipped, false)}">${compDone?'✓':compSkipped?' - ':compProg?'…':'2'}</div>
     <div style="font-size:11px;margin-top:6px;max-width:90px;line-height:1.3;${lbl(compDone, compSkipped, false)}">${compLabel}</div>
     ${compBtns}${compRevert}
   </div>`;
 
-  // Step 3 — Recruiting
+  // Step 3 - Recruiting
   const recDone    = recruitSt === 'Recruiting';
   const recSkipped = recruitSt === 'Recruiting Skipped';
   const recResolved= recDone || recSkipped;
@@ -2745,12 +2745,12 @@ function adminActionSteps(reqId, isCW, adminSt, compSt, recruitSt) {
   const recRevert = (!ro && !isCompOnly && !isFinished && (recDone || recSkipped))
     ? revertBtn(`setRecruitStatus('${reqId}','')`, false) : '';
   const step3 = `<div style="display:flex;flex-direction:column;align-items:center;text-align:center;min-width:90px;">
-    <div style="width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;${dot(recDone, recSkipped, false)}">${recDone?'✓':recSkipped?'—':'3'}</div>
+    <div style="width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;${dot(recDone, recSkipped, false)}">${recDone?'✓':recSkipped?' - ':'3'}</div>
     <div style="font-size:11px;margin-top:6px;max-width:90px;line-height:1.3;${lbl(recDone, recSkipped, false)}">${recLabel}</div>
     ${recBtns}${recRevert}
   </div>`;
 
-  // Step 4 — Final (gate: comp must be Done or Skipped, recruiting must be Recruiting or Skipped)
+  // Step 4 - Final (gate: comp must be Done or Skipped, recruiting must be Recruiting or Skipped)
   const gateOpen = compResolved && recResolved;
   const finalRevert = (!ro && !isCompOnly && isFinished)
     ? revertBtn(`setAdminStatus('${reqId}','')`, false) : '';
@@ -2778,7 +2778,7 @@ async function openReqModal(reqId, canApprove=false, isAdmin=false) {
   const ro=isReadOnly();
   const isFinished = r[23]==='Hired' || r[23]==='Engaged';
 
-  // Check if req was ever reopened — first try in-memory cols (AL/AM),
+  // Check if req was ever reopened - first try in-memory cols (AL/AM),
   // then fall back to comments tab (used when sheet grid was too small for AL/AM)
   let isReopened = !!(r[37]);
   let priorApproval = null;
@@ -2827,21 +2827,21 @@ async function openReqModal(reqId, canApprove=false, isAdmin=false) {
     </div>
     <div class="modal-tab-panel active" id="mpanel-details-${reqId}">
     <div class="detail-grid">
-      <div class="detail-item"><div class="label">Type</div><div class="value"><span class="tag tag-${(r[4]||'').toLowerCase()}">${r[4]||'—'}</span></div></div>
-      <div class="detail-item"><div class="label">Category</div><div class="value"><span class="tag ${r[6]==='Backfill'?'tag-backfill':'tag-new'}">${r[6]||'—'}</span></div></div>
-      <div class="detail-item"><div class="label">Cost Center</div><div class="value">${r[7]||'—'}</div></div>
-      <div class="detail-item"><div class="label">SMT or Delegate</div><div class="value">${r[8]||'—'}</div></div>
-      <div class="detail-item"><div class="label">PBP</div><div class="value">${r[9]||'—'}</div></div>
-      <div class="detail-item"><div class="label">Location</div><div class="value">${r[10]||'—'}</div></div>
-      <div class="detail-item"><div class="label">Start Date</div><div class="value">${r[11]||'—'}</div></div>
-      ${isCW?`<div class="detail-item"><div class="label">End Date</div><div class="value">${r[12]||'—'}</div></div>`:''}
+      <div class="detail-item"><div class="label">Type</div><div class="value"><span class="tag tag-${(r[4]||'').toLowerCase()}">${r[4]||' - '}</span></div></div>
+      <div class="detail-item"><div class="label">Category</div><div class="value"><span class="tag ${r[6]==='Backfill'?'tag-backfill':'tag-new'}">${r[6]||' - '}</span></div></div>
+      <div class="detail-item"><div class="label">Cost Center</div><div class="value">${r[7]||' - '}</div></div>
+      <div class="detail-item"><div class="label">SMT or Delegate</div><div class="value">${r[8]||' - '}</div></div>
+      <div class="detail-item"><div class="label">PBP</div><div class="value">${r[9]||' - '}</div></div>
+      <div class="detail-item"><div class="label">Location</div><div class="value">${r[10]||' - '}</div></div>
+      <div class="detail-item"><div class="label">Start Date</div><div class="value">${r[11]||' - '}</div></div>
+      ${isCW?`<div class="detail-item"><div class="label">End Date</div><div class="value">${r[12]||' - '}</div></div>`:''}
       ${r[13]?`<div class="detail-item"><div class="label">Level</div><div class="value">${r[13]}</div></div>`:''}
       <div class="detail-item"><div class="label">Budget Confirmed</div><div class="value" style="color:var(--green)">✓ Yes</div></div>
       <div class="detail-item" id="modalStatusCell-${reqId}"><div class="label">Status</div><div class="value">${stag(status)}</div></div>
       ${r[27]?`<div class="detail-item"><div class="label">Comp Status</div><div class="value"><span class="tag tag-pending">${r[27]}</span></div></div>`:''}
       ${r[28]?`<div class="detail-item"><div class="label">Recruiting Status</div><div class="value"><span class="tag tag-pbp">${r[28]}</span></div></div>`:''}
       ${r[26]?`<div class="detail-item full"><div class="label">Job Description Link</div><div class="value"><a href="${r[26]}" target="_blank" rel="noopener" style="color:var(--orange)">${r[26]}</a></div></div>`:''}
-      <div class="detail-item full"><div class="label">Justification</div><div class="value" style="font-weight:400;line-height:1.5">${r[14]||'—'}</div></div>
+      <div class="detail-item full"><div class="label">Justification</div><div class="value" style="font-weight:400;line-height:1.5">${r[14]||' - '}</div></div>
     </div>
     <div style="font-size:13px;font-weight:700;margin-bottom:12px">Approval Progress</div>
     ${isReopened ? `
@@ -2857,14 +2857,14 @@ async function openReqModal(reqId, canApprove=false, isAdmin=false) {
             <div class="step-dot ${priorApproval?.pbpAction==='Approved'?'done':priorApproval?.pbpAction==='Rejected'?'rejected':'pending'}">${priorApproval?.pbpAction==='Approved'?'✓':priorApproval?.pbpAction==='Rejected'?'✕':'2'}</div>
             <div class="step-info">
               <div class="step-label">PBP Review${r[9]?' · '+r[9]:''}</div>
-              <div class="step-meta">${priorApproval?.pbpAction?(priorApproval.pbpAction+' by '+priorApproval.pbpBy+' on '+fd(priorApproval.pbpDate)):'—'}</div>
+              <div class="step-meta">${priorApproval?.pbpAction?(priorApproval.pbpAction+' by '+priorApproval.pbpBy+' on '+fd(priorApproval.pbpDate)):' - '}</div>
             </div>
           </div>
           <div class="timeline-step">
             <div class="step-dot ${priorApproval?.smtAction==='Approved'?'done':priorApproval?.smtAction==='Rejected'?'rejected':'pending'}">${priorApproval?.smtAction==='Approved'?'✓':priorApproval?.smtAction==='Rejected'?'✕':'3'}</div>
             <div class="step-info">
               <div class="step-label">SMT or Delegate Review${r[8]?' · '+r[8]:''}</div>
-              <div class="step-meta">${priorApproval?.smtAction?(priorApproval.smtAction+' by '+priorApproval.smtBy+' on '+fd(priorApproval.smtDate)):'—'}</div>
+              <div class="step-meta">${priorApproval?.smtAction?(priorApproval.smtAction+' by '+priorApproval.smtBy+' on '+fd(priorApproval.smtDate)):' - '}</div>
             </div>
           </div>
           <div class="timeline-step">
@@ -2940,7 +2940,7 @@ async function openReqModal(reqId, canApprove=false, isAdmin=false) {
         </div>
         <div class="step-info">
           <div class="step-label">PBP Review${r[9]?' · '+r[9]:''}</div>
-          <div class="step-meta">${pbpDone?r[17]+' by '+r[18]+' on '+fd(r[19]):r[24]?'Viewed — Awaiting Response':'Awaiting review'}</div>
+          <div class="step-meta">${pbpDone?r[17]+' by '+r[18]+' on '+fd(r[19]):r[24]?'Viewed - Awaiting Response':'Awaiting review'}</div>
           ${isAdmin&&!ro&&status==='Pending PBP'?`
           <div class="action-row" style="margin-top:10px">
             <button class="btn btn-success btn-sm" onclick="promptApproval('${reqId}','Approved')">✓ Approve</button>
@@ -2954,7 +2954,7 @@ async function openReqModal(reqId, canApprove=false, isAdmin=false) {
         </div>
         <div class="step-info">
           <div class="step-label">SMT or Delegate Review${r[8]?' · '+r[8]:''}</div>
-          <div class="step-meta">${smtDone?r[20]+' by '+r[21]+' on '+fd(r[22]):r[25]?'Viewed — Awaiting Response':'Awaiting review'}</div>
+          <div class="step-meta">${smtDone?r[20]+' by '+r[21]+' on '+fd(r[22]):r[25]?'Viewed - Awaiting Response':'Awaiting review'}</div>
           ${isAdmin&&!ro&&status==='Pending SMT'?`
           <div class="action-row" style="margin-top:10px">
             <button class="btn btn-success btn-sm" onclick="promptApproval('${reqId}','Approved')">✓ Approve</button>
@@ -3117,7 +3117,7 @@ async function loadAndRenderAudit(reqId) {
   if (!r) { panel.innerHTML = '<p style="padding:32px;color:var(--gray-dark)">Request not found.</p>'; return; }
   const comments = await loadCommentsForReq(reqId);
 
-  // Build timeline — STRICT chronological order, no manipulation
+  // Build timeline - STRICT chronological order, no manipulation
   // Only add events that have real timestamps from the data
   const events = [];
   const push = (ts, icon, bg, label, meta, note) => {
@@ -3125,26 +3125,26 @@ async function loadAndRenderAudit(reqId) {
   };
 
   // Submission always has a real timestamp
-  push(r[1], '📝', '#E3F2FD', 'Submitted', 'By ' + (r[2]||'—') + (r[3] ? ' · '+r[3] : ''), null);
+  push(r[1], '📝', '#E3F2FD', 'Submitted', 'By ' + (r[2]||' - ') + (r[3] ? ' · '+r[3] : ''), null);
 
-  // Views — only if timestamps exist (cols 24, 25)
+  // Views - only if timestamps exist (cols 24, 25)
   if (r[24]) push(r[24], '👁', '#FFF8E1', 'Viewed by PBP', r[9]||'PBP', null);
   if (r[25]) push(r[25], '👁', '#FFF8E1', 'Viewed by SMT', r[8]||'SMT', null);
 
-  // PBP decision — use the actual decision timestamp (col 19)
+  // PBP decision - use the actual decision timestamp (col 19)
   if (r[17] && r[19]) push(r[19], r[17]==='Approved'?'✓':'✕',
     r[17]==='Approved'?'#E8F5EE':'#FDECEA',
-    'PBP Stage: ' + r[17], 'By ' + (r[18]||'—'), null);
+    'PBP Stage: ' + r[17], 'By ' + (r[18]||' - '), null);
 
-  // SMT decision — use the actual decision timestamp (col 22)
+  // SMT decision - use the actual decision timestamp (col 22)
   if (r[20] && r[22]) push(r[22], r[20]==='Approved'?'✓':'✕',
     r[20]==='Approved'?'#E8F5EE':'#FDECEA',
-    'SMT Stage: ' + r[20], 'By ' + (r[21]||'—'), null);
+    'SMT Stage: ' + r[20], 'By ' + (r[21]||' - '), null);
 
-  // Reopen timestamp (col 37) — only if it exists
+  // Reopen timestamp (col 37) - only if it exists
   if (r[37]) push(r[37], '🔄', '#f1ecfe', 'Reopened', 'Prior approval history preserved', null);
 
-  // ALL comments — parse Reopened JSON nicely and extract prior events
+  // ALL comments - parse Reopened JSON nicely and extract prior events
   comments.forEach(cm => {
     const stage = cm[4] || 'Note';
     const stageColors = {
@@ -3169,7 +3169,7 @@ async function loadAndRenderAudit(reqId) {
             prior.pbpAction === 'Approved' ? '✓' : '✕',
             prior.pbpAction === 'Approved' ? '#E8F5EE' : '#FDECEA',
             'PBP Stage: ' + prior.pbpAction + ' (prior round)',
-            'By ' + (prior.pbpBy || '—'),
+            'By ' + (prior.pbpBy || ' - '),
             null
           );
         }
@@ -3179,30 +3179,30 @@ async function loadAndRenderAudit(reqId) {
             prior.smtAction === 'Approved' ? '✓' : '✕',
             prior.smtAction === 'Approved' ? '#E8F5EE' : '#FDECEA',
             'SMT Stage: ' + prior.smtAction + ' (prior round)',
-            'By ' + (prior.smtBy || '—'),
+            'By ' + (prior.smtBy || ' - '),
             null
           );
         }
         // Build a human-readable note for the reopen event itself
-        let note = 'Req reopened — approval progress reset for a new round.';
-        if (prior.pbpAction) note += '\nPrior PBP: ' + prior.pbpAction + ' by ' + (prior.pbpBy||'—') + (prior.pbpDate ? ' · ' + toPT(prior.pbpDate) : '');
-        if (prior.smtAction) note += '\nPrior SMT: ' + prior.smtAction + ' by ' + (prior.smtBy||'—') + (prior.smtDate ? ' · ' + toPT(prior.smtDate) : '');
-        push(cm[1], '🔄', '#f1ecfe', 'Reopened', 'By ' + (cm[2]||'—'), note);
+        let note = 'Req reopened - approval progress reset for a new round.';
+        if (prior.pbpAction) note += '\nPrior PBP: ' + prior.pbpAction + ' by ' + (prior.pbpBy||' - ') + (prior.pbpDate ? ' · ' + toPT(prior.pbpDate) : '');
+        if (prior.smtAction) note += '\nPrior SMT: ' + prior.smtAction + ' by ' + (prior.smtBy||' - ') + (prior.smtDate ? ' · ' + toPT(prior.smtDate) : '');
+        push(cm[1], '🔄', '#f1ecfe', 'Reopened', 'By ' + (cm[2]||' - '), note);
       } else {
-        push(cm[1], '🔄', '#f1ecfe', 'Reopened', 'By ' + (cm[2]||'—'), 'Approval progress reset for a new round.');
+        push(cm[1], '🔄', '#f1ecfe', 'Reopened', 'By ' + (cm[2]||' - '), 'Approval progress reset for a new round.');
       }
     } else {
       push(cm[1],
         icons[stage] || '💬',
         stageColors[stage] || '#F3E5F5',
         stage === 'Note' ? 'Comment' : stage + ' Comment',
-        'By ' + (cm[2]||'—'),
+        'By ' + (cm[2]||' - '),
         cm[5]
       );
     }
   });
 
-  // Sort strictly by timestamp — no manipulation
+  // Sort strictly by timestamp - no manipulation
   events.sort((a,b) => new Date(a.ts) - new Date(b.ts));
 
   if (!events.length) {
@@ -3292,7 +3292,7 @@ async function ensureIssuesSheet() {
       // Write headers to new sheet
       await apiUpdate(T.issues+'!A1:H1', [['ID','Submitted','ReporterName','ReporterEmail','Page','Title','Description','Status']]);
     }
-  } catch(e) { /* If this fails, apiAppend will too — caller handles */ }
+  } catch(e) { /* If this fails, apiAppend will too - caller handles */ }
 }
 
 async function submitIssue() {
@@ -3315,7 +3315,7 @@ async function submitIssue() {
     issuesData.push([id, now, eu.name, eu.email, page, title, desc, 'Open']);
     closeIssueModal();
     const banner = document.createElement('div');
-    banner.textContent = '✓ Issue reported — thank you! The admin team will review it shortly.';
+    banner.textContent = '✓ Issue reported - thank you! The admin team will review it shortly.';
     banner.style.cssText = 'position:fixed;bottom:80px;right:28px;background:#2E7D32;color:white;padding:12px 20px;border-radius:8px;font-size:13px;font-weight:600;z-index:9999;box-shadow:0 4px 16px rgba(0,0,0,0.2);font-family:inherit;transition:opacity 0.4s';
     document.body.appendChild(banner);
     setTimeout(() => { banner.style.opacity = '0'; setTimeout(() => banner.remove(), 400); }, 3600);
@@ -3346,10 +3346,10 @@ function renderIssuesTable() {
         const statusColors = { Open:'var(--amber)', 'In Progress':'var(--blue)', Resolved:'var(--green)' };
         return `<tr class="clickable" onclick="openIssueReviewModal(${idx})" title="Click to view details">
           <td style="font-size:11px;color:var(--gray-dark);white-space:nowrap">${fd(r[1])}</td>
-          <td style="font-size:12px">${r[2]||'—'}<br><span style="font-size:10px;color:var(--gray-dark)">${r[3]||''}</span></td>
-          <td style="font-size:11px">${r[4]||'—'}</td>
-          <td style="font-weight:600">${r[5]||'—'}</td>
-          <td style="font-size:12px;max-width:300px;word-break:break-word">${r[6]||'—'}</td>
+          <td style="font-size:12px">${r[2]||' - '}<br><span style="font-size:10px;color:var(--gray-dark)">${r[3]||''}</span></td>
+          <td style="font-size:11px">${r[4]||' - '}</td>
+          <td style="font-weight:600">${r[5]||' - '}</td>
+          <td style="font-size:12px;max-width:300px;word-break:break-word">${r[6]||' - '}</td>
           <td><span class="tag" style="background:${statusColors[status]||'var(--gray-mid)'};color:white">${status}</span></td>
           <td><div class="row-actions" onclick="event.stopPropagation()">
             <select onchange="updateIssueStatus(${idx}, this.value)" style="font-size:11px;padding:3px 6px;border-radius:4px;border:1px solid var(--gray-mid)">
@@ -3372,13 +3372,13 @@ function openIssueReviewModal(idx) {
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:18px">
       <div style="background:var(--gray);border-radius:8px;padding:12px 16px">
         <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.6px;color:var(--gray-dark);margin-bottom:4px">Reporter</div>
-        <div style="font-size:13px;font-weight:600">${r[2]||'—'}</div>
+        <div style="font-size:13px;font-weight:600">${r[2]||' - '}</div>
         <div style="font-size:11px;color:var(--gray-dark)">${r[3]||''}</div>
       </div>
       <div style="background:var(--gray);border-radius:8px;padding:12px 16px">
         <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.6px;color:var(--gray-dark);margin-bottom:4px">Submitted</div>
         <div style="font-size:13px;font-weight:600">${fd(r[1])}</div>
-        <div style="font-size:11px;color:var(--gray-dark)">${r[4]||'—'}</div>
+        <div style="font-size:11px;color:var(--gray-dark)">${r[4]||' - '}</div>
       </div>
     </div>
     <div style="margin-bottom:16px">
@@ -3402,7 +3402,7 @@ function openIssueReviewModal(idx) {
       </div>
     </div>`;
   document.getElementById('modalTitle').textContent = '🐛 ' + (r[5]||'Issue');
-  document.getElementById('modalSub').textContent   = 'ID: ' + (r[0]||'—') + ' · ' + (r[4]||'');
+  document.getElementById('modalSub').textContent   = 'ID: ' + (r[0]||' - ') + ' · ' + (r[4]||'');
   document.getElementById('modalBody').innerHTML    = body;
   document.getElementById('modalOverlay').classList.add('open');
 }
@@ -3489,7 +3489,7 @@ function renderMatrix() {
     ? rows.map(r=>{
         const ri=matrixData.indexOf(r);
         return `<tr>
-          <td><strong>${r[0]||'—'}</strong></td>
+          <td><strong>${r[0]||' - '}</strong></td>
           <td>${r[1]||'<i style="color:var(--gray-dark)">Unassigned</i>'}</td>
           <td>${r[2]||'<i style="color:var(--gray-dark)">Unassigned</i>'}</td>
           <td style="font-size:11px;color:var(--gray-dark)">${r[3]||''}</td>
@@ -3582,12 +3582,12 @@ function renderPeopleTable() {
     ? rows.map((r,i)=>{
         const ri=peopleData.indexOf(r);
         const sgs=(r[4]||'').split(',').map(s=>s.trim()).filter(Boolean);
-        const sgLabels={master_admin:'Master Admin',admin_ee:'Admin — Employee',admin_cw:'Admin — CW',view_admin:'View Only',compensation:'Compensation',dashboard:'Dashboard',targets:'Targets',normal:'Normal User'};
+        const sgLabels={master_admin:'Master Admin',admin_ee:'Admin - Employee',admin_cw:'Admin - CW',view_admin:'View Only',compensation:'Compensation',dashboard:'Dashboard',targets:'Targets',normal:'Normal User'};
         const sgTitles={master_admin:'Full access to all tabs and features',admin_ee:'Full access to the Admin: Employees tab',admin_cw:'Full access to the Admin: Contingent tab',view_admin:'View-only access to Admin tabs',compensation:'Access to the Compensation tab',dashboard:'Access to the Headcount Report Dashboard',targets:'Access to the Targets tab on the Headcount Dashboard',normal:'Standard user access'};
         const sgHtml=sgs.map(s=>`<span class="role-badge badge-${s}" style="font-size:10px" title="${sgTitles[s]||s}">${sgLabels[s]||s}</span>`).join(' ');
         return `<tr>
-          <td><strong>${r[0]||'—'}</strong></td>
-          <td style="font-size:12px">${r[1]||'—'}</td>
+          <td><strong>${r[0]||' - '}</strong></td>
+          <td style="font-size:12px">${r[1]||' - '}</td>
           <td style="text-align:center">${r[2]==='Y'?'✓':''}</td>
           <td style="text-align:center">${r[3]==='Y'?'✓':''}</td>
           <td>${sgHtml||'<i style="color:var(--gray-dark);font-size:11px">None</i>'}</td>
@@ -3667,14 +3667,14 @@ function stag(s){
   return `<span class="tag ${m[s]||'tag-pending'}">${s||'Pending'}</span>`;
 }
 function fd(iso){
-  if(!iso)return'—';
+  if(!iso)return' - ';
   try{return new Date(iso).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});}catch{return iso;}
 }
 function set(id,val){const el=document.getElementById(id);if(el)el.textContent=val;}
 
 // Format a timestamp in Pacific Time (handles PST/PDT automatically)
 function toPT(ts) {
-  if (!ts) return '—';
+  if (!ts) return ' - ';
   try {
     return new Date(ts).toLocaleString('en-US', {
       timeZone:'America/Los_Angeles',
@@ -3692,7 +3692,7 @@ function closeModal(){document.getElementById('modalOverlay').classList.remove('
 function closeModalOutside(e){if(e.target===document.getElementById('modalOverlay'))closeModal();}
 
 // ============================================================
-// SEED DATA — PRE-POPULATED PEOPLE
+// SEED DATA - PRE-POPULATED PEOPLE
 // ============================================================
 const SEED_PEOPLE = [
   ['Priya Anand',       'priya.anand@newwesventures.com',         'Y','N','',''],

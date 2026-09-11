@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>Ask People • People Services</title>
-<meta name="description" content="Ask People — a full People Services help desk demo: ticket inbox, SLA timers, threaded replies, dashboard, and knowledge base. Built with AI by Wes Griffin.">
+<meta name="description" content="Ask People - a full People Services help desk demo: ticket inbox, SLA timers, threaded replies, dashboard, and knowledge base. Built with AI by Wes Griffin.">
 <script>tailwindConfig = () => ({content:[],theme:{extend:{colors:{NewWesVentures:'#7c3aed'}}}});</script>
 <!-- Preconnect to CDN origins so DNS + TLS handshakes happen during HTML parse. -->
 <link rel="preconnect" href="https://cdn.tailwindcss.com" crossorigin>
@@ -78,7 +78,7 @@ body{background:var(--bg);color:var(--text);}
 #search-clear{display:none;}
 #search-clear.show{display:flex;}
 
-/* Search results dropdown — appears below the search input when there are
+/* Search results dropdown - appears below the search input when there are
    matches. Click a result to open the ticket modal. */
 #search-results-dropdown{display:none;position:absolute;top:calc(100% + 6px);left:0;right:0;background:var(--surface);border:1.5px solid var(--border);border-radius:1rem;box-shadow:0 12px 36px rgba(0,0,0,.15);max-height:480px;overflow-y:auto;z-index:300;}
 #search-results-dropdown.open{display:block;}
@@ -205,7 +205,7 @@ body{background:var(--bg);color:var(--text);}
 .form-label span{color:#ef4444;}
 .form-input{width:100%;background:var(--surface);border:1.5px solid var(--border);border-radius:.875rem;padding:.65rem 1rem;font-size:.875rem;color:var(--text);outline:none;transition:border-color .15s;}
 .form-input:focus{border-color:var(--orange);}
-/* Make selects look like text inputs — strips native chrome and adds a
+/* Make selects look like text inputs - strips native chrome and adds a
    custom CSS-only chevron in the right gutter. Applies app-wide. */
 select.form-input{
   appearance:none; -webkit-appearance:none; -moz-appearance:none;
@@ -452,7 +452,7 @@ select#modal-assignee, select#modal-priority, select#modal-status{display:none!i
 .text-orange-400{color:#8b5cf6 !important;}
 
 /* ════════════════════════════════════════════════════════════════════
-   MOBILE LAYER 1 — phones / small tablets (≤760px)
+   MOBILE LAYER 1 - phones / small tablets (≤760px)
    Desktop (≥820px) is untouched. Builds on the existing 1024/640 rules.
    ════════════════════════════════════════════════════════════════════ */
 @media (max-width:760px){
@@ -514,7 +514,7 @@ select#modal-assignee, select#modal-priority, select#modal-status{display:none!i
 
   /* ── TICKET DETAIL → full-screen sheet that SLIDES IN from the right with a
        sticky "‹ Inbox" back bar; scrolls internally. Reuses #ticket-modal +
-       its existing .open class — no JS changes. ── */
+       its existing .open class - no JS changes. ── */
   #ticket-modal.modal-overlay{align-items:stretch;justify-content:stretch;background:var(--surface);backdrop-filter:none;padding:0;}
   #ticket-modal .modal-box{
     width:100vw !important;max-width:100vw !important;height:100vh !important;
@@ -539,7 +539,7 @@ select#modal-assignee, select#modal-priority, select#modal-status{display:none!i
   #ticket-modal .field-group{flex:1 1 30%;}
   #ticket-modal .dd-btn{min-width:0;width:100%;}
   #ticket-modal .modal-head-row > div:last-child{flex:1 1 100%;flex-wrap:wrap;gap:.5rem;align-items:flex-start;}
-  /* the old top-right × is replaced by the back bar — hide it on phones */
+  /* the old top-right × is replaced by the back bar - hide it on phones */
   #ticket-modal .modal-head-row > div:last-child > button:last-child{display:none !important;}
   /* tags strip wraps so Add / Take-It / Escalate never poke past the edge */
   #ticket-modal .modal-tags-row{flex-wrap:wrap;gap:.5rem .6rem !important;}
@@ -577,7 +577,7 @@ select#modal-assignee, select#modal-priority, select#modal-status{display:none!i
 }
 
 /* ════════════════════════════════════════════════════════════════════
-   MOBILE LAYER 2 — true phone bar (≤430px). Top-tier 360–430px.
+   MOBILE LAYER 2 - true phone bar (≤430px). Top-tier 360–430px.
    ════════════════════════════════════════════════════════════════════ */
 @media (max-width:430px){
   :root{--header-h:58px;}
@@ -628,8 +628,8 @@ select#modal-assignee, select#modal-priority, select#modal-status{display:none!i
 </style>
 <script>
   // Server-injected by Apps Script doGet():
-  //   _initialTicket — deep-link target (?ticket=ASK-XXXX)
-  //   _initialUser   — caller's identity from Session.getActiveUser(). The app
+  //   _initialTicket - deep-link target (?ticket=ASK-XXXX)
+  //   _initialUser - caller's identity from Session.getActiveUser(). The app
   //                    runs in the Apps Script iframe where the user is already
   //                    authenticated at the URL level; if this is missing the
   //                    loader overlay shows an error.
@@ -794,7 +794,7 @@ select#modal-assignee, select#modal-priority, select#modal-status{display:none!i
 <!-- TICKET DETAIL MODAL -->
 <div id="ticket-modal" class="modal-overlay" onclick="if(event.target===this)hideModal()">
   <div class="modal-box" style="width:1000px;max-height:90vh;" onclick="event.stopPropagation()">
-    <!-- Mobile-only sticky back bar (hidden ≥761px). Reuses hideModal() — no new logic. -->
+    <!-- Mobile-only sticky back bar (hidden ≥761px). Reuses hideModal() - no new logic. -->
     <button type="button" class="sheet-back" onclick="hideModal()" aria-label="Back to inbox"><span aria-hidden="true">‹</span> Inbox</button>
     <!-- Modal header -->
     <div class="modal-head-row" style="padding:1.25rem 1.5rem;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:.875rem;flex-shrink:0;background:var(--surface);position:relative;z-index:3;">
@@ -803,17 +803,17 @@ select#modal-assignee, select#modal-priority, select#modal-status{display:none!i
       <h2 id="modal-subject" style="font-size:1.1rem;font-weight:600;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;"></h2>
       <div style="display:flex;align-items:flex-end;gap:.75rem;flex-shrink:0;">
         <div class="field-group"><span class="field-label">Assignee</span>
-          <div class="dd" id="dd-assignee"><button class="dd-btn" type="button" onclick="toggleDD('dd-assignee')"><span class="dd-value">—</span><span class="dd-chevron">▾</span></button><div class="dd-menu"></div></div>
+          <div class="dd" id="dd-assignee"><button class="dd-btn" type="button" onclick="toggleDD('dd-assignee')"><span class="dd-value"></span><span class="dd-chevron">▾</span></button><div class="dd-menu"></div></div>
           <select id="modal-assignee" onchange="updateAssignee();syncDDFromSelect('dd-assignee')"></select>
         </div>
         <div class="field-group"><span class="field-label">Priority</span>
-          <div class="dd" id="dd-priority"><button class="dd-btn" type="button" onclick="toggleDD('dd-priority')"><span class="dd-value">—</span><span class="dd-chevron">▾</span></button><div class="dd-menu"></div></div>
+          <div class="dd" id="dd-priority"><button class="dd-btn" type="button" onclick="toggleDD('dd-priority')"><span class="dd-value"></span><span class="dd-chevron">▾</span></button><div class="dd-menu"></div></div>
           <select id="modal-priority" onchange="updatePriority();syncDDFromSelect('dd-priority')">
             <option value="urgent">🔴 Urgent</option><option value="high">🟠 High</option><option value="medium">🟡 Medium</option><option value="low">🟢 Low</option>
           </select>
         </div>
         <div class="field-group"><span class="field-label">Status</span>
-          <div class="dd" id="dd-status"><button class="dd-btn" type="button" onclick="toggleDD('dd-status')" style="font-weight:600;"><span class="dd-value">—</span><span class="dd-chevron">▾</span></button><div class="dd-menu"></div></div>
+          <div class="dd" id="dd-status"><button class="dd-btn" type="button" onclick="toggleDD('dd-status')" style="font-weight:600;"><span class="dd-value"></span><span class="dd-chevron">▾</span></button><div class="dd-menu"></div></div>
           <select id="modal-status" onchange="updateStatus();syncDDFromSelect('dd-status')">
             <option value="open">🟠 Open</option><option value="in-progress">🔵 In Progress</option><option value="escalated">🟣 Tier 2</option><option value="closed">✅ Closed</option>
           </select>
@@ -872,7 +872,7 @@ select#modal-assignee, select#modal-priority, select#modal-status{display:none!i
            those recipients; their replies come back as additional internal
            notes on this same ticket. -->
       <div id="internal-note-fields" style="display:none;margin-bottom:.75rem;">
-        <input id="note-send-to" type="text" placeholder="Send to (optional, comma-separated emails) — e.g. legal@partner.com, manager@newwesventures.com" oninput="_onNoteSendToInput()" class="form-input" style="font-size:.8rem;margin-bottom:.4rem;">
+        <input id="note-send-to" type="text" placeholder="Send to (optional, comma-separated emails) - e.g. legal@partner.com, manager@newwesventures.com" oninput="_onNoteSendToInput()" class="form-input" style="font-size:.8rem;margin-bottom:.4rem;">
         <p id="note-send-to-error" class="form-error" style="margin-bottom:.4rem;"></p>
         <label id="note-include-history-label" style="display:flex;align-items:center;gap:.4rem;font-size:.78rem;color:var(--text-muted);cursor:pointer;opacity:.5;transition:opacity .15s;">
           <input type="checkbox" id="note-include-history" disabled style="accent-color:var(--orange);cursor:pointer;">
@@ -1135,7 +1135,7 @@ select#modal-assignee, select#modal-priority, select#modal-status{display:none!i
         <div id="sc-sla" class="settings-content" style="display:none;">
           <div class="settings-section">
             <h3 style="font-weight:700;font-size:1rem;margin-bottom:.5rem;">SLA Settings</h3>
-            <p style="font-size:.8rem;color:var(--text-muted);margin-bottom:1rem;">Team-wide SLA threshold. Any ticket open longer than this is flagged as breached. Admin only — applies to all users.</p>
+            <p style="font-size:.8rem;color:var(--text-muted);margin-bottom:1rem;">Team-wide SLA threshold. Any ticket open longer than this is flagged as breached. Admin only - applies to all users.</p>
             <div class="settings-card">
               <div class="settings-row">
                 <div>
@@ -1201,7 +1201,7 @@ select#modal-assignee, select#modal-priority, select#modal-status{display:none!i
     <div style="padding:1.1rem 1.5rem;border-bottom:1px solid var(--border);background:linear-gradient(135deg,var(--orange-lt),var(--surface));display:flex;align-items:center;gap:.875rem;flex-shrink:0;">
       <div style="width:2.5rem;height:2.5rem;background:var(--orange);color:#fff;border-radius:.875rem;display:flex;align-items:center;justify-content:center;font-size:1rem;flex-shrink:0;"><i class="fa-solid fa-eye"></i></div>
       <div style="flex:1;">
-        <h3 style="font-size:1rem;font-weight:700;">Employee Portal — Admin Proxy View</h3>
+        <h3 style="font-size:1rem;font-weight:700;">Employee Portal - Admin Proxy View</h3>
         <p style="font-size:.75rem;color:var(--text-muted);margin-top:.1rem;">See exactly what a specific employee sees. Internal notes and admin controls are hidden.</p>
       </div>
       <div style="background:var(--orange);color:#fff;font-size:.72rem;font-weight:700;padding:.25rem .75rem;border-radius:9999px;">ADMIN TOOL</div>
@@ -1211,7 +1211,7 @@ select#modal-assignee, select#modal-priority, select#modal-status{display:none!i
       <i class="fa-solid fa-user-circle" style="color:var(--orange);font-size:1rem;"></i>
       <span style="font-size:.85rem;font-weight:600;white-space:nowrap;">Viewing as:</span>
       <select id="proxy-employee-select" onchange="loadProxyEmployee()" class="form-input" style="flex:1;max-width:320px;padding:.4rem .75rem;font-size:.875rem;height:auto;">
-        <option value="">— Select an employee —</option>
+        <option value="">Select an employee</option>
       </select>
       <div style="font-size:.75rem;color:var(--text-muted);margin-left:auto;white-space:nowrap;"><i class="fa-solid fa-lock" style="margin-right:.25rem;"></i>Internal notes hidden</div>
     </div>
@@ -1290,7 +1290,7 @@ select#modal-assignee, select#modal-priority, select#modal-status{display:none!i
 </div>
 <!-- TOAST -->
 <!-- Mobile bottom navigation (visible ≤430px only; see .mobile-bottom-nav CSS).
-     Buttons reuse the SAME functions the sidebar links call — no new app logic.
+     Buttons reuse the SAME functions the sidebar links call - no new app logic.
      The inline class toggle is purely the bar's own visual active state. -->
 <nav class="mobile-bottom-nav" aria-label="Primary">
   <button class="mbn-item active" onclick="[].forEach.call(this.parentNode.children,function(b){b.classList.remove('active')});this.classList.add('active');navigateTo('inbox',null);"><i class="fa-solid fa-inbox"></i>Inbox</button>
@@ -1300,11 +1300,11 @@ select#modal-assignee, select#modal-priority, select#modal-status{display:none!i
   <button class="mbn-item" onclick="toggleSidebar();"><i class="fa-solid fa-bars"></i>More</button>
 </nav>
 <div id="toast" class="toast toast-success"><span id="toast-text"></span></div><script>// CONSTANTS & CONFIG
-// IMAGE DATA URIs — lazy-loaded from inapp_assets.html via Apps Script.
+// IMAGE DATA URIs - lazy-loaded from inapp_assets.html via Apps Script.
 // Placeholders are populated once _loadAssets() resolves. Anything that needs
 // them must await _loadAssets() (or be called after it has resolved).
 /* ═══════════════════════════════════════════════════════════════
-   DEMO BOOTSTRAP — added to turn the production app into a
+   DEMO BOOTSTRAP - added to turn the production app into a
    self-contained, no-backend demo. Injects a fake signed-in agent,
    mock tickets/users, placeholder brand art, and a google.script.run
    shim so every real UI path runs with ZERO server. Delete this IIFE
@@ -1313,7 +1313,7 @@ select#modal-assignee, select#modal-priority, select#modal-status{display:none!i
 (function(){
   window._initialUser = { name: 'Wes Griffin', email: 'wes.griffin@newwesventures.com' };
 
-  // Placeholder brand art (inline SVG data URIs — no external assets).
+  // Placeholder brand art (inline SVG data URIs - no external assets).
   function _svg(s){ return 'data:image/svg+xml,' + encodeURIComponent(s); }
   var _O = '#7c3aed';
   function _words(c){ return _svg("<svg xmlns='http://www.w3.org/2000/svg' width='168' height='42'><text x='0' y='31' font-family='Arial,Helvetica,sans-serif' font-size='30' font-weight='800' fill='"+c+"'>Ask People</text></svg>"); }
@@ -1325,7 +1325,7 @@ select#modal-assignee, select#modal-priority, select#modal-status{display:none!i
     white_logo: _svg("<svg xmlns='http://www.w3.org/2000/svg' width='173' height='28'><text x='0' y='21' font-family='Arial,Helvetica,sans-serif' font-size='20' font-weight='800' fill='#ffffff'>NewWesVentures</text></svg>")
   };
 
-  // google.script.run shim — resolves every backend RPC benignly so the real
+  // google.script.run shim - resolves every backend RPC benignly so the real
   // code paths run without a server. getInAppAssets returns the demo art.
   function _demoRpc(fn){
     if (fn === 'getInAppAssets') return window.DEMO_ASSETS;
@@ -1383,56 +1383,56 @@ select#modal-assignee, select#modal-priority, select#modal-status{display:none!i
     ],
     tickets: [
       TK({id:'ASK-2487',subject:'Discrepancy in my overtime pay last period',fromName:'Jordan Alvarez',email:'jordan.alvarez@newwesventures.com',h:2,status:'open',priority:'urgent',tags:['payroll'],unread:true,messages:[
-        MSG('Jordan Alvarez','jordan.alvarez@newwesventures.com','Hi — my last paycheck looks short. I worked 6 hours of overtime two weeks ago but I only see 2 hours paid. Can someone take a look?',2)]}),
+        MSG('Jordan Alvarez','jordan.alvarez@newwesventures.com','Hi - my last paycheck looks short. I worked 6 hours of overtime two weeks ago but I only see 2 hours paid. Can someone take a look?',2)]}),
       TK({id:'ASK-2486',subject:'Need an employment verification letter for my apartment',fromName:'Taylor Brooks',email:'taylor.brooks@newwesventures.com',h:5,status:'open',priority:'high',tags:['verification'],unread:true,messages:[
         MSG('Taylor Brooks','taylor.brooks@newwesventures.com','My leasing office needs an employment verification letter (title, start date, salary) by Friday. How do I request one?',5)]}),
       TK({id:'ASK-2485',subject:'How do I enroll in the 401(k) match?',fromName:'Sam Rivera',email:'sam.rivera@newwesventures.com',h:26,status:'in-progress',priority:'medium',assignee:ME,tags:['benefits','401k'],replied:true,messages:[
-        MSG('Sam Rivera','sam.rivera@newwesventures.com','I just passed 90 days — how do I sign up for the 401(k) and get the company match?',26),
+        MSG('Sam Rivera','sam.rivera@newwesventures.com','I just passed 90 days - how do I sign up for the 401(k) and get the company match?',26),
         MSG('Wes Griffin',ME,'Congrats on hitting 90 days! You can enroll anytime in Workday under Benefits → Retirement Savings. The match is dollar-for-dollar up to 4%. Want the step-by-step?',24)]}),
-      TK({id:'ASK-2484',subject:'Parental leave — what is the process and timeline?',fromName:'Aisha Khan',email:'aisha.khan@newwesventures.com',h:30,status:'in-progress',priority:'high',assignee:ME,tags:['leave','benefits'],replied:true,messages:[
+      TK({id:'ASK-2484',subject:'Parental leave - what is the process and timeline?',fromName:'Aisha Khan',email:'aisha.khan@newwesventures.com',h:30,status:'in-progress',priority:'high',assignee:ME,tags:['leave','benefits'],replied:true,messages:[
         MSG('Aisha Khan','aisha.khan@newwesventures.com','We are expecting in August. What is the parental leave policy, and how far in advance should I notify my manager?',30),
         MSG('Wes Griffin',ME,'Congratulations! You are eligible for paid parental leave. I will send the policy and the leave-request form. We recommend notifying your manager about 30 days out where possible.',28),
         MSG('Wes Griffin',ME,'Internal: confirm CA PFL wage-replacement overlap and disability-leave start date with payroll before finalizing dates.',27,true)]}),
       TK({id:'ASK-2483',subject:'My manager has not approved my PTO request',fromName:'Chris Donovan',email:'chris.donovan@newwesventures.com',h:50,status:'escalated',priority:'high',assignee:PRIYA,tags:['employee-relations','pto'],replied:true,messages:[
         MSG('Chris Donovan','chris.donovan@newwesventures.com','I submitted PTO three weeks ago for a family trip and it is still pending. My manager is not responding. Can People Services help?',50),
-        MSG('Priya Nair',PRIYA,'Thanks for flagging, Chris — that is not the experience we want. I am looking into it today and will follow up by end of day.',48),
+        MSG('Priya Nair',PRIYA,'Thanks for flagging, Chris - that is not the experience we want. I am looking into it today and will follow up by end of day.',48),
         MSG('Priya Nair',PRIYA,'Internal: escalated to ER lead, looping in the skip-level. Will document the outcome here.',47,true)]}),
       TK({id:'ASK-2482',subject:'I did not receive my commuter benefits card',fromName:'Lena Park',email:'lena.park@newwesventures.com',h:8,status:'open',priority:'medium',tags:['benefits','commuter'],unread:true,messages:[
         MSG('Lena Park','lena.park@newwesventures.com','I enrolled in commuter benefits last month but never got the card in the mail. Who do I contact?',8)]}),
       TK({id:'ASK-2481',subject:'When does open enrollment start this year?',fromName:'Marco Silva',email:'marco.silva@newwesventures.com',h:20,status:'in-progress',priority:'low',assignee:MAYA,tags:['benefits','open-enrollment'],replied:true,messages:[
-        MSG('Marco Silva','marco.silva@newwesventures.com','Trying to plan ahead — when is open enrollment and how long is the window?',20),
+        MSG('Marco Silva','marco.silva@newwesventures.com','Trying to plan ahead - when is open enrollment and how long is the window?',20),
         MSG('Maya Chen',MAYA,'Open enrollment runs the first two weeks of November. I will share the benefits guide and a calendar invite closer to the date.',18)]}),
       TK({id:'ASK-2480',subject:'Update my home address in Workday',fromName:'Priya Raman',email:'priya.raman@newwesventures.com',h:74,status:'closed',priority:'low',assignee:ME,tags:['hris'],replied:true,closedAt:now-70*H,csat:{score:5,comment:'Super quick, thank you!',submittedAt:now-69*H},messages:[
-        MSG('Priya Raman','priya.raman@newwesventures.com','I moved last weekend — how do I update my address for payroll and benefits?',74),
+        MSG('Priya Raman','priya.raman@newwesventures.com','I moved last weekend - how do I update my address for payroll and benefits?',74),
         MSG('Wes Griffin',ME,'You can update it yourself in Workday under Personal Information → Contact. It flows to payroll and benefits automatically. Let me know if you hit any issues!',72)]}),
       TK({id:'ASK-2479',subject:'Reset my Workday password',fromName:'Dana Lee',email:'dana.lee@newwesventures.com',h:98,status:'closed',priority:'low',assignee:DEVIN,tags:['it-access'],replied:true,closedAt:now-96*H,messages:[
         MSG('Dana Lee','dana.lee@newwesventures.com','Locked out of Workday after the SSO change. Can you help me reset?',98),
-        MSG('Devin Brooks',DEVIN,'Sent you a reset link via SSO self-service. You should be back in within a few minutes — reply here if not.',96)]}),
-      TK({id:'ASK-2478',subject:'Relocation reimbursement — what is covered?',fromName:'Omar Haddad',email:'omar.haddad@newwesventures.com',h:40,status:'in-progress',priority:'medium',assignee:MAYA,tags:['payroll','relocation'],replied:true,messages:[
+        MSG('Devin Brooks',DEVIN,'Sent you a reset link via SSO self-service. You should be back in within a few minutes - reply here if not.',96)]}),
+      TK({id:'ASK-2478',subject:'Relocation reimbursement - what is covered?',fromName:'Omar Haddad',email:'omar.haddad@newwesventures.com',h:40,status:'in-progress',priority:'medium',assignee:MAYA,tags:['payroll','relocation'],replied:true,messages:[
         MSG('Omar Haddad','omar.haddad@newwesventures.com','I am relocating for the SF office in two months. What relocation costs are reimbursable and what receipts do I need?',40),
-        MSG('Maya Chen',MAYA,'Great question — I will send the relocation policy. In short: movers, travel, and up to 30 days of temporary housing are covered with itemized receipts.',38)]}),
+        MSG('Maya Chen',MAYA,'Great question - I will send the relocation policy. In short: movers, travel, and up to 30 days of temporary housing are covered with itemized receipts.',38)]}),
       TK({id:'ASK-2477',subject:'Add my spouse to my health insurance (new marriage)',fromName:'Hannah Cole',email:'hannah.cole@newwesventures.com',h:12,status:'in-progress',priority:'medium',assignee:MAYA,tags:['benefits','qle'],replied:true,messages:[
         MSG('Hannah Cole','hannah.cole@newwesventures.com','I got married last week! How do I add my spouse to my medical and dental, and what is the deadline?',12),
         MSG('Maya Chen',MAYA,'Congratulations! Marriage is a qualifying life event, so you have 30 days to make changes in Workday under Benefits → Life Event. I will send the document checklist.',10)]}),
-      TK({id:'ASK-2476',subject:'FSA vs HSA — which one should I choose?',fromName:'Leo Martinez',email:'leo.martinez@newwesventures.com',h:15,status:'open',priority:'low',tags:['benefits'],messages:[
+      TK({id:'ASK-2476',subject:'FSA vs HSA - which one should I choose?',fromName:'Leo Martinez',email:'leo.martinez@newwesventures.com',h:15,status:'open',priority:'low',tags:['benefits'],messages:[
         MSG('Leo Martinez','leo.martinez@newwesventures.com','I am setting up my benefits and not sure whether to pick the FSA or the HSA. Can you explain the difference?',15)]}),
       TK({id:'ASK-2475',subject:'I think my signing bonus was taxed incorrectly',fromName:'Devon Price',email:'devon.price@newwesventures.com',h:3,status:'open',priority:'high',tags:['payroll'],unread:true,messages:[
         MSG('Devon Price','devon.price@newwesventures.com','My signing bonus hit this paycheck but the tax withholding looks much higher than I expected. Can payroll confirm it was calculated correctly?',3)]}),
       TK({id:'ASK-2474',subject:'Requesting a standing desk (ergonomic accommodation)',fromName:'Grace Liu',email:'grace.liu@newwesventures.com',h:22,status:'in-progress',priority:'medium',assignee:DEVIN,tags:['accommodation'],replied:true,messages:[
         MSG('Grace Liu','grace.liu@newwesventures.com','My doctor recommended a sit/stand desk for my back. How do I request one as an accommodation?',22),
-        MSG('Devin Brooks',DEVIN,'Happy to help. I have opened an accommodation request — please reply with the doctor note when you can and we will coordinate with Workplace on the desk.',20)]}),
+        MSG('Devin Brooks',DEVIN,'Happy to help. I have opened an accommodation request - please reply with the doctor note when you can and we will coordinate with Workplace on the desk.',20)]}),
       TK({id:'ASK-2473',subject:'How do I report a workplace concern confidentially?',fromName:'A Concerned Employee',email:'concerned.employee@newwesventures.com',h:6,status:'escalated',priority:'urgent',assignee:PRIYA,tags:['employee-relations'],replied:true,messages:[
         MSG('A Concerned Employee','concerned.employee@newwesventures.com','I want to raise a concern about conduct on my team but I am worried about confidentiality and retaliation. What are my options?',6),
-        MSG('Priya Nair',PRIYA,'Thank you for trusting us — this will be handled confidentially and retaliation is strictly prohibited. I will reach out privately to set up a time, and you can also use the anonymous ethics line.',5),
+        MSG('Priya Nair',PRIYA,'Thank you for trusting us - this will be handled confidentially and retaliation is strictly prohibited. I will reach out privately to set up a time, and you can also use the anonymous ethics line.',5),
         MSG('Priya Nair',PRIYA,'Internal: routed to ER lead; do not auto-close. Handle per confidential-investigation SOP.',5,true)]}),
       TK({id:'ASK-2472',subject:'Am I eligible for tuition reimbursement?',fromName:'Noah Adams',email:'noah.adams@newwesventures.com',h:120,status:'closed',priority:'low',assignee:ME,tags:['benefits','education'],replied:true,closedAt:now-118*H,csat:{score:4,comment:'Helpful, thanks!',submittedAt:now-117*H},messages:[
         MSG('Noah Adams','noah.adams@newwesventures.com','I want to take an evening course related to my role. Does the company reimburse tuition, and how much?',120),
-        MSG('Wes Griffin',ME,'Yes — eligible employees can receive up to the annual tuition cap for pre-approved, job-related courses. I will send the policy and the pre-approval form.',118)]}),
+        MSG('Wes Griffin',ME,'Yes - eligible employees can receive up to the annual tuition cap for pre-approved, job-related courses. I will send the policy and the pre-approval form.',118)]}),
       TK({id:'ASK-2471',subject:'Update my direct deposit / banking info',fromName:'Sofia Reyes',email:'sofia.reyes@newwesventures.com',h:140,status:'closed',priority:'low',assignee:DEVIN,tags:['payroll','hris'],replied:true,closedAt:now-138*H,messages:[
-        MSG('Sofia Reyes','sofia.reyes@newwesventures.com','I switched banks — how do I update my direct deposit so my next paycheck goes to the right account?',140),
+        MSG('Sofia Reyes','sofia.reyes@newwesventures.com','I switched banks - how do I update my direct deposit so my next paycheck goes to the right account?',140),
         MSG('Devin Brooks',DEVIN,'You can update it in Workday under Pay → Payment Elections. Changes before the payroll cutoff apply to the next run. Let us know if you need the cutoff date!',138)]}),
-      TK({id:'ASK-2470',subject:'H-1B transfer — timeline and what you need from me',fromName:'Wei Zhang',email:'wei.zhang@newwesventures.com',h:34,status:'in-progress',priority:'high',assignee:ME,tags:['immigration'],replied:true,messages:[
-        MSG('Wei Zhang','wei.zhang@newwesventures.com','I accepted the offer — how does the H-1B transfer work, and is there anything I need to provide before my start date?',34),
+      TK({id:'ASK-2470',subject:'H-1B transfer - timeline and what you need from me',fromName:'Wei Zhang',email:'wei.zhang@newwesventures.com',h:34,status:'in-progress',priority:'high',assignee:ME,tags:['immigration'],replied:true,messages:[
+        MSG('Wei Zhang','wei.zhang@newwesventures.com','I accepted the offer - how does the H-1B transfer work, and is there anything I need to provide before my start date?',34),
         MSG('Wes Griffin',ME,'Welcome aboard! Our immigration partner will initiate the transfer; you can begin work once we file. I will send the document checklist and connect you with counsel.',32),
         MSG('Wes Griffin',ME,'Internal: confirm premium-processing budget with TA before filing; coordinate start date with the hiring manager.',31,true)]})
     ],
@@ -1487,11 +1487,11 @@ select#modal-assignee, select#modal-priority, select#modal-status{display:none!i
       document.head.appendChild(st);
     }
     var steps=[
-      {sel:'#sidebar', pos:'right', title:'Welcome to Ask People 👋', body:'This is the People Services help desk — every employee question becomes a ticket. Quick 60-second tour. (Demo with sample data.)'},
+      {sel:'#sidebar', pos:'right', title:'Welcome to Ask People 👋', body:'This is the People Services help desk - every employee question becomes a ticket. Quick 60-second tour. (Demo with sample data.)'},
       {sel:".sidebar-link[onclick*='inbox']", pos:'right', title:'The Inbox', body:'Unassigned tickets waiting to be claimed. The badge shows how many need attention.', pre:function(){var l=document.querySelector(".sidebar-link[onclick*='inbox']"); if(l) navigateTo('inbox', l);}},
       {sel:'.ticket-row', pos:'bottom', title:'A ticket at a glance', body:'Each row shows priority, a live SLA timer, who it is from, the assigned agent, and category tags. An orange dot means unread. Click a row to open the full thread.'},
-      {sel:".sidebar-link[onclick*='dashboard']", pos:'right', title:'The Dashboard', body:'Live metrics — open volume, SLA breaches, CSAT, and a breakdown by category and status.', pre:function(){var l=document.querySelector(".sidebar-link[onclick*='dashboard']"); if(l) navigateTo('dashboard', l);}},
-      {sel:"[onclick*='openKB']", pos:'right', optional:true, title:'Knowledge Base', body:'Self-serve answers to common questions. Agents can share an article instead of retyping — try it after the tour!'},
+      {sel:".sidebar-link[onclick*='dashboard']", pos:'right', title:'The Dashboard', body:'Live metrics - open volume, SLA breaches, CSAT, and a breakdown by category and status.', pre:function(){var l=document.querySelector(".sidebar-link[onclick*='dashboard']"); if(l) navigateTo('dashboard', l);}},
+      {sel:"[onclick*='openKB']", pos:'right', optional:true, title:'Knowledge Base', body:'Self-serve answers to common questions. Agents can share an article instead of retyping - try it after the tour!'},
       {sel:null, title:'You are all set 🎉', body:'Click any ticket to reply (agent replies appear on the right in orange), explore the Dashboard and Settings → Tags, or open the Knowledge Base. Enjoy the demo!', pre:function(){var l=document.querySelector(".sidebar-link[onclick*='inbox']"); if(l) navigateTo('inbox', l);}}
     ];
     var i=0;
@@ -1544,7 +1544,7 @@ let WHITE_LOGO_HORIZONTAL_IMG = '';
 const ASSETS_VERSION = 'v3';
 const ASSETS_CACHE_KEY = 'ap_assets_v3';
 
-// Inlined cricon — small (~12KB) image used for confetti + loader dots. Inlining
+// Inlined cricon - small (~12KB) image used for confetti + loader dots. Inlining
 // it eliminates the broken-image moment on first ever visit (before _loadAssets
 // resolves). Larger logo image (ask_people_full) stays lazy-loaded.
 const CRICON_INLINE = "data:image/png;base64,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";
@@ -1562,8 +1562,7 @@ function _applyAssetsToConsts(data) {
 // ── App-ready signal ──
 // Resolves when data is loaded and the dashboard is rendering. The login-intro
 // animation watches this promise to fade out at the right time (instead of a
-// hardcoded 6s timer). Multiple call sites can call _markAppReady() safely —
-// only the first call has effect.
+// hardcoded 6s timer). Multiple call sites can call _markAppReady() safely - // only the first call has effect.
 let _appReadyResolver = null;
 const _appReadyPromise = new Promise(function(resolve) { _appReadyResolver = resolve; });
 function _markAppReady() {
@@ -1583,7 +1582,7 @@ function _writeCachedAssets(data) {
   try {
     localStorage.setItem(ASSETS_CACHE_KEY, JSON.stringify(data));
     localStorage.setItem(ASSETS_CACHE_KEY + '_ver', ASSETS_VERSION);
-  } catch(e) { /* quota exceeded or storage disabled — fine, just won't cache */ }
+  } catch(e) { /* quota exceeded or storage disabled - fine, just won't cache */ }
 }
 
 // ── Sheets-data cache (stale-while-revalidate) ──
@@ -1611,7 +1610,7 @@ function _writeSheetsCache(data) {
     localStorage.setItem(_sheetsCacheKey(), JSON.stringify(data));
     localStorage.setItem(_sheetsCacheKey() + '_ver', SHEETS_CACHE_VERSION);
     localStorage.setItem(_sheetsCacheKey() + '_at', String(Date.now()));
-  } catch(_) { /* quota or disabled — fine */ }
+  } catch(_) { /* quota or disabled - fine */ }
 }
 
 let _assetsPromise = null;
@@ -1624,7 +1623,7 @@ function _loadAssets() {
     _assetsPromise = Promise.resolve(cached);
     return _assetsPromise;
   }
-  // Cache miss — fetch from server via google.script.run (slow, ~8s).
+  // Cache miss - fetch from server via google.script.run (slow, ~8s).
   _assetsPromise = runScript('getInAppAssets').then(function(data) {
     _applyAssetsToConsts(data);
     _writeCachedAssets(data);
@@ -1634,7 +1633,7 @@ function _loadAssets() {
 }
 // Kick off the load immediately. Fire-and-forget; callers that need the
 // constants must await _loadAssets() to be sure they're populated.
-try { _loadAssets(); } catch(e) { /* runScript not ready yet — that's fine, callers will retry */ }
+try { _loadAssets(); } catch(e) { /* runScript not ready yet - that's fine, callers will retry */ }
 
 // Apply static-paint images (favicon, homepage logo) once assets land.
 (function _applyStaticImages() {
@@ -1667,7 +1666,7 @@ const STATUS_CFG = {
   closed:      {label:'Closed',      cls:'status-closed'},
 };
 // Reply templates and KB articles are populated from the backing sheet.
-// Templates: localStorage 'ap_templates' (per-device — managed via Templates Manager).
+// Templates: localStorage 'ap_templates' (per-device - managed via Templates Manager).
 // KB: lazy-loaded from the KnowledgeBase sheet the first time openKB() runs.
 const DEFAULT_TEMPLATES = [];
 let KB_ARTICLES = [];
@@ -1692,7 +1691,7 @@ let confirmCallback = null;
 function esc(s){if(s==null)return'';return String(s).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));}
 function nextId(){return'ASK-'+(ticketCounter++);}
 function getAgent(id){
-  if (!id) return {id:'',name:'Unassigned',initials:'—',color:'bg-gray-400',role:'agent'};
+  if (!id) return {id:'',name:'Unassigned',initials:' - ',color:'bg-gray-400',role:'agent'};
   // Look up in permUsers (live from Sheets)
   const u = permUsers.find(u => u.email === id || u.id === id);
   if (u) {
@@ -1706,7 +1705,7 @@ function getAgent(id){
     const initials = name.split(' ').map(p=>p[0]||'').join('').slice(0,2).toUpperCase();
     return {id, name, initials, color:'bg-gray-400', role:'agent'};
   }
-  return {id:'',name:'Unassigned',initials:'—',color:'bg-gray-400',role:'agent'};
+  return {id:'',name:'Unassigned',initials:' - ',color:'bg-gray-400',role:'agent'};
 }
 function agentInitials(id){const a=getAgent(id);return a.initials;}
 function agentName(id){const a=getAgent(id);return a.name;}
@@ -1725,7 +1724,7 @@ function formatMs(ms){
   return h>0?h+'h '+m+'m':m+'m';
 }
 function getSLA(ticket){
-  if(ticket.status==='closed'||ticket.status==='escalated')return{label:'—',cls:'sla-closed',breached:false};
+  if(ticket.status==='closed'||ticket.status==='escalated')return{label:' - ',cls:'sla-closed',breached:false};
   const msgs = ticket.messages || [];
   let lastRelevant = null;
   for (let i = msgs.length - 1; i >= 0; i--) {
@@ -1751,9 +1750,9 @@ function getSLA(ticket){
 // ═══════════════════════════════════════════════════════════════
 // PERSISTENCE
 // ═══════════════════════════════════════════════════════════════
-// save() — see Sheets-backed version below
+// save() - see Sheets-backed version below
 function loadTickets(){try{const s=localStorage.getItem('ap_tickets');if(s){const t=JSON.parse(s);if(t.length)return t;}}catch(e){}return null;}
-// Templates and canned responses are unified — both UIs (sidebar manager,
+// Templates and canned responses are unified - both UIs (sidebar manager,
 // ticket-modal Templates button, settings panel) read and write the same
 // sheet-synced store via getCannedResponses / saveCannedResponses.
 function getTemplates(){ return getCannedResponses(); }
@@ -1832,7 +1831,7 @@ function sortList(list){
     if(col==='from'){return d*(a.from||'').localeCompare(b.from||'');}
     if(col==='subject'){return d*(a.subject||'').localeCompare(b.subject||'');}
     if(col==='id'){
-      // ID format is "ASK-<number>" — sort numerically by the trailing digits.
+      // ID format is "ASK-<number>" - sort numerically by the trailing digits.
       const na=parseInt(String(a.id||'').replace(/\D/g,''))||0;
       const nb=parseInt(String(b.id||'').replace(/\D/g,''))||0;
       return d*(na-nb);
@@ -2005,7 +2004,7 @@ function openTicket(id){
   currentTicket.unread=false;
   save(currentTicket.id);
   // Re-render the list immediately so the unread dot disappears the moment
-  // the agent opens the ticket — not on the next auto-refresh cycle.
+  // the agent opens the ticket - not on the next auto-refresh cycle.
   renderAll();
   // Populate header
   document.getElementById('modal-ticket-id').textContent=currentTicket.id;
@@ -2013,7 +2012,7 @@ function openTicket(id){
   // Assignee
   const asel=document.getElementById('modal-assignee');
   const agents = permUsers.filter(u=>u.active!==false&&u.role!=='readonly');
-  asel.innerHTML = '<option value="">— Unassigned —</option>' +
+  asel.innerHTML = '<option value="">Unassigned</option>' +
     agents.map(u=>'<option value="'+u.email+'" '+
       (u.email===currentTicket.assignee||u.id===currentTicket.assignee?'selected':'')+
       '>'+esc(u.name)+'</option>').join('');
@@ -2103,7 +2102,7 @@ async function _refreshOpenTicket() {
   const fresh = rowToTicket(snap.ticket);
   fresh.messages = (snap.messages || []).map(rowToMsg);
 
-  // The agent has this ticket open and is actively viewing it — by definition
+  // The agent has this ticket open and is actively viewing it - by definition
   // they've seen it. Don't let the auto-refresh flip unread back to true if
   // saveTicketToSheet (from openTicket) hasn't yet propagated to the sheet.
   if (!currentTicket.unread) fresh.unread = false;
@@ -2141,7 +2140,7 @@ async function _refreshDashboardSilently() {
   // Snapshot some signal of "what changed" before refetching so we know
   // whether to pulse (we don't want to pulse on first paint or no-op).
   const beforeIds = JSON.stringify((tickets || []).map(t => t.id + ':' + (t.messages ? t.messages.length : 0) + ':' + t.status + ':' + (t.unread ? 1 : 0)));
-  const ok = await loadFromSheets(true).catch(() => false);  // silent — no overlay
+  const ok = await loadFromSheets(true).catch(() => false);  // silent - no overlay
   if (!ok) return false;
   const afterIds = JSON.stringify((tickets || []).map(t => t.id + ':' + (t.messages ? t.messages.length : 0) + ':' + t.status + ':' + (t.unread ? 1 : 0)));
   renderAll();
@@ -2184,7 +2183,7 @@ function renderThread(){
         +   '<button onclick="cancelInternalNoteReply(\''+esc(msg.id)+'\')" class="btn-secondary" style="font-size:.75rem;padding:.3rem .7rem;">Cancel</button>'
         +   '<button onclick="sendInternalNoteReply(\''+esc(msg.id)+'\')" class="btn-primary" style="font-size:.75rem;padding:.3rem .7rem;"><i class="fa-solid fa-paper-plane"></i>Send</button>'
         + '</div></div>';
-      return '<div class="msg-wrap msg-wrap-internal" data-msg-id="'+esc(msg.id)+'"><div class="message-internal"><p class="msg-body">'+renderMsgContent(msg)+'</p>'+atts+'</div><div class="msg-meta">🔒 Internal Note — '+esc(msg.from)+' &middot; '+esc(t)+replyBtn+'</div>'+recipientLine+replyComposer+'</div>';
+      return '<div class="msg-wrap msg-wrap-internal" data-msg-id="'+esc(msg.id)+'"><div class="message-internal"><p class="msg-body">'+renderMsgContent(msg)+'</p>'+atts+'</div><div class="msg-meta">🔒 Internal Note - '+esc(msg.from)+' &middot; '+esc(t)+replyBtn+'</div>'+recipientLine+replyComposer+'</div>';
     }
     if(msg.isEmail)return '<div class="msg-wrap msg-wrap-inbound"><div class="message-inbound"><p class="msg-body">'+renderMsgContent(msg)+'</p>'+atts+'</div><div class="msg-meta">'+esc(msg.from)+' &middot; '+esc(t)+'</div></div>';
     return '<div class="msg-wrap msg-wrap-outbound"><div class="message-outbound"><p class="msg-body">'+renderMsgContent(msg)+'</p>'+atts+'</div><div class="msg-meta">'+esc(msg.from||'Agent')+' &middot; '+esc(t)+'</div></div>';
@@ -2251,7 +2250,7 @@ async function sendInternalNoteReply(messageId) {
       subject: currentTicket.subject || '',
       messageId: newMsgId,
     });
-    showToast('✅ Follow-up sent — within 1 minute');
+    showToast('✅ Follow-up sent - within 1 minute');
   } catch (e) {
     showToast('⚠ Send failed: ' + (e.message || 'Unknown error').slice(0,60), 'error');
   }
@@ -2311,7 +2310,7 @@ function showTier2Panel(){document.getElementById('tier2-options').classList.add
 function hideTier2Panel(){document.getElementById('tier2-options').classList.remove('open-inline');document.getElementById('escalate-btn').style.display='flex';}
 function escalateTier2(team){
   if(!currentTicket)return;
-  confirmDialog('Escalate this ticket to Tier 2 — '+team+'?',()=>{
+  confirmDialog('Escalate this ticket to Tier 2 - '+team+'?',()=>{
     currentTicket.status='escalated';
     currentTicket.assignee='ps';
     if(!currentTicket.tags.includes(team))currentTicket.tags.push(team);
@@ -2320,7 +2319,7 @@ function escalateTier2(team){
     document.getElementById('modal-status').disabled=true;
     document.getElementById('escalate-btn').style.display='none';
     renderModalTags();renderAll();hideTier2Panel();
-    addAudit('escalated','Escalated to Tier 2 — '+team,currentTicket.id);
+    addAudit('escalated','Escalated to Tier 2 - '+team,currentTicket.id);
     // Notify via Apps Script when escalating
   if (AP_CONFIG.APPS_SCRIPT_URL) {
     callAppsScript({
@@ -2332,7 +2331,7 @@ function escalateTier2(team){
       agentName: (_apUser && _apUser.name) || 'People Services',
     }).catch(e => console.warn('Escalation notify failed:', e));
   }
-  save(currentTicket.id);showToast('🚀 Escalated to Tier 2 — '+team);
+  save(currentTicket.id);showToast('🚀 Escalated to Tier 2 - '+team);
   });
 }
 
@@ -2343,7 +2342,7 @@ function setReplyTab(tab){
   const label=document.getElementById('reply-label');
   const ccRow=document.getElementById('cc-row');
   const noteFields=document.getElementById('internal-note-fields');
-  label.textContent=tab==='reply'?'Reply to employee (sent via email)':'Internal note — visible to team. Or send an email by filling in the address.';
+  label.textContent=tab==='reply'?'Reply to employee (sent via email)':'Internal note - visible to team. Or send an email by filling in the address.';
   ccRow.style.display=tab==='reply'?'':'none';
   if (noteFields) noteFields.style.display = tab === 'note' ? '' : 'none';
   // Reset internal-note fields whenever switching tabs so stale values don't
@@ -2380,7 +2379,7 @@ function _refreshNotePlaceholder() {
   const sendTo = document.getElementById('note-send-to');
   const hasEmail = sendTo && sendTo.value.trim();
   ta.placeholder = hasEmail
-    ? 'Write the email body — recipients will receive this directly…'
+    ? 'Write the email body - recipients will receive this directly…'
     : 'Write an internal note (visible to team only)...';
 }
 
@@ -2465,14 +2464,14 @@ function sendReply(){
   if (!isInternal && AP_CONFIG.APPS_SCRIPT_URL) {
     setSendBtn('Sending…', 'fa-spinner fa-spin', true);
     gmailSendReply(currentTicket, msg, (_apUser && _apUser.name) || "NewWesVentures' Ask People", sigText, ccRaw)
-      .then(() => { showToast('✅ Reply queued — email will send within 1 minute'); setSendBtn('Send Reply', 'fa-paper-plane', false); })
+      .then(() => { showToast('✅ Reply queued - email will send within 1 minute'); setSendBtn('Send Reply', 'fa-paper-plane', false); })
       .catch(e => { showToast('⚠ Email not sent: ' + (e.message || 'Unknown error').slice(0,60), 'error'); setSendBtn('Send Reply', 'fa-paper-plane', false); });
   } else if (isInternal && noteSendToList.length && AP_CONFIG.APPS_SCRIPT_URL) {
     setSendBtn('Sending note…', 'fa-spinner fa-spin', true);
     // Build the optional message-history block as PRE-RENDERED HTML so the
     // recipient sees actual formatting (links, lists, etc.) instead of an
-    // escaped string. Uses renderMsgContent() — same sanitizer used in the
-    // ticket modal — so HTML tags from inbound emails are preserved while
+    // escaped string. Uses renderMsgContent() - same sanitizer used in the
+    // ticket modal - so HTML tags from inbound emails are preserved while
     // scripts/iframes/inline-handlers are stripped.
     let historyHtml = '';
     if (includeHistory) {
@@ -2499,7 +2498,7 @@ function sendReply(){
         historyHtml: historyHtml,
       })
       .then(() => {
-        showToast('✅ Internal note emailed to ' + noteSendToList.length + ' recipient' + (noteSendToList.length > 1 ? 's' : '') + ' — sending within 1 minute');
+        showToast('✅ Internal note emailed to ' + noteSendToList.length + ' recipient' + (noteSendToList.length > 1 ? 's' : '') + ' - sending within 1 minute');
         setSendBtn('Send', 'fa-paper-plane', false);
       })
       .catch(e => {
@@ -2646,13 +2645,13 @@ async function submitNewTicket(){
 }
 
 function sendAutoAck(t){
-  // Auto-reply disabled — agent replies manually
+  // Auto-reply disabled - agent replies manually
   // Just log the ticket creation
   addAudit('received', 'Ticket received from ' + t.from, t.id);
 }
 
 // ═══════════════════════════════════════════════════════════════
-// SEND NEW EMAIL — agent-initiated outbound email + ticket creation
+// SEND NEW EMAIL - agent-initiated outbound email + ticket creation
 // ═══════════════════════════════════════════════════════════════
 let _sendEmailSelectedSigId = '';
 function openSendEmailModal(){
@@ -2745,7 +2744,7 @@ async function submitSendEmail(){
       subject: data.subject,
       from: data.to,
       fromName: fromName,
-      // No initial message — the agent's outbound message is added below.
+      // No initial message - the agent's outbound message is added below.
       source: 'agent-compose',
       priority: priority,
       assignee: (_apUser && _apUser.email) || '',
@@ -2758,7 +2757,7 @@ async function submitSendEmail(){
   }
   const now = Date.now();
   const agentName = (_apUser && _apUser.name) || 'People Services';
-  // 2) build local ticket object — first message is OUTBOUND from agent
+  // 2) build local ticket object - first message is OUTBOUND from agent
   const t = {
     id: reserved.id,
     subject: data.subject,
@@ -2803,7 +2802,7 @@ async function submitSendEmail(){
       to: data.to,
       subject: data.subject,
     });
-    showToast('✅ Email queued — sending within 1 minute');
+    showToast('✅ Email queued - sending within 1 minute');
   } catch (e) {
     showToast('Ticket saved but email queue failed: ' + (e.message || e), 'error');
   }
@@ -2819,7 +2818,7 @@ async function previewSendEmail(){
   await _loadAssets();
   const sigText = getSendSelectedSignatureText();
   const agentName = (_apUser && _apUser.name) || 'Ask People';
-  // Use a synthetic ticket ID for the preview — actual ID gets minted only on send.
+  // Use a synthetic ticket ID for the preview - actual ID gets minted only on send.
   const previewTicketId = 'ASK-PREVIEW';
   const html = buildEmailHtml(data.body, agentName, previewTicketId, sigText, data.to);
   const meta = document.getElementById('email-meta-bar');
@@ -2841,7 +2840,7 @@ async function previewSendEmail(){
 // SEARCH
 // ═══════════════════════════════════════════════════════════════
 // Search renders into a floating dropdown below the search input. The
-// dashboard view doesn't change — clicking a result opens that ticket's
+// dashboard view doesn't change - clicking a result opens that ticket's
 // modal directly. This keeps context (your assigned tickets remain visible
 // behind) and gives keyboard-accessible quick navigation.
 const SEARCH_RESULT_LIMIT = 12;
@@ -2894,7 +2893,7 @@ function handleSearch(){
       + '<span class="sr-status ' + esc(sta.cls) + '">' + esc(sta.label) + '</span>'
       + '</div>';
   }).join('') + (matched.length > SEARCH_RESULT_LIMIT
-      ? '<div class="sr-footer">Showing first ' + SEARCH_RESULT_LIMIT + ' of ' + matched.length + ' — refine your query to narrow down</div>'
+      ? '<div class="sr-footer">Showing first ' + SEARCH_RESULT_LIMIT + ' of ' + matched.length + ' - refine your query to narrow down</div>'
       : '');
   dd.classList.add('open');
   _searchFocusedIdx = -1;
@@ -2971,7 +2970,7 @@ function navigateTo(view,el){
   if(view==='inbox'){if(h1)h1.textContent='Inbox';if(p1)p1.textContent='Unassigned tickets waiting to be claimed';renderOpenTickets(tickets.filter(t=>!t.assignee&&(t.status==='open'||t.status==='in-progress')));renderRepliedTickets([]);const rw=document.getElementById('replied-wrapper');if(rw)rw.style.display='none';}
   else if(view==='my-tickets'){showMyTickets(myTicketsAgent||(_apUser&&_apUser.email)||'');}
   else if(view==='all-tickets'){if(h1)h1.textContent='All Active Tickets';if(p1)p1.textContent='Every open and in-progress ticket in the system';renderOpenTickets(tickets.filter(t=>!t.repliedByMe&&(t.status==='open'||t.status==='in-progress')));renderRepliedTickets(tickets.filter(t=>t.repliedByMe&&t.status!=='closed'&&t.status!=='escalated'));}
-  else if(view==='closed'){sr.style.display='none';const rw=document.getElementById('replied-wrapper');if(rw)rw.style.display='none';if(p1)p1.textContent='Resolved and escalated tickets — filter by agent below';showClosedTickets(closedTicketsAgent||'all');}
+  else if(view==='closed'){sr.style.display='none';const rw=document.getElementById('replied-wrapper');if(rw)rw.style.display='none';if(p1)p1.textContent='Resolved and escalated tickets - filter by agent below';showClosedTickets(closedTicketsAgent||'all');}
   else if(view==='dashboard'){so.style.display='none';sr.style.display='none';sd.classList.add('visible');renderDashboard();}
 }
 
@@ -2994,7 +2993,7 @@ function renderDashboard(){
     {label:'Total Tickets',val:total,icon:'fa-ticket',color:'stat-orange',sub:'All time'},
     {label:'Open / In Progress',val:open+inprog,icon:'fa-envelope-open',color:'stat-blue',sub:open+' open, '+inprog+' in progress'},
     {label:'SLA Breached',val:breached,icon:'fa-circle-exclamation',color:breached>0?'stat-red':'stat-green',sub:breached>0?'Needs immediate attention':'All within SLA ✓'},
-    {label:'Avg CSAT Score',val:avgCsat||'—',icon:'fa-star',color:'stat-yellow',sub:csatTickets.length+' ratings received'},
+    {label:'Avg CSAT Score',val:avgCsat||' - ',icon:'fa-star',color:'stat-yellow',sub:csatTickets.length+' ratings received'},
   ].map(c=>'<div class="stat-card"><div class="stat-icon '+c.color+'"><i class="fa-solid '+c.icon+'"></i></div><div class="stat-val">'+c.val+'</div><div class="stat-label">'+c.label+'</div><div class="stat-sub">'+c.sub+'</div></div>').join('');
 
   // Category chart
@@ -3012,7 +3011,7 @@ function renderDashboard(){
     {label:'Closed',count:closed,color:'#22c55e'},
   ].map(s=>`<div class="breakdown-row"><span class="breakdown-dot" style="background:${s.color}"></span><span class="breakdown-label">${s.label}</span><span class="breakdown-count">${s.count}</span><div class="breakdown-bar"><div style="width:${total?Math.round(s.count/total*100):0}%;background:${s.color}" class="breakdown-fill"></div></div></div>`).join('');
 
-  // Workload — use permUsers (live from Sheets)
+  // Workload - use permUsers (live from Sheets)
   const wl={};
   const activeAgentsForDash = permUsers.filter(u=>u.active!==false&&u.role!=='readonly');
   activeAgentsForDash.forEach(u=>{
@@ -3080,7 +3079,7 @@ function submitCSAT(){
   const t=tickets.find(x=>x.id===csatTicketId);
   if(t){t.csat={score:csatScore,comment:document.getElementById('csat-comment').value.trim(),submittedAt:Date.now()};save(csatTicketId);}
   addAudit('csat_submitted','CSAT score '+csatScore+'/5',csatTicketId);
-  closeModal('csat-modal');showToast('⭐ CSAT recorded — thank you!');
+  closeModal('csat-modal');showToast('⭐ CSAT recorded - thank you!');
 }
 
 // ═══════════════════════════════════════════════════════════════
@@ -3261,7 +3260,7 @@ function renderAuditLog(){
   if(!el)return;
   const icons={reply_sent:'fa-paper-plane',note_added:'fa-lock',ticket_created:'fa-plus',tag_added:'fa-tag',tag_removed:'fa-tag',escalated:'fa-arrow-up',assigned:'fa-user',status_changed:'fa-circle-dot',email_imported:'fa-envelope',auto_ack:'fa-robot',ticket_viewed:'fa-eye',export:'fa-download',settings_saved:'fa-gear',session_revoked:'fa-ban',csat_submitted:'fa-star',priority_set:'fa-flag'};
   const colors={reply_sent:'var(--orange)',note_added:'#f59e0b',ticket_created:'#22c55e',escalated:'#8b5cf6',status_changed:'#3b82f6',email_imported:'#06b6d4',csat_submitted:'#f59e0b'};
-  el.innerHTML=log.length?log.slice(0,50).map(e=>`<div class="audit-row"><div class="audit-icon" style="background:${colors[e.action]||'#6b7280'}20;color:${colors[e.action]||'#6b7280'}"><i class="fa-solid ${icons[e.action]||'fa-circle-dot'}"></i></div><div class="audit-detail"><span class="audit-action">${esc(e.action.replace(/_/g,' '))}</span>${e.detail?' — '+esc(e.detail):''}</div><div class="audit-meta">${e.ticketId?'<span class="audit-tid">'+esc(e.ticketId)+'</span>':''}<span class="audit-time">${formatAge(e.ts)}</span></div></div>`).join(''):'<p style="color:var(--text-muted);text-align:center;padding:2rem">No audit entries yet.</p>';
+  el.innerHTML=log.length?log.slice(0,50).map(e=>`<div class="audit-row"><div class="audit-icon" style="background:${colors[e.action]||'#6b7280'}20;color:${colors[e.action]||'#6b7280'}"><i class="fa-solid ${icons[e.action]||'fa-circle-dot'}"></i></div><div class="audit-detail"><span class="audit-action">${esc(e.action.replace(/_/g,' '))}</span>${e.detail?' - '+esc(e.detail):''}</div><div class="audit-meta">${e.ticketId?'<span class="audit-tid">'+esc(e.ticketId)+'</span>':''}<span class="audit-time">${formatAge(e.ts)}</span></div></div>`).join(''):'<p style="color:var(--text-muted);text-align:center;padding:2rem">No audit entries yet.</p>';
 }
 
 // ═══════════════════════════════════════════════════════════════
@@ -3315,7 +3314,7 @@ function attachFile(){
 }
 function onReplyAttachPicked(input){
   const files = [...(input.files||[])];
-  // Cap at 10 MB each — show a friendly error if anything exceeds the limit
+  // Cap at 10 MB each - show a friendly error if anything exceeds the limit
   const tooBig = files.filter(f => f.size > 10 * 1024 * 1024);
   if (tooBig.length){
     showToast('Some files exceed the 10 MB limit and were skipped','error');
@@ -3366,7 +3365,7 @@ function showNotificationsPanel(){
   let body = '';
   if (myUnread.length) body += sectionTitle('Assigned to you ('+myUnread.length+')') + myUnread.map(renderItem).join('');
   if (inbox.length) body += sectionTitle('Inbox ('+inbox.length+')') + inbox.map(renderItem).join('');
-  if (!unread.length) body = '<div style="padding:2rem 1rem;text-align:center;color:var(--text-muted);font-size:.85rem;">No unread tickets — you\'re all caught up! 🎉</div>';
+  if (!unread.length) body = '<div style="padding:2rem 1rem;text-align:center;color:var(--text-muted);font-size:.85rem;">No unread tickets - you\'re all caught up! 🎉</div>';
   panel.innerHTML = header + body;
   panel.style.display = 'block';
 }
@@ -3391,7 +3390,7 @@ document.addEventListener('keydown',handleKeydown);
 // ═══════════════════════════════════════════════════════════════
 // MY TICKETS SUB-TABS
 // ═══════════════════════════════════════════════════════════════
-// Resolved on first showMyTickets() call — _apUser isn't declared yet at this
+// Resolved on first showMyTickets() call - _apUser isn't declared yet at this
 // module-load point, and `let` doesn't hoist (TDZ would throw).
 let myTicketsAgent = '';
 function showMyTickets(agentId){
@@ -3414,12 +3413,12 @@ function showMyTickets(agentId){
     return t.assignee === agentId || (agent && t.assignee === agent.email);
   };
   if(myTicketsAgent==='all'){
-    h1.textContent='My Tickets — All Agents';
+    h1.textContent='My Tickets - All Agents';
     renderOpenTickets(tickets.filter(t=>t.assignee&&!t.repliedByMe&&(t.status==='open'||t.status==='in-progress')));
     renderRepliedTickets(tickets.filter(t=>t.assignee&&t.repliedByMe&&t.status!=='closed'&&t.status!=='escalated'));
   } else {
     const a=getAgent(myTicketsAgent);
-    h1.textContent='Tickets — '+a.name;
+    h1.textContent='Tickets - '+a.name;
     renderOpenTickets(tickets.filter(t=>matchesAgent(t,myTicketsAgent)&&!t.repliedByMe&&(t.status==='open'||t.status==='in-progress')));
     renderRepliedTickets(tickets.filter(t=>matchesAgent(t,myTicketsAgent)&&t.repliedByMe&&t.status!=='closed'&&t.status!=='escalated'));
   }
@@ -3454,11 +3453,11 @@ function showClosedTickets(agentId){
   };
   const isClosedOrEscalated = t => t.status === 'closed' || t.status === 'escalated';
   if (closedTicketsAgent === 'all') {
-    h1.textContent = 'Closed & Escalated — All Agents';
+    h1.textContent = 'Closed & Escalated - All Agents';
     renderOpenTickets(tickets.filter(isClosedOrEscalated));
   } else {
     const a = getAgent(closedTicketsAgent);
-    h1.textContent = 'Closed & Escalated — ' + a.name;
+    h1.textContent = 'Closed & Escalated - ' + a.name;
     renderOpenTickets(tickets.filter(t => isClosedOrEscalated(t) && matchesAgent(t, closedTicketsAgent)));
   }
   renderRepliedTickets([]);
@@ -3548,7 +3547,7 @@ function addPermissionUser(){
   renderPermissionsTable();
   document.getElementById('new-user-email').value='';
   cancelAddUser();
-  showToast('✅ '+name+' added — saving to Sheets…');
+  showToast('✅ '+name+' added - saving to Sheets…');
   saveUsersToSheet().then(()=>showToast('✅ '+name+' saved to Google Sheets')).catch(e=>{
     console.error('saveUsersToSheet failed:', e);
     showToast('⚠ User added locally but Sheets write failed: '+e.message, 'error');
@@ -3620,7 +3619,7 @@ async function previewEmail(){
 }
 
 // ═══════════════════════════════════════════════════════════════
-// EMPLOYEE PORTAL — ADMIN PROXY VIEW
+// EMPLOYEE PORTAL - ADMIN PROXY VIEW
 // ═══════════════════════════════════════════════════════════════
 function openEmployeePortal(){
   const modal = document.getElementById('portal-modal');
@@ -3637,7 +3636,7 @@ function openEmployeePortal(){
       employees.push({email: email, name: t.fromName || email.split('@')[0]});
     });
     employees.sort((a,b) => a.name.localeCompare(b.name));
-    sel.innerHTML = '<option value="">— Select an employee —</option>' +
+    sel.innerHTML = '<option value="">Select an employee</option>' +
       employees.map(e => '<option value="'+esc(e.email)+'">'+esc(e.name)+' ('+esc(e.email)+')</option>').join('');
   }
   // Reset to placeholder
@@ -3728,7 +3727,7 @@ function showProxyThread(ticketId){
     </div>
     <p style="font-size:.72rem;color:var(--text-muted);">In production, this would be sent to the employee via email or shown in their portal.</p>
   </div>`:'';
-  const emailCsatBadge=t.status==='closed'&&!hasCsatPending&&t.csat?'<div style="margin:0 1.25rem 1rem;background:#f0fdf4;border:1.5px solid #86efac;border-radius:1rem;padding:.75rem 1.25rem;font-size:.85rem;"><span style="font-weight:600;color:#15803d;">Employee rated: </span>'+'⭐'.repeat(t.csat.score)+(t.csat.comment?' — "'+esc(t.csat.comment)+'"':'')+'</div>':'';
+  const emailCsatBadge=t.status==='closed'&&!hasCsatPending&&t.csat?'<div style="margin:0 1.25rem 1rem;background:#f0fdf4;border:1.5px solid #86efac;border-radius:1rem;padding:.75rem 1.25rem;font-size:.85rem;"><span style="font-weight:600;color:#15803d;">Employee rated: </span>'+'⭐'.repeat(t.csat.score)+(t.csat.comment?' - "'+esc(t.csat.comment)+'"':'')+'</div>':'';
   thread.innerHTML='<div style="padding:.875rem 1.25rem;border-bottom:1px solid var(--border);background:var(--surface2);display:flex;align-items:center;gap:.75rem;flex-shrink:0;"><button onclick="backToProxyList()" style="background:none;border:none;cursor:pointer;color:var(--orange);font-size:.875rem;font-weight:600;display:flex;align-items:center;gap:.3rem;"><i class="fa-solid fa-arrow-left"></i>Back</button><span style="font-family:monospace;font-size:.75rem;background:var(--surface);padding:.2rem .5rem;border-radius:.375rem;color:var(--text-muted);">'+esc(t.id)+'</span><div style="flex:1;font-weight:600;font-size:.875rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">'+esc(t.subject)+'</div><span class="status-badge '+esc(STA_CLS[t.status]||'status-open')+'">'+STA_LABEL[t.status||'open']+'</span><div style="font-size:.72rem;color:var(--orange);background:var(--orange-lt);padding:.2rem .6rem;border-radius:9999px;font-weight:600;"><i class="fa-solid fa-eye"></i> Proxy View</div></div>'+
   '<div style="flex:1;overflow-y:auto;padding:1.25rem;display:flex;flex-direction:column;gap:1rem;">'+msgs+'</div>'+emailCsatBadge+csatSection;
 }
@@ -3744,12 +3743,12 @@ function submitProxyCSAT(ticketId,score){
   t.csatPending=false;
   save(ticketId);
   addAudit('csat_submitted','CSAT '+score+'/5 (via proxy view)',ticketId);
-  showToast('⭐ CSAT recorded as employee — '+score+'/5');
+  showToast('⭐ CSAT recorded as employee - '+score+'/5');
   showProxyThread(ticketId);
 }
 
 // ═══════════════════════════════════════════════════════════════
-// CONFIG — fill these in after Google Cloud setup
+// CONFIG - fill these in after Google Cloud setup
 // ═══════════════════════════════════════════════════════════════
 const AP_CONFIG = {
   CLIENT_ID:        '', // DEMO: removed (no Google sign-in)
@@ -3760,7 +3759,7 @@ const AP_CONFIG = {
 };
 
 // ═══════════════════════════════════════════════════════════════
-// AUTH — Apps Script bypass
+// AUTH - Apps Script bypass
 // User identity comes from Session.getActiveUser() injected via the
 // doGet() template into window._initialUser. There is no in-page sign-in.
 // ═══════════════════════════════════════════════════════════════
@@ -3783,7 +3782,7 @@ function showLoginIntro(displayName){
   const img = document.getElementById('loader-img');
   const textEl = document.getElementById('loader-text');
   const dotsEl = document.getElementById('loader-dots');
-  // Personalize welcome text — preserve the <small> "Loading your dashboard…"
+  // Personalize welcome text - preserve the <small> "Loading your dashboard…"
   // subline (it has the animated dots), just swap the leading text node.
   const first = (displayName||'').trim().split(/\s+/)[0] || 'there';
   if (textEl) {
@@ -3827,8 +3826,7 @@ function showLoginIntro(displayName){
     return '<img class="lp-dot" src="'+src+'" alt=""><img class="lp-dot" src="'+src+'" alt=""><img class="lp-dot" src="'+src+'" alt="">';
   }
   // Cricon is inlined (CRICON_INLINE) so confetti + dots paint immediately
-  // even on first ever visit. The larger logo (ask_people_full) stays lazy —
-  // fades in once _loadAssets() resolves.
+  // even on first ever visit. The larger logo (ask_people_full) stays lazy - // fades in once _loadAssets() resolves.
   _addConfetti();
   if (dotsEl) dotsEl.innerHTML = _dotHtml();
   if (ASK_PEOPLE_FULL_IMG) {
@@ -3836,7 +3834,7 @@ function showLoginIntro(displayName){
   } else {
     _loadAssets().then(function() {
       _showLogo();
-    }).catch(function() { /* logo just stays hidden — overlay still works */ });
+    }).catch(function() { /* logo just stays hidden - overlay still works */ });
   }
   // Fade out when (a) min entrance time has elapsed AND (b) the app is ready.
   // Min 3.5s ensures the confetti animation completes even on a fast cache hit.
@@ -3922,14 +3920,14 @@ async function _continueAfterAuth() {
     const me = (_apUser && _apUser.email || '').toLowerCase();
     const inUsers = cached.permUsers.some(u => u.active !== false && (u.email||'').toLowerCase() === me);
     if (inUsers || cached.permUsers.length === 0) {
-      // Caller is permitted to see the dashboard — populate state and render.
+      // Caller is permitted to see the dashboard - populate state and render.
       // The login-intro animation is already on screen (z-index above dashboard);
       // the rendered dashboard is hidden behind the animation until it fades.
       tickets    = cached.tickets;
       permUsers  = cached.permUsers;
       ticketCounter = cached.ticketCounter || ticketCounter;
       showApp();
-      // Note: don't mark app ready here — let the animation continue through
+      // Note: don't mark app ready here - let the animation continue through
       // the fresh loadFromSheets() below so it always tracks real network
       // time, not the (instant) cache render.
       renderedFromCache = true;
@@ -3948,11 +3946,11 @@ async function _continueAfterAuth() {
       const me = (_apUser && _apUser.email || '').toLowerCase();
       if (!permUsers.some(u => u.active !== false && u.email.toLowerCase() === me)) {
         showEmployeePortalForUser(_apUser);
-        _markAppReady(); // employee portal rendered — animation can fade now
+        _markAppReady(); // employee portal rendered - animation can fade now
         return;
       }
     } else {
-      // Empty Users sheet — first-ever caller gets auto-promoted to admin
+      // Empty Users sheet - first-ever caller gets auto-promoted to admin
       permUsers.push({ id: _apUser.email, email: _apUser.email, name: _apUser.name,
         role: 'admin', active: true, addedAt: new Date().toISOString(),
         perms: { view: true, reply: true, escalate: true, admin: true } });
@@ -3965,11 +3963,11 @@ async function _continueAfterAuth() {
       try { ticketCounter = parseInt(localStorage.getItem('ap_counter')) || 2482; } catch(e) {}
     }
     showApp();
-    _markAppReady(); // dashboard rendered — animation can fade now
+    _markAppReady(); // dashboard rendered - animation can fade now
   } else if (loaded) {
-    // Background refresh succeeded — re-render in case data changed
+    // Background refresh succeeded - re-render in case data changed
     renderAll();
-    _markAppReady(); // fresh data rendered on top of cached view — animation can fade now
+    _markAppReady(); // fresh data rendered on top of cached view - animation can fade now
   }
 
   // Session record (fire-and-forget)
@@ -3978,7 +3976,7 @@ async function _continueAfterAuth() {
 
   // Run the secondary loaders immediately. Since loadFromSheets pre-populates
   // _settingsRowsPromise, these now read from in-memory cache and make zero
-  // network calls — no reason to delay.
+  // network calls - no reason to delay.
   loadSettingsFromSheet().then(s => {
     if (!s) return;
     if (s['cannedResponses']) try{localStorage.setItem('ap_canned',s['cannedResponses']);}catch(e){}
@@ -3999,12 +3997,12 @@ async function _continueAfterAuth() {
 
   // ── Near-real-time sync (Tier 1) ──
   // The server's onEdit trigger bumps a single timestamp cell on every sheet
-  // change. We poll that cell every few seconds — cheap and tab-aware — and
+  // change. We poll that cell every few seconds - cheap and tab-aware - and
   // only do a fuller refetch when it advances. Replaces the old 5-min poll.
   _lastTicketCount = tickets.filter(t => !t.assignee && (t.status==='open' || t.status==='in-progress')).length;
   _startVersionPolling();
 
-  console.log('%c✅ Ask People v6 — Live','background:#7c3aed;color:#fff;padding:4px 12px;border-radius:4px;font-size:13px;font-weight:700');
+  console.log('%c✅ Ask People v6 - Live','background:#7c3aed;color:#fff;padding:4px 12px;border-radius:4px;font-size:13px;font-weight:700');
 }
 
 
@@ -4027,8 +4025,8 @@ function apShowUser() {
 }
 
 // ═══════════════════════════════════════════════════════════════
-// SHEETS — proxied through the Apps Script web app via
-// google.script.run (NOT fetch + doPost — that hits CORS issues
+// SHEETS - proxied through the Apps Script web app via
+// google.script.run (NOT fetch + doPost - that hits CORS issues
 // between the Apps Script iframe and the script.google.com
 // endpoint). google.script.run is Apps Script's built-in RPC
 // channel and bypasses CORS entirely. The script runs as the
@@ -4055,7 +4053,7 @@ async function sheetsGet(range) {
   return (result && result.values) || [];
 }
 
-// Batched read — fetches multiple ranges in one runScript call. Returns an
+// Batched read - fetches multiple ranges in one runScript call. Returns an
 // object keyed by range, e.g. { 'Tickets!A2:R': [[...],[...]], 'Messages!A2:I': [...] }
 // Each value is the rows array (matching sheetsGet's return shape) or [] on error.
 async function sheetsBatchGet(ranges) {
@@ -4081,7 +4079,7 @@ async function sheetsClear(range) {
 }
 
 
-// Shared Settings-sheet read — multiple loaders (signatures, SLA, email
+// Shared Settings-sheet read - multiple loaders (signatures, SLA, email
 // template, settings map) all fetch Settings!A2:B. Sharing one promise
 // collapses 3-4 redundant runScript calls into 1.
 let _settingsRowsPromise = null;
@@ -4172,7 +4170,7 @@ function msgToRow(ticketId, m) {
     m.isInternal ? 'TRUE' : 'FALSE',
     m.isEmail ? 'TRUE' : 'FALSE',
     JSON.stringify(m.attachments||[]),
-    m.internalThreadId || '',  // 9th column — Gmail thread ID for an internal-note conversation
+    m.internalThreadId || '',  // 9th column - Gmail thread ID for an internal-note conversation
   ];
 }
 
@@ -4196,7 +4194,7 @@ function rowToMsg(row) {
 async function loadFromSheets(silent) {
   if (!silent) showLoadingOverlay('Loading tickets from Google Sheets…');
   try {
-    // sheetsEnsureHeaders() removed — server trigger ensures headers every minute.
+    // sheetsEnsureHeaders() removed - server trigger ensures headers every minute.
     // Settings is included in this batch so the deferred loaders can reuse the
     // shared cache without making another network call.
     const _b = await sheetsBatchGet(["Tickets!A2:R", "Messages!A2:I", "Users!A2:E", "Settings!A2:B"]);
@@ -4234,7 +4232,7 @@ async function loadFromSheets(silent) {
     });
 
     // Auto-tag is now applied at ticket creation only (submitNewTicket /
-    // submitEpNewRequest) — no per-load scan + writeback. Manual tag edits
+    // submitEpNewRequest) - no per-load scan + writeback. Manual tag edits
     // by agents go through addTagFromSelect/removeTag and persist immediately.
 
     msgRows.forEach(row => {
@@ -4262,7 +4260,7 @@ async function loadFromSheets(silent) {
         lastMsg.from.toLowerCase() !== agentEmail.toLowerCase() &&
         !lastMsg.from.includes('NewWesVentures.com');
       if (isInbound && t.repliedByMe) {
-        t.repliedByMe = false; // employee replied — needs agent response
+        t.repliedByMe = false; // employee replied - needs agent response
       }
     });
 
@@ -4323,7 +4321,7 @@ async function saveMsgToSheet(ticketId, message) {
   await sheetsAppend('Messages!A:I', [msgToRow(ticketId, message)]);
 }
 
-// Modified save() — keep localStorage as backup, write to Sheets async
+// Modified save() - keep localStorage as backup, write to Sheets async
 function save(ticketId, newMessage) {
   // Immediate localStorage update (fast, keeps session cache)
   try {
@@ -4340,7 +4338,7 @@ function save(ticketId, newMessage) {
       if (newMessage) writes.push(saveMsgToSheet(ticketId, newMessage));
       Promise.all(writes).catch(e => {
         console.error('Sheets auto-save failed:', e);
-        showToast('⚠ Auto-save failed — check your connection', 'error');
+        showToast('⚠ Auto-save failed - check your connection', 'error');
       });
     }
   }
@@ -4380,7 +4378,7 @@ async function apManualSync() {
 
 
 // ═══════════════════════════════════════════════════════════════
-// USERS SHEET — read / write permitted users list
+// USERS SHEET - read / write permitted users list
 // ═══════════════════════════════════════════════════════════════
 async function loadUsersFromSheet() {
   try {
@@ -4421,7 +4419,7 @@ async function saveUsersToSheet() {
 
 
 // ═══════════════════════════════════════════════════════════════
-// EMAIL TEMPLATE — save/load/reset
+// EMAIL TEMPLATE - save/load/reset
 // ═══════════════════════════════════════════════════════════════
 const DEFAULT_EMAIL_TEMPLATE = {
   subject:  'Re: {subject} [Ticket {ticketId}]',
@@ -4517,7 +4515,7 @@ async function saveEmailTemplate() {
     } catch (e) {
       console.error('saveEmailTemplate sheet error:', e);
       if (status) { status.textContent = '⚠ Saved locally but sheet write failed: ' + e.message; status.style.color='#dc2626'; }
-      showToast('Saved locally — sheet sync failed', 'error');
+      showToast('Saved locally - sheet sync failed', 'error');
     }
   } else {
     if (status) { status.textContent = '✓ Saved locally (sign in to sync to sheet)'; status.style.color='#16a34a'; }
@@ -4564,7 +4562,7 @@ function previewTemplateModal() {
 
 
 // ═══════════════════════════════════════════════════════════════
-// SETTINGS SHEET — team-wide key/value store in Sheets
+// SETTINGS SHEET - team-wide key/value store in Sheets
 // ═══════════════════════════════════════════════════════════════
 async function loadSettingsFromSheet() {
   try {
@@ -4583,7 +4581,7 @@ async function saveSettingToSheet(key, value) {
   _invalidateSettingsCache();
   // Ensure Settings tab exists first
   try { await sheetsGet("Settings!A1:B1"); } catch(e) {
-    // Tab might not exist — create headers
+    // Tab might not exist - create headers
     await sheetsPut("Settings!A1:B1", [['key','value']]).catch(()=>{});
   }
   const rows = await _getSettingsRows();
@@ -4597,7 +4595,7 @@ async function saveSettingToSheet(key, value) {
 
 
 // ═══════════════════════════════════════════════════════════════
-// EMPLOYEE PORTAL — for @newwesventures.com users who are not agents
+// EMPLOYEE PORTAL - for @newwesventures.com users who are not agents
 // ═══════════════════════════════════════════════════════════════
 function exitProxyView() {
   const portal = document.getElementById('ap-employee-portal');
@@ -4638,7 +4636,7 @@ function stripMsgHtml(s) {
 function stripEmailQuotes(text) {
   if (!text) return '';
   const patterns = [
-    // "On [date] [name/email] wrote:" — Gmail/Yahoo style. Match anywhere (with or without leading newline)
+    // "On [date] [name/email] wrote:" - Gmail/Yahoo style. Match anywhere (with or without leading newline)
     /(?:^|\s)On\s+[^\n]{1,300}\bwrote:[\s\S]*$/i,
     // Outlook headers
     /\n?From:\s+[^\n]+\n[\s\S]*?(?:Sent|Date):\s+[\s\S]*$/i,
@@ -4771,7 +4769,7 @@ function showEmployeePortalForUser(user, isProxy) {
   <div class="ep-modal-bg" id="epNewReqModal">
     <div class="ep-modal">
       <h2>Submit a new request</h2>
-      <p class="ep-modal-sub">Tell us what you need help with — we'll get back to you as soon as we can.</p>
+      <p class="ep-modal-sub">Tell us what you need help with - we'll get back to you as soon as we can.</p>
       <div class="ep-field">
         <label class="ep-label">Subject</label>
         <input class="ep-input" id="epNewSubject" placeholder="e.g. Update my emergency contact info" />
@@ -4817,7 +4815,7 @@ function renderEpList() {
   const tab = window._epTab || 'active';
   if (!user) return;
 
-  // Search query — typed into the new portal search box. Matches subject,
+  // Search query - typed into the new portal search box. Matches subject,
   // message body, ticket ID, or sender display name (helpful for proxy view).
   const searchEl = document.getElementById('ep-search');
   const q = (searchEl ? searchEl.value : '').trim().toLowerCase();
@@ -4890,7 +4888,7 @@ function epRenderCard(t, isProxy, user) {
   }).join('');
 
   const replyDisabled = isProxy ? 'disabled' : '';
-  const proxyNote = isProxy ? '<div class="ep-proxy-note">⚠️ Reply disabled in proxy view — this is what the employee sees but admins can\'t send on their behalf.</div>' : '';
+  const proxyNote = isProxy ? '<div class="ep-proxy-note">⚠️ Reply disabled in proxy view - this is what the employee sees but admins can\'t send on their behalf.</div>' : '';
   const reopenNote = isClosed ? '<div class="ep-reopen-note">Sending a reply will re-open this request.</div>' : '';
   const placeholder = isClosed ? 'Reply to re-open this request…' : 'Reply…';
   const newDot = hasNewReply ? '<span class="ep-newdot"></span>' : '';
@@ -4906,7 +4904,7 @@ function epRenderCard(t, isProxy, user) {
       + (isProxy ? '<div class="ep-proxy-note" style="margin-top:.5rem;">Rating disabled in proxy view.</div>' : '')
       + '</div>';
   } else if (isClosed && t.csat) {
-    csatBlock = '<div style="margin-top:1rem;padding:.6rem 1rem;background:#f0fdf4;border:1.5px solid #86efac;border-radius:.625rem;font-size:.8rem;color:#15803d;">You rated this '+'⭐'.repeat(t.csat.score)+(t.csat.comment?' — "'+esc(t.csat.comment)+'"':'')+'</div>';
+    csatBlock = '<div style="margin-top:1rem;padding:.6rem 1rem;background:#f0fdf4;border:1.5px solid #86efac;border-radius:.625rem;font-size:.8rem;color:#15803d;">You rated this '+'⭐'.repeat(t.csat.score)+(t.csat.comment?' - "'+esc(t.csat.comment)+'"':'')+'</div>';
   }
 
   return '<div class="ep-card" data-ticket-id="'+esc(t.id)+'">'
@@ -5011,7 +5009,7 @@ async function submitEpReply(ticketId) {
     isInternal: false,
     attachments: [],
   };
-  // Optimistic local update — show the message immediately.
+  // Optimistic local update - show the message immediately.
   t.messages = t.messages || [];
   t.messages.push(newMsg);
   const wasClosed = t.status === 'closed';
@@ -5044,7 +5042,7 @@ async function submitEpReply(ticketId) {
       attachments: [],
     });
     if (wasClosed && typeof showToast === 'function') {
-      showToast('Reply sent — your request has been re-opened.');
+      showToast('Reply sent - your request has been re-opened.');
     }
   } catch (e) {
     if (typeof showToast === 'function') showToast('Could not send reply: ' + (e.message || e), 'error');
@@ -5137,12 +5135,12 @@ async function submitEpNewRequest() {
   if (fi) fi.value = '';
   window._epTab = 'active';
   renderEpList();
-  if (typeof showToast === 'function') showToast('✅ Request submitted — we\'ll get back to you shortly');
+  if (typeof showToast === 'function') showToast('✅ Request submitted - we\'ll get back to you shortly');
 }
 
 
 // ═══════════════════════════════════════════════════════════════
-// GMAIL SYNC — status + manual trigger (polling done by Apps Script)
+// GMAIL SYNC - status + manual trigger (polling done by Apps Script)
 // ═══════════════════════════════════════════════════════════════
 
 async function loadGmailSyncStatus() {
@@ -5157,12 +5155,12 @@ async function loadGmailSyncStatus() {
     const r    = await fetch(AP_CONFIG.APPS_SCRIPT_URL, { redirect: 'follow' });
     const data = await r.json();
     if (syncText) syncText.textContent = data.lastSync ? 'Last sync: ' + new Date(data.lastSync).toLocaleString() : 'No sync recorded yet';
-    if (acctText) acctText.textContent = AP_CONFIG.GMAIL_ADDRESS || '—';
+    if (acctText) acctText.textContent = AP_CONFIG.GMAIL_ADDRESS || ' - ';
     if (logEl) {
       // Also show recently created tickets from email
       const emailTickets = (tickets||[]).filter(t=>t.gmailThreadId).slice(0,5);
       logEl.innerHTML = emailTickets.length
-        ? emailTickets.map(t=>`<div>${new Date(t.createdAt).toLocaleString()} — <strong>${esc(t.id)}</strong> from ${esc(t.from)}: ${esc(t.subject.slice(0,50))}</div>`).join('')
+        ? emailTickets.map(t=>`<div>${new Date(t.createdAt).toLocaleString()}<strong>${esc(t.id)}</strong> from ${esc(t.from)}: ${esc(t.subject.slice(0,50))}</div>`).join('')
         : 'No email-sourced tickets yet';
     }
   } catch(e) {
@@ -5189,7 +5187,7 @@ async function triggerManualSync() {
 
 
 // ═══════════════════════════════════════════════════════════════
-// EMPLOYEE PORTAL PROXY — admin view of any employee's portal
+// EMPLOYEE PORTAL PROXY - admin view of any employee's portal
 // ═══════════════════════════════════════════════════════════════
 
 function loadProxyView() {
@@ -5234,7 +5232,7 @@ async function runDiagnostics() {
   log.push('=== Google Sheets (via Apps Script proxy) ===');
   try {
     const rows = await sheetsGet("Settings!A1:B1");
-    setBadge('diag-sa', true, 'Connected — proxy working');
+    setBadge('diag-sa', true, 'Connected - proxy working');
     log.push('✅ Proxy read OK: ' + JSON.stringify(rows));
   } catch(e) {
     setBadge('diag-sa', false, 'Proxy read failed: ' + e.message);
@@ -5243,7 +5241,7 @@ async function runDiagnostics() {
     log.push('   → Verify your account has access (must be @' + AP_CONFIG.ALLOWED_DOMAIN + ')');
   }
 
-  // Test 2: PendingReplies sheet (queue-based — no HTTP to Apps Script needed)
+  // Test 2: PendingReplies sheet (queue-based - no HTTP to Apps Script needed)
   log.push('\n=== Gmail Send Queue ===');
   try {
     const rows = await sheetsGet('PendingReplies!A2:I');
@@ -5356,7 +5354,7 @@ function showCannedPicker(ta) {
   const picker = document.createElement('div');
   picker.id = 'canned-picker';
   picker.style.cssText = 'position:absolute;background:var(--surface);border:1px solid var(--border);border-radius:.875rem;box-shadow:0 8px 24px rgba(0,0,0,.12);z-index:1000;max-width:360px;overflow:hidden;';
-  picker.innerHTML = '<div style="padding:.5rem .75rem;font-size:.75rem;font-weight:600;color:var(--text-muted);border-bottom:1px solid var(--border);">Templates — select to insert</div>' +
+  picker.innerHTML = '<div style="padding:.5rem .75rem;font-size:.75rem;font-weight:600;color:var(--text-muted);border-bottom:1px solid var(--border);">Templates - select to insert</div>' +
     list.map((c,i) => `<div onclick="insertCannedQuick(${i})" style="padding:.625rem 1rem;cursor:pointer;font-size:.85rem;" onmouseenter="this.style.background='var(--surface2)'" onmouseleave="this.style.background=''"><span style="font-family:monospace;color:var(--orange);margin-right:.5rem;">/${esc(c.title)}</span></div>`).join('');
   ta.parentElement.style.position = 'relative';
   ta.parentElement.appendChild(picker);
@@ -5373,7 +5371,7 @@ function insertCannedQuick(idx) {
 
 
 // ═══════════════════════════════════════════════════════════════
-// SLACK NOTIFICATIONS — via Apps Script (no MCP needed client-side)
+// SLACK NOTIFICATIONS - via Apps Script (no MCP needed client-side)
 // ═══════════════════════════════════════════════════════════════
 async function notifySlack(message) {
   if (!AP_CONFIG.APPS_SCRIPT_URL) return;
@@ -5399,7 +5397,7 @@ function checkForNewTickets(prevCount) {
   if (unassigned.length > prevCount && prevCount > 0) {
     const diff = unassigned.length - prevCount;
     if ('Notification' in window && Notification.permission === 'granted') {
-      new Notification('Ask People — ' + diff + ' new ticket' + (diff>1?'s':''), {
+      new Notification('Ask People - ' + diff + ' new ticket' + (diff>1?'s':''), {
         body: 'New unassigned ticket' + (diff>1?'s':'')+' in your Inbox',
         icon: 'https:\u002f\u002fwww.newwesventures.com/favicon.ico',
       });
@@ -5440,7 +5438,7 @@ function sendReplyDebounced() {
 
 // Tag taxonomy is loaded from the Tags sheet at startup. Each entry:
 //   { tag: 'PTO', keywords: ['pto','vacation','...'], active: true }
-// Manage tags by editing the Tags sheet — no code change required.
+// Manage tags by editing the Tags sheet - no code change required.
 let _allTags = [];
 let _tagsLoaded = false;
 
@@ -5488,12 +5486,12 @@ function populateTagDropdowns(){
 }
 
 // ═══════════════════════════════════════════════════════════════
-// TAGS EDITOR — Settings → Tags tab
+// TAGS EDITOR - Settings → Tags tab
 // ═══════════════════════════════════════════════════════════════
 // Each row in `_allTags` corresponds to a row in the Tags sheet at index
 // `i + 2` (1-indexed + header). Edits write back to that specific row via
 // proxySheetPut. Deletes clear the row's content (the empty row is then
-// filtered out by loadTagsFromSheet on next load — no shifting required).
+// filtered out by loadTagsFromSheet on next load - no shifting required).
 async function loadTagsUI() {
   // Always re-fetch when the tab opens so the editor reflects sheet state.
   await loadTagsFromSheet();
@@ -5505,7 +5503,7 @@ async function loadTagsUI() {
     countEl.textContent = _allTags.length + ' tags total · ' + activeCount + ' active';
   }
   tbody.innerHTML = _allTags.map((t, i) => _renderTagRow(t, i)).join('');
-  // Wire blur/change handlers — defer to next tick so the DOM is in.
+  // Wire blur/change handlers - defer to next tick so the DOM is in.
   setTimeout(() => {
     tbody.querySelectorAll('.tag-input').forEach(el => {
       el.addEventListener('blur', () => _saveTagRow(parseInt(el.dataset.idx)));
@@ -5532,7 +5530,7 @@ function _renderTagRow(t, i) {
 }
 
 function addNewTag() {
-  // Append a blank entry — sheetRow is unset, so _saveTagRow will append to
+  // Append a blank entry - sheetRow is unset, so _saveTagRow will append to
   // the sheet (rather than PUT) on first save and capture the new row index.
   _allTags.push({ tag: '', keywords: [], active: true });
   const tbody = document.getElementById('tags-tbody');
@@ -5572,14 +5570,14 @@ async function _saveTagRow(idx) {
   if (status) { status.textContent = 'Saving "' + tag + '"…'; status.style.color = 'var(--text-muted)'; }
   try {
     if (wasNew) {
-      // Brand-new tag — append to the bottom of the sheet, capture the new
+      // Brand-new tag - append to the bottom of the sheet, capture the new
       // row index so subsequent edits PUT to the correct location.
       const result = await sheetsAppend('Tags!A:C', [[tag, keywords.join(', '), active ? 'TRUE' : 'FALSE']]);
       const updated = result && result.updates && result.updates.updatedRange;
       const m = updated && updated.match(/(\d+)$/);
       if (m) entry.sheetRow = parseInt(m[1]);
     } else {
-      // Existing tag — PUT to its known sheet row.
+      // Existing tag - PUT to its known sheet row.
       await sheetsPut('Tags!A' + entry.sheetRow + ':C' + entry.sheetRow,
         [[tag, keywords.join(', '), active ? 'TRUE' : 'FALSE']]);
     }
@@ -5604,7 +5602,7 @@ function _deleteTagRow(idx) {
     if (status) { status.textContent = 'Deleting "' + label + '"…'; status.style.color = 'var(--text-muted)'; }
     try {
       // If the entry was never persisted (added but never blurred), there's
-      // nothing to clear — just remove from in-memory.
+      // nothing to clear - just remove from in-memory.
       if (t.sheetRow) {
         await sheetsClear('Tags!A' + t.sheetRow + ':C' + t.sheetRow);
       }
@@ -5643,7 +5641,7 @@ function takeTicket() {
   }
   // Use email as the canonical assignee value (matches permUsers.email)
   currentTicket.assignee = _apUser.email;
-  // Update the modal-assignee dropdown — re-populate to ensure user is in options
+  // Update the modal-assignee dropdown - re-populate to ensure user is in options
   const sel = document.getElementById('modal-assignee');
   if (sel) {
     // Make sure user is an option (add if missing)
@@ -5665,7 +5663,7 @@ function autoTagTicket(ticket) {
   const text = ((ticket.subject||'') + ' ' + (ticket.messages?.[0]?.content||'')).toLowerCase();
   const tags = [...(ticket.tags||[])];
   // Sheet-driven taxonomy. If Tags sheet hasn't loaded yet (e.g., very first
-  // page paint), this no-ops — agents can manually tag, and the next ticket
+  // page paint), this no-ops - agents can manually tag, and the next ticket
   // creation after load will benefit from auto-tagging.
   _allTags.forEach(entry => {
     if (!entry.active || !entry.keywords.length) return;
@@ -5704,13 +5702,13 @@ async function callAppsScript(payload) {
 }
 
 // Queue an outbound email for the trigger to send.
-//   - For ticket replies: pass `ticket` only; subject is auto-built as
+//  - For ticket replies: pass `ticket` only; subject is auto-built as
 //     "Re: <ticket subject> [ASK-XXXX]" (trailing token so the bracket
 //     reads as a ref rather than a leading system tag).
-//   - For new compose: pass `opts.subject` to override; system trails the
+//  - For new compose: pass `opts.subject` to override; system trails the
 //     [ASK-XXXX] token automatically so future replies thread back via
 //     orphan-thread adoption in syncGmail_.
-//   - opts.to overrides the default recipient (ticket.from) for new compose.
+//  - opts.to overrides the default recipient (ticket.from) for new compose.
 async function gmailSendReply(ticket, messageBody, agentName, sigText, cc, opts) {
   opts = opts || {};
   // Ensure all N expected columns have headers. The old check (only A1)
@@ -5732,9 +5730,9 @@ async function gmailSendReply(ticket, messageBody, agentName, sigText, cc, opts)
   }
   const kind = opts.kind || 'reply';
   // Subject construction:
-  //   - If caller passed an explicit subject, append [ASK-XXXX] (or
+  //  - If caller passed an explicit subject, append [ASK-XXXX] (or
   //     [ASK-XXXX internal] for kind=internal) if not already present.
-  //   - Otherwise build a default Re: subject from the ticket.
+  //  - Otherwise build a default Re: subject from the ticket.
   const tokenInternal = '[' + ticket.id + ' internal]';
   const tokenRegular  = '[' + ticket.id + ']';
   const expectedToken = kind === 'internal' ? tokenInternal : tokenRegular;
@@ -5764,7 +5762,7 @@ async function gmailSendReply(ticket, messageBody, agentName, sigText, cc, opts)
     cc || '',
     kind,
     opts.messageId || '',
-    opts.historyHtml || '',  // 14th column — pre-rendered HTML message-history block
+    opts.historyHtml || '',  // 14th column - pre-rendered HTML message-history block
   ];
   await sheetsAppend('PendingReplies!A:N', [row]);
   return { ok: true, queued: true };
@@ -6171,7 +6169,7 @@ function syncDDFromSelect(ddId) {
     });
   });
   const selected = opts.find(o => o.value === cur);
-  if (valueSpan) valueSpan.textContent = selected ? selected.textContent : '—';
+  if (valueSpan) valueSpan.textContent = selected ? selected.textContent : ' - ';
 }
 
 function syncAllDDs() {
@@ -6214,7 +6212,7 @@ function getSelectedSignatureText() {
 
 
 function previewSignatureInReply() {
-  // No-op preview — signature is appended on send, not shown in textbox
+  // No-op preview - signature is appended on send, not shown in textbox
   // to keep the reply area clean
 }
 
@@ -6254,7 +6252,7 @@ async function init() {
       document.body.appendChild(tb);
     } catch(e){}
     try { if (window.startTour) setTimeout(function(){ window.startTour(false); }, 900); } catch(e){}
-    console.log('%c✅ Ask People — DEMO MODE (mock data, no backend)','background:#7c3aed;color:#fff;padding:4px 12px;border-radius:4px;font-size:13px;font-weight:700');
+    console.log('%c✅ Ask People - DEMO MODE (mock data, no backend)','background:#7c3aed;color:#fff;padding:4px 12px;border-radius:4px;font-size:13px;font-weight:700');
   } catch(e) {
     console.error('Demo init failed:', e);
     try { const ov=document.getElementById('loader-overlay'); if(ov) ov.remove(); document.body.removeAttribute('data-auth'); } catch(_){}
@@ -6284,8 +6282,7 @@ function handleKeyboard(event){
   }
 }
 
-// Client-side preview renderer. Mirrors the server-side buildEmailHtml_ —
-// when `to` is omitted or @newwesventures.com, includes the "View message
+// Client-side preview renderer. Mirrors the server-side buildEmailHtml_ - // when `to` is omitted or @newwesventures.com, includes the "View message
 // history" CTA; for external recipients, omits the CTA and rewords the
 // footer to "Reply directly to this email".
 function buildEmailHtml(body, agentName, ticketId, sigText, to, isInternalNote, historyHtml) {
@@ -6303,7 +6300,7 @@ function buildEmailHtml(body, agentName, ticketId, sigText, to, isInternalNote, 
     ? `Internal consultation regarding Ask People ticket ${ticketId || ''}. Please reply directly to this email.`
     : (recipientIsInternal
         ? `Ticket: ${ticketId || ''} · Reply to this email to respond to your request`
-        : `Reply directly to this email to respond — your message will reach the Ask People team.`);
+        : `Reply directly to this email to respond - your message will reach the Ask People team.`);
   const historyBlock = historyHtml ? historyHtml : '';
   return `<!DOCTYPE html><html><body style="font-family:Arial,sans-serif;background:#f8fafc;margin:0;padding:20px;">
   <div style="max-width:600px;margin:0 auto;background:#fff;border-radius:12px;overflow:hidden;border:1px solid #e2e8f0;">
@@ -6336,13 +6333,13 @@ function buildEmailHtml(body, agentName, ticketId, sigText, to, isInternalNote, 
 
 
 // ═══════════════════════════════════════════════════════════════
-// ACTIVE SESSIONS — real-time session tracking via Sessions sheet
+// ACTIVE SESSIONS - real-time session tracking via Sessions sheet
 // Sheet columns: A sessionId | B email | C userAgent | D ipAddress
 //                E location | F signedInAt | G lastSeenAt | H revokedAt
 // ═══════════════════════════════════════════════════════════════
 
 const SESSIONS_SHEET_RANGE = 'Sessions!A:H';
-const SESSIONS_HEARTBEAT_MS = 60 * 1000;     // 60s — mirrors ticket poll
+const SESSIONS_HEARTBEAT_MS = 60 * 1000;     // 60s - mirrors ticket poll
 const SESSIONS_STALE_MS     = 5 * 60 * 1000; // sessions w/ lastSeenAt > 5min ago = "Expired"
 let _apSessionId = null;     // current tab's session id (in sessionStorage too)
 let _apSessionRow = null;    // 1-indexed row in Sheets for fast updates
@@ -6471,7 +6468,7 @@ async function apSessionsCheckRevoked() {
       const r = all[i] || [];
       if (r[0] === _apSessionId) {
         if (r[7] && r[7] !== '') {
-          // This session has been revoked — force sign-out
+          // This session has been revoked - force sign-out
           apSessionsForceSignOut();
         }
         break;
@@ -6615,7 +6612,7 @@ function apRevokeSession(sessionId) {
     try {
       const target = _apSessionsCache.find(s => s.sessionId === sessionId);
       if (!target || !target.rowIndex) {
-        showToast('Session not found — refresh and try again', 'error');
+        showToast('Session not found - refresh and try again', 'error');
         return;
       }
       await sheetsPut('Sessions!H' + target.rowIndex + ':H' + target.rowIndex, [[String(Date.now())]]);

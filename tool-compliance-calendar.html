@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Compliance Calendar — NewWesVentures</title>
-<meta name="description" content="Compliance calendar demo — every deadline, owner, and status tracked with automatic reminders. Built with AI by Wes Griffin.">
+<title>Compliance Calendar - NewWesVentures</title>
+<meta name="description" content="Compliance calendar demo - every deadline, owner, and status tracked with automatic reminders. Built with AI by Wes Griffin.">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0' stop-color='%237c3aed'/%3E%3Cstop offset='.55' stop-color='%235b4ef0'/%3E%3Cstop offset='1' stop-color='%2306b6d4'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='64' height='64' rx='16' fill='url(%23g)'/%3E%3Ctext x='32' y='44' font-size='34' text-anchor='middle' fill='white' font-family='Georgia,serif'%3E%E2%9C%A6%3C/text%3E%3C/svg%3E">
 <style>
   :root{
@@ -468,7 +468,7 @@
   }
 
   /* ============================================================
-     PHONE LAYER — applies at ≤760px. Desktop (≥820px) untouched.
+     PHONE LAYER - applies at ≤760px. Desktop (≥820px) untouched.
      ============================================================ */
   @media (max-width:760px){
     /* prevent any horizontal page scroll */
@@ -634,7 +634,7 @@
     .it-meta .m{font-size:11px;}
     .chip{font-size:10.5px; padding:4px 9px;}
 
-    /* month grid is genuinely tight at this width — shrink gracefully */
+    /* month grid is genuinely tight at this width - shrink gracefully */
     .cell{min-height:58px; padding:4px 3px;}
     .cell .dn{font-size:10.5px;}
     .ev{font-size:9.5px; padding:2px 4px; gap:3px;}
@@ -691,7 +691,7 @@
       <div class="ring-meta">
         <span class="t">Compliance health</span>
         <span class="b" id="ringHealth">Healthy</span>
-        <span class="s" id="ringSub">— of — obligations clear</span>
+        <span class="s" id="ringSub">of - obligations clear</span>
       </div>
     </div>
 
@@ -881,13 +881,13 @@
 
   var DATA = [
     {
-      id:"i9-okafor", icon:"🪪", cat:"I-9 / Work Auth", title:"I-9 reverification — Daniel Okafor",
+      id:"i9-okafor", icon:"🪪", cat:"I-9 / Work Auth", title:"I-9 reverification - Daniel Okafor",
       owner:"pn", due:dOff(-4), juris:"Federal", authority:"USCIS · Form I-9 §2",
       desc:"Daniel Okafor's employment authorization document (EAD) expired June 1. Section 3 reverification must be completed by the expiration date to maintain a valid I-9 on file.",
       checklist:["Confirm EAD expiration in personnel file","Request unexpired List A or List C document","Examine document in employee's presence (or via authorized rep)","Complete Form I-9 Supplement B (reverification)","Update E-Verify if case re-run is required"]
     },
     {
-      id:"i9-mehta", icon:"🪪", cat:"I-9 / Work Auth", title:"I-9 reverification — Aanya Mehta",
+      id:"i9-mehta", icon:"🪪", cat:"I-9 / Work Auth", title:"I-9 reverification - Aanya Mehta",
       owner:"el", due:dOff(9), juris:"Federal", authority:"USCIS · Form I-9 §2",
       desc:"Aanya Mehta's H-1B-based work authorization requires reverification ahead of the June 14 expiration. Begin outreach now to avoid a lapse in authorized employment.",
       checklist:["Notify employee 90/60/30 days out","Collect updated I-797 / EAD","Complete Supplement B before expiration","Log new expiration tickler"]
@@ -901,7 +901,7 @@
     {
       id:"aca", icon:"🧾", cat:"Benefits / ACA", title:"ACA 1095-C employee distribution check",
       owner:"mt", due:dOff(-9), juris:"Federal", authority:"IRS · ACA §6056",
-      desc:"Forms 1095-C furnishing to full-time employees. The furnishing deadline has passed — confirm all forms were delivered and document any corrections needed before IRS transmittal.",
+      desc:"Forms 1095-C furnishing to full-time employees. The furnishing deadline has passed - confirm all forms were delivered and document any corrections needed before IRS transmittal.",
       checklist:["Confirm 1095-C generated for all FT employees","Verify electronic-consent vs. mailed copies","Resolve any TIN/coverage mismatches","Archive furnishing date evidence"]
     },
     {
@@ -917,13 +917,13 @@
       checklist:["Publish updated handbook v2026.2","Launch acknowledgment campaign in HRIS","Send reminder to non-completers (weekly)","Pull completion report → escalate gaps to managers"]
     },
     {
-      id:"hp-ca", icon:"🎓", cat:"Training (State)", title:"Harassment-prevention training — California",
+      id:"hp-ca", icon:"🎓", cat:"Training (State)", title:"Harassment-prevention training - California",
       owner:"sk", due:dOff(6), juris:"California", authority:"CA SB 1343 / DFEH",
       desc:"California requires sexual-harassment prevention training every two years (1 hr non-supervisory, 2 hrs supervisory). A cohort of CA employees is due for renewal this cycle.",
       checklist:["Identify CA employees due for renewal","Assign 1-hr / 2-hr modules by role","Track completion in LMS","Retain completion certificates (2 yrs)"]
     },
     {
-      id:"hp-ny", icon:"🎓", cat:"Training (State)", title:"Harassment-prevention training — New York",
+      id:"hp-ny", icon:"🎓", cat:"Training (State)", title:"Harassment-prevention training - New York",
       owner:"sk", due:dOff(34), juris:"New York", authority:"NY Labor Law §201-g",
       desc:"New York requires annual interactive sexual-harassment prevention training for all employees, meeting or exceeding the State model. Roll out the 2026 annual cohort.",
       checklist:["Confirm content meets NYS model standards","Assign annual module to all NY employees","Monitor completion dashboard","Document training date per employee"]
@@ -1177,7 +1177,7 @@
         byDay[realDay].forEach(function(o){
           var st = statusOf(o);
           var ecls = {upcoming:'e-upcoming', soon:'e-soon', overdue:'e-overdue', done:'e-done'}[st];
-          html += '<button class="ev '+ecls+'" data-id="'+o.id+'" title="'+o.title.replace(/"/g,'&quot;')+'">'+o.icon+' '+o.title.replace(/ —.*/,'').replace(/—.*/,'')+'</button>';
+          html += '<button class="ev '+ecls+'" data-id="'+o.id+'" title="'+o.title.replace(/"/g,'&quot;')+'">'+o.icon+' '+o.title.replace(/ - .*/,'').replace(/ - .*/,'')+'</button>';
         });
       }
       html += '</div>';
@@ -1238,8 +1238,8 @@
     $("drDue").className = "fv" + (isOver?" over":"");
     $("drDue").textContent = fmtLong(o.due);
     var cd = $("drCountdown");
-    if(st==="done"){ cd.className="countdown"; cd.innerHTML="<b>Completed</b> — closed for this cycle."; }
-    else if(dd<0){ cd.className="countdown over"; cd.innerHTML="<b>"+Math.abs(dd)+" days overdue</b> — escalate now."; }
+    if(st==="done"){ cd.className="countdown"; cd.innerHTML="<b>Completed</b>closed for this cycle."; }
+    else if(dd<0){ cd.className="countdown over"; cd.innerHTML="<b>"+Math.abs(dd)+" days overdue</b>escalate now."; }
     else if(dd===0){ cd.className="countdown"; cd.innerHTML="<b>Due today.</b>"; }
     else { cd.className="countdown"; cd.innerHTML="<b>"+dd+" days</b> remaining."; }
 
@@ -1259,7 +1259,7 @@
     var btn = $("btnComplete");
     if(s.done){
       btn.className = "btn btn-done-state";
-      btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg> Completed — reopen';
+      btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg> Completed - reopen';
       btn.disabled = false;
     } else {
       btn.className = "btn btn-primary";
@@ -1271,7 +1271,7 @@
     $("drawer").classList.add("show");
     $("drawer").setAttribute("aria-hidden","false");
     $("drawer").querySelector(".dr-body").scrollTop = 0;
-    // On phones the sheet is full-screen — lock the page behind it.
+    // On phones the sheet is full-screen - lock the page behind it.
     if(isPhone()){ document.body.classList.add("sheet-open"); document.querySelector(".dr-head").scrollTop = 0; }
   }
 
@@ -1305,7 +1305,7 @@
         // auto-complete when all checks done (and not already done)
         var all = s.checks.every(function(b){return b;});
         if(all && !s.done){
-          // gentle suggestion via primary button glow — actual completion stays user-driven
+          // gentle suggestion via primary button glow - actual completion stays user-driven
           var btn = $("btnComplete");
           btn.style.boxShadow = "0 0 0 3px rgba(16,185,129,.3), 0 6px 16px rgba(91,78,240,.32)";
           setTimeout(function(){ btn.style.boxShadow=""; }, 1400);
@@ -1420,14 +1420,14 @@
     $("nudgeCount").textContent = list.length;
     var host = $("nudgeList");
     if(!list.length){
-      host.innerHTML = '<div style="font-size:12px;color:var(--muted);">All caught up — no nudges needed this week. 🎉</div>';
+      host.innerHTML = '<div style="font-size:12px;color:var(--muted);">All caught up - no nudges needed this week. 🎉</div>';
     } else {
       host.innerHTML = list.map(function(o){
         var s = state[o.id];
         var ow = owner(s.owner);
         var dd = daysBetween(TODAY, o.due);
         var when = dd<0 ? "NOW" : dd===0 ? "TODAY" : dd<=2 ? "TODAY" : "IN "+dd+"D";
-        var short = o.title.replace(/ —.*/,"").replace(/—.*/,"");
+        var short = o.title.replace(/ - .*/,"").replace(/ - .*/,"");
         return '<div class="nudge-pill" data-id="'+o.id+'">'+
           '<span class="when">'+when+'</span>'+
           '<div><div class="who">'+ow.name+'</div><div class="what">'+short+(dd<0?' · overdue':'')+'</div></div>'+
@@ -1510,7 +1510,7 @@
         s.done = false;
         openDrawer(openId);
         render();
-        toast("info", "Reopened: "+o.title.replace(/ —.*/,""), "Back on the calendar. Owner: "+owner(s.owner).name+".");
+        toast("info", "Reopened: "+o.title.replace(/ - .*/,""), "Back on the calendar. Owner: "+owner(s.owner).name+".");
       } else {
         s.done = true;
         s.checks = s.checks.map(function(){return true;});
@@ -1518,7 +1518,7 @@
         openDrawer(openId);
         render();
         var c = recompute();
-        toast("ok", "Marked complete ✓", o.title.replace(/ —.*/,"")+" closed. "+c.done+" of "+DATA.length+" obligations done.");
+        toast("ok", "Marked complete ✓", o.title.replace(/ - .*/,"")+" closed. "+c.done+" of "+DATA.length+" obligations done.");
       }
     });
 

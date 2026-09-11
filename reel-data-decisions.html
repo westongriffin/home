@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>From Data to Decisions — NewWesVentures</title>
+<title>From Data to Decisions - NewWesVentures</title>
 <meta name="description" content="A 30-second vision film: every headcount, engagement, and cost metric one plain-English question away.">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0' stop-color='%237c3aed'/%3E%3Cstop offset='.55' stop-color='%235b4ef0'/%3E%3Cstop offset='1' stop-color='%2306b6d4'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='64' height='64' rx='16' fill='url(%23g)'/%3E%3Ctext x='32' y='44' font-size='34' text-anchor='middle' fill='white' font-family='Georgia,serif'%3E%E2%9C%A6%3C/text%3E%3C/svg%3E">
 <style>
@@ -426,7 +426,7 @@
   /* ===========================================================
      PORTRAIT / NARROW LAYER
      Goal: the 16:9 stage fills (nearly) the FULL viewport WIDTH,
-     scaled by viewport width — NOT min(width,height) — and is
+     scaled by viewport width - NOT min(width,height) - and is
      letterboxed (vertically centered) against the dark backdrop.
      Desktop (>=820px landscape) is untouched.
      =========================================================== */
@@ -569,7 +569,7 @@
             <div class="lt-bar"></div>
             <div class="lt-txt">
               <span class="lt-eyebrow">Scene 02 · Answer</span>
-              <span class="lt-main">A chart, a summary, and the dollar impact — instantly</span>
+              <span class="lt-main">A chart, a summary, and the dollar impact - instantly</span>
             </div>
           </div>
           <div class="scene-no" id="s2no">02 / 03</div>
@@ -594,7 +594,7 @@
               <!-- forecast chart -->
               <div class="card" style="grid-column:1; grid-row:2;">
                 <div class="card-h">
-                  <div class="card-title">Headcount cost — Support</div>
+                  <div class="card-title">Headcount cost - Support</div>
                   <div class="card-tag" id="s3tag" style="color:var(--v3);background:rgba(6,182,212,.1)">Forecast</div>
                 </div>
                 <div class="chart">
@@ -623,7 +623,7 @@
 
         <!-- ================= END CARD ================= -->
         <section class="scene fade" id="end">
-          <div class="end-stat rev">Every People metric — one question away.</div>
+          <div class="end-stat rev">Every People metric - one question away.</div>
           <div class="end-tag rev"><span class="mark">◆</span> New<b>Wes</b>Ventures · People Operations, powered by AI</div>
           <div class="byline rev">Created by Wes Griffin <span class="sep">·</span> Designed &amp; built with AI</div>
         </section>
@@ -639,7 +639,7 @@
   <div class="progress"><i id="prog"></i></div>
 
   <!-- watermark -->
-  <div class="wm"><span class="d"></span> NEWWESVENTURES — SIZZLE REEL</div>
+  <div class="wm"><span class="d"></span> NEWWESVENTURES - SIZZLE REEL</div>
 
   <!-- portrait-only rotate hint (auto-hides) -->
   <div class="rotate-hint" id="rotateHint"><span class="rh-ico">⤤</span> Rotate for full screen</div>
@@ -912,17 +912,17 @@
     ag.appendChild(svgEl('stop',{offset:'100%','stop-color':'rgba(6,182,212,0)'}));
     defs.appendChild(ag);
 
-    // plan line (dashed grey) — static reference
+    // plan line (dashed grey) - static reference
     S3.planPath = svgEl('path',{d:pathFrom(S3DATA.plan), fill:'none', stroke:'#c3c9dd', 'stroke-width':2, 'stroke-dasharray':'5 5', 'stroke-linecap':'round'});
     svg.appendChild(S3.planPath);
     var planLbl=svgEl('text',{class:'y-label', x:s3x(11)+2, y:s3y(1035)-6, 'text-anchor':'end'});
     planLbl.textContent='Plan'; planLbl.setAttribute('fill','#aab2c8'); svg.appendChild(planLbl);
 
-    // actual line (violet/pink) — climbing, over plan
+    // actual line (violet/pink) - climbing, over plan
     S3.actualPath=svgEl('path',{d:pathFrom(S3DATA.actual), fill:'none', stroke:'#db2777', 'stroke-width':3.4, 'stroke-linecap':'round', 'stroke-linejoin':'round'});
     svg.appendChild(S3.actualPath);
 
-    // forecast area + line (cyan) — drawn via dash animation
+    // forecast area + line (cyan) - drawn via dash animation
     S3.fArea=svgEl('path',{d:'', fill:'url(#s3area)', stroke:'none', opacity:0});
     svg.appendChild(S3.fArea);
     S3.fPath=svgEl('path',{d:pathFrom(S3DATA.freeze), fill:'none', stroke:'#06b6d4', 'stroke-width':3.6, 'stroke-linecap':'round','stroke-linejoin':'round', 'stroke-dasharray':'4 5'});

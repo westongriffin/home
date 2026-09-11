@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Onboarding Orchestrator — NewWesVentures</title>
-<meta name="description" content="Onboarding orchestrator demo — IT, payroll, manager, and facilities tasks auto-coordinated from Day 0 to Day 90. Built with AI by Wes Griffin.">
+<title>Onboarding Orchestrator - NewWesVentures</title>
+<meta name="description" content="Onboarding orchestrator demo - IT, payroll, manager, and facilities tasks auto-coordinated from Day 0 to Day 90. Built with AI by Wes Griffin.">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0' stop-color='%237c3aed'/%3E%3Cstop offset='.55' stop-color='%235b4ef0'/%3E%3Cstop offset='1' stop-color='%2306b6d4'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='64' height='64' rx='16' fill='url(%23g)'/%3E%3Ctext x='32' y='44' font-size='34' text-anchor='middle' fill='white' font-family='Georgia,serif'%3E%E2%9C%A6%3C/text%3E%3C/svg%3E">
 <style>
   :root{
@@ -324,9 +324,9 @@
   .back-bar{display:none;}
 
   /* ============================================================
-     MOBILE / PHONE LAYER  (≤760px)  — does NOT affect ≥820px
+     MOBILE / PHONE LAYER  (≤760px) - does NOT affect ≥820px
      Real reconfiguration (mirrors the auto-triage pattern):
-       • The new-hire LIST *is* the page — clean full-width cards.
+       • The new-hire LIST *is* the page - clean full-width cards.
        • Tapping a hire slides their PLAN in full-screen (.center becomes a
          fixed sheet, translateX off-canvas until .app.show-detail).
        • A sticky "‹ All hires" back bar sits atop the plan sheet.
@@ -675,7 +675,7 @@
     {
       id:"h5", name:"Elise Tanaka", role:"Customer Success Manager", team:"Customer Success",
       startInDays:11, seed:4,
-      tasks:[]  /* EMPTY — demonstrates Generate */
+      tasks:[]  /* EMPTY - demonstrates Generate */
     }
   ];
 
@@ -920,7 +920,7 @@
       card.appendChild(nb);
     }
 
-    // click toggles complete (but not when the status is blocked — nudge first)
+    // click toggles complete (but not when the status is blocked - nudge first)
     card.addEventListener("click",function(){
       toggleTask(h,t,card);
     });
@@ -931,7 +931,7 @@
   /* ---------- INTERACTION A: toggle complete ---------- */
   function toggleTask(h,t,card){
     if(t.status==="blocked"){
-      // gentle hint — blocked needs a nudge first
+      // gentle hint - blocked needs a nudge first
       toast("⛔","This task is blocked","Send a nudge to its owner to unblock it.");
       if(card){ card.style.transition="transform .12s"; card.style.transform="translateX(3px)";
         setTimeout(function(){ card.style.transform=""; },130); }

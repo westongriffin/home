@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>NewWesVentures — Attrition Early-Warning + Scenario Planner</title>
-<meta name="description" content="Attrition early-warning and scenario planner demo — team risk scoring with drivers, interventions, and a live headcount cost model. Built with AI by Wes Griffin.">
+<title>NewWesVentures - Attrition Early-Warning + Scenario Planner</title>
+<meta name="description" content="Attrition early-warning and scenario planner demo - team risk scoring with drivers, interventions, and a live headcount cost model. Built with AI by Wes Griffin.">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0' stop-color='%237c3aed'/%3E%3Cstop offset='.55' stop-color='%235b4ef0'/%3E%3Cstop offset='1' stop-color='%2306b6d4'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='64' height='64' rx='16' fill='url(%23g)'/%3E%3Ctext x='32' y='44' font-size='34' text-anchor='middle' fill='white' font-family='Georgia,serif'%3E%E2%9C%A6%3C/text%3E%3C/svg%3E">
 <style>
   /* ===================== DESIGN TOKENS ===================== */
@@ -260,7 +260,7 @@
   .imp-delta .idv.good{color:var(--green);}
   .imp-delta .idv.none{color:var(--muted);}
 
-  /* ===================== SECTION B — PLANNER ===================== */
+  /* ===================== SECTION B - PLANNER ===================== */
   .plan-grid{display:grid; grid-template-columns:340px 1fr; gap:16px; align-items:start;}
   .controls{padding:16px;}
   .controls h3{font-size:13px; font-weight:800; letter-spacing:.04em; text-transform:uppercase; color:var(--ink2); margin-bottom:4px;}
@@ -386,7 +386,7 @@
     html,body{overflow-x:hidden;}
     .app{height:100dvh;}
 
-    /* ---- APP BAR: compact single row — logo + title on the left, avatar on the right ---- */
+    /* ---- APP BAR: compact single row - logo + title on the left, avatar on the right ---- */
     .bar{
       flex-wrap:nowrap;
       align-items:center;
@@ -400,7 +400,7 @@
       white-space:normal; overflow:hidden;
       display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical;
     }
-    /* kill the flex spacer; the badge is decorative chrome — hide it on phones to keep the bar to one row */
+    /* kill the flex spacer; the badge is decorative chrome - hide it on phones to keep the bar to one row */
     .bar .spacer{display:none;}
     .badge{display:none;}
     .userchip{flex:0 0 auto; margin-left:auto; min-height:40px;}
@@ -408,7 +408,7 @@
     .userchip .utext{display:block;}
     .userchip{padding:5px 11px 5px 5px;}
 
-    /* ---- TABS: horizontal scroller — even, tappable pills, never clipped ---- */
+    /* ---- TABS: horizontal scroller - even, tappable pills, never clipped ---- */
     .tabs{
       padding:10px 12px 0; gap:8px;
       flex-wrap:nowrap; overflow-x:auto; overflow-y:hidden;
@@ -613,16 +613,16 @@
     <section class="view on" id="view-a" role="tabpanel" aria-labelledby="tab-a">
 
       <div class="kpi-row" id="kpiRow">
-        <div class="kpi"><div class="kl">Headcount</div><div class="kv" id="kpiHc">—</div><div class="ks">across 5 teams</div></div>
-        <div class="kpi"><div class="kl">Teams at high risk</div><div class="kv" id="kpiHigh">—</div><div class="ks" id="kpiHighSub">—</div></div>
-        <div class="kpi"><div class="kl">Predicted 12-mo exits</div><div class="kv" id="kpiExits">—</div><div class="ks">weighted by risk</div></div>
-        <div class="kpi"><div class="kl">Backfill exposure</div><div class="kv" id="kpiCost">—</div><div class="ks">loaded replacement cost</div></div>
+        <div class="kpi"><div class="kl">Headcount</div><div class="kv" id="kpiHc"></div><div class="ks">across 5 teams</div></div>
+        <div class="kpi"><div class="kl">Teams at high risk</div><div class="kv" id="kpiHigh"></div><div class="ks" id="kpiHighSub"></div></div>
+        <div class="kpi"><div class="kl">Predicted 12-mo exits</div><div class="kv" id="kpiExits"></div><div class="ks">weighted by risk</div></div>
+        <div class="kpi"><div class="kl">Backfill exposure</div><div class="kv" id="kpiCost"></div><div class="ks">loaded replacement cost</div></div>
       </div>
 
       <div class="sec-head">
         <div>
           <h2>Attrition risk by team</h2>
-          <p>Model scores each team on comp, tenure, workload &amp; engagement signals. Click a team to see drivers and toggle interventions — the projected risk updates live.</p>
+          <p>Model scores each team on comp, tenure, workload &amp; engagement signals. Click a team to see drivers and toggle interventions - the projected risk updates live.</p>
         </div>
         <div class="pill-legend">
           <span class="lg"><i style="background:var(--green)"></i>Low &lt; 30%</span>
@@ -646,7 +646,7 @@
       <div class="sec-head">
         <div>
           <h2>Scenario planner</h2>
-          <p>Model attrition, backfills &amp; new hires across the next four quarters. Everything recomputes live — drag a slider or type a value to see headcount and cost react.</p>
+          <p>Model attrition, backfills &amp; new hires across the next four quarters. Everything recomputes live - drag a slider or type a value to see headcount and cost react.</p>
         </div>
       </div>
 
@@ -717,18 +717,18 @@
             <div class="plan-kpis">
               <div class="pk accent">
                 <div class="pkl">Projected EOY headcount</div>
-                <div class="pkv" id="pkHc">—</div>
-                <div class="pks"><span class="trend" id="pkHcT">—</span> vs. start of year</div>
+                <div class="pkv" id="pkHc"></div>
+                <div class="pks"><span class="trend" id="pkHcT"></span> vs. start of year</div>
               </div>
               <div class="pk">
                 <div class="pkl">Gap vs. plan</div>
-                <div class="pkv" id="pkGap">—</div>
-                <div class="pks"><span id="pkGapT">—</span></div>
+                <div class="pkv" id="pkGap"></div>
+                <div class="pks"><span id="pkGapT"></span></div>
               </div>
               <div class="pk">
                 <div class="pkl">Annualized cost delta</div>
-                <div class="pkv" id="pkCost">—</div>
-                <div class="pks"><span class="trend" id="pkCostT">—</span> vs. plan run-rate</div>
+                <div class="pkv" id="pkCost"></div>
+                <div class="pks"><span class="trend" id="pkCostT"></span> vs. plan run-rate</div>
               </div>
             </div>
 
@@ -880,7 +880,7 @@
   }
 
   /* =========================================================
-     SECTION A — render
+     SECTION A - render
   ========================================================= */
   function renderKpis(){
     var totalHc=0, high=0, exits=0;
@@ -894,7 +894,7 @@
     $("kpiHc").textContent = totalHc.toLocaleString();
     $("kpiHigh").textContent = high;
     var highNames = TEAMS.filter(function(t){return projectedRisk(t)>55;}).map(function(t){return t.name;});
-    $("kpiHighSub").textContent = highNames.length ? highNames.join(" · ") : "none — nice work";
+    $("kpiHighSub").textContent = highNames.length ? highNames.join(" · ") : "none - nice work";
     $("kpiExits").textContent = "~"+exits;
     $("kpiCost").textContent = fmtK(exits*REPLACE_COST_K);
   }
@@ -1058,7 +1058,7 @@
     var dv = wrap.querySelector("[data-imp-delta]");
     dv.innerHTML = (d>0?"−"+d:"0")+'<span style="font-size:14px">pts</span>';
     dv.className = "idv "+(d>0?"good":"none");
-    // panel may have grown/shrunk — keep maxHeight in sync if open
+    // panel may have grown/shrunk - keep maxHeight in sync if open
     if(wrap.classList.contains("open")){
       var panel = wrap.querySelector(".panel");
       panel.style.maxHeight = panel.scrollHeight + "px";
@@ -1066,7 +1066,7 @@
   }
 
   /* =========================================================
-     SECTION B — Scenario planner
+     SECTION B - Scenario planner
   ========================================================= */
   var QLABELS = ["Now","Q1","Q2","Q3","Q4"];
   var START_HC = 412;
@@ -1229,7 +1229,7 @@
     var note = $("planNote");
     var backfillsLost = Math.round(proj.exits*(1-planState.back/100));
     note.innerHTML = 'Over the year this run-rate sees <b>~'+Math.round(proj.exits)+'</b> voluntary exits, replaces <b>~'+Math.round(proj.backfills)+'</b> via backfill ('+planState.back+'%), and adds <b>'+planState.hire+'</b> growth hires. '+
-      (planState.frozen ? '<b style="color:var(--v2)">Backfills frozen</b> — '+backfillsLost+' roles left open to recapture budget.' :
+      (planState.frozen ? '<b style="color:var(--v2)">Backfills frozen</b>'+backfillsLost+' roles left open to recapture budget.' :
        (gap<0 ? 'Backfills + hires don’t fully cover attrition, leaving a gap to plan.' : 'Hiring keeps pace with attrition against plan.'));
   }
 
@@ -1277,7 +1277,7 @@
     if(frozen){
       btn.textContent = "Restore (80%)";
       btn.classList.add("on-freeze");
-      $("freezeSub").textContent = "Backfills frozen — restore to 80% baseline";
+      $("freezeSub").textContent = "Backfills frozen - restore to 80% baseline";
     }else{
       btn.textContent = "Apply";
       btn.classList.remove("on-freeze");
@@ -1342,7 +1342,7 @@
       initPlanner();
       initTabs();
       // open the highest-risk team by default to showcase the panel
-      // (desktop/tablet only — on phones the card list is the page; detail opens on tap)
+      // (desktop/tablet only - on phones the card list is the page; detail opens on tap)
       var top = document.querySelector('.team[data-team="eng"]');
       if(top && !isPhone()){ setTimeout(function(){ toggleTeam(top); }, 260); }
       // if the viewport crosses out of phone width, release any sheet scroll-lock and

@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>NewWesVentures Global HR Dashboard</title>
-<meta name="description" content="A live workforce analytics dashboard demo — headcount by leader and region, hires, attrition, and open requisitions. Built with AI by Wes Griffin.">
+<meta name="description" content="A live workforce analytics dashboard demo - headcount by leader and region, hires, attrition, and open requisitions. Built with AI by Wes Griffin.">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0' stop-color='%237c3aed'/%3E%3Cstop offset='.55' stop-color='%235b4ef0'/%3E%3Cstop offset='1' stop-color='%2306b6d4'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='64' height='64' rx='16' fill='url(%23g)'/%3E%3Ctext x='32' y='44' font-size='34' text-anchor='middle' fill='white' font-family='Georgia,serif'%3E%E2%9C%A6%3C/text%3E%3C/svg%3E">
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -18,7 +18,7 @@
 
   /* HEADER */
   .header { display:none !important; background: var(--black); padding: 0 40px; align-items: center; justify-content: space-between; height: 64px; position: sticky; top: 0; z-index: 100; }
-  /* Refresh button slot — sits inline at the right of the tabs-bar, since the original
+  /* Refresh button slot - sits inline at the right of the tabs-bar, since the original
      .header (which contained it) is hidden via the rule above. */
   .tabs-bar .tabs-refresh { margin-left: auto; align-self: center; padding: 0 8px; flex-shrink: 0; }
   .tabs-bar .tabs-refresh .refresh-btn { padding: 6px 14px; font-size: 11px; }
@@ -193,7 +193,7 @@
     .kpi-row-4, .kpi-row-5 { grid-template-columns: repeat(2, 1fr); }
     .charts-grid, .two-col, .three-col { grid-template-columns: 1fr; }
     /* Prevent grid items from overflowing their 1fr track (CSS grid min-width:auto bug).
-       Without this, tables with min-width:480px push the column — and the page — wider
+       Without this, tables with min-width:480px push the column - and the page - wider
        than the viewport, and table-wrap overflow-x:auto never triggers. */
     .two-col > *, .charts-grid > *, .three-col > * { min-width: 0; }
     .modal-kpis { grid-template-columns: repeat(2, 1fr); }
@@ -214,8 +214,7 @@
     .kpi { padding: 14px 16px; }
     .section-header { margin-top: 18px; }
     .hbar-label { width: 100px; font-size: 11px; }
-    /* NOTE: data tables become stacked CARDS at ≤760px (see that block below) —
-       the old horizontal-scroll strategy was removed. Bars hidden on mobile. */
+    /* NOTE: data tables become stacked CARDS at ≤760px (see that block below) - the old horizontal-scroll strategy was removed. Bars hidden on mobile. */
     .bar-wrap { display: none; }
     .modal { border-radius: 10px; max-height: 88vh; overflow: hidden; }
     .modal-body { padding: 16px 18px; }
@@ -234,7 +233,7 @@
   @media (min-width: 601px) { .mob-chips { display: none; } }
 
   /* ============================================================= */
-  /*  PHONE-FIRST RESPONSIVE LAYER (additive — desktop ≥820px      */
+  /*  PHONE-FIRST RESPONSIVE LAYER (additive - desktop ≥820px      */
   /*  untouched; refines the existing ≤600px rules above).         */
   /* ============================================================= */
 
@@ -294,7 +293,7 @@
        Each <tr> becomes a self-contained card; the leader/name cell is the
        card title and every metric <td> becomes a labelled value row using
        its column header (stamped onto data-label by crStampLabels() in JS).
-       No side-scroll, no "random numbers" — fully readable at 375px.
+       No side-scroll, no "random numbers" - fully readable at 375px.
        ════════════════════════════════════════════════════════════════ */
     .table-wrap {
       overflow: visible;          /* cards flow vertically; nothing scrolls sideways */
@@ -305,7 +304,7 @@
     }
     .table-scroll { max-height: none !important; overflow: visible; }
 
-    /* Collapse the table shell — thead is hidden, the table is just a flow box. */
+    /* Collapse the table shell - thead is hidden, the table is just a flow box. */
     .table-wrap table,
     .table-scroll table { min-width: 0; width: 100%; display: block; background: transparent; }
     .table-wrap thead,
@@ -364,7 +363,7 @@
       letter-spacing: 0.5px;
       color: var(--gray-dark);
     }
-    /* First cell (leader / name / job title) = the card TITLE — full-width, no label. */
+    /* First cell (leader / name / job title) = the card TITLE - full-width, no label. */
     .table-wrap tbody td:first-child,
     .table-scroll tbody td:first-child {
       justify-content: flex-start;
@@ -385,7 +384,7 @@
     .table-wrap tbody td:first-child .drill-hint,
     .table-scroll tbody td:first-child .drill-hint { margin-left: auto; font-size: 13px; }
 
-    /* Hide the distribution/attainment "bar" cells — bars are noise on a card.
+    /* Hide the distribution/attainment "bar" cells - bars are noise on a card.
        Matched by the labels crStampLabels assigns (incl. the empty-header bars). */
     .table-wrap tbody td[data-label="Distribution"],
     .table-wrap tbody td[data-label="Attainment"],
@@ -408,7 +407,7 @@
     .table-wrap tbody tr.total-row td:first-child,
     .table-scroll tbody tr.total-row td:first-child { color: var(--orange); border-bottom-color: var(--orange); }
 
-    /* Loading / empty / "no data" rows use a real colspan — show them plainly,
+    /* Loading / empty / "no data" rows use a real colspan - show them plainly,
        not as a malformed card. */
     .table-wrap tbody tr.cr-msgrow,
     .table-scroll tbody tr.cr-msgrow { background: var(--white); border: 1px solid var(--gray-mid); padding: 0; }
@@ -513,7 +512,7 @@
   }
 </style>
 <script>
-/* DEMO BUILD — standalone, no Google sign-in, no backend. nav.js stubbed inline. */
+/* DEMO BUILD - standalone, no Google sign-in, no backend. nav.js stubbed inline. */
 (function(){
   var DEMO_USER = { name:'Wes Griffin', email:'wes.griffin@newwesventures.com' };
   window.CR_CONFIG = window.CR_CONFIG || { SESSION_KEY_USER:'cr_user', SESSION_KEY_TOKEN:'cr_token', SESSION_KEY_EXP:'cr_token_exp', CLIENT_ID:'' };
@@ -587,7 +586,7 @@ document.addEventListener("DOMContentLoaded", function() {
     window.location.href = "index.html";
     return;
   }
-  // Dashboard uses service account for all Sheets API calls — no user OAuth token needed.
+  // Dashboard uses service account for all Sheets API calls - no user OAuth token needed.
   // Suppress any attempt by nav.js to request one, which would trigger a blocked popup.
   window.crGetAccessToken = function() { return Promise.resolve(null); };
   crInjectNav("dashboard");
@@ -657,7 +656,7 @@ document.addEventListener("DOMContentLoaded", function() {
 <div class="content">
 
 <!-- ================================================================
-     TAB 1 — HEADCOUNT SUMMARY
+     TAB 1 - HEADCOUNT SUMMARY
 ================================================================ -->
 <div id="tab-summary" class="tab-panel active">
   <div class="page-title">
@@ -667,11 +666,11 @@ document.addEventListener("DOMContentLoaded", function() {
 
   <!-- EE KPIs -->
   <div class="kpi-row kpi-row-5">
-    <div class="kpi kpi-clickable" onclick="drillKpi('summary','ee','total')" style="cursor:pointer"><div class="kpi-label">Total Employees</div><div class="kpi-value" id="s-totalEE">—</div><div class="kpi-sub">Current headcount</div></div>
-    <div class="kpi kpi-clickable" onclick="drillKpi('summary','ee','hires')" style="cursor:pointer"><div class="kpi-label">Hires Since <span class="fy-label">April 1</span></div><div class="kpi-value" id="s-hiresEE">—</div><div class="kpi-sub">New employees</div></div>
-    <div class="kpi kpi-clickable" onclick="drillKpi('summary','ee','attr')" style="cursor:pointer"><div class="kpi-label">Attrition Since <span class="fy-label">April 1</span></div><div class="kpi-value" id="s-attrEE">—</div><div class="kpi-sub">Departed employees</div></div>
-    <div class="kpi kpi-clickable" onclick="drillKpi('summary','ee','futureAttr')" style="cursor:pointer"><div class="kpi-label">Future Attrition</div><div class="kpi-value" id="s-futureAttrEE">—</div><div class="kpi-sub">Projected departures</div></div>
-    <div class="kpi kpi-clickable" onclick="drillKpi('summary','ee','topline')" style="cursor:pointer"><div class="kpi-label">Top Line Target</div><div class="kpi-value" id="s-tlEE">—</div><div class="kpi-sub"><span class="kpi-badge badge-green" id="s-headroomEE">…</span></div></div>
+    <div class="kpi kpi-clickable" onclick="drillKpi('summary','ee','total')" style="cursor:pointer"><div class="kpi-label">Total Employees</div><div class="kpi-value" id="s-totalEE"></div><div class="kpi-sub">Current headcount</div></div>
+    <div class="kpi kpi-clickable" onclick="drillKpi('summary','ee','hires')" style="cursor:pointer"><div class="kpi-label">Hires Since <span class="fy-label">April 1</span></div><div class="kpi-value" id="s-hiresEE"></div><div class="kpi-sub">New employees</div></div>
+    <div class="kpi kpi-clickable" onclick="drillKpi('summary','ee','attr')" style="cursor:pointer"><div class="kpi-label">Attrition Since <span class="fy-label">April 1</span></div><div class="kpi-value" id="s-attrEE"></div><div class="kpi-sub">Departed employees</div></div>
+    <div class="kpi kpi-clickable" onclick="drillKpi('summary','ee','futureAttr')" style="cursor:pointer"><div class="kpi-label">Future Attrition</div><div class="kpi-value" id="s-futureAttrEE"></div><div class="kpi-sub">Projected departures</div></div>
+    <div class="kpi kpi-clickable" onclick="drillKpi('summary','ee','topline')" style="cursor:pointer"><div class="kpi-label">Top Line Target</div><div class="kpi-value" id="s-tlEE"></div><div class="kpi-sub"><span class="kpi-badge badge-green" id="s-headroomEE">…</span></div></div>
   </div>
 
   <div class="section-header"><h3>Employee Activity</h3><span class="pill">FTE · Click row to drill</span></div>
@@ -689,11 +688,11 @@ document.addEventListener("DOMContentLoaded", function() {
 
   <!-- CW KPIs -->
   <div class="kpi-row kpi-row-5" style="margin-top:8px;">
-    <div class="kpi kpi-clickable" onclick="drillKpi('summary','cw','total')" style="cursor:pointer"><div class="kpi-label">Total Contingent Workers</div><div class="kpi-value" id="s-totalCW">—</div><div class="kpi-sub">Current headcount</div></div>
-    <div class="kpi kpi-clickable" onclick="drillKpi('summary','cw','hires')" style="cursor:pointer"><div class="kpi-label">CW Hires Since <span class="fy-label">April 1</span></div><div class="kpi-value" id="s-hiresCW">—</div><div class="kpi-sub">New CW</div></div>
-    <div class="kpi kpi-clickable" onclick="drillKpi('summary','cw','attr')" style="cursor:pointer"><div class="kpi-label">CW Attrition Since <span class="fy-label">April 1</span></div><div class="kpi-value" id="s-attrCW">—</div><div class="kpi-sub">Departed CW</div></div>
-    <div class="kpi kpi-clickable" onclick="drillKpi('summary','combined','current')" style="cursor:pointer"><div class="kpi-label">Current Combined Workforce</div><div class="kpi-value" id="s-combined">—</div><div class="kpi-sub">Current EE + Current CW</div></div>
-    <div class="kpi kpi-clickable" onclick="drillKpi('summary','combined','future')" style="cursor:pointer"><div class="kpi-label">Future Combined Workforce</div><div class="kpi-value" id="s-futureCombined">—</div><div class="kpi-sub">Future EE HC + Future CW HC</div></div>
+    <div class="kpi kpi-clickable" onclick="drillKpi('summary','cw','total')" style="cursor:pointer"><div class="kpi-label">Total Contingent Workers</div><div class="kpi-value" id="s-totalCW"></div><div class="kpi-sub">Current headcount</div></div>
+    <div class="kpi kpi-clickable" onclick="drillKpi('summary','cw','hires')" style="cursor:pointer"><div class="kpi-label">CW Hires Since <span class="fy-label">April 1</span></div><div class="kpi-value" id="s-hiresCW"></div><div class="kpi-sub">New CW</div></div>
+    <div class="kpi kpi-clickable" onclick="drillKpi('summary','cw','attr')" style="cursor:pointer"><div class="kpi-label">CW Attrition Since <span class="fy-label">April 1</span></div><div class="kpi-value" id="s-attrCW"></div><div class="kpi-sub">Departed CW</div></div>
+    <div class="kpi kpi-clickable" onclick="drillKpi('summary','combined','current')" style="cursor:pointer"><div class="kpi-label">Current Combined Workforce</div><div class="kpi-value" id="s-combined"></div><div class="kpi-sub">Current EE + Current CW</div></div>
+    <div class="kpi kpi-clickable" onclick="drillKpi('summary','combined','future')" style="cursor:pointer"><div class="kpi-label">Future Combined Workforce</div><div class="kpi-value" id="s-futureCombined"></div><div class="kpi-sub">Future EE HC + Future CW HC</div></div>
   </div>
 
   <div class="section-header"><h3>Contingent Worker Activity</h3><span class="pill">CW · Click row to drill</span></div>
@@ -715,7 +714,7 @@ document.addEventListener("DOMContentLoaded", function() {
 </div>
 
 <!-- ================================================================
-     TAB 2 — EMPLOYEES
+     TAB 2 - EMPLOYEES
 ================================================================ -->
 <div id="tab-ee" class="tab-panel">
   <div class="page-title">
@@ -724,11 +723,11 @@ document.addEventListener("DOMContentLoaded", function() {
   </div>
 
   <div class="kpi-row kpi-row-5">
-    <div class="kpi kpi-clickable" onclick="drillKpi('employees','ee','total')" style="cursor:pointer"><div class="kpi-label">Total Employees</div><div class="kpi-value" id="ee-total">—</div><div class="kpi-sub">Current headcount</div></div>
-    <div class="kpi kpi-clickable" onclick="drillKpi('employees','ee','hires')" style="cursor:pointer"><div class="kpi-label">Hires Since <span class="fy-label">April 1</span></div><div class="kpi-value" id="ee-hires">—</div><div class="kpi-sub">New employees</div></div>
-    <div class="kpi kpi-clickable" onclick="drillKpi('employees','ee','attr')" style="cursor:pointer"><div class="kpi-label">Attrition Since <span class="fy-label">April 1</span></div><div class="kpi-value" id="ee-attr">—</div><div class="kpi-sub">Departed</div></div>
-    <div class="kpi kpi-clickable" onclick="drillKpi('employees','ee','futureAttr')" style="cursor:pointer"><div class="kpi-label">Future Attrition</div><div class="kpi-value" id="ee-futureAttr">—</div><div class="kpi-sub">Projected departures</div></div>
-    <div class="kpi kpi-clickable" onclick="drillKpi('employees','ee','net')" style="cursor:pointer"><div class="kpi-label">Net Change Since <span class="fy-label">April 1</span></div><div class="kpi-value" id="ee-netChange">—</div><div class="kpi-sub">Hires minus attrition</div></div>
+    <div class="kpi kpi-clickable" onclick="drillKpi('employees','ee','total')" style="cursor:pointer"><div class="kpi-label">Total Employees</div><div class="kpi-value" id="ee-total"></div><div class="kpi-sub">Current headcount</div></div>
+    <div class="kpi kpi-clickable" onclick="drillKpi('employees','ee','hires')" style="cursor:pointer"><div class="kpi-label">Hires Since <span class="fy-label">April 1</span></div><div class="kpi-value" id="ee-hires"></div><div class="kpi-sub">New employees</div></div>
+    <div class="kpi kpi-clickable" onclick="drillKpi('employees','ee','attr')" style="cursor:pointer"><div class="kpi-label">Attrition Since <span class="fy-label">April 1</span></div><div class="kpi-value" id="ee-attr"></div><div class="kpi-sub">Departed</div></div>
+    <div class="kpi kpi-clickable" onclick="drillKpi('employees','ee','futureAttr')" style="cursor:pointer"><div class="kpi-label">Future Attrition</div><div class="kpi-value" id="ee-futureAttr"></div><div class="kpi-sub">Projected departures</div></div>
+    <div class="kpi kpi-clickable" onclick="drillKpi('employees','ee','net')" style="cursor:pointer"><div class="kpi-label">Net Change Since <span class="fy-label">April 1</span></div><div class="kpi-value" id="ee-netChange"></div><div class="kpi-sub">Hires minus attrition</div></div>
   </div>
 
   <div class="two-col">
@@ -776,7 +775,7 @@ document.addEventListener("DOMContentLoaded", function() {
 </div>
 
 <!-- ================================================================
-     TAB 3 — CONTINGENT WORKERS
+     TAB 3 - CONTINGENT WORKERS
 ================================================================ -->
 <div id="tab-cw" class="tab-panel">
   <div class="page-title">
@@ -785,11 +784,11 @@ document.addEventListener("DOMContentLoaded", function() {
   </div>
 
   <div class="kpi-row kpi-row-5">
-    <div class="kpi kpi-clickable" onclick="drillKpi('contingent','cw','total')" style="cursor:pointer"><div class="kpi-label">Total CW</div><div class="kpi-value" id="cw-total">—</div><div class="kpi-sub">Current headcount</div></div>
-    <div class="kpi kpi-clickable" onclick="drillKpi('contingent','cw','hires')" style="cursor:pointer"><div class="kpi-label">Hires Since <span class="fy-label">April 1</span></div><div class="kpi-value" id="cw-hires">—</div><div class="kpi-sub">New CW</div></div>
-    <div class="kpi kpi-clickable" onclick="drillKpi('contingent','cw','attr')" style="cursor:pointer"><div class="kpi-label">Attrition Since <span class="fy-label">April 1</span></div><div class="kpi-value" id="cw-attr">—</div><div class="kpi-sub">Departed CW</div></div>
-    <div class="kpi kpi-clickable" onclick="drillKpi('contingent','cw','futureAttr')" style="cursor:pointer"><div class="kpi-label">Future Attrition</div><div class="kpi-value" id="cw-futureAttr">—</div><div class="kpi-sub">Projected departures</div></div>
-    <div class="kpi kpi-clickable" onclick="drillKpi('contingent','cw','futureHires')" style="cursor:pointer"><div class="kpi-label">Future Hires</div><div class="kpi-value" id="cw-futureHires">—</div><div class="kpi-sub">Incoming CW</div></div>
+    <div class="kpi kpi-clickable" onclick="drillKpi('contingent','cw','total')" style="cursor:pointer"><div class="kpi-label">Total CW</div><div class="kpi-value" id="cw-total"></div><div class="kpi-sub">Current headcount</div></div>
+    <div class="kpi kpi-clickable" onclick="drillKpi('contingent','cw','hires')" style="cursor:pointer"><div class="kpi-label">Hires Since <span class="fy-label">April 1</span></div><div class="kpi-value" id="cw-hires"></div><div class="kpi-sub">New CW</div></div>
+    <div class="kpi kpi-clickable" onclick="drillKpi('contingent','cw','attr')" style="cursor:pointer"><div class="kpi-label">Attrition Since <span class="fy-label">April 1</span></div><div class="kpi-value" id="cw-attr"></div><div class="kpi-sub">Departed CW</div></div>
+    <div class="kpi kpi-clickable" onclick="drillKpi('contingent','cw','futureAttr')" style="cursor:pointer"><div class="kpi-label">Future Attrition</div><div class="kpi-value" id="cw-futureAttr"></div><div class="kpi-sub">Projected departures</div></div>
+    <div class="kpi kpi-clickable" onclick="drillKpi('contingent','cw','futureHires')" style="cursor:pointer"><div class="kpi-label">Future Hires</div><div class="kpi-value" id="cw-futureHires"></div><div class="kpi-sub">Incoming CW</div></div>
   </div>
 
   <div class="two-col">
@@ -827,7 +826,7 @@ document.addEventListener("DOMContentLoaded", function() {
 </div>
 
 <!-- ================================================================
-     TAB 4 — OPEN & PENDING REQS
+     TAB 4 - OPEN & PENDING REQS
 ================================================================ -->
 <div id="tab-reqs" class="tab-panel">
   <div class="page-title">
@@ -836,11 +835,11 @@ document.addEventListener("DOMContentLoaded", function() {
   </div>
 
   <div class="kpi-row kpi-row-5">
-    <div class="kpi kpi-clickable" onclick="drillKpi('reqs','reqs','total')" style="cursor:pointer"><div class="kpi-label">Total Open Roles</div><div class="kpi-value" id="r-total">—</div><div class="kpi-sub">Active requisitions</div></div>
-    <div class="kpi kpi-clickable" onclick="drillKpi('reqs','reqs','ee')" style="cursor:pointer"><div class="kpi-label">Employee Roles</div><div class="kpi-value" id="r-eeRoles">—</div><div class="kpi-sub">FTE openings</div></div>
-    <div class="kpi kpi-clickable" onclick="drillKpi('reqs','reqs','cw')" style="cursor:pointer"><div class="kpi-label">CW Roles</div><div class="kpi-value" id="r-cwRoles">—</div><div class="kpi-sub">Contingent openings</div></div>
-    <div class="kpi kpi-clickable" onclick="drillKpi('reqs','reqs','new')" style="cursor:pointer"><div class="kpi-label">New Headcount</div><div class="kpi-value" id="r-newHC">—</div><div class="kpi-sub">Net-new roles</div></div>
-    <div class="kpi kpi-clickable" onclick="drillKpi('reqs','reqs','backfill')" style="cursor:pointer"><div class="kpi-label">Backfills</div><div class="kpi-value" id="r-backfill">—</div><div class="kpi-sub">Replacement roles</div></div>
+    <div class="kpi kpi-clickable" onclick="drillKpi('reqs','reqs','total')" style="cursor:pointer"><div class="kpi-label">Total Open Roles</div><div class="kpi-value" id="r-total"></div><div class="kpi-sub">Active requisitions</div></div>
+    <div class="kpi kpi-clickable" onclick="drillKpi('reqs','reqs','ee')" style="cursor:pointer"><div class="kpi-label">Employee Roles</div><div class="kpi-value" id="r-eeRoles"></div><div class="kpi-sub">FTE openings</div></div>
+    <div class="kpi kpi-clickable" onclick="drillKpi('reqs','reqs','cw')" style="cursor:pointer"><div class="kpi-label">CW Roles</div><div class="kpi-value" id="r-cwRoles"></div><div class="kpi-sub">Contingent openings</div></div>
+    <div class="kpi kpi-clickable" onclick="drillKpi('reqs','reqs','new')" style="cursor:pointer"><div class="kpi-label">New Headcount</div><div class="kpi-value" id="r-newHC"></div><div class="kpi-sub">Net-new roles</div></div>
+    <div class="kpi kpi-clickable" onclick="drillKpi('reqs','reqs','backfill')" style="cursor:pointer"><div class="kpi-label">Backfills</div><div class="kpi-value" id="r-backfill"></div><div class="kpi-sub">Replacement roles</div></div>
   </div>
 
   <!-- By SMT -->
@@ -893,7 +892,7 @@ document.addEventListener("DOMContentLoaded", function() {
     </table>
   </div></div>
 
-  <!-- Hidden chart targets — kept so renderReqsTab clears them safely if referenced elsewhere -->
+  <!-- Hidden chart targets - kept so renderReqsTab clears them safely if referenced elsewhere -->
   <div id="reqsSMTChart" style="display:none"></div>
   <div id="reqsLocChart" style="display:none"></div>
 
@@ -903,11 +902,11 @@ document.addEventListener("DOMContentLoaded", function() {
   <div class="section-header" style="margin-top:32px"><h3>Pending Requisitions</h3><span class="pill">Sourced from SmartSheets</span></div>
 
   <div class="kpi-row kpi-row-5" style="margin-top:8px">
-    <div class="kpi kpi-clickable" onclick="drillKpi('pend','pend','total')" style="cursor:pointer"><div class="kpi-label">Total Pending Reqs</div><div class="kpi-value" id="p-total">—</div><div class="kpi-sub">All statuses</div></div>
-    <div class="kpi kpi-clickable" onclick="drillKpi('pend','pend','approved')" style="cursor:pointer"><div class="kpi-label">Approved</div><div class="kpi-value" id="p-approved">—</div><div class="kpi-sub">Not yet in GH</div></div>
-    <div class="kpi kpi-clickable" onclick="drillKpi('pend','pend','pending')" style="cursor:pointer"><div class="kpi-label">Pending Approval</div><div class="kpi-value" id="p-pending">—</div><div class="kpi-sub">In review</div></div>
-    <div class="kpi kpi-clickable" onclick="drillKpi('pend','pend','waiting')" style="cursor:pointer"><div class="kpi-label">Waiting to Review</div><div class="kpi-value" id="p-waiting">—</div><div class="kpi-sub">Not yet reviewed</div></div>
-    <div class="kpi kpi-clickable" onclick="drillKpi('pend','pend','sentback')" style="cursor:pointer"><div class="kpi-label">Sent Back</div><div class="kpi-value" id="p-sentback">—</div><div class="kpi-sub">Returned for changes</div></div>
+    <div class="kpi kpi-clickable" onclick="drillKpi('pend','pend','total')" style="cursor:pointer"><div class="kpi-label">Total Pending Reqs</div><div class="kpi-value" id="p-total"></div><div class="kpi-sub">All statuses</div></div>
+    <div class="kpi kpi-clickable" onclick="drillKpi('pend','pend','approved')" style="cursor:pointer"><div class="kpi-label">Approved</div><div class="kpi-value" id="p-approved"></div><div class="kpi-sub">Not yet in GH</div></div>
+    <div class="kpi kpi-clickable" onclick="drillKpi('pend','pend','pending')" style="cursor:pointer"><div class="kpi-label">Pending Approval</div><div class="kpi-value" id="p-pending"></div><div class="kpi-sub">In review</div></div>
+    <div class="kpi kpi-clickable" onclick="drillKpi('pend','pend','waiting')" style="cursor:pointer"><div class="kpi-label">Waiting to Review</div><div class="kpi-value" id="p-waiting"></div><div class="kpi-sub">Not yet reviewed</div></div>
+    <div class="kpi kpi-clickable" onclick="drillKpi('pend','pend','sentback')" style="cursor:pointer"><div class="kpi-label">Sent Back</div><div class="kpi-value" id="p-sentback"></div><div class="kpi-sub">Returned for changes</div></div>
   </div>
 
   <div class="section-header"><h3>Pending Reqs by SMT</h3><span class="pill">Click to drill</span></div>
@@ -953,7 +952,7 @@ document.addEventListener("DOMContentLoaded", function() {
 </div>
 
 <!-- ================================================================
-     TAB 5 — PENDING HIRES & ATTRITION
+     TAB 5 - PENDING HIRES & ATTRITION
 ================================================================ -->
 <div id="tab-pa" class="tab-panel">
   <div class="page-title">
@@ -962,9 +961,9 @@ document.addEventListener("DOMContentLoaded", function() {
   </div>
 
   <div class="kpi-row kpi-row-3">
-    <div class="kpi kpi-clickable" onclick="drillKpi('pa','hires','total')" style="cursor:pointer"><div class="kpi-label">Pending Hires</div><div class="kpi-value" id="pa-hires">—</div><div class="kpi-sub" id="pa-hiresSub">EE + CW</div></div>
-    <div class="kpi kpi-clickable" onclick="drillKpi('pa','attr','total')" style="cursor:pointer"><div class="kpi-label">Pending Attrition</div><div class="kpi-value" id="pa-attr">—</div><div class="kpi-sub" id="pa-attrSub">EE + CW</div></div>
-    <div class="kpi kpi-clickable" onclick="drillKpi('pa','net','total')" style="cursor:pointer"><div class="kpi-label">Net Movement</div><div class="kpi-value" id="pa-net">—</div><div class="kpi-sub">Hires vs Departures</div></div>
+    <div class="kpi kpi-clickable" onclick="drillKpi('pa','hires','total')" style="cursor:pointer"><div class="kpi-label">Pending Hires</div><div class="kpi-value" id="pa-hires"></div><div class="kpi-sub" id="pa-hiresSub">EE + CW</div></div>
+    <div class="kpi kpi-clickable" onclick="drillKpi('pa','attr','total')" style="cursor:pointer"><div class="kpi-label">Pending Attrition</div><div class="kpi-value" id="pa-attr"></div><div class="kpi-sub" id="pa-attrSub">EE + CW</div></div>
+    <div class="kpi kpi-clickable" onclick="drillKpi('pa','net','total')" style="cursor:pointer"><div class="kpi-label">Net Movement</div><div class="kpi-value" id="pa-net"></div><div class="kpi-sub">Hires vs Departures</div></div>
   </div>
 
   <!-- PENDING HIRES -->
@@ -1013,7 +1012,7 @@ document.addEventListener("DOMContentLoaded", function() {
 </div>
 
 <!-- ================================================================
-     TAB 6 — DATA MAPPING (admin-only)
+     TAB 6 - DATA MAPPING (admin-only)
 ================================================================ -->
 <div id="tab-mapping" class="tab-panel">
   <div class="page-title">
@@ -1027,7 +1026,7 @@ document.addEventListener("DOMContentLoaded", function() {
 </div>
 
 <!-- ================================================================
-     TAB — TARGETS
+     TAB - TARGETS
 ================================================================ -->
 <div id="tab-targets" class="tab-panel">
   <div class="page-title">
@@ -1063,9 +1062,9 @@ document.addEventListener("DOMContentLoaded", function() {
       <tfoot>
         <tr class="total-row">
           <td class="leader-name">Total</td>
-          <td class="num" id="targetsStartTotal">—</td>
-          <td class="num" id="targetsTotal">—</td>
-          <td class="num" id="targetsCWStartTotal">—</td>
+          <td class="num" id="targetsStartTotal"></td>
+          <td class="num" id="targetsTotal"></td>
+          <td class="num" id="targetsCWStartTotal"></td>
           <td></td>
         </tr>
       </tfoot>
@@ -1162,9 +1161,9 @@ function _renderFYLabels() {
 const ISSUES_SHEET_ID = 'DEMO_SHEET_ID';
 
 async function dashApiAppend(sheetId, range, values) {
-  // Use the service account token — dashboard does not rely on user OAuth
+  // Use the service account token - dashboard does not rely on user OAuth
   const token = await getToken();
-  if (!token) throw new Error('Service account token unavailable — please try again.');
+  if (!token) throw new Error('Service account token unavailable - please try again.');
   const url = 'https://sheets.googleapis.com/v4/spreadsheets/' + sheetId + '/values/' + encodeURIComponent(range) + ':append?valueInputOption=RAW&insertDataOption=INSERT_ROWS';
   const res = await fetch(url, { method:'POST', headers:{'Authorization':'Bearer '+token,'Content-Type':'application/json'}, body: JSON.stringify({ values }) });
   if (!res.ok) { const err = await res.json(); throw new Error(err.error?.message || res.statusText); }
@@ -1221,7 +1220,7 @@ async function submitDashIssue() {
       [[id, now, eu.name||'Dashboard User', eu.email||'', 'Global Headcount Dashboard', title, desc, 'Open']]);
     closeDashIssueModal();
     const banner = document.createElement('div');
-    banner.textContent = '✓ Issue reported — thank you! The admin team will review it shortly.';
+    banner.textContent = '✓ Issue reported - thank you! The admin team will review it shortly.';
     banner.style.cssText = 'position:fixed;bottom:80px;right:28px;background:#2E7D32;color:white;padding:12px 20px;border-radius:8px;font-size:13px;font-weight:600;z-index:9999;box-shadow:0 4px 16px rgba(0,0,0,0.2);font-family:inherit;transition:opacity 0.4s';
     document.body.appendChild(banner);
     setTimeout(() => { banner.style.opacity = '0'; setTimeout(() => banner.remove(), 400); }, 3600);
@@ -1233,7 +1232,7 @@ async function submitDashIssue() {
   }
 }
 
-const HR = SHEET_ID; // Headcount Report sheet — shorthand for config rows
+const HR = SHEET_ID; // Headcount Report sheet - shorthand for config rows
 
 // Config tab columns A-P (0-based index):
 // 0=metricKey, 1=displayName, 2=spreadsheetId, 3=sheetTab, 4=range,
@@ -1246,15 +1245,15 @@ const CONFIG_HEADER = ['Metric Key','Display Name','Spreadsheet ID','Sheet Tab',
   'Filter Col','Filter Value','Filter Col 2','Filter Value 2',
   'Value Col','Group Col','Series Col','Operation','Dashboard Tab',
   'Column Mapping (JSON)','Notes',
-  'Filters JSON',    // col Q — structured multi-condition filter array
-  'Options (JSON)',  // col R — skipRows, _projectCols, etc.
+  'Filters JSON',    // col Q - structured multi-condition filter array
+  'Options (JSON)',  // col R - skipRows, _projectCols, etc.
 ];
 
-// New raw-import config rows — shown in Data Mapping tab and merged into config
+// New raw-import config rows - shown in Data Mapping tab and merged into config
 // when not already present in the sheet (by metricKey). These replace rows that
 // previously fetched from Headcount Summary by SMT, Current Open & Pending Reqs,
 // and Pending Hires & Attrition.
-// CONFIG_DEFAULTS — Standard cases use GROUP_BY_COUNT with simple filters.
+// CONFIG_DEFAULTS - Standard cases use GROUP_BY_COUNT with simple filters.
 // Complex multi-condition metrics (Greenhouse open reqs with FTE rules, SmartSheets pending
 // with multi-status filter, location bucketing) are computed by dedicated assembly functions
 // at runtime. Their config rows are documentation-only with operation `COMPUTED`.
@@ -1278,13 +1277,13 @@ const CONFIG_DEFAULTS = [
 
   // ── Future Hires: EE from GH Offer Details (Accepted offers); CW from WD Pending ─
   ['wd-ee-fut-hires-smt', 'Future EE Hires by SMT',               HR, '[IMPORT] GH Offer Details',                  'A12:CA', 'Y','Employee',         'L','Accepted', '','AB','','GROUP_BY_COUNT','ee','','Accepted EE offers with start date > today, by SMT. col Y=Worker Type, col L=Status, col R=Start Date, col AB=SMT, col BM=Location.','[{"col":"R","op":">today"}]',''],
-  ['wd-cw-fut-hires-smt', 'Future CW Hires by SMT',               HR, '[IMPORT] WD Pending Starts and Attrition',  'A5:AW',  'D','Contingent Worker','F','>today', '','J','','GROUP_BY_COUNT','cw','','Pending future CW hires by SMT — col F=Hire Date, col J=SMT, col U=Location.','',''],
+  ['wd-cw-fut-hires-smt', 'Future CW Hires by SMT',               HR, '[IMPORT] WD Pending Starts and Attrition',  'A5:AW',  'D','Contingent Worker','F','>today', '','J','','GROUP_BY_COUNT','cw','','Pending future CW hires by SMT - col F=Hire Date, col J=SMT, col U=Location.','',''],
 
   // ── Future Attrition: both EE and CW from WD Pending ─────────────────
-  ['wd-ee-fut-attr-smt',  'Future EE Attritions by SMT',          HR, '[IMPORT] WD Pending Starts and Attrition',  'A5:AW',  'D','Employee',         'G','>today', '','J','','GROUP_BY_COUNT','ee','','Upcoming EE departures by SMT — col G=Term Date.','',''],
+  ['wd-ee-fut-attr-smt',  'Future EE Attritions by SMT',          HR, '[IMPORT] WD Pending Starts and Attrition',  'A5:AW',  'D','Employee',         'G','>today', '','J','','GROUP_BY_COUNT','ee','','Upcoming EE departures by SMT - col G=Term Date.','',''],
   ['wd-cw-fut-attr-smt',  'Future CW Attritions by SMT',          HR, '[IMPORT] WD Pending Starts and Attrition',  'A5:AW',  'D','Contingent Worker','G','>today', '','J','','GROUP_BY_COUNT','cw','','Upcoming CW departures by SMT.','',''],
 
-  // ── Open Reqs (Greenhouse) — COMPUTED in assembleGHOpenReqs() because of multi-condition rules ─
+  // ── Open Reqs (Greenhouse) - COMPUTED in assembleGHOpenReqs() because of multi-condition rules ─
   ['gh-ee-open-smt',      'EE Open Reqs by SMT',                  HR, '[IMPORT] GH Open Job Detail',                'A5:BL',  '','','','', 'G','AL','','COMPUTED','ee','','Source: GH Open Job Detail. Logic: Status=Open, Dept ∉ {Template, Testing}, Opening IDs (col G) split by comma/newline and matched against ????.????.?, Worker ∈ {Employee, Fixed Term Employee}, Type ∈ {New Headcount, Backfill Headcount} BUT excluding Fixed Term Employee + Backfill. Group by SMT (col AL).','',''],
   ['gh-cw-open-smt',      'CW Open Reqs by SMT',                  HR, '[IMPORT] GH Open Job Detail',                'A5:BL',  '','','','', 'G','AL','','COMPUTED','cw','','Source: GH Open Job Detail. Same as gh-ee-open-smt but Worker=Contingent Worker only (no FTE).','',''],
   ['gh-ee-open-pbp',      'EE Open Reqs by PBP',                  HR, '[IMPORT] GH Open Job Detail',                'A5:BL',  '','','','', 'G','AM','','COMPUTED','reqs','','EE open reqs grouped by People Business Partner (col AM).','',''],
@@ -1293,28 +1292,28 @@ const CONFIG_DEFAULTS = [
   ['gh-cw-open-loc',      'CW Open Reqs by Location',             HR, '[IMPORT] GH Open Job Detail',                'A5:BL',  '','','','', 'G','AI','','COMPUTED','reqs','','CW open reqs by Job Location.','',''],
   ['gh-open-list',        'All Open Roles (one row per Opening ID)',HR,'[IMPORT] GH Open Job Detail',                'A5:BL',  '','','','', '','','','COMPUTED','reqs','','Source list for All Open Roles table. Each Opening ID matching ????.????.? becomes one row, with Job Title, SMT, PBP, Location, Worker Type, Job Type, Target Hire Date.','',''],
 
-  // ── Pending HC Requests (SmartSheets) — COMPUTED in assemblePendingReqs() for multi-status filter ─
+  // ── Pending HC Requests (SmartSheets) - COMPUTED in assemblePendingReqs() for multi-status filter ─
   ['sm-pend-smt',         'Pending HC Requests by SMT',           HR, '[IMPORT] SmartSheets Pending HC Requests', 'A5:CU',  '','','','', '','R','','COMPUTED','reqs','','Source: SmartSheets Pending HC Requests (headers row 4). Logic: AddedtoGH (col A)=No, Type (col I) ∈ {Request a new headcount, I want to hire a Full Time Employee}, Approval (col D) ∈ {Approved, Pending Approval, Waiting to Review, "Sent back*"}. Group by SMT (col R).','',''],
   ['sm-pend-pbp',         'Pending HC Requests by PBP',           HR, '[IMPORT] SmartSheets Pending HC Requests', 'A5:CU',  '','','','', '','N','','COMPUTED','reqs','','Pending HC reqs grouped by PBP (col N).','',''],
   ['sm-pend-loc',         'Pending HC Requests by Location',      HR, '[IMPORT] SmartSheets Pending HC Requests', 'A5:CU',  '','','','', '','','','COMPUTED','reqs','','Pending HC reqs grouped by Location. Combines col AK (US locations) + col AL (INTL locations); each cell may contain multiple newline-separated locations and each location is counted separately.','',''],
   ['sm-pend-status',      'Pending HC Requests by Status',        HR, '[IMPORT] SmartSheets Pending HC Requests', 'A5:CU',  '','','','', '','D','','COMPUTED','reqs','','Pending HC reqs grouped by Final Approval Status. Drives the status-breakdown KPIs.','',''],
   ['sm-pend-list',        'All Pending HC Requests',              HR, '[IMPORT] SmartSheets Pending HC Requests', 'A5:CU',  '','','','', '','','','COMPUTED','reqs','','Source list for All Pending Reqs table. Columns shown: Request Type, Status, Date Requested, Requested By, SMT, PBP, Location.','',''],
 
-  // ── PA tab (Pending Hires & Attrition) — uses same sources as wd-*-fut-* metrics ─
+  // ── PA tab (Pending Hires & Attrition) - uses same sources as wd-*-fut-* metrics ─
   ['pa-hires-ee-smt',     'PA: EE Pending Hires by SMT',          HR, '[IMPORT] GH Offer Details',                  'A12:CA', 'Y','Employee',         'L','Accepted', '','AB','','GROUP_BY_COUNT','pa','','EE half of Pending Hires by SMT.','[{"col":"R","op":">today"}]',''],
   ['pa-hires-cw-smt',     'PA: CW Pending Hires by SMT',          HR, '[IMPORT] WD Pending Starts and Attrition',  'A5:AW',  'D','Contingent Worker','F','>today', '','J','','GROUP_BY_COUNT','pa','','CW half of Pending Hires by SMT.','',''],
-  ['pa-hires-ee-loc',     'PA: EE Pending Hires by Location',     HR, '[IMPORT] GH Offer Details',                  'A12:CA', 'Y','Employee',         'L','Accepted', '','BM','','GROUP_BY_COUNT','pa','','EE Pending Hires by Location — col BM.','[{"col":"R","op":">today"}]',''],
+  ['pa-hires-ee-loc',     'PA: EE Pending Hires by Location',     HR, '[IMPORT] GH Offer Details',                  'A12:CA', 'Y','Employee',         'L','Accepted', '','BM','','GROUP_BY_COUNT','pa','','EE Pending Hires by Location - col BM.','[{"col":"R","op":">today"}]',''],
   ['pa-hires-cw-loc',     'PA: CW Pending Hires by Location',     HR, '[IMPORT] WD Pending Starts and Attrition',  'A5:AW',  'D','Contingent Worker','F','>today', '','U','','GROUP_BY_COUNT','pa','','CW Pending Hires by Location.','',''],
   ['pa-attr-ee-smt',      'PA: EE Pending Attritions by SMT',     HR, '[IMPORT] WD Pending Starts and Attrition',  'A5:AW',  'D','Employee',         'G','>today', '','J','','GROUP_BY_COUNT','pa','','EE half of Pending Attritions by SMT.','',''],
   ['pa-attr-cw-smt',      'PA: CW Pending Attritions by SMT',     HR, '[IMPORT] WD Pending Starts and Attrition',  'A5:AW',  'D','Contingent Worker','G','>today', '','J','','GROUP_BY_COUNT','pa','','CW half of Pending Attritions by SMT.','',''],
   ['pa-attr-ee-loc',      'PA: EE Pending Attritions by Location',HR, '[IMPORT] WD Pending Starts and Attrition',  'A5:AW',  'D','Employee',         'G','>today', '','U','','GROUP_BY_COUNT','pa','','EE Pending Attritions by Location.','',''],
   ['pa-attr-cw-loc',      'PA: CW Pending Attritions by Location',HR, '[IMPORT] WD Pending Starts and Attrition',  'A5:AW',  'D','Contingent Worker','G','>today', '','U','','GROUP_BY_COUNT','pa','','CW Pending Attritions by Location.','',''],
 
-  // ── Headcount by Location (Employees + CW tabs) — COMPUTED from raw Workday Data ─
+  // ── Headcount by Location (Employees + CW tabs) - COMPUTED from raw Workday Data ─
   ['hc-ee-loc',           'EE Headcount by Location',             HR, '[IMPORT] Workday Data',                      'A6:BC',  '','','','', '','','','COMPUTED','employees','','EE Headcount by Location (col P=Country, col Q=Location). Active+OnLeave employees. Logic: Country=United States of America → use Q value (already prefixed "US-…"); if Q contains "Remote", bucket as "US-Remote". Non-US: use Country.','',''],
   ['hc-cw-loc',           'CW Headcount by Location',             HR, '[IMPORT] Workday Data',                      'A6:BC',  '','','','', '','','','COMPUTED','contingent','','Same logic as hc-ee-loc but for Contingent Workers.','',''],
 
-  // ── COMPUTED summary metrics (no fetch — derived in render functions) ─
+  // ── COMPUTED summary metrics (no fetch - derived in render functions) ─
   ['summary-ee-future-hc','Future HC (EE)',HR,'','','','','','','','','','COMPUTED','summary','','Per-leader: CURRENT HC + FUTURE HIRES − FUTURE ATT. Total = sum across leaders.','',''],
   ['summary-ee-proj-hc',  'Projected HC (EE)',HR,'','','','','','','','','','COMPUTED','summary','','Per-leader: FUTURE HC + OPEN REQS.','',''],
   ['summary-ee-avail',    'Available to Hire (EE)',HR,'','','','','','','','','','COMPUTED','summary','','Per-leader: TOP LINE − PROJECTED HC. Drives the headroom KPI sub-line.','',''],
@@ -1332,8 +1331,8 @@ const CONFIG_DEFAULTS = [
   ['combined-cw-current', 'Combined CW Current (alias)',  HR,'','','','','','','','','','COMPUTED','summary','','Alias of summary-combined-current’s CW half. Computed from assembled D.cwData.','',''],
   ['combined-cw-future',  'Combined CW Future (alias)',   HR,'','','','','','','','','','COMPUTED','summary','','Alias of summary-combined-future’s CW half. Computed from assembled D.cwData.','',''],
   ['summary-pa-net',      'Net Movement',HR,'','','','','','','','','','COMPUTED','pa','','Pending Hires − Pending Attrition.','',''],
-  ['summary-open-newhc',  'Open Reqs — New Headcount',HR,'','','','','','','','','','COMPUTED','reqs','','Open Reqs filtered to Job Type = New Headcount.','',''],
-  ['summary-open-backfill','Open Reqs — Backfill',HR,'','','','','','','','','','COMPUTED','reqs','','Open Reqs filtered to Job Type = Backfill Headcount.','',''],
+  ['summary-open-newhc',  'Open Reqs - New Headcount',HR,'','','','','','','','','','COMPUTED','reqs','','Open Reqs filtered to Job Type = New Headcount.','',''],
+  ['summary-open-backfill','Open Reqs - Backfill',HR,'','','','','','','','','','COMPUTED','reqs','','Open Reqs filtered to Job Type = Backfill Headcount.','',''],
 
   // ── Utility metrics (used across the dashboard, not tied to one card) ─
   ['data-as-of',          'Data As Of Date',                      HR, '[IMPORT] Workday Data', 'B1:B1',     '','','','', '','','','SINGLE_CELL','all','','Workday export timestamp from cell B1.','',''],
@@ -1351,15 +1350,15 @@ const OPERATION_DEFS = {
   'GROUP_BY_COUNT': 'Group rows by Group Col; return count per group',
   'GROUP_BY_SUM':   'Group rows by Group Col; sum Value Col per group',
   'FILTER_COUNT':   'Count rows where two filter conditions are both true',
-  'PERCENTAGE':     'One metric as a % of another — put "numeratorKey/denominatorKey" in Value Col',
-  'DELTA':          'Subtract values across metrics — put comma-separated metric keys in Value Col',
+  'PERCENTAGE':     'One metric as a % of another - put "numeratorKey/denominatorKey" in Value Col',
+  'DELTA':          'Subtract values across metrics - put comma-separated metric keys in Value Col',
   'LIST':           'Return all matching rows for table rendering; use Column Mapping JSON',
   'SINGLE_CELL':    'Return the exact value from the first cell of the fetched range',
   'FIRST_VALUE':    'Return the value from Value Col in the first matching row',
   'CROSS_TAB':      'Group by Group Col; sub-count or sub-sum by Series Col values',
   'MULTI_SERIES':   'Merge multiple GROUP_BY operations on a shared dimension; define series in Column Mapping JSON',
   'OPENING_ID_COUNT':'Count tokens in Value Col after splitting (default delim: ",;\\n") and optional regex match. Group by Group Col. Column Mapping JSON: {"split":"[,;\\\\n]","match":"^.{4}\\\\..{4}\\\\..$"}',
-  'COMPUTED':       'Documentation-only. No fetch — value is derived in dashboard code from other metrics. Describe the formula in Notes.',
+  'COMPUTED':       'Documentation-only. No fetch - value is derived in dashboard code from other metrics. Describe the formula in Notes.',
 };
 
 // ── Config state ─────────────────────────────────────────────
@@ -1383,8 +1382,8 @@ function parseConfigRow(raw) {
     dashboardTab:  (raw[13] || '').toString().trim(),
     columnMapping: (raw[14] || '').toString().trim(),
     notes:         (raw[15] || '').toString().trim(),
-    filtersJSON:   (raw[16] || '').toString().trim(),  // col Q — structured filter array
-    options:       (raw[17] || '').toString().trim(),  // col R — skipRows, _projectCols, etc.
+    filtersJSON:   (raw[16] || '').toString().trim(),  // col Q - structured filter array
+    options:       (raw[17] || '').toString().trim(),  // col R - skipRows, _projectCols, etc.
   };
 }
 
@@ -1671,7 +1670,7 @@ function applyOperation(cfg, rows) {
       let mapping = null;
       try { mapping = cfg.columnMapping ? JSON.parse(cfg.columnMapping) : null; } catch(e) {}
 
-      // Column projection takes priority — works even with no columnMapping
+      // Column projection takes priority - works even with no columnMapping
       if (opts._projectCols && Array.isArray(opts._projectCols)) {
         return filtered.map(r => opts._projectCols.map(ci => (r[ci] !== undefined ? r[ci] : '')));
       }
@@ -1754,8 +1753,8 @@ function applyOperation(cfg, rows) {
       return result;
     }
 
-    // PERCENTAGE and DELTA are computed post-execution — return null placeholder
-    // COMPUTED is documentation-only — no fetch, no value
+    // PERCENTAGE and DELTA are computed post-execution - return null placeholder
+    // COMPUTED is documentation-only - no fetch, no value
     case 'PERCENTAGE':
     case 'DELTA':
     case 'COMPUTED':
@@ -1771,7 +1770,7 @@ function applyOperation(cfg, rows) {
 // ============================================================
 const n   = v => { const x = parseFloat(String(v||0).replace(/,/g,'')); return isNaN(x)?0:x; };
 const fmt = v => { const x = n(v); return x===0?'0':x.toLocaleString(); };
-const pct = (a,b) => b>0 ? (a/b*100).toFixed(1)+'%' : '—';
+const pct = (a,b) => b>0 ? (a/b*100).toFixed(1)+'%' : ' - ';
 const dpos = v => n(v)>0 ? `<span class="delta-pos">+${fmt(v)}</span>` : n(v)<0 ? `<span class="delta-neg">${fmt(v)}</span>` : '0';
 const dneg = v => n(v)>0 ? `<span class="delta-neg">-${fmt(v)}</span>` : '0';
 const bar  = (val, max, cls='') => `<div class="bar-wrap"><div class="bar-track"><div class="bar-fill ${cls}" style="width:${Math.min(100,max>0?val/max*100:0).toFixed(1)}%"></div></div><span class="bar-pct">${pct(val,max)}</span></div>`;
@@ -1819,9 +1818,9 @@ function tsNow() {
 let D = {}; // all parsed data
 
 // Maps metricKey → legacy D property name so render functions work unchanged
-// EE/CW per-leader rows are built by assembleEEData()/assembleCWData() from wd-* metrics — no fallback.
+// EE/CW per-leader rows are built by assembleEEData()/assembleCWData() from wd-* metrics - no fallback.
 const D_PROPERTY_MAP = {
-  // pa-hires-smt/loc etc. kept as fallback — assemblePAData() overrides if new raw metrics exist
+  // pa-hires-smt/loc etc. kept as fallback - assemblePAData() overrides if new raw metrics exist
   'pa-hires-smt':       'hiresSMT',
   'pa-hires-loc':       'hiresLoc',
   'pa-attrition-smt':   'attrSMT',
@@ -1837,7 +1836,7 @@ const D_PROPERTY_MAP = {
 };
 
 // ============================================================
-// ASSEMBLY — build structured arrays from raw GROUP_BY_COUNT metrics
+// ASSEMBLY - build structured arrays from raw GROUP_BY_COUNT metrics
 // ============================================================
 
 // Lookup a leader's count in a GROUP_BY_COUNT result object {name: count}.
@@ -1904,7 +1903,7 @@ function assembleCWData() {
     });
 }
 
-// Helpers: collapse alias + blank-SMT rules onto a {key: count} dict (SMT only — locations
+// Helpers: collapse alias + blank-SMT rules onto a {key: count} dict (SMT only - locations
 // must NOT be routed to Adrian Vance).
 function _normalizeSMTKeys(obj) {
   const out = {};
@@ -1956,12 +1955,12 @@ function assemblePAData() {
 // token-splitting, location bucketing).
 // ============================================================
 
-// Greenhouse open reqs — Method 3: count of Opening IDs per group.
+// Greenhouse open reqs - Method 3: count of Opening IDs per group.
 // Filters: Status=Open, Dept ∉ {Template, Testing}, Worker/Type combos per `forCW`.
 // Allowed combos:
-//   - Employee + New Headcount, Employee + Backfill Headcount
-//   - Fixed Term Employee + New Headcount   (NOT FTE + Backfill — exists only on EE side)
-//   - Contingent Worker + New Headcount, Contingent Worker + Backfill Headcount
+//  - Employee + New Headcount, Employee + Backfill Headcount
+//  - Fixed Term Employee + New Headcount   (NOT FTE + Backfill - exists only on EE side)
+//  - Contingent Worker + New Headcount, Contingent Worker + Backfill Headcount
 const _GH_OPENING_ID_RE = /^.{4}\..{4}\..$/;
 const _GH_VALID_DEPTS = (dept) => {
   const d = (dept || '').toString().trim().toLowerCase();
@@ -2041,7 +2040,7 @@ async function assembleGHOpenReqs() {
   D.ghOpenList = expanded;
 }
 
-// Pending HC Requests from SmartSheets — multi-condition filter.
+// Pending HC Requests from SmartSheets - multi-condition filter.
 // Approval ∈ {Approved, Pending Approval, Waiting to Review} OR starts with "Sent back".
 // Type ∈ {Request a new headcount, I want to hire a Full Time Employee}.
 // Location buckets count each line of AK/AL separately (option A: one req → many location buckets).
@@ -2103,7 +2102,7 @@ async function assemblePendingReqs() {
   D.pendingTotal      = matched.length;
 }
 
-// Pending Hires & Attrition detail rosters — fetched once per refresh, used by drillPA.
+// Pending Hires & Attrition detail rosters - fetched once per refresh, used by drillPA.
 //   EE Pending Hires: GH Offer Details (Y=Employee, L=Accepted, R>today). Job Title from col A.
 //   CW Pending Hires: WD Pending Starts and Attrition (D=Contingent Worker, F>today). Title from col P.
 //   EE/CW Pending Attritions: WD Pending Starts and Attrition (G>today). Title from col P.
@@ -2179,9 +2178,9 @@ function _locationBucket(country, location) {
   return c || '(Unknown)';
 }
 
-// Headcount by Location (EE + CW) — Status ≠ Inactive AND hire date ≤ today, US/INTL bucketed.
+// Headcount by Location (EE + CW) - Status ≠ Inactive AND hire date ≤ today, US/INTL bucketed.
 // Aligned with the wd-*-curr-smt filter so per-leader and per-location counts match.
-// Also stores `D.workdayActive` — an array of active worker objects with bucket info
+// Also stores `D.workdayActive` - an array of active worker objects with bucket info
 // attached, used by drillLocation for the per-location roster.
 async function assembleHCByLocation() {
   let rows = [];
@@ -2223,10 +2222,10 @@ async function assembleHCByLocation() {
 }
 
 // ============================================================
-// LOAD ALL DATA  (config-driven — all normalization in engine)
+// LOAD ALL DATA  (config-driven - all normalization in engine)
 // ============================================================
 async function loadAllData() {
-  /* ── DEMO BUILD: no backend — populate D from mock data, then render. ── */
+  /* ── DEMO BUILD: no backend - populate D from mock data, then render. ── */
   try {
     _targetRows = [
       {leader:'Adrian Vance',startHC:412,target:458,cwStartHC:0},
@@ -2258,7 +2257,7 @@ async function loadAllData() {
     ];
     var _smts=['Adrian Vance','Jordan Pike','Casey Monroe','Devon Hale','Robin Castellano','Drew Carmichael'];
     var _pbps=['Priya Anand','Naomi Brooks','Dana Calloway','Renee Salazar'];
-    var _locs=['US — Los Angeles','EMEA — London','APAC — Tokyo','US — San Francisco','APAC — Singapore'];
+    var _locs=['US - Los Angeles','EMEA - London','APAC - Tokyo','US - San Francisco','APAC - Singapore'];
     var _tee=['Senior Software Engineer','Product Manager','Data Analyst','UX Designer','Localization Specialist','Engineering Manager'];
     var _tcw=['Contract QA Tester','Temp Recruiter','Freelance Illustrator','Contract Video Editor'];
     var _gh=[];
@@ -2273,8 +2272,8 @@ async function loadAllData() {
     var _tEE=['Software Engineer','Senior Software Engineer','Product Manager','Data Analyst','UX Designer','Program Manager','Engineering Manager','Localization Specialist','Marketing Manager','Finance Analyst','QA Engineer','Content Strategist'];
     var _tCW=['Contract QA Tester','Temp Recruiter','Freelance Illustrator','Contract Video Editor','Contract Data Analyst','Freelance Copywriter'];
     var _ccs=['40401 Engineering: Platform','30201 Content: Localization','50301 Marketing: Growth','40402 Engineering: Apps','20101 Finance & Strategy'];
-    var _wloc=['US — Los Angeles','US — San Francisco','US — Dallas','EMEA — London','EMEA — Paris','APAC — Tokyo','APAC — Singapore','LATAM — São Paulo'];
-    var _paloc=['US — Los Angeles','US — San Francisco','US — Dallas','EMEA — London','EMEA — Paris'];
+    var _wloc=['US - Los Angeles','US - San Francisco','US - Dallas','EMEA - London','EMEA - Paris','APAC - Tokyo','APAC - Singapore','LATAM - São Paulo'];
+    var _paloc=['US - Los Angeles','US - San Francisco','US - Dallas','EMEA - London','EMEA - Paris'];
     var _wi=0;
     function _nm(){ var f=_fn[_wi%_fn.length], l=_ln[(_wi*7+3)%_ln.length]; _wi++; return f+' '+l; }
     function _hd(){ var y=2023+(_wi%3), m=1+(_wi%9), d=3+(_wi%25); return y+'-'+(m<10?'0'+m:m)+'-'+(d<10?'0'+d:d); }
@@ -2288,8 +2287,8 @@ async function loadAllData() {
     _cw.forEach(function(r){ for(var k=0;k<r[3];k++) _phCW.push(_mkPA(r[0],false,true,k)); for(var k2=0;k2<r[2];k2++) _paCW.push(_mkPA(r[0],false,false,k2)); });
     D = {
       eeData:_ee, cwData:_cw,
-      eeLoc:[['US — Los Angeles',431],['US — San Francisco',188],['US — Dallas',96],['EMEA — London',142],['EMEA — Paris',77],['APAC — Tokyo',119],['APAC — Singapore',64],['LATAM — São Paulo',38]],
-      cwLoc:[['US — Los Angeles',96],['EMEA — London',41],['APAC — Tokyo',58],['APAC — Singapore',22],['LATAM — São Paulo',14]],
+      eeLoc:[['US - Los Angeles',431],['US - San Francisco',188],['US - Dallas',96],['EMEA - London',142],['EMEA - Paris',77],['APAC - Tokyo',119],['APAC - Singapore',64],['LATAM - São Paulo',38]],
+      cwLoc:[['US - Los Angeles',96],['EMEA - London',41],['APAC - Tokyo',58],['APAC - Singapore',22],['LATAM - São Paulo',14]],
       workdayWorkers:_workers, workdayActive:_workers,
       eeCurrTotal:_ee.reduce(function(s,r){return s+r[4];},0),
       eeFutureTotal:_ee.reduce(function(s,r){return s+r[7];},0),
@@ -2301,8 +2300,8 @@ async function loadAllData() {
       pendingHiresDetail:{ee:_phEE,cw:_phCW}, pendingAttrDetail:{ee:_paEE,cw:_paCW},
       hiresSMT:_ee.map(function(r,k){ var c=_cw[k]?_cw[k][3]:0; return{smt:r[0],ee:r[3],cw:c,total:r[3]+c}; }),
       attrSMT:_ee.map(function(r,k){ var c=_cw[k]?_cw[k][2]:0; return{smt:r[0],ee:r[2],cw:c,total:r[2]+c}; }),
-      hiresLoc:[{loc:'US — Los Angeles',ee:14,cw:6,total:20},{loc:'EMEA — London',ee:6,cw:3,total:9},{loc:'APAC — Tokyo',ee:7,cw:4,total:11},{loc:'US — San Francisco',ee:5,cw:0,total:5},{loc:'APAC — Singapore',ee:3,cw:2,total:5}],
-      attrLoc:[{loc:'US — Los Angeles',ee:6,cw:4,total:10},{loc:'EMEA — London',ee:3,cw:2,total:5},{loc:'APAC — Tokyo',ee:4,cw:3,total:7},{loc:'US — San Francisco',ee:2,cw:0,total:2},{loc:'APAC — Singapore',ee:1,cw:1,total:2}],
+      hiresLoc:[{loc:'US - Los Angeles',ee:14,cw:6,total:20},{loc:'EMEA - London',ee:6,cw:3,total:9},{loc:'APAC - Tokyo',ee:7,cw:4,total:11},{loc:'US - San Francisco',ee:5,cw:0,total:5},{loc:'APAC - Singapore',ee:3,cw:2,total:5}],
+      attrLoc:[{loc:'US - Los Angeles',ee:6,cw:4,total:10},{loc:'EMEA - London',ee:3,cw:2,total:5},{loc:'APAC - Tokyo',ee:4,cw:3,total:7},{loc:'US - San Francisco',ee:2,cw:0,total:2},{loc:'APAC - Singapore',ee:1,cw:1,total:2}],
       'data-as-of':'2026-06-03'
     };
     renderAll();
@@ -2323,7 +2322,7 @@ async function loadAllData() {
     setLoading(true, 'Fetching data sources…');
     const fetchResults = await executeFetches(plan);
 
-    // 4. Apply operations — store results in D keyed by metricKey
+    // 4. Apply operations - store results in D keyed by metricKey
     _configRows.forEach(cfg => {
       if (cfg.operation === 'PERCENTAGE' || cfg.operation === 'DELTA') return;
       const raw = fetchResults[fetchKey(cfg)] || [];
@@ -2343,7 +2342,7 @@ async function loadAllData() {
       const [numKey, denKey] = cfg.valueCol.split('/').map(s => s.trim());
       const num = typeof D[numKey] === 'number' ? D[numKey] : 0;
       const den = typeof D[denKey] === 'number' ? D[denKey] : 0;
-      D[cfg.metricKey] = den > 0 ? (num / den * 100).toFixed(1) + '%' : '—';
+      D[cfg.metricKey] = den > 0 ? (num / den * 100).toFixed(1) + '%' : ' - ';
     });
 
     // 7. Alias D[metricKey] → legacy D property names so render functions work unchanged.
@@ -2364,7 +2363,7 @@ async function loadAllData() {
           // Old GROUP_BY_SUM returned an object {loc: count}
           val = Object.entries(val).filter(([k]) => k).map(([k, v]) => [k, v]);
         }
-        // Already correct array format — keep as-is
+        // Already correct array format - keep as-is
       }
 
       // ── Combined totals: SINGLE_CELL returns string from sheet ───────────────
@@ -2383,7 +2382,7 @@ async function loadAllData() {
             .map(r => ({ smt: String(r[0]||''), loc: String(r[0]||''),
                          ee: _n(r[1]), cw: _n(r[2]), total: _n(r[3]) }));
         } else if (!Array.isArray(val) && val && typeof val === 'object') {
-          // GROUP_BY_COUNT returned {name: count} — single-type source
+          // GROUP_BY_COUNT returned {name: count} - single-type source
           val = Object.entries(val)
             .filter(([k]) => k && !/^(total|grand)/i.test(k.trim()))
             .map(([k, v]) => ({ smt: k, loc: k, ee: _n(v), cw: 0, total: _n(v) }))
@@ -2412,7 +2411,7 @@ async function loadAllData() {
       D[prop] = val;
     });
 
-    // 7b. COMPUTED metrics — fetch raw rows and run multi-condition logic.
+    // 7b. COMPUTED metrics - fetch raw rows and run multi-condition logic.
     // Run in parallel since they hit different sheets.
     await Promise.all([
       assembleGHOpenReqs(),
@@ -2465,9 +2464,9 @@ function updateLastUpdatedDisplay() {
   el.textContent = mins < 1 ? 'Just now' : mins === 1 ? '1 min ago' : mins + ' min ago';
   var stale = mins >= 45;
   el.style.color = stale ? 'var(--amber)' : '#888';
-  el.title = stale ? 'Data may be stale — click Refresh' : 'Last data refresh';
+  el.title = stale ? 'Data may be stale - click Refresh' : 'Last data refresh';
   var btn = document.getElementById('refreshBtn');
-  if (btn) btn.title = stale ? 'Data may be stale — click to refresh' : 'Refresh data';
+  if (btn) btn.title = stale ? 'Data may be stale - click to refresh' : 'Refresh data';
 }
 setInterval(updateLastUpdatedDisplay, 60000);
 
@@ -2666,7 +2665,7 @@ function renderEETab() {
     <td class="num">${fmt(tot.tl)}</td><td class="num">+${fmt(tot.avail)}</td>
     <td>${bar(tot.curr,tot.tl)}</td></tr>`;
 
-  // By Location — read directly from D.eeLoc (projected [location, count] pairs)
+  // By Location - read directly from D.eeLoc (projected [location, count] pairs)
   const locData = (D.eeLoc || []).filter(r => r && r[0]
     && !r[0].toString().toLowerCase().includes('global')
     && !r[0].toString().toLowerCase().includes('location'));
@@ -2745,7 +2744,7 @@ function renderCWTab() {
     <td class="num">${fmt(tot.futAttr)}</td><td class="num">${fmt(tot.futHires)}</td>
     <td class="num">${fmt(tot.futHC)}</td></tr>`;
 
-  // By Location — read directly from D.cwLoc (projected [location, count] pairs)
+  // By Location - read directly from D.cwLoc (projected [location, count] pairs)
   const locData = (D.cwLoc || []).filter(r => r && r[0]
     && !r[0].toString().toLowerCase().includes('global')
     && !r[0].toString().toLowerCase().includes('location'));
@@ -2765,7 +2764,7 @@ function renderCWTab() {
   document.getElementById('cwHCChart').innerHTML = [...cw].sort((a,b)=>n(b[4])-n(a[4]))
     .map(r=>hbar(r[0],n(r[4]),maxCurr,'var(--amber)',`drillSMT('cw','${esc(r[0])}')`)).join('');
 
-  // Movement chart (hires vs attrition side-by-side labels) — clickable per leader
+  // Movement chart (hires vs attrition side-by-side labels) - clickable per leader
   const maxMove = Math.max(...cw.map(r=>Math.max(n(r[2]),n(r[3]))),1);
   document.getElementById('cwMoveChart').innerHTML = [...cw]
     .filter(r=>n(r[2])>0||n(r[3])>0)
@@ -2787,7 +2786,7 @@ function renderCWTab() {
 // RENDER: REQS TAB
 // ============================================================
 function renderReqsTab() {
-  // ghOpenList is one row per Opening ID (Method 3 — multi-opening roles expanded).
+  // ghOpenList is one row per Opening ID (Method 3 - multi-opening roles expanded).
   const gh = D.ghOpenList || [];
 
   const eeR      = gh.filter(r => r.isEE);
@@ -2859,25 +2858,25 @@ function renderReqsTab() {
     </tr>`;
   }).join('') || '<tr><td colspan="5" style="text-align:center;padding:16px;color:var(--gray-dark)">No location data found</td></tr>';
 
-  // Standalone bar charts removed per spec — Open Roles by SMT/Location appear only in the tables above.
+  // Standalone bar charts removed per spec - Open Roles by SMT/Location appear only in the tables above.
   const smtChartEl = document.getElementById('reqsSMTChart'); if (smtChartEl) smtChartEl.innerHTML = '';
   const locChartEl = document.getElementById('reqsLocChart'); if (locChartEl) locChartEl.innerHTML = '';
 
-  // All roles table — one row per Opening ID
+  // All roles table - one row per Opening ID
   document.getElementById('reqsAllRoles').innerHTML = gh.map(r => {
     const typeTag = r.isEE ? 'tag-ee' : r.isCW ? 'tag-cw' : 'tag-other';
     const bfTag   = isNew(r) ? 'tag-new' : isBackf(r) ? 'tag-backfill' : 'tag-other';
     const typeLabel = r.isEE ? 'Employee' : 'CW';
     return `<tr class="clickable" onclick="drillReqRole('${esc(r.title)}','${esc(r.smt)}','${esc(r.pbp)}','${esc(r.location)}','${esc(typeLabel)}','${esc(r.jobType)}','${esc(r.hireDate)}','${esc(r.openingId)}')">
-      <td>${r.title||'—'}<span class="drill-hint">▶</span></td>
-      <td style="font-size:11px;color:var(--gray-dark)">${r.smt||'—'}</td>
-      <td style="font-size:11px;color:var(--gray-dark)">${r.pbp||'—'}</td>
-      <td style="font-size:11px;color:var(--gray-dark)">${r.location||'—'}</td>
+      <td>${r.title||' - '}<span class="drill-hint">▶</span></td>
+      <td style="font-size:11px;color:var(--gray-dark)">${r.smt||' - '}</td>
+      <td style="font-size:11px;color:var(--gray-dark)">${r.pbp||' - '}</td>
+      <td style="font-size:11px;color:var(--gray-dark)">${r.location||' - '}</td>
       <td><span class="status-tag ${typeTag}">${typeLabel}</span></td>
-      <td>${r.jobType?`<span class="status-tag ${bfTag}">${r.jobType}</span>`:'—'}</td>
-      <td style="font-size:11px">${r.hireDate||'—'}</td>
+      <td>${r.jobType?`<span class="status-tag ${bfTag}">${r.jobType}</span>`:' - '}</td>
+      <td style="font-size:11px">${r.hireDate||' - '}</td>
     </tr>`;
-  }).join('') || '<tr><td colspan="7" style="text-align:center;padding:24px;color:var(--gray-dark)">No open roles found — verify tab "[IMPORT] GH Open Job Detail" and service account access.</td></tr>';
+  }).join('') || '<tr><td colspan="7" style="text-align:center;padding:24px;color:var(--gray-dark)">No open roles found - verify tab "[IMPORT] GH Open Job Detail" and service account access.</td></tr>';
 
   // ── Pending Reqs section ────────────────────────────────────────
   renderPendingReqs();
@@ -2897,7 +2896,7 @@ function renderPendingReqs() {
   set('p-waiting',  fmt(status['Waiting to Review'] || 0));
   set('p-sentback', fmt(status['Sent back'] || 0));
 
-  // By SMT — show every leader from Targets in dashboard order, plus any orphans.
+  // By SMT - show every leader from Targets in dashboard order, plus any orphans.
   const targetSet = new Set((_targetRows||[]).map(t => t.leader));
   const smtRows = (_targetRows||[]).map(t => [t.leader, bySMT[t.leader] || 0]);
   Object.entries(bySMT).forEach(([k,v]) => { if (!targetSet.has(k)) smtRows.push([k, v]); });
@@ -2935,13 +2934,13 @@ function renderPendingReqs() {
   // All pending list
   document.getElementById('pendAllList').innerHTML = pendList.length ? pendList.map(p =>
     `<tr class="clickable" onclick="drillPendRow('${esc(p.jobName)}','${esc(p.status)}','${esc(p.dateRequested)}','${esc(p.requestedBy)}','${esc(p.smt)}','${esc(p.pbp)}','${esc(p.location)}','${esc(p.requestType)}')">
-      <td>${p.jobName||'—'}<span class="drill-hint">▶</span></td>
-      <td><span class="status-tag tag-${(p.status||'').toLowerCase().replace(/[^a-z]/g,'-')}">${p.status||'—'}</span></td>
-      <td style="font-size:11px">${p.dateRequested||'—'}</td>
-      <td style="font-size:11px;color:var(--gray-dark)">${p.requestedBy||'—'}</td>
-      <td style="font-size:11px">${p.smt||'—'}</td>
-      <td style="font-size:11px">${p.pbp||'—'}</td>
-      <td style="font-size:11px">${p.location||'—'}</td>
+      <td>${p.jobName||' - '}<span class="drill-hint">▶</span></td>
+      <td><span class="status-tag tag-${(p.status||'').toLowerCase().replace(/[^a-z]/g,'-')}">${p.status||' - '}</span></td>
+      <td style="font-size:11px">${p.dateRequested||' - '}</td>
+      <td style="font-size:11px;color:var(--gray-dark)">${p.requestedBy||' - '}</td>
+      <td style="font-size:11px">${p.smt||' - '}</td>
+      <td style="font-size:11px">${p.pbp||' - '}</td>
+      <td style="font-size:11px">${p.location||' - '}</td>
     </tr>`
   ).join('') : '<tr><td colspan="7" style="text-align:center;padding:24px;color:var(--gray-dark)">No pending reqs found.</td></tr>';
 }
@@ -3020,7 +3019,7 @@ function renderPATab() {
     <td class="num">-${fmt(aLoc.reduce((s,r)=>s+r.cw,0))}</td>
     <td class="num">-${fmt(aLoc.reduce((s,r)=>s+r.total,0))}</td></tr>`;
 
-  // Compare chart — clickable per leader, drills into hires for that SMT.
+  // Compare chart - clickable per leader, drills into hires for that SMT.
   const allSMT = [...new Set([...hSMT.map(r=>r.smt),...aSMT.map(r=>r.smt)])];
   const hMap = Object.fromEntries(hSMT.map(r=>[r.smt,r.total]));
   const aMap = Object.fromEntries(aSMT.map(r=>[r.smt,r.total]));
@@ -3077,11 +3076,11 @@ function drillKpi(tabId, type, metric) {
       + '</tr></thead><tbody>'
       + workers.map(function(w) {
           return '<tr>'
-            + '<td style="font-weight:600;white-space:nowrap">' + (w.name||'—') + '</td>'
-            + '<td style="font-size:12px">' + (w.title||'—') + '</td>'
-            + '<td style="font-size:11px">' + (w.smt||'—') + '</td>'
-            + '<td style="font-size:11px">' + (w.location||'—') + '</td>'
-            + '<td style="font-size:11px;white-space:nowrap">' + (w.hireDate||'—') + '</td>'
+            + '<td style="font-weight:600;white-space:nowrap">' + (w.name||' - ') + '</td>'
+            + '<td style="font-size:12px">' + (w.title||' - ') + '</td>'
+            + '<td style="font-size:11px">' + (w.smt||' - ') + '</td>'
+            + '<td style="font-size:11px">' + (w.location||' - ') + '</td>'
+            + '<td style="font-size:11px;white-space:nowrap">' + (w.hireDate||' - ') + '</td>'
             + '<td><span class="status-tag ' + (w.isEE?'tag-ee':'tag-cw') + '">' + (w.isEE?'Employee':'CW') + '</span></td>'
             + '</tr>';
         }).join('')
@@ -3098,12 +3097,12 @@ function drillKpi(tabId, type, metric) {
       + rows.map(function(r) {
           var bfTag = /new/i.test(r.backfill||'') ? 'tag-new' : 'tag-backfill';
           return '<tr>'
-            + '<td style="font-weight:600">' + (r.title||'—') + '</td>'
-            + '<td style="font-size:11px">' + (r.smt||'—') + '</td>'
-            + '<td style="font-size:11px">' + (r.location||'—') + '</td>'
+            + '<td style="font-weight:600">' + (r.title||' - ') + '</td>'
+            + '<td style="font-size:11px">' + (r.smt||' - ') + '</td>'
+            + '<td style="font-size:11px">' + (r.location||' - ') + '</td>'
             + '<td><span class="status-tag ' + (r.isEE?'tag-ee':'tag-cw') + '">' + (r.isEE?'EE':'CW') + '</span></td>'
-            + '<td><span class="status-tag ' + bfTag + '">' + (r.backfill||'—') + '</span></td>'
-            + '<td style="font-size:11px;white-space:nowrap">' + (r.hireDate||'—') + '</td>'
+            + '<td><span class="status-tag ' + bfTag + '">' + (r.backfill||' - ') + '</span></td>'
+            + '<td style="font-size:11px;white-space:nowrap">' + (r.hireDate||' - ') + '</td>'
             + '</tr>';
         }).join('')
       + '</tbody></table></div></div>';
@@ -3120,7 +3119,7 @@ function drillKpi(tabId, type, metric) {
           var total = n(r.total)||0, eeV = n(r.ee)||0, cwV = n(r.cw)||0;
           var pct = maxV>0 ? (total/maxV*100).toFixed(0) : 0;
           return '<tr>'
-            + '<td style="font-weight:600">' + (r.smt||'—') + '</td>'
+            + '<td style="font-weight:600">' + (r.smt||' - ') + '</td>'
             + '<td class="num">' + fmt(eeV) + '</td>'
             + '<td class="num">' + fmt(cwV) + '</td>'
             + '<td class="num"><strong>' + fmt(total) + '</strong></td>'
@@ -3158,52 +3157,52 @@ function drillKpi(tabId, type, metric) {
       var cutoff = _fyStartDate();
       workers = wd.filter(function(w){ return (isEE?w.isEE:w.isCW) && w.hireDate && new Date(w.hireDate)>=cutoff; })
                   .sort(function(a,b){ return new Date(b.hireDate)-new Date(a.hireDate); });
-      subtitle = metricLabel + ' — ' + workers.length + ' worker' + (workers.length!==1?'s':'') + ' hired since ' + fyLabel;
+      subtitle = metricLabel + ' - ' + workers.length + ' worker' + (workers.length!==1?'s':'') + ' hired since ' + fyLabel;
       body = '<div class="modal-kpis">'
         + '<div class="modal-kpi"><div class="modal-kpi-label">Hires</div><div class="modal-kpi-value" style="color:var(--green)">+' + fmt(hiresTotal) + '</div></div>'
         + '<div class="modal-kpi"><div class="modal-kpi-label">Current ' + label + '</div><div class="modal-kpi-value">' + fmt(total) + '</div></div>'
         + '</div>' + workerTable(workers, 'New Hires');
     } else if (metric === 'attr') {
-      subtitle = metricLabel + ' — breakdown by SMT';
+      subtitle = metricLabel + ' - breakdown by SMT';
       body = '<div class="modal-kpis">'
         + '<div class="modal-kpi"><div class="modal-kpi-label">Attrition</div><div class="modal-kpi-value" style="color:var(--red)">' + fmt(attrTotal) + '</div></div>'
         + '<div class="modal-kpi"><div class="modal-kpi-label">Current ' + label + '</div><div class="modal-kpi-value">' + fmt(total) + '</div></div>'
         + '</div>'
         + '<div class="table-wrap" style="margin-top:12px"><div class="table-scroll"><table><thead><tr><th>SMT</th><th class="num">Attrition</th><th class="num">Hires</th><th class="num">Current HC</th></tr></thead><tbody>'
         + data.sort(function(a,b){ return n(b[2])-n(a[2]); }).map(function(r){
-            return '<tr><td style="font-weight:600">' + (r[0]||'—') + '</td>'
+            return '<tr><td style="font-weight:600">' + (r[0]||' - ') + '</td>'
               + '<td class="num" style="color:var(--red)">' + fmt(n(r[2])) + '</td>'
               + '<td class="num" style="color:var(--green)">+' + fmt(n(r[3])) + '</td>'
               + '<td class="num">' + fmt(n(r[4])) + '</td></tr>';
           }).join('')
         + '</tbody></table></div></div>';
     } else if (metric === 'futureAttr') {
-      subtitle = metricLabel + ' — breakdown by SMT';
+      subtitle = metricLabel + ' - breakdown by SMT';
       body = '<div class="modal-kpis">'
         + '<div class="modal-kpi"><div class="modal-kpi-label">Future Attrition</div><div class="modal-kpi-value" style="color:var(--amber)">' + fmt(futAttr) + '</div></div>'
         + '</div>'
         + '<div class="table-wrap" style="margin-top:12px"><div class="table-scroll"><table><thead><tr><th>SMT</th><th class="num">Future Attrition</th><th class="num">Current HC</th></tr></thead><tbody>'
         + data.sort(function(a,b){ return n(b[5])-n(a[5]); }).map(function(r){
-            return '<tr><td style="font-weight:600">' + (r[0]||'—') + '</td>'
+            return '<tr><td style="font-weight:600">' + (r[0]||' - ') + '</td>'
               + '<td class="num" style="color:var(--amber)">' + fmt(n(r[5])) + '</td>'
               + '<td class="num">' + fmt(n(r[4])) + '</td></tr>';
           }).join('')
         + '</tbody></table></div></div>';
     } else if (metric === 'futureHires') {
-      subtitle = metricLabel + ' — breakdown by SMT';
+      subtitle = metricLabel + ' - breakdown by SMT';
       body = '<div class="modal-kpis">'
         + '<div class="modal-kpi"><div class="modal-kpi-label">Future Hires</div><div class="modal-kpi-value" style="color:var(--green)">+' + fmt(futHires) + '</div></div>'
         + '</div>'
         + '<div class="table-wrap" style="margin-top:12px"><div class="table-scroll"><table><thead><tr><th>SMT</th><th class="num">Future Hires</th><th class="num">Current HC</th></tr></thead><tbody>'
         + data.sort(function(a,b){ return n(b[6])-n(a[6]); }).map(function(r){
-            return '<tr><td style="font-weight:600">' + (r[0]||'—') + '</td>'
+            return '<tr><td style="font-weight:600">' + (r[0]||' - ') + '</td>'
               + '<td class="num" style="color:var(--green)">+' + fmt(n(r[6])) + '</td>'
               + '<td class="num">' + fmt(n(r[4])) + '</td></tr>';
           }).join('')
         + '</tbody></table></div></div>';
     } else {
       // total, topline, net
-      subtitle = metricLabel + ' — full breakdown by SMT';
+      subtitle = metricLabel + ' - full breakdown by SMT';
       workers = wd.filter(function(w){ return isEE?w.isEE:w.isCW; }).sort(function(a,b){ return (a.smt||'').localeCompare(b.smt||''); });
       body = '<div class="modal-kpis">'
         + '<div class="modal-kpi"><div class="modal-kpi-label">Total ' + label + '</div><div class="modal-kpi-value">' + fmt(total) + '</div></div>'
@@ -3238,7 +3237,7 @@ function drillKpi(tabId, type, metric) {
     else if (metric === 'new') rows = gh.filter(function(r){ return /new/i.test(r.backfill||''); });
     else if (metric === 'backfill') rows = gh.filter(function(r){ return /backfill|replace/i.test(r.backfill||''); });
     else rows = gh;
-    subtitle = metricLabel2 + ' — ' + rows.length + ' open role' + (rows.length!==1?'s':'');
+    subtitle = metricLabel2 + ' - ' + rows.length + ' open role' + (rows.length!==1?'s':'');
     body = '<div class="modal-kpis">'
       + '<div class="modal-kpi"><div class="modal-kpi-label">Open Roles</div><div class="modal-kpi-value">' + fmt(rows.length) + '</div></div>'
       + '<div class="modal-kpi"><div class="modal-kpi-label">EE</div><div class="modal-kpi-value" style="color:var(--blue)">' + fmt(rows.filter(function(r){ return r.isEE; }).length) + '</div></div>'
@@ -3253,7 +3252,7 @@ function drillKpi(tabId, type, metric) {
     var tot  = smtData.reduce(function(s,r){ return s+n(r.total); }, 0);
     var eeV2 = smtData.reduce(function(s,r){ return s+n(r.ee); }, 0);
     var cwV2 = smtData.reduce(function(s,r){ return s+n(r.cw); }, 0);
-    subtitle = title + ' — ' + fmt(tot) + ' total';
+    subtitle = title + ' - ' + fmt(tot) + ' total';
     body = '<div class="modal-kpis">'
       + '<div class="modal-kpi"><div class="modal-kpi-label">Total</div><div class="modal-kpi-value">' + fmt(tot) + '</div></div>'
       + '<div class="modal-kpi"><div class="modal-kpi-label">Employees</div><div class="modal-kpi-value">' + fmt(eeV2) + '</div></div>'
@@ -3272,7 +3271,7 @@ function drillKpi(tabId, type, metric) {
       + '<div class="modal-kpi"><div class="modal-kpi-label">Net</div><div class="modal-kpi-value" style="color:' + (totH-totA>=0?'var(--green)':'var(--red)') + '">' + (totH-totA>=0?'+':'') + fmt(totH-totA) + '</div></div>'
       + '</div>';
   } else if (type === 'pend') {
-    // Pending Reqs KPIs (Open & Pending tab) — filter by status when applicable.
+    // Pending Reqs KPIs (Open & Pending tab) - filter by status when applicable.
     var pendList = D_loc.pendingList || [];
     var statusFilter = {
       total:    null,
@@ -3300,13 +3299,13 @@ function drillKpi(tabId, type, metric) {
       + '<thead><tr><th>Job Name</th><th>Status</th><th>Date</th><th>Requested By</th><th>SMT</th><th>PBP</th><th>Location</th></tr></thead><tbody>'
       + rows.map(function(p){
           return '<tr>'
-            + '<td>' + (p.jobName||'—') + '</td>'
-            + '<td><span class="status-tag">' + (p.status||'—') + '</span></td>'
-            + '<td style="font-size:11px">' + (p.dateRequested||'—') + '</td>'
-            + '<td style="font-size:11px">' + (p.requestedBy||'—') + '</td>'
-            + '<td style="font-size:11px">' + (p.smt||'—') + '</td>'
-            + '<td style="font-size:11px">' + (p.pbp||'—') + '</td>'
-            + '<td style="font-size:11px">' + (p.location||'—') + '</td>'
+            + '<td>' + (p.jobName||' - ') + '</td>'
+            + '<td><span class="status-tag">' + (p.status||' - ') + '</span></td>'
+            + '<td style="font-size:11px">' + (p.dateRequested||' - ') + '</td>'
+            + '<td style="font-size:11px">' + (p.requestedBy||' - ') + '</td>'
+            + '<td style="font-size:11px">' + (p.smt||' - ') + '</td>'
+            + '<td style="font-size:11px">' + (p.pbp||' - ') + '</td>'
+            + '<td style="font-size:11px">' + (p.location||' - ') + '</td>'
             + '</tr>';
         }).join('')
       + '</tbody></table></div></div>';
@@ -3326,8 +3325,8 @@ function drillSMT(type, name) {
 
   // Filter active workers from Workday for this SMT and type. Applies the same alias +
   // blank-SMT rules used elsewhere so the count matches the per-leader metrics:
-  //   - "Jordan Pike" → "Jordan Pike" via _normalizeLeader
-  //   - blank/Unassigned SMT rolls into BLANK_SMT_CATCHALL (Adrian Vance)
+  //  - "Jordan Pike" → "Jordan Pike" via _normalizeLeader
+  //  - blank/Unassigned SMT rolls into BLANK_SMT_CATCHALL (Adrian Vance)
   const targetCanonical = _normalizeLeader(name).toLowerCase();
   const isCatchall = targetCanonical === BLANK_SMT_CATCHALL.toLowerCase();
   const workers = (D.workdayWorkers||[]).filter(w => {
@@ -3354,21 +3353,21 @@ function drillSMT(type, name) {
           <tbody>${workers.map(w=>`
             <tr>
               <td style="font-weight:600;white-space:nowrap">${w.name}</td>
-              <td style="font-size:12px">${w.title||'—'}</td>
-              <td style="font-size:12px;white-space:nowrap">${w.manager||'—'}</td>
-              <td style="font-size:11px">${w.costCenter||'—'}</td>
-              <td style="font-size:11px">${w.location||'—'}</td>
-              <td style="font-size:11px;white-space:nowrap">${w.hireDate||'—'}</td>
+              <td style="font-size:12px">${w.title||' - '}</td>
+              <td style="font-size:12px;white-space:nowrap">${w.manager||' - '}</td>
+              <td style="font-size:11px">${w.costCenter||' - '}</td>
+              <td style="font-size:11px">${w.location||' - '}</td>
+              <td style="font-size:11px;white-space:nowrap">${w.hireDate||' - '}</td>
               <td><span class="status-tag tag-${w.status.toLowerCase().replace(/\s+/g,'-')}">${w.status}</span></td>
             </tr>`).join('')}
           </tbody>
         </table>
       </div>
     </div>` : `<div class="empty-state" style="padding:24px"><div class="icon">👤</div>
-      <p>${D.workdayWorkers ? 'No active workers found for this SMT.' : 'Workday Data not loaded — check service account access to the [IMPORT] Workday Data tab.'}</p>
+      <p>${D.workdayWorkers ? 'No active workers found for this SMT.' : 'Workday Data not loaded - check service account access to the [IMPORT] Workday Data tab.'}</p>
     </div>`;
 
-  openModal(name, `${label} Detail — ${name}`,
+  openModal(name, `${label} Detail - ${name}`,
     `<div class="modal-kpis">
       <div class="modal-kpi"><div class="modal-kpi-label">Active in Workday</div><div class="modal-kpi-value" style="color:var(--blue)">${workers.length}</div></div>
       <div class="modal-kpi"><div class="modal-kpi-label">Hires Since <span class="fy-label">April 1</span></div><div class="modal-kpi-value" style="color:var(--green)">+${fmt(r[3])}</div></div>
@@ -3395,7 +3394,7 @@ function drillReqGroup(groupType, value) {
   const isNew = r => /^new headcount$/i.test(r.jobType||'');
   const isBf  = r => /^backfill headcount$/i.test(r.jobType||'');
   const label = groupType==='smt'?'SMT':groupType==='pbp'?'People Business Partner':'Location';
-  openModal(value||'Unassigned', `${label} — ${filtered.length} Open Role${filtered.length!==1?'s':''}`,
+  openModal(value||'Unassigned', `${label} - ${filtered.length} Open Role${filtered.length!==1?'s':''}`,
     `<div class="modal-kpis">
       <div class="modal-kpi"><div class="modal-kpi-label">Total Roles</div><div class="modal-kpi-value">${filtered.length}</div></div>
       <div class="modal-kpi"><div class="modal-kpi-label">EE Roles</div><div class="modal-kpi-value">${filtered.filter(r=>r.isEE).length}</div></div>
@@ -3408,7 +3407,7 @@ function drillReqGroup(groupType, value) {
         const tTag = r.isEE ? 'tag-ee' : r.isCW ? 'tag-cw' : 'tag-other';
         const bTag = isNew(r) ? 'tag-new' : isBf(r) ? 'tag-backfill' : 'tag-other';
         const typeLabel = r.isEE ? 'EE' : 'CW';
-        return `<tr><td>${r.title||'—'}</td><td style="font-size:11px;font-family:monospace">${r.openingId||'—'}</td><td><span class="status-tag ${tTag}">${typeLabel}</span></td><td>${r.jobType?`<span class="status-tag ${bTag}">${r.jobType}</span>`:'—'}</td><td style="font-size:11px">${r.location||'—'}</td><td style="font-size:11px">${r.hireDate||'—'}</td></tr>`;
+        return `<tr><td>${r.title||' - '}</td><td style="font-size:11px;font-family:monospace">${r.openingId||' - '}</td><td><span class="status-tag ${tTag}">${typeLabel}</span></td><td>${r.jobType?`<span class="status-tag ${bTag}">${r.jobType}</span>`:' - '}</td><td style="font-size:11px">${r.location||' - '}</td><td style="font-size:11px">${r.hireDate||' - '}</td></tr>`;
       }).join('')}</tbody>
     </table></div></div>`);
 }
@@ -3416,17 +3415,17 @@ function drillReqGroup(groupType, value) {
 function drillReqRole(title, smt, pbp, loc, type, jobType, hireDate, openingId) {
   openModal(title, 'Open Role Detail',
     `<div class="summary-row">
-      <span class="summary-chip blue">SMT: ${smt||'—'}</span>
-      <span class="summary-chip">PBP: ${pbp||'—'}</span>
-      <span class="summary-chip">${loc||'—'}</span>
-      <span class="summary-chip ${(type||'').toUpperCase()==='EMPLOYEE'?'blue':''}">Type: ${type||'—'}</span>
-      <span class="summary-chip ${(jobType||'').toLowerCase().includes('new')?'green':'purple'}">${jobType||'—'}</span>
+      <span class="summary-chip blue">SMT: ${smt||' - '}</span>
+      <span class="summary-chip">PBP: ${pbp||' - '}</span>
+      <span class="summary-chip">${loc||' - '}</span>
+      <span class="summary-chip ${(type||'').toUpperCase()==='EMPLOYEE'?'blue':''}">Type: ${type||' - '}</span>
+      <span class="summary-chip ${(jobType||'').toLowerCase().includes('new')?'green':'purple'}">${jobType||' - '}</span>
       ${openingId?`<span class="summary-chip" style="font-family:monospace">Opening ID: ${openingId}</span>`:''}
       ${hireDate?`<span class="summary-chip">Target: ${hireDate}</span>`:''}
     </div>`);
 }
 
-// Pending Hires & Attrition drill — shows actual roster (Job Title, Start/Term Date, Location).
+// Pending Hires & Attrition drill - shows actual roster (Job Title, Start/Term Date, Location).
 function drillPA(direction, groupType, value) {
   const isHires = direction === 'hires';
   const detail  = isHires ? (D.pendingHiresDetail || {ee:[],cw:[]})
@@ -3445,7 +3444,7 @@ function drillPA(direction, groupType, value) {
               .concat(cw.map(r => Object.assign({}, r, {kind:'CW'})));
 
   if (!all.length) {
-    openModal(value || '—', `${label} Detail`,
+    openModal(value || ' - ', `${label} Detail`,
       `<p style="padding:16px;color:var(--gray-dark);font-size:13px;">No matching ${label.toLowerCase()} found for ${value}.</p>`);
     return;
   }
@@ -3460,8 +3459,8 @@ function drillPA(direction, groupType, value) {
 
   const rows = all.map(rec => {
     const cells = isHires
-      ? [rec.kind, rec.title || rec.name || '—', rec[dateField] || '—', rec.smt || '—', rec.location || '—']
-      : [rec.kind, rec.name || '—', rec.title || '—', rec[dateField] || '—', rec.smt || '—', rec.location || '—'];
+      ? [rec.kind, rec.title || rec.name || ' - ', rec[dateField] || ' - ', rec.smt || ' - ', rec.location || ' - ']
+      : [rec.kind, rec.name || ' - ', rec.title || ' - ', rec[dateField] || ' - ', rec.smt || ' - ', rec.location || ' - '];
     return '<tr>' + cells.map(c => `<td style="font-size:11px">${c}</td>`).join('') + '</tr>';
   }).join('');
 
@@ -3471,7 +3470,7 @@ function drillPA(direction, groupType, value) {
       <tbody>${rows}</tbody>
     </table></div></div>`;
 
-  openModal(value || '—', `${label} Detail`,
+  openModal(value || ' - ', `${label} Detail`,
     `<div class="modal-kpis">
       <div class="modal-kpi"><div class="modal-kpi-label">Employee</div><div class="modal-kpi-value" style="color:${color}">${sign}${fmt(ee.length)}</div></div>
       <div class="modal-kpi"><div class="modal-kpi-label">Contingent Worker</div><div class="modal-kpi-value" style="color:${color}">${sign}${fmt(cw.length)}</div></div>
@@ -3479,7 +3478,7 @@ function drillPA(direction, groupType, value) {
     </div>${tableHTML}`);
 }
 
-// Location drill — show actual employee/CW roster filtered to that location.
+// Location drill - show actual employee/CW roster filtered to that location.
 function drillLocation(loc, type) {
   const isEE = type === 'ee';
   const label = isEE ? 'Employees' : 'Contingent Workers';
@@ -3490,7 +3489,7 @@ function drillLocation(loc, type) {
   }).sort((a, b) => (a.name || '').localeCompare(b.name || ''));
 
   if (!workers.length) {
-    openModal(loc, `${label} — Location Detail`,
+    openModal(loc, `${label} - Location Detail`,
       `<div class="empty-state" style="padding:24px"><div class="icon">📍</div>
        <p>No active ${label.toLowerCase()} found for location "${loc}". If this looks wrong, verify the Workday Data import is loaded and the country/location columns (P, Q) have the expected values.</p></div>`);
     return;
@@ -3504,22 +3503,22 @@ function drillLocation(loc, type) {
       </tr></thead><tbody>
       ${workers.map(w => `
         <tr>
-          <td style="font-weight:600;white-space:nowrap">${w.name||'—'}</td>
-          <td style="font-size:12px">${w.title||'—'}</td>
-          <td style="font-size:11px">${w.smt||'—'}</td>
-          <td style="font-size:11px">${w.manager||'—'}</td>
-          <td style="font-size:11px;white-space:nowrap">${w.hireDate||'—'}</td>
-          <td><span class="status-tag tag-${(w.status||'').toLowerCase().replace(/\s+/g,'-')}">${w.status||'—'}</span></td>
+          <td style="font-weight:600;white-space:nowrap">${w.name||' - '}</td>
+          <td style="font-size:12px">${w.title||' - '}</td>
+          <td style="font-size:11px">${w.smt||' - '}</td>
+          <td style="font-size:11px">${w.manager||' - '}</td>
+          <td style="font-size:11px;white-space:nowrap">${w.hireDate||' - '}</td>
+          <td><span class="status-tag tag-${(w.status||'').toLowerCase().replace(/\s+/g,'-')}">${w.status||' - '}</span></td>
         </tr>`).join('')}
       </tbody></table></div></div>`;
 
-  openModal(loc, `${label} — Location Detail`,
+  openModal(loc, `${label} - Location Detail`,
     `<div class="modal-kpis">
       <div class="modal-kpi"><div class="modal-kpi-label">${label} at ${loc}</div><div class="modal-kpi-value">${workers.length}</div></div>
     </div>${tableHTML}`);
 }
 
-// Pending Reqs drill — group by SMT/PBP/Location.
+// Pending Reqs drill - group by SMT/PBP/Location.
 function drillPend(groupType, value) {
   const list = D.pendingList || [];
   let filtered;
@@ -3536,33 +3535,33 @@ function drillPend(groupType, value) {
       <thead><tr><th>Job Name</th><th>Status</th><th>Date Requested</th><th>Requested By</th><th>SMT</th><th>PBP</th><th>Location</th></tr></thead>
       <tbody>${filtered.map(p => `
         <tr>
-          <td>${p.jobName||'—'}</td>
-          <td><span class="status-tag">${p.status||'—'}</span></td>
-          <td style="font-size:11px">${p.dateRequested||'—'}</td>
-          <td style="font-size:11px">${p.requestedBy||'—'}</td>
-          <td style="font-size:11px">${p.smt||'—'}</td>
-          <td style="font-size:11px">${p.pbp||'—'}</td>
-          <td style="font-size:11px">${p.location||'—'}</td>
+          <td>${p.jobName||' - '}</td>
+          <td><span class="status-tag">${p.status||' - '}</span></td>
+          <td style="font-size:11px">${p.dateRequested||' - '}</td>
+          <td style="font-size:11px">${p.requestedBy||' - '}</td>
+          <td style="font-size:11px">${p.smt||' - '}</td>
+          <td style="font-size:11px">${p.pbp||' - '}</td>
+          <td style="font-size:11px">${p.location||' - '}</td>
         </tr>`).join('')}
       </tbody></table></div></div>` : '<p style="padding:16px;color:var(--gray-dark);font-size:13px;">No pending reqs match.</p>';
 
-  openModal(value || '—', `${label} — ${filtered.length} Pending Req${filtered.length!==1?'s':''}`,
+  openModal(value || ' - ', `${label} - ${filtered.length} Pending Req${filtered.length!==1?'s':''}`,
     `<div class="modal-kpis">
       <div class="modal-kpi"><div class="modal-kpi-label">Total</div><div class="modal-kpi-value">${filtered.length}</div></div>
     </div>${tableHTML}`);
 }
 
-// Single pending req row drill — quick summary card.
+// Single pending req row drill - quick summary card.
 function drillPendRow(jobName, status, dateRequested, requestedBy, smt, pbp, location, requestType) {
   openModal(jobName || 'Pending Req', 'Pending Req Detail',
     `<div class="summary-row">
-      <span class="summary-chip">Status: ${status||'—'}</span>
-      <span class="summary-chip">Type: ${requestType||'—'}</span>
-      <span class="summary-chip">Date: ${dateRequested||'—'}</span>
-      <span class="summary-chip">Requested By: ${requestedBy||'—'}</span>
-      <span class="summary-chip blue">SMT: ${smt||'—'}</span>
-      <span class="summary-chip">PBP: ${pbp||'—'}</span>
-      <span class="summary-chip">Location: ${location||'—'}</span>
+      <span class="summary-chip">Status: ${status||' - '}</span>
+      <span class="summary-chip">Type: ${requestType||' - '}</span>
+      <span class="summary-chip">Date: ${dateRequested||' - '}</span>
+      <span class="summary-chip">Requested By: ${requestedBy||' - '}</span>
+      <span class="summary-chip blue">SMT: ${smt||' - '}</span>
+      <span class="summary-chip">PBP: ${pbp||' - '}</span>
+      <span class="summary-chip">Location: ${location||' - '}</span>
     </div>`);
 }
 
@@ -3584,7 +3583,7 @@ function switchTab(id, btn) {
 }
 
 // ============================================================
-// DATA MAPPING TAB — sheet-backed config UI
+// DATA MAPPING TAB - sheet-backed config UI
 // ============================================================
 
 // Returns true if the signed-in user has 'master_admin' in the People sheet
@@ -3784,7 +3783,7 @@ var DM_COLS = [
   ['displayName',  'Name',          170, false, '',                        false,
    'The friendly name shown in the dashboard. Click ↗ to jump straight to where this metric appears.'],
   ['metricKey',    'Metric ID',     130, true,  '',                        false,
-   'A short internal code that identifies this metric (e.g. "hc-ee"). Keep it consistent — changing it will break the dashboard.'],
+   'A short internal code that identifies this metric (e.g. "hc-ee"). Keep it consistent - changing it will break the dashboard.'],
   ['operation',    'How to Read',   148, false, '',                        false,
    'How to turn the raw sheet rows into a number or list. LIST = keep all rows as a list. SINGLE_CELL = just grab one cell value. SUM = add up a column. COUNT_ROWS = count matching rows. GROUP_BY_SUM/COUNT = group rows and total each group.'],
   ['sheetTab',     'Sheet Tab',     190, false, '',                        false,
@@ -3814,10 +3813,10 @@ var DM_COLS = [
   ['columnMapping','Column Mapping', 230, true,  '',                        true,
    'Maps raw column positions to named fields (for LIST). Example: {"name":1,"type":3} means column 1 becomes "name", column 3 becomes "type". Leave blank to keep rows as raw arrays.'],
   ['notes',        'Notes',         170, false, '',                        false,
-   'Your own internal notes about this metric — why it exists, what it powers, or any quirks in the source data.'],
+   'Your own internal notes about this metric - why it exists, what it powers, or any quirks in the source data.'],
 ];
 
-// Column widths (px) — user can drag to resize, stored here
+// Column widths (px) - user can drag to resize, stored here
 var _dmColWidths = DM_COLS.map(function(c){ return c[2]; });
 
 // Collapsed group state
@@ -3861,7 +3860,7 @@ function renderDataMapping() {
   var css = '<style>'
     + ':root{--dm-row:#fff;--dm-row-alt:#FAFAFA;--dm-border:#EBEBEB;--dm-group-border:#E0E0E0;}'
 
-    // Scroll wrapper — vertical scroll here so sticky headers work
+    // Scroll wrapper - vertical scroll here so sticky headers work
     + '#dm-scroll-wrap{overflow:auto;max-height:calc(100vh - 220px);position:relative;}'
     + '#dm-grid{border-collapse:collapse;width:100%;font-size:11.5px;table-layout:fixed;}'
 
@@ -3896,7 +3895,7 @@ function renderDataMapping() {
     + '#dm-grid td{border-bottom:1px solid var(--dm-border);padding:0;vertical-align:top;overflow:hidden;}'
     + '#dm-grid td.cg-divider{border-left:2px solid var(--dm-group-border);}'
 
-    // Group header rows — collapsible
+    // Group header rows - collapsible
     + '#dm-grid tr.dm-group-hdr td{background:#F2EDE8;padding:0;'
     +   'border-top:2px solid #D4BDA8;border-bottom:1px solid #D4BDA8;'
     +   'border-left:none;border-right:none;}'
@@ -3968,7 +3967,7 @@ function renderDataMapping() {
     ['Mapping', 2, true],    // cm notes
   ];
 
-  // Divider flags — matches del + 17 cols
+  // Divider flags - matches del + 17 cols
   var COL_DIVIDERS = [false,false,false,false,true,true,false,false,false,false,true,false,false,true,false,true,false,false];
 
   // ── Build column widths style ────────────────────────────────────────────
@@ -4259,7 +4258,7 @@ function setDmView(mode) {
 // ── CARD VIEW renderer ─────────────────────────────────────────────────────
 var DM_OP_TIPS = {
   'LIST':           'Grab ALL the rows and keep them as a list so the dashboard can draw tables and charts.',
-  'SINGLE_CELL':    'Just grab one number from one specific cell — good for a total someone already calculated in the spreadsheet.',
+  'SINGLE_CELL':    'Just grab one number from one specific cell - good for a total someone already calculated in the spreadsheet.',
   'SUM':            'Add up all the numbers in a column. Like totaling a receipt.',
   'COUNT_ROWS':     'Count how many rows there are after filtering. Like counting people in a line.',
   'COUNT_DISTINCT': 'Count how many DIFFERENT values show up in a column. Like counting how many unique cities are in a list.',
@@ -4269,7 +4268,7 @@ var DM_OP_TIPS = {
   'PERCENTAGE':     'Show one number as a percent of another. Example: 30 hires out of 200 employees = 15%.',
   'DELTA':          'Subtract one number from another to show the change. Like how much a number went up or down.',
   'FIRST_VALUE':    'Look through the rows and return the first matching value you find.',
-  'CROSS_TAB':      'Like a pivot table — group by one thing, then break each group down further by another thing.',
+  'CROSS_TAB':      'Like a pivot table - group by one thing, then break each group down further by another thing.',
   'MULTI_SERIES':   'Combine several groups into one chart with multiple lines or bars.'
 };
 var DM_FILTER_TIPS = {
@@ -4290,7 +4289,7 @@ function _dmTipAttr(tip) {
 }
 
 function _dmColMapTip(json) {
-  if (!json || !json.trim()) return 'No mapping set — skip this if the dashboard code already knows how to read the rows.';
+  if (!json || !json.trim()) return 'No mapping set - skip this if the dashboard code already knows how to read the rows.';
   try {
     var m = JSON.parse(json);
     var entries = Object.entries(m);
@@ -4309,7 +4308,7 @@ function _dmColMapTip(json) {
       if (k.startsWith('$')) {
         var label = k.slice(1);
         if (typeof v === 'object' && v.exact)
-          lines.push('  ' + label + ': automatically set to true/false — true if column ' + colName(v.col) + ' says "' + v.exact + '"');
+          lines.push('  ' + label + ': automatically set to true/false - true if column ' + colName(v.col) + ' says "' + v.exact + '"');
         else if (typeof v === 'object' && v.regex)
           lines.push('  ' + label + ': automatically set to true/false based on a pattern in column ' + colName(v.col));
         else
@@ -4333,7 +4332,7 @@ function _dmColMapTip(json) {
 
     return lines.join('\n');
   } catch(ex) {
-    return 'There is a typo in this mapping — look for a missing quote, comma, or bracket.';
+    return 'There is a typo in this mapping - look for a missing quote, comma, or bracket.';
   }
 }
 
@@ -4400,7 +4399,7 @@ function renderDmCardView() {
     + '.dci.mono { font-family:monospace;font-size:11px; }'
     + '.dmcard-footer { padding:8px 16px 10px;display:flex;align-items:center;'
     +   'justify-content:space-between;background:var(--gray);border-top:1px solid var(--gray-mid); }'
-    /* Tooltip — drawn by JS into #dm-tip-box so it is never clipped by overflow:hidden containers */
+    /* Tooltip - drawn by JS into #dm-tip-box so it is never clipped by overflow:hidden containers */
     + '#dm-tip-box { position:fixed;pointer-events:none;z-index:99999;background:#1A1A1A;color:#fff;'
     +   'font-size:11px;font-weight:400;line-height:1.5;padding:8px 11px;border-radius:7px;'
     +   'white-space:pre-line;font-family:inherit;letter-spacing:0;max-width:280px;'
@@ -4410,7 +4409,7 @@ function renderDmCardView() {
     +   'z-index:50;border-top:2px solid var(--orange); }'
     + '</style>');
 
-  // Tooltip element — appended to body once so it is never clipped by overflow:hidden ancestors
+  // Tooltip element - appended to body once so it is never clipped by overflow:hidden ancestors
   if (!document.getElementById('dm-tip-box')) {
     var tipEl = document.createElement('div');
     tipEl.id = 'dm-tip-box';
@@ -4478,7 +4477,7 @@ function renderDmCardView() {
           +   'border-color:transparent;padding:2px 0;flex:1" value="' + _escAttr(r.displayName||'') + '" '
           +   'placeholder="Metric name..." data-idx="' + i + '" data-field="displayName" '
           +   'onchange="dmcUpdateField(this)">'
-          + '<span class="dmcard-key">' + _escHtml(r.metricKey||'—') + '</span>'
+          + '<span class="dmcard-key">' + _escHtml(r.metricKey||' - ') + '</span>'
           + '</div>');
         parts.push('<div class="dmcard-tags">'
           + '<span class="dmcard-op" style="background:' + opColor + '"'
@@ -4511,7 +4510,7 @@ function renderDmCardView() {
           +   opSelect + '</select>'
           + '</div>');
 
-        // Filters — two sub-rows so the rule widget has room to breathe
+        // Filters - two sub-rows so the rule widget has room to breathe
         parts.push('<div style="display:flex;flex-direction:column;gap:5px">'
           // ── Filter 1 ──
           + '<div style="display:grid;grid-template-columns:108px 70px 1fr;gap:5px;align-items:center">'
@@ -4531,8 +4530,8 @@ function renderDmCardView() {
           + '</div>'
           + '</div>');
 
-        // Column Mapping — with visible plain-language explanation box
-        var cmTip = colMapTip || 'No column mapping — rows are kept as raw arrays.';
+        // Column Mapping - with visible plain-language explanation box
+        var cmTip = colMapTip || 'No column mapping - rows are kept as raw arrays.';
         var cmBoxStyle = 'font-size:11px;line-height:1.6;color:#444;background:#F0F4FF;'
           + 'border:1px solid #C5D3F0;border-radius:6px;padding:8px 10px;'
           + 'white-space:pre-line;font-family:inherit;margin-top:4px;';
@@ -4640,21 +4639,21 @@ function dmcRefreshColMapBox(textarea) {
 
 
 // Build the filter rule select options, with the current value pre-selected
-// Operators that need no value — just the operator itself is the whole stored string
+// Operators that need no value - just the operator itself is the whole stored string
 var DM_OP_NO_VALUE = ['', '!', '>=today', '<=today'];
 
 // Operator options: [stored_prefix, label, needs_value, value_placeholder]
 var DM_OP_OPTIONS = [
   ['',        'Pick a rule…',                                          false,  ''],
-  ['!',       '! — Cell is not empty',                                 false,  ''],
-  ['=',       '= — Cell exactly equals…',                              true,   'e.g. Active'],
-  ['!=',      '!= — Cell does NOT equal…',                             true,   'e.g. Inactive'],
-  ['~',       '~ — Cell contains…',                                    true,   'e.g. Engineer'],
-  ['!~',      '!~ — Cell does NOT contain…',                           true,   'e.g. Total'],
-  ['>=today', '>=today — Date is today or in the future',              false,  ''],
-  ['<=today', '<=today — Date is today or in the past',                false,  ''],
-  ['>=',      '>= — Number is at least… (type the number)',            true,   'e.g. 10'],
-  ['<=',      '<= — Number is at most… (type the number)',             true,   'e.g. 5'],
+  ['!',       '! - Cell is not empty',                                 false,  ''],
+  ['=',       '= - Cell exactly equals…',                              true,   'e.g. Active'],
+  ['!=',      '!= - Cell does NOT equal…',                             true,   'e.g. Inactive'],
+  ['~',       '~ - Cell contains…',                                    true,   'e.g. Engineer'],
+  ['!~',      '!~ - Cell does NOT contain…',                           true,   'e.g. Total'],
+  ['>=today', '>=today - Date is today or in the future',              false,  ''],
+  ['<=today', '<=today - Date is today or in the past',                false,  ''],
+  ['>=',      '>= - Number is at least… (type the number)',            true,   'e.g. 10'],
+  ['<=',      '<= - Number is at most… (type the number)',             true,   'e.g. 5'],
 ];
 
 // Parse a stored filter value like "!~Total" into {op:'!~', val:'Total'}
@@ -4714,11 +4713,11 @@ function dmcFilterWidget(idx, field, stored) {
     + 'value="' + _escAttr(parsed.val) + '" '
     + 'data-idx="' + idx + '" data-field="' + field + '" oninput="dmcFilterChange(this.dataset.idx,this.dataset.field)">';
 
-  // Outer wrapper is display:grid with 2 equal columns — select always 50%, value always 50%
+  // Outer wrapper is display:grid with 2 equal columns - select always 50%, value always 50%
   return '<div style="display:grid;grid-template-columns:1fr 1fr;gap:4px;min-width:0">' + selHtml + valHtml + '</div>';
 }
 
-// Called when operator OR value changes — combine and store
+// Called when operator OR value changes - combine and store
 function dmcFilterChange(idxOrStr, field) {
   var idx = parseInt(idxOrStr);
   var selId = 'dfw-op-' + idx + '-' + field;
@@ -4804,9 +4803,9 @@ async function deleteMappingRow(i) {
     + '<div style="background:var(--gray);border-radius:6px;padding:10px 14px"><strong>🔑 Metric ID:</strong> <code>' + _escHtml(mk||'(none)') + '</code></div>'
     + '<div style="background:var(--gray);border-radius:6px;padding:10px 14px"><strong>📌 Dashboard elements that reference this metric:</strong> ' + _escHtml(usedIn) + '</div>'
     + '<div style="background:#FFF3E0;border-radius:6px;padding:10px 14px"><strong>💥 What breaks if you delete this:</strong><ul style="margin:6px 0 0 16px;padding:0;line-height:1.7">'
-    + '<li>The dashboard element(s) above will show <em>"—"</em> or fail to render</li>'
+    + '<li>The dashboard element(s) above will show <em>" - "</em> or fail to render</li>'
     + '<li>Any charts, tables, or KPIs that read <code>' + _escHtml(d_alias) + '</code> will display empty data</li>'
-    + '<li>The row is immediately deleted from Google Sheets — a Refresh will not restore it</li>'
+    + '<li>The row is immediately deleted from Google Sheets - a Refresh will not restore it</li>'
     + '</ul></div>'
     + '</div>'
     + '<div style="display:flex;gap:10px;justify-content:flex-end">'
@@ -4844,7 +4843,7 @@ async function saveMappingAllToSheet() {
   if (dataRows.length) await writeToRequestsSheet(CONFIG_TAB, 'A2:R'+(dataRows.length+1), dataRows);
   var banner = document.getElementById('errorBanner');
   if (banner) {
-    banner.textContent = '✓ Mapping saved — click Refresh to reload data from updated sources.';
+    banner.textContent = '✓ Mapping saved - click Refresh to reload data from updated sources.';
     banner.classList.add('visible');
     banner.style.background = 'var(--green)'; banner.style.color = 'white';
     setTimeout(function() { banner.classList.remove('visible'); banner.style.background=''; banner.style.color=''; }, 5000);
@@ -4878,7 +4877,7 @@ async function saveMappingAllToSheet() {
 })();
 
 // ============================================================
-// TARGETS HELPERS — look up target by leader name from Targets sheet tab
+// TARGETS HELPERS - look up target by leader name from Targets sheet tab
 // ============================================================
 function _targetFor(name) {
   const nm = (name || '').toLowerCase().trim();
@@ -4943,7 +4942,7 @@ async function targetsLoad() {
       target:    r[2] || '',
       cwStartHC: r[3] || '',
     }));
-    // F2 is the FY Start Date — cell index 5 (col F) on the first data row (sheet row 2).
+    // F2 is the FY Start Date - cell index 5 (col F) on the first data row (sheet row 2).
     const fyCellRow = rows[0] || [];
     const fyVal = (fyCellRow[5] || '').toString().trim();
     if (fyVal) _fyStart = fyVal;
