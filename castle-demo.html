@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Wes's Castle · Demo</title>
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#f6efdd">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500&family=Work+Sans:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    color-scheme: light;
+    --parchment:#f6efdd; --parchment-2:#efe4c8; --line:#ddcb9c; --line-2:#c9b378;
+    --ink:#2a2333; --ink-2:#655c74;
+    --plum:#3b2a6b; --plum-2:#241a47;
+    --coral:#e8734a; --coral-ink:#5c2a12;
+    --gold:#b8933e;
+    --display:"Cormorant Garamond",Georgia,serif;
+    --body:"Work Sans",-apple-system,"Segoe UI",sans-serif;
+    --mono:"Space Mono",ui-monospace,Menlo,monospace;
+    --shadow:0 1px 2px rgba(42,35,51,.06), 0 14px 34px rgba(42,35,51,.12);
+  }
+  *{box-sizing:border-box}
+  html,body{background:var(--parchment)}
+  body{margin:0;color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.6;-webkit-font-smoothing:antialiased;overflow-x:hidden;
+    background-image:radial-gradient(circle at 1px 1px, rgba(184,147,62,.16) 1px, transparent 0);
+    background-size:22px 22px;
+  }
+  img{max-width:100%;display:block}
+  a{color:inherit}
+  h1,h2,h3{margin:0;font-family:var(--display);text-wrap:balance}
+  .mono{font-family:var(--mono)}
+  button{font-family:inherit}
+  :focus-visible{outline:3px solid var(--plum);outline-offset:2px}
+  [hidden]{display:none!important}
+  @media (prefers-reduced-motion: reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
+
+  .wrap{max-width:920px;margin:0 auto;padding-inline:24px}
+  @media (max-width:560px){.wrap{padding-inline:16px}}
+
+  header.top{padding:44px 0 8px;text-align:center}
+  .crest{width:56px;height:56px;margin:0 auto 14px;border-radius:50%;background:var(--plum);color:var(--gold);display:grid;place-items:center;font-size:26px;box-shadow:var(--shadow)}
+  h1.title{font-size:clamp(34px,6vw,52px);font-weight:700;color:var(--plum);font-style:italic}
+  .tagline{font-size:17px;color:var(--ink-2);margin-top:8px;font-style:italic;font-family:var(--display)}
+  .demo-note{display:inline-flex;align-items:center;gap:7px;margin-top:18px;font-family:var(--mono);font-size:11.5px;color:var(--ink-2);background:var(--parchment-2);border:1px solid var(--line);padding:6px 14px;border-radius:999px}
+  .demo-note i{width:6px;height:6px;border-radius:50%;background:var(--coral);display:inline-block}
+
+  .datebar{max-width:640px;margin:34px auto 0;background:#fff;border:1.5px solid var(--line-2);border-radius:16px;box-shadow:var(--shadow);padding:18px 22px;display:flex;flex-wrap:wrap;gap:14px 22px;align-items:flex-end}
+  .datefield{display:flex;flex-direction:column;gap:4px;flex:1;min-width:140px}
+  .datefield label{font-family:var(--mono);font-size:10.5px;letter-spacing:.04em;text-transform:uppercase;color:var(--ink-2)}
+  .datefield input{font-family:var(--body);font-size:14.5px;padding:9px 10px;border:1.5px solid var(--line);border-radius:8px;background:var(--parchment);color:var(--ink)}
+  .datefield input:focus-visible{outline-offset:1px}
+
+  main{padding:44px 0 70px}
+  .section-lede{text-align:center;color:var(--ink-2);max-width:56ch;margin:0 auto 34px;font-size:15px}
+
+  .chambers{display:grid;grid-template-columns:1fr;gap:18px}
+  @media (min-width:640px){.chambers{grid-template-columns:1fr 1fr}}
+
+  .chamber{background:#fff;border:1.5px solid var(--line);border-radius:16px;overflow:hidden;box-shadow:var(--shadow-sm,0 1px 2px rgba(42,35,51,.05));display:flex;flex-direction:column}
+  .chamber .art{height:100px;display:flex;align-items:center;justify-content:center;font-size:36px;position:relative;overflow:hidden}
+  .chamber .art::after{content:"";position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,.15) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.15) 1px,transparent 1px);background-size:18px 18px}
+  .chamber .body{padding:18px 20px 20px;display:flex;flex-direction:column;gap:10px;flex:1}
+  .chamber h3{font-size:22px;font-weight:600;color:var(--plum)}
+  .chamber p{margin:0;color:var(--ink-2);font-size:14px;flex:1}
+  .rate{font-family:var(--mono);font-size:11.5px;color:var(--gold);font-weight:700}
+  .bookbtn{align-self:flex-start;margin-top:4px;background:var(--coral);color:#fff;border:none;font-weight:600;font-size:14px;padding:10px 18px;border-radius:10px;cursor:pointer;transition:filter .12s,transform .12s}
+  .bookbtn:hover{filter:brightness(1.06);transform:translateY(-1px)}
+
+  .g1{background:linear-gradient(135deg,#5b4a99,#3b2a6b)}
+  .g2{background:linear-gradient(135deg,#3a8f7a,#1f5c4d)}
+  .g3{background:linear-gradient(135deg,#22232f,#3a3b4d)}
+  .g4{background:linear-gradient(135deg,#e0a53c,#c77a2b)}
+  .g5{background:linear-gradient(135deg,#1c1424,#3a1f3f)}
+
+  /* ---------- booking view ---------- */
+  .bookview{max-width:560px;margin:0 auto;background:#fff;border:1.5px solid var(--line-2);border-radius:18px;box-shadow:var(--shadow);padding:30px 30px 28px}
+  .backlink{background:none;border:none;color:var(--plum);font-weight:600;font-size:13.5px;cursor:pointer;padding:0;margin-bottom:18px;display:inline-flex;align-items:center;gap:6px}
+  .backlink:hover{text-decoration:underline}
+  .bookview h2{font-size:28px;color:var(--plum);font-weight:600}
+  .bookview .desc{color:var(--ink-2);font-size:14.5px;margin:8px 0 22px}
+  .formrow{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:16px}
+  @media (max-width:480px){.formrow{grid-template-columns:1fr}}
+  .field{display:flex;flex-direction:column;gap:5px}
+  .field label{font-family:var(--mono);font-size:10.5px;letter-spacing:.04em;text-transform:uppercase;color:var(--ink-2)}
+  .field input{font-family:var(--body);font-size:14.5px;padding:10px 12px;border:1.5px solid var(--line);border-radius:9px;background:var(--parchment)}
+  .confirmbtn{width:100%;background:var(--plum);color:#fff;border:none;font-weight:700;font-size:15px;padding:14px;border-radius:11px;cursor:pointer;margin-top:6px}
+  .confirmbtn:hover{background:var(--plum-2)}
+
+  /* ---------- confirmation view ---------- */
+  .confirmview{max-width:560px;margin:0 auto;background:#fff;border:1.5px solid var(--line-2);border-radius:18px;box-shadow:var(--shadow);padding:38px 32px;text-align:center}
+  .confirmview .seal{width:64px;height:64px;margin:0 auto 18px;border-radius:50%;background:var(--coral);color:#fff;display:grid;place-items:center;font-size:28px}
+  .confirmview h2{font-size:26px;color:var(--plum);font-weight:600}
+  .confirmview p{color:var(--ink-2);font-size:14.5px;margin:10px 0 22px}
+  .receipt{background:var(--parchment-2);border:1.5px dashed var(--line-2);border-radius:12px;padding:16px 18px;text-align:left;margin-bottom:22px}
+  .receipt .r{display:flex;justify-content:space-between;padding:5px 0;font-size:13.5px}
+  .receipt .r .l{color:var(--ink-2)}
+  .receipt .r .v{font-weight:600}
+  .receipt .code{font-family:var(--mono);color:var(--plum)}
+  .again{background:none;border:2px solid var(--plum);color:var(--plum);font-weight:700;font-size:14px;padding:11px 20px;border-radius:10px;cursor:pointer}
+  .again:hover{background:var(--plum);color:#fff}
+
+  .homelink{display:block;text-align:center;padding:0 0 8px;font-family:var(--mono);font-size:11.5px;color:var(--ink-2);text-decoration:none}
+  .homelink:hover{color:var(--plum)}
+
+  footer{padding:0 0 60px;text-align:center}
+  footer p{font-family:var(--mono);font-size:11.5px;color:var(--ink-2)}
+</style>
+</head>
+<body>
+
+<a class="homelink" href="index.html">&larr; Back to wes-griffin.com</a>
+
+<header class="top">
+  <div class="wrap">
+    <div class="crest" aria-hidden="true">&#9813;</div>
+    <h1 class="title">Wes's Castle</h1>
+    <p class="tagline">Six legendary chambers. One benevolent king. Book thy stay.</p>
+    <span class="demo-note"><i></i> Interactive demo &middot; nothing is really booked</span>
+    <div class="datebar">
+      <div class="datefield"><label for="dCheckin">Check in</label><input type="date" id="dCheckin"></div>
+      <div class="datefield"><label for="dCheckout">Check out</label><input type="date" id="dCheckout"></div>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+  <div id="viewHome">
+    <p class="section-lede">Every chamber checks availability against these dates. Pick one to see the room and confirm thy stay.</p>
+    <div class="chambers" id="chamberGrid"></div>
+  </div>
+
+  <div id="viewBook" hidden></div>
+  <div id="viewConfirm" hidden></div>
+</main>
+
+<footer>
+  <div class="wrap">
+    <p>A demo of Wes's Castle &middot; dummy chambers, dummy bookings, no ravens harmed</p>
+  </div>
+</footer>
+
+<script>
+(function(){
+  "use strict";
+  var $ = function(s){ return document.querySelector(s); };
+
+  var CHAMBERS = [
+    { id:"jack", name:"Jack", g:"g1", glyph:"\u{1FAA3}", desc:"Went up the hill and never left. Twin bed, zero candlesticks.", rate:"2 compliments / night" },
+    { id:"jill", name:"Jill", g:"g2", glyph:"\u{26F0}️", desc:"Came tumbling after. Objectively the better view, don't tell Jack.", rate:"2 compliments / night" },
+    { id:"media", name:"The Media Room", g:"g3", glyph:"\u{1F3AC}", desc:"Fall asleep mid-movie in surround-sound glory. The recliner absolutely counts as a bed.", rate:"1 movie pick / night" },
+    { id:"east", name:"The East Wing", g:"g4", glyph:"\u{1F305}", desc:"Where the sun rises first and arrives last. Early risers only.", rate:"1 sunrise photo / night" },
+    { id:"dungeon", name:"Raven's Dungeon", g:"g5", glyph:"\u{1F426}‍⬛", desc:"No rules. No refunds. Our most exclusive suite.", rate:"enter at thine own risk" }
+  ];
+
+  function fmtDate(iso){
+    if(!iso) return "";
+    var d = new Date(iso + "T00:00:00");
+    return d.toLocaleDateString(undefined, { weekday:"short", month:"short", day:"numeric" });
+  }
+  function addDays(n){ var d=new Date(); d.setDate(d.getDate()+n); return d.toISOString().slice(0,10); }
+
+  var ci = $("#dCheckin"), co = $("#dCheckout");
+  ci.value = addDays(5); co.value = addDays(7);
+  ci.min = addDays(0); co.min = addDays(1);
+  ci.addEventListener("change", function(){ if(co.value <= ci.value){ var d=new Date(ci.value); d.setDate(d.getDate()+1); co.value=d.toISOString().slice(0,10); } co.min = ci.value; });
+
+  var grid = $("#chamberGrid");
+  grid.innerHTML = CHAMBERS.map(function(c){
+    return '<article class="chamber">'
+      + '<div class="art ' + c.g + '">' + c.glyph + '</div>'
+      + '<div class="body">'
+      + '<h3>' + c.name + '</h3>'
+      + '<p>' + c.desc + '</p>'
+      + '<span class="rate">Rate: ' + c.rate + '</span>'
+      + '<button class="bookbtn" data-book="' + c.id + '">Check dates &amp; book</button>'
+      + '</div></article>';
+  }).join("");
+
+  var viewHome = $("#viewHome"), viewBook = $("#viewBook"), viewConfirm = $("#viewConfirm");
+
+  function showBook(chamberId){
+    var c = CHAMBERS.find(function(x){ return x.id === chamberId; });
+    if(!c) return;
+    viewBook.innerHTML =
+      '<div class="bookview">'
+      + '<button class="backlink" id="backToHome">&larr; Back to chambers</button>'
+      + '<h2>' + c.name + '</h2>'
+      + '<p class="desc">' + c.desc + '</p>'
+      + '<div class="formrow">'
+      + '<div class="field"><label>Check in</label><input type="date" id="bCheckin" value="' + ci.value + '" min="' + addDays(0) + '"></div>'
+      + '<div class="field"><label>Check out</label><input type="date" id="bCheckout" value="' + co.value + '" min="' + addDays(1) + '"></div>'
+      + '</div>'
+      + '<div class="field" style="margin-bottom:20px"><label>Name for the guest ledger</label><input type="text" id="bName" placeholder="Sir or Madam ___" maxlength="40"></div>'
+      + '<button class="confirmbtn" id="doConfirm">Confirm booking</button>'
+      + '</div>';
+    viewHome.hidden = true; viewConfirm.hidden = true; viewBook.hidden = false;
+    window.scrollTo({top:0, behavior:"smooth"});
+    $("#backToHome").onclick = function(){ viewBook.hidden = true; viewHome.hidden = false; };
+    $("#doConfirm").onclick = function(){
+      var name = ($("#bName").value || "").trim() || "a mysterious guest";
+      var inD = $("#bCheckin").value, outD = $("#bCheckout").value;
+      showConfirm(c, name, inD, outD);
+    };
+  }
+
+  function code(){
+    var s = "WC-";
+    var chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+    for(var i=0;i<6;i++) s += chars[Math.floor(Math.random()*chars.length)];
+    return s;
+  }
+
+  function showConfirm(c, name, inD, outD){
+    viewConfirm.innerHTML =
+      '<div class="confirmview">'
+      + '<div class="seal" aria-hidden="true">&#10003;</div>'
+      + '<h2>Thy chamber awaits, ' + name.replace(/[<>&]/g,"") + '!</h2>'
+      + '<p>' + c.name + ' has been reserved in thy name. Present this at the gate.</p>'
+      + '<div class="receipt">'
+      + '<div class="r"><span class="l">Chamber</span><span class="v">' + c.name + '</span></div>'
+      + '<div class="r"><span class="l">Check in</span><span class="v">' + fmtDate(inD) + '</span></div>'
+      + '<div class="r"><span class="l">Check out</span><span class="v">' + fmtDate(outD) + '</span></div>'
+      + '<div class="r"><span class="l">Confirmation</span><span class="v code">' + code() + '</span></div>'
+      + '</div>'
+      + '<button class="again" id="bookAgain">Book another chamber</button>'
+      + '</div>';
+    viewHome.hidden = true; viewBook.hidden = true; viewConfirm.hidden = false;
+    window.scrollTo({top:0, behavior:"smooth"});
+    $("#bookAgain").onclick = function(){ viewConfirm.hidden = true; viewHome.hidden = false; };
+  }
+
+  grid.addEventListener("click", function(e){
+    var b = e.target.closest("[data-book]");
+    if(b) showBook(b.getAttribute("data-book"));
+  });
+})();
+</script>
+
+</body>
+</html>
